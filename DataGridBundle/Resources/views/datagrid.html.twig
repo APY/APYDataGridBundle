@@ -1,0 +1,34 @@
+<form action="{{ url }}" method="post">
+    <table class="sorted-table" style="width:100%">
+    {% if show_titles %}
+        <tr>
+        {% for column in columns %}
+            <th class="title"{% if(column.width > 0) %} style="width:{{column.width}}px"{% endif %}>
+            <a href="{{ column.order.url }}" title="Usporiadať podľa {{ column.title }}" href="#">{{ column.title }}</a>
+            </th>
+        {% endfor %}
+        </tr>
+    {% endif %}
+
+    {% if show_filters %}
+        <tr>
+        {% for column in columns %}
+            <th>{{ column.filter|raw }}</th>
+        {% endfor %}
+        </tr>
+    {% endif %}
+
+    {% for row in items %}
+        <tr>
+        {% for col in row %}
+           {% if loop.last %}
+           <td class="last"> {{row[loop.index0]}}</td>
+        {% else %}
+           <td> {{row[loop.index0]}}</td>
+        {% endif %}
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </tr>
+    </table>
+</form>
