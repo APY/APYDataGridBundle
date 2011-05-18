@@ -37,4 +37,4 @@ Usage
     }
 
 Preview:
-[[http://vortex-portal.com/datagrid/grid1.png|frame|alt=DataGrid]]
+<img src="http://vortex-portal.com/datagrid/grid1.png" alt="Screenshot" />
