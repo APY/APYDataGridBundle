@@ -5,6 +5,11 @@
         {% for column in columns %}
             <th class="title"{% if(column.width > 0) %} style="width:{{column.width}}px"{% endif %}>
             <a href="{{ column.order.url }}" title="Usporiadať podľa {{ column.title }}" href="#">{{ column.title }}</a>
+            {% if column.order.type == 'asc' %}
+                <div class="sort_up"></div>
+            {% elseif column.order.type == 'desc' %}
+                <div class="sort_down"></div>
+            {% endif %}
             </th>
         {% endfor %}
         </tr>

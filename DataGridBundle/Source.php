@@ -14,16 +14,16 @@ abstract class Source
 	{
 		$this->columns = new \SplObjectStorage();
 	}
-	
+
+	abstract public function prepare();
+
+	abstract public function execute();
+
 	function addColumn($column)
 	{
 		$this->columns->attach($column);
 		return $this;
 	}
-
-	abstract public function prepare();
-
-	abstract public function execute();
 
 	/**
 	 * @return Column[] 
@@ -36,6 +36,7 @@ abstract class Source
 	public function setCount($count)
 	{
 		$this->count = $count;
+		return $this;
 	}
 
 	public function getCount()
@@ -46,6 +47,7 @@ abstract class Source
 	public function setPage($page)
 	{
 		$this->page = $page;
+		return $this;
 	}
 
 	public function getPage()
@@ -56,21 +58,13 @@ abstract class Source
 	public function setTotalCount($totalCount)
 	{
 		$this->totalCount = $totalCount;
+		return $this;		
 	}
 
 	public function getTotalCount()
 	{
 		return $this->totalCount;
 	}
-
-	/**
-	 * @return Array
-	 */
-	public function getRow()
-	{
-		return Array();
-	}
-
 }
 
 

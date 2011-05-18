@@ -5,14 +5,16 @@ namespace Sorien\DataGridBundle\Tests;
 use Sorien\DataGridBundle\Source;
 use Sorien\DataGridBundle\Column\Text;
 use Sorien\DataGridBundle\Column\Select;
+use Sorien\DataGridBundle\Column\Range;
 
 class Users extends Source
 {
 	function prepare()
 	{
-		$this->addColumn(new Text('v.id', 'Id', 50, false, false, false));
+		$this->addColumn(new Range('v.id', 'Id', 120));
 		$this->addColumn(new Text('v.authors', 'Authors', 200, true, true));
 		$this->addColumn(new Select('v.mode', 'a', array('admin' => 'Admin', 'user' => 'User')));
+		$this->addColumn(new Text('v.admins', 'Admin', 200, true, true));
 	}
 
 	function execute()

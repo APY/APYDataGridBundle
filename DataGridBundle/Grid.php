@@ -25,6 +25,7 @@ class Grid
 	private $page;
 	private $data;
 
+
 	public function __construct($source, $controller, $route = null, $id = '')
 	{
 		$this->source = $source;
@@ -125,6 +126,11 @@ class Grid
 
 	}
 
+
+	/**
+	 * get data form Source Object
+	 * @return void
+	 */
 	public function prepare()
 	{
 		//get titles/orders/filters
@@ -151,7 +157,7 @@ class Grid
 
 				$this->data['columns'][] = array(
 					'title' => $column->getTitle(),
-					'order' => array('type' => $column->getOrder(), 'url' => $order),
+					'order' => array('type' => (string)$column->getOrder(), 'url' => $order),
 					'width' => (int)$column->getSize(),
 					'filter' => $filter
 				);
@@ -181,6 +187,10 @@ class Grid
 		$this->totalRows = $this->source->getTotalCount();
 	}
 
+
+	/**
+	 * Render DataGrid
+	 */
 	public function render()
 	{
 		if (empty($this->data))
