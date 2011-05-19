@@ -44,11 +44,11 @@ Usage - controller
 Usage - view
 -----
 template
+
     //second parameter is optional and defining template
     {{ grid(data, 'YourBundle::own_grid_theme_template.html.twig') }}
 
-own grid theme template:
-    //you can override blocks - grid, grid_titles, grid_filters, grid_pager
+own grid theme template: you can override blocks - grid, grid_titles, grid_filters, grid_pager
 
     //file: YourBundle::own_grid_theme.html.twig
     {% extends 'DataGridBundle::datagrid.html.twig' %}
