@@ -4,7 +4,9 @@ README
 What is DataGridBundle?
 -----------------
 
-goal is to create datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
+datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
+
+planed features:
 
  - sorting
  - magento like filters but highly customizable
@@ -12,12 +14,18 @@ goal is to create datagrid for Symfony2 highly inspired by Zfdatagrid and Magent
  - mass actions
  - sources: doctrine(entities), xml, array ...
  - exports: xml, excell, pdf ...
- - theme support
+ - theme support like Symfony\Bridge\Twig\Extension
 
 
-it's just sketch, and far from final implementation
+it's just sketch, and far from final implementation, if you have any ideas let me know on irc, nick sorien
 
-Usage
+Compatibility
+-----
+
+Symfony2 beta 1
+
+
+Usage - controller
 -----
 
     class DefaultController extends Controller
@@ -25,7 +33,7 @@ Usage
         public function gridAction()
         {
             $grid = new Grid(new Users(), $this, 'filter');
-            return $this->render('AdminBundle::default_index.html.twig', array('grid' => $grid->render()));
+            return $this->render('YourBundle::default.html.twig', array('data' => $grid));
         }
 
         public function filterAction()
@@ -36,5 +44,20 @@ Usage
 
     }
 
-Preview:
+Usage - template
+-----
+
+    //second parameter is optional and defining template
+    {{ grid(data, 'YourBundle::own_grid_theme.html.twig') }}
+
+    //if you specify template you can override blocks - grid, grid_titles, grid_filters, grid_pager
+    //file: YourBundle::own_grid_theme.html.twig
+
+    {% extends 'DataGridBundle::datagrid.html.twig' %}
+    {% block grid %}
+        extended grid!
+    {% endblock %}
+
+
+Working preview:
 <img src="http://vortex-portal.com/datagrid/grid1.png" alt="Screenshot" />
