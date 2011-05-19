@@ -1,8 +1,5 @@
-README
-======
-
 What is DataGridBundle?
------------------
+-----
 
 datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
 
@@ -13,7 +10,7 @@ planed features:
  - customizable columns
  - mass actions
  - sources: doctrine(entities), xml, array ...
- - exports: xml, excell, pdf ...
+ - exports: xml, excel, pdf ...
  - theme support like Symfony\Bridge\Twig\Extension
 
 
@@ -44,15 +41,16 @@ Usage - controller
 
     }
 
-Usage - template
+Usage - view
 -----
-
+template
     //second parameter is optional and defining template
-    {{ grid(data, 'YourBundle::own_grid_theme.html.twig') }}
+    {{ grid(data, 'YourBundle::own_grid_theme_template.html.twig') }}
 
-    //if you specify template you can override blocks - grid, grid_titles, grid_filters, grid_pager
+own grid theme template:
+    //you can override blocks - grid, grid_titles, grid_filters, grid_pager
+
     //file: YourBundle::own_grid_theme.html.twig
-
     {% extends 'DataGridBundle::datagrid.html.twig' %}
     {% block grid %}
         extended grid!

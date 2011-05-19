@@ -6,11 +6,11 @@ use Sorien\DataGridBundle\Source;
 
 class Array extends Source
 {
-	function prepare()
-	{
-	}
+    function prepare()
+    {
+    }
 
-	function execute()
-	{
-	}
+    function execute()
+    {
+    }
 }
