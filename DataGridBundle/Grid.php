@@ -7,8 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Grid
 {
-	private $template;
-	private $templating;
 	private $session;
 	/**
 	* @var Request
@@ -31,15 +29,12 @@ class Grid
 		$this->source = $source;
 
 		$this->session = $controller->get('request')->getSession();
-		$this->templating = $controller->get('templating');
 		$this->request = $controller->get('request');
 
 		$this->url = (!is_null($route)) ? $controller->get('router')->generate($route) : '';
 
 		$name = explode('::', $controller->get('request')->get('_controller'));
 		$this->id = md5($name[0].$id);
-
-		$this->template = 'DataGridBundle::datagrid.html.twig';
 
 		//get cols from source
 		$this->source->prepare();
@@ -123,9 +118,7 @@ class Grid
 	private function negateOrder($value)
 	{
 		return  $value == 'asc' ? 'desc' : 'asc';
-
 	}
-
 
 	/**
 	 * get data form Source Object
@@ -187,11 +180,7 @@ class Grid
 		$this->totalRows = $this->source->getTotalCount();
 	}
 
-
-	/**
-	 * Render DataGrid
-	 */
-	public function render()
+	public function getData()
 	{
 		if (empty($this->data))
 		{
@@ -199,22 +188,13 @@ class Grid
 		}
 
 		//draw template
-		return  $this->templating->render($this->template, array(
+		return array(
 			'show_filters' => $this->data['show_filters'],
 			'show_titles'  => $this->data['show_titles'],
 			'columns'  	   => $this->data['columns'],
 			'items'        => $this->data['items'],
 			'url'	       => $this->url
-		));
-	}
-
-	public function getData()
-	{
-		if (empty($this->data))
-		{
-			$this->prepare();
-		}
-		return $this->data;
+		);
 	}
 
 }
