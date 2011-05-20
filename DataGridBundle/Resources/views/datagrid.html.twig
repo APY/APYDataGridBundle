@@ -1,35 +1,26 @@
 {% block grid %}
-<form action="{{ url }}" method="post">
+<form action="{{ grid.url }}" method="post">
     <table class="sorted-table" style="width:100%">
-    {% if show_titles %}
-        {{ grid_titles(columns) }}
+    {% if grid.show_titles %}
+        {{ grid_titles(grid.columns) }}
     {% endif %}
 
-    {% if show_filters %}
-        {{ grid_filters(columns) }}
+    {% if grid.show_filters %}
+        {{ grid_filters(grid.columns) }}
     {% endif %}
 
-    {% for row in items %}
-        <tr>
-        {% for col in row %}
-           {% if loop.last %}
-           <td class="last"> {{row[loop.index0]}}</td>
-        {% else %}
-           <td> {{row[loop.index0]}}</td>
-        {% endif %}
-        {% endfor %}
-        </tr>
-    {% endfor %}
+    {{ grid_items(grid.items) }}
     </tr>
     </table>
 </form>
+{{ grid_pager(grid) }}
 {% endblock %}
 
 {% block grid_titles %}
     <tr>
     {% for column in columns %}
         <th class="title"{% if(column.width > 0) %} style="width:{{column.width}}px"{% endif %}>
-        <a href="{{ column.order.url }}" title="Usporiadať podľa {{ column.title }}" href="#">{{ column.title }}</a>
+        <a href="{{ column.order.url }}" title="Order by {{ column.title }}">{{ column.title }}</a>
         {% if column.order.type == 'asc' %}
             <div class="sort_up"></div>
         {% elseif column.order.type == 'desc' %}
@@ -46,6 +37,20 @@
         <th>{{ column.filter|raw }}</th>
     {% endfor %}
     </tr>
+{% endblock %}
+
+{% block grid_items %}
+    {% for row in items %}
+        <tr>
+        {% for col in row %}
+           {% if loop.last %}
+           <td class="last"> {{row[loop.index0]|raw}}</td>
+        {% else %}
+           <td> {{row[loop.index0]|raw}}</td>
+        {% endif %}
+        {% endfor %}
+        </tr>
+    {% endfor %}
 {% endblock %}
 
 {% block grid_pagger %}

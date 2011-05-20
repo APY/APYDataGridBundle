@@ -15,33 +15,17 @@ use Sorien\DataGridBundle\Column;
 
 abstract class Source
 {
-    private $columns;
     private $count;
     private $totalCount;
     private $page;
 
     public function __construct()
     {
-        $this->columns = new \SplObjectStorage();
     }
 
-    abstract public function prepare();
+    abstract public function prepare($grid);
 
     abstract public function execute();
-
-    function addColumn($column)
-    {
-        $this->columns->attach($column);
-        return $this;
-    }
-
-    /**
-     * @return Column[]
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
 
     public function setCount($count)
     {

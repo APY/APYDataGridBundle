@@ -32,6 +32,10 @@ class Grid
     private $page;
     private $data;
 
+    /**
+     * @var Column[]
+     */
+    private $columns;
 
     public function __construct($source, $controller, $route = null, $id = '')
     {
@@ -42,17 +46,19 @@ class Grid
 
         $this->url = (!is_null($route)) ? $controller->get('router')->generate($route) : '';
 
+        $this->columns = new \SplObjectStorage();
+
         $name = explode('::', $controller->get('request')->get('_controller'));
         $this->id = md5($name[0].$id);
 
         //get cols from source
-        $this->source->prepare();
+        $this->source->prepare($this);
         $saveData = array();
 
         if (is_array($grid = $this->session->get('grid_'.$this->id)))
         {
             //set orders from session [grid_717127575fasdf1as7dfa1sf][a.author_id][orders][asc]
-            foreach ($this->source->getColumns() as $column)
+            foreach ($this->columns as $column)
             {
                 if (isset($grid[$column->getId()]) && is_array($grid[$column->getId()]) )
                 {
@@ -65,7 +71,6 @@ class Grid
                     //set filters
                     if (isset($grid[$column->getId()]['filter']))
                     {
-    //						var_dump('session:'. $grid[$column->getId()]['filter']);
                         $column->setFilterData($grid[$column->getId()]['filter']);
                     }
                 }
@@ -77,7 +82,7 @@ class Grid
         {
             //$saveOrders = array();
 
-            foreach ($this->source->getColumns() as $column)
+            foreach ($this->columns as $column)
             {
                 if (isset($orders[$column->getId()]))
                 {
@@ -99,7 +104,7 @@ class Grid
         if (is_array($filters = $this->request->request->get('grid_'.$this->id)))
         {
             //$saveFilters = array();
-            foreach ($this->source->getColumns() as $column)
+            foreach ($this->columns as $column)
             {
                 if (isset($filters[$column->getId()]))
                 {
@@ -139,7 +144,7 @@ class Grid
         $this->data['columns'] = $this->data['items'] = array();
         $_filter = $_title = false;
 
-        foreach ($this->source->getColumns() as $column)
+        foreach ($this->columns as $column)
         {
             if ($column->isVisible())
             {
@@ -171,7 +176,7 @@ class Grid
         {
             $item = array();
 
-            foreach ($this->source->getColumns() as $column)
+            foreach ($this->columns as $column)
             {
                 if ($column->isVisible())
                 {
@@ -205,4 +210,19 @@ class Grid
             'url'	       => $this->url
         );
     }
+
+    function addColumn($column)
+    {
+        $this->columns->attach($column);
+        return $this;
+    }
+
+    /**
+     * @return Column[]
+     */
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
 }

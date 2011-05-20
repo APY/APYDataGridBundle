@@ -14,7 +14,7 @@ namespace Sorien\DataGridBundle;
 class Column
 {
     private $id;
-    private	$title;
+    private $title;
     private $sortable;
     private $isSorted;
     private $filterable;
@@ -46,14 +46,19 @@ class Column
 
     public function drawCell($value, $row)
     {
-        if ($this->callback != null)
+        if (is_callable($this->callback))
         {
-            //call callback
+            return call_user_func($this->callback, $value, $row);
         }
         else
         {
             return $value;
         }
+    }
+
+    public function setCallback($callback)
+    {
+        $this->callback = $callback;
     }
 
     public function setId($id)
@@ -125,16 +130,6 @@ class Column
     public function getOrder()
     {
         return $this->order;
-    }
-
-    public function setCallback($callback)
-    {
-        $this->callback = $callback;
-    }
-
-    public function getCallback()
-    {
-        return $this->callback;
     }
 
     public function filtersConnected()

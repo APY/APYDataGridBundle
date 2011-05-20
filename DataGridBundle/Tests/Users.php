@@ -9,12 +9,20 @@ use Sorien\DataGridBundle\Column\Range;
 
 class Users extends Source
 {
-    function prepare()
+    private $grid;
+
+    function prepare($grid)
     {
-        $this->addColumn(new Range('v.id', 'Id', 120));
-        $this->addColumn(new Text('v.authors', 'Authors', 200, true, true));
-        $this->addColumn(new Select('v.mode', 'a', array('admin' => 'Admin', 'user' => 'User')));
-        $this->addColumn(new Text('v.admins', 'Admin', 200, true, true));
+        $grid->addColumn(new Range('v.id', 'Id', 120));
+
+        $textColumn = new Text('v.authors', 'Authors', 200, true, true);
+        $textColumn->setCallback(function($value, $row) { return '<span style="color:#F00;">'.$value.'</span>'; });
+
+        $grid->addColumn($textColumn);
+        $grid->addColumn(new Select('v.mode', 'a', array('admin' => 'Admin', 'user' => 'User')));
+        $grid->addColumn(new Text('v.admins', 'Admin', 200, true, true));
+
+        $this->grid = $grid;
     }
 
     function execute()
@@ -49,7 +57,7 @@ class Users extends Source
         for ($i = 0;$i < 20; $i++)
         {
             $array = array();
-            foreach ($this->getColumns() as $column)
+            foreach ($this->grid->getColumns() as $column)
             {
                 $array[$column->getId()] = $column->getTitle().'-'.$i;
             }
