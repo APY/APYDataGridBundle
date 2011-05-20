@@ -21,6 +21,7 @@ class Grid
     * @var Request
     */
     private $request;
+    private $router;
     private $url;
     private $id;
 
@@ -37,14 +38,21 @@ class Grid
      */
     private $columns;
 
+    /**
+     * @param $source Data Source
+     * @param $controller
+     * @param $route route for
+     * @param string $id set if you are using more then one grid inside controller
+     */
     public function __construct($source, $controller, $route = null, $id = '')
     {
         $this->source = $source;
 
         $this->session = $controller->get('request')->getSession();
         $this->request = $controller->get('request');
+        $this->router = $controller->get('router');
 
-        $this->url = (!is_null($route)) ? $controller->get('router')->generate($route) : '';
+        $this->url = (!is_null($route)) ? $this->router->generate($route) : '';
 
         $this->columns = new \SplObjectStorage();
 
@@ -180,7 +188,7 @@ class Grid
             {
                 if ($column->isVisible())
                 {
-                    $item[] = $column->drawCell($row[$column->getId()], $row);
+                    $item[] = $column->drawCell($row[$column->getId()], $row, $this->router);
                 }
             }
 
@@ -207,7 +215,7 @@ class Grid
             'show_titles'  => $this->data['show_titles'],
             'columns'  	   => $this->data['columns'],
             'items'        => $this->data['items'],
-            'url'	       => $this->url
+            'url'          => $this->url
         );
     }
 

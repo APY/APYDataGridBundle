@@ -18,10 +18,10 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class DataGridExtension extends Extension {
 
-	public function load(array $config, ContainerBuilder $container)
-	{
-		$definition = new Definition('Sorien\DatagridBundle\Extension\DataGrid');
-		$definition->addTag('twig.extension');
-		$container->setDefinition('datagrid_twig_extension', $definition);
-	}
+    public function load(array $config, ContainerBuilder $container)
+    {
+        $definition = new Definition('Sorien\DatagridBundle\Extension\DataGrid');
+        $definition->addTag('twig.extension');
+        $container->setDefinition('datagrid_twig_extension', $definition);
+    }
 }

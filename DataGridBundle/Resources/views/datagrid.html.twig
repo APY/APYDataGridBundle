@@ -41,15 +41,15 @@
 
 {% block grid_items %}
     {% for row in items %}
-        <tr>
-        {% for col in row %}
-           {% if loop.last %}
-           <td class="last"> {{row[loop.index0]|raw}}</td>
-        {% else %}
-           <td> {{row[loop.index0]|raw}}</td>
-        {% endif %}
-        {% endfor %}
-        </tr>
+    <tr>
+    {% for col in row %}
+       {% if loop.last %}
+       <td class="last"> {{row[loop.index0]|raw}}</td>
+    {% else %}
+       <td> {{row[loop.index0]|raw}}</td>
+    {% endif %}
+    {% endfor %}
+    </tr>
     {% endfor %}
 {% endblock %}
 

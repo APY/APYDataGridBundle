@@ -1,8 +1,9 @@
 <?php
 
-namespace Sorien\DataGridBundle\Tests;
+namespace Sorien\DataGridBundle\Samples;
 
 use Sorien\DataGridBundle\Source;
+use Sorien\DataGridBundle\Grid;
 use Sorien\DataGridBundle\Column\Text;
 use Sorien\DataGridBundle\Column\Select;
 use Sorien\DataGridBundle\Column\Range;
@@ -11,12 +12,18 @@ class Users extends Source
 {
     private $grid;
 
+    /**
+     * Prepare columns
+     *
+     * @param  \Grid $grid
+     * @return null
+     */
     function prepare($grid)
     {
         $grid->addColumn(new Range('v.id', 'Id', 120));
 
         $textColumn = new Text('v.authors', 'Authors', 200, true, true);
-        $textColumn->setCallback(function($value, $row) { return '<span style="color:#F00;">'.$value.'</span>'; });
+        $textColumn->setCallback(function($value, $row, $router) { return '<a style="color:#F00;" href="'.$router->generate('logout').'">'.$value.'</a>'; });
 
         $grid->addColumn($textColumn);
         $grid->addColumn(new Select('v.mode', 'a', array('admin' => 'Admin', 'user' => 'User')));
@@ -28,7 +35,8 @@ class Users extends Source
     function execute()
     {
         //http://www.doctrine-project.org/docs/orm/2.0/en/reference/query-builder.html
-    /*		$query = $this->get('doctrine')->getEntityManager();
+        /*
+        $query = $this->get('doctrine')->getEntityManager();
         $query->select('a');
 
         foreach ($this->getColumns() as $column)
@@ -68,6 +76,5 @@ class Users extends Source
         $this->setTotalCount(50);
 
         return $data;
-        //$query->execute();
     }
 }

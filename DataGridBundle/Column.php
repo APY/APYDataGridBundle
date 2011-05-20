@@ -44,11 +44,11 @@ class Column
         return '';
     }
 
-    public function drawCell($value, $row)
+    public function drawCell($value, $row, $router)
     {
         if (is_callable($this->callback))
         {
-            return call_user_func($this->callback, $value, $row);
+            return call_user_func($this->callback, $value, $row, $router);
         }
         else
         {
