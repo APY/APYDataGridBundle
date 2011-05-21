@@ -16,15 +16,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Grid
 {
+    /**
+     * @var \Symfony\Component\HttpFoundation\Session;
+     */
     private $session;
     /**
-    * @var Request
+    * @var \Symfony\Component\HttpFoundation\Request
     */
     private $request;
+
+    /**
+    * @var \Symfony\Component\Routing\Router
+    */
     private $router;
+
     private $url;
     private $id;
-
     /**
     * @var Source
     */
@@ -51,6 +58,7 @@ class Grid
         $this->session = $controller->get('request')->getSession();
         $this->request = $controller->get('request');
         $this->router = $controller->get('router');
+        var_dump($this->session);
 
         $this->url = (!is_null($route)) ? $this->router->generate($route) : '';
 
@@ -65,7 +73,6 @@ class Grid
 
         if (is_array($grid = $this->session->get('grid_'.$this->id)))
         {
-            //set orders from session [grid_717127575fasdf1as7dfa1sf][a.author_id][orders][asc]
             foreach ($this->columns as $column)
             {
                 if (isset($grid[$column->getId()]) && is_array($grid[$column->getId()]) )
@@ -88,8 +95,6 @@ class Grid
         //set order form get
         if (is_array($orders = $this->request->query->get('grid_'.$this->id)))
         {
-            //$saveOrders = array();
-
             foreach ($this->columns as $column)
             {
                 if (isset($orders[$column->getId()]))
@@ -104,14 +109,11 @@ class Grid
 
                 }
             }
-
-            //if (!empty($saveOrders)) $saveData['order'] = $saveOrders;
         }
 
         //set filter from post
         if (is_array($filters = $this->request->request->get('grid_'.$this->id)))
         {
-            //$saveFilters = array();
             foreach ($this->columns as $column)
             {
                 if (isset($filters[$column->getId()]))
@@ -125,8 +127,6 @@ class Grid
                     }
                 }
             }
-
-            //if (!empty($saveFilters)) $saveData['filter'] = $saveFilters;
         }
 
         // if we need save sessions
@@ -143,7 +143,7 @@ class Grid
     }
 
     /**
-     * get data form Source Object
+     * Get data form Source Object
      * @return void
      */
     public function prepare()
@@ -179,7 +179,7 @@ class Grid
             }
         }
 
-        //get data
+        //get cell data
         foreach ($this->source->execute() as $row)
         {
             $item = array();
@@ -197,11 +197,18 @@ class Grid
 
         $this->data['show_filters'] = $_filter;
         $this->data['show_titles'] = $_title;
+        $this->data['url'] = $this->url;
 
         //get size
         $this->totalRows = $this->source->getTotalCount();
     }
 
+    /**
+     * Return Grid data for template
+     *
+     * @todo probably replace with GridView object
+     * @return Array
+     */
     public function getData()
     {
         if (empty($this->data))
@@ -209,16 +216,15 @@ class Grid
             $this->prepare();
         }
 
-        //draw template
-        return array(
-            'show_filters' => $this->data['show_filters'],
-            'show_titles'  => $this->data['show_titles'],
-            'columns'  	   => $this->data['columns'],
-            'items'        => $this->data['items'],
-            'url'          => $this->url
-        );
+        return $this->data();
     }
 
+    /**
+     * Add column, column object have to extend Column
+     * @param $column Column
+     * @return Grid
+     *
+     */
     function addColumn($column)
     {
         $this->columns->attach($column);
@@ -226,6 +232,8 @@ class Grid
     }
 
     /**
+     * Return column Array
+     *
      * @return Column[]
      */
     public function getColumns()

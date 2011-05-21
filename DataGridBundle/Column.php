@@ -25,10 +25,19 @@ class Column
     private $filters;
     private $filterData;
     private $size;
-    /*
-     * Draws filter box for column
+
+    /**
+     * Default Column constructor
+     *
+     * @param string|int $id
+     * @param string $title
+     * @param int $size
+     * @param bool $sortable
+     * @param bool $filterable
+     * @param bool $visible
+     * @return Column
      */
-    public function __construct($id, $title = '', $size = null, $sortable = true, $filterable = true, $visible = true)
+    public function __construct($id, $title = '', $size = 0, $sortable = true, $filterable = true, $visible = true)
     {
         $this->id = $id;
         $this->title = $title;
@@ -44,6 +53,15 @@ class Column
         return '';
     }
 
+    /**
+     * Draw cell
+     *
+     * @param string $value
+     * @param Row $row
+     * @param $router
+     * @return string
+
+     */
     public function drawCell($value, $row, $router)
     {
         if (is_callable($this->callback))

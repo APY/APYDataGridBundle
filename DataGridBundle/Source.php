@@ -23,8 +23,17 @@ abstract class Source
     {
     }
 
+    /**
+     * @abstract
+     * @param $grid Grid
+     * @return null
+     */
     abstract public function prepare($grid);
 
+    /**
+     * @abstract
+     * @return Row[]
+     */
     abstract public function execute();
 
     public function setCount($count)
