@@ -25,16 +25,18 @@ abstract class Source
 
     /**
      * @abstract
-     * @param $grid Grid
+     * @param $grid Columns
      * @return null
      */
-    abstract public function prepare($grid);
+    abstract public function prepare($columns);
 
     /**
      * @abstract
-     * @return Row[]
+     * @param $columns Columns
+     * @param $page int
+     * @return Row[] Traversable object or array @todo probably will be better to create Rows Class
      */
-    abstract public function execute();
+    abstract public function execute($columns, $page);
 
     public function setCount($count)
     {

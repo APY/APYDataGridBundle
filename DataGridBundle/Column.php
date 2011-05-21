@@ -11,7 +11,7 @@
 
 namespace Sorien\DataGridBundle;
 
-class Column
+abstract class Column
 {
     private $id;
     private $title;
@@ -48,10 +48,14 @@ class Column
         $this->isSorted = false;
     }
 
-    public function drawFilter($gridId)
-    {
-        return '';
-    }
+    /**
+     * Draw filter
+     *
+     * @abstract
+     * @param string $gridId
+     * @return string
+     */
+    abstract public function drawFilter($gridId);
 
     /**
      * Draw cell
@@ -60,7 +64,6 @@ class Column
      * @param Row $row
      * @param $router
      * @return string
-
      */
     public function drawCell($value, $row, $router)
     {

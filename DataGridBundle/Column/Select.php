@@ -17,7 +17,7 @@ class Select extends Column
 {
     private $values;
 
-    public function __construct($id, $title, Array $values, $size = null, $sortable = true, $visible = true)
+    public function __construct($id, $title, Array $values, $size = 0, $sortable = true, $visible = true)
     {
         parent::__construct($id, $title, $size, $sortable, !empty($values), $visible);
         $this->values = $values;

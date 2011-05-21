@@ -12,6 +12,7 @@
 namespace Sorien\DataGridBundle;
 
 use Sorien\DataGridBundle\Source;
+use Sorien\DataGridBundle\Columns;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Grid
@@ -39,10 +40,9 @@ class Grid
     private $totalRows;
     private $page;
     private $data;
-
     /**
-     * @var Column[]
-     */
+    * @var Column[]
+    */
     private $columns;
 
     /**
@@ -61,13 +61,12 @@ class Grid
 
         $this->url = (!is_null($route)) ? $this->router->generate($route) : '';
 
-        $this->columns = new \SplObjectStorage();
-
         $name = explode('::', $controller->get('request')->get('_controller'));
         $this->id = md5($name[0].$id);
 
+        $this->columns = new Columns();
         //get cols from source
-        $this->source->prepare($this);
+        $this->source->prepare($this->columns);
         $saveData = array();
 
         if (is_array($grid = $this->session->get('grid_'.$this->id)))
@@ -172,7 +171,7 @@ class Grid
                 $this->data['columns'][] = array(
                     'title' => $column->getTitle(),
                     'order' => array('type' => (string)$column->getOrder(), 'url' => $order),
-                    'width' => (int)$column->getSize(),
+                    'width' => $column->getSize(),
                     'filter' => $filter
                 );
             }
@@ -180,7 +179,7 @@ class Grid
 
         //get cell data
 
-        $collection = $this->source->execute();
+        $collection = $this->source->execute($this->columns, $this->page);
 
         if(!is_array($collection) && !is_a($collection, 'Traversable'))
         {
@@ -230,32 +229,4 @@ class Grid
 
         return $this->data;
     }
-
-    /**
-     * Add column, column object have to extend Column
-     * @param $column Column
-     * @return Grid
-     *
-     */
-    function addColumn($column)
-    {
-        if (!$column instanceof Column)
-        {
-            throw new \InvalidArgumentException('Your column needs to extend class Column.');
-        }
-
-        $this->columns->attach($column);
-        return $this;
-    }
-
-    /**
-     * Return column Array
-     *
-     * @return Column[]
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
 }

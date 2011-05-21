@@ -19,21 +19,19 @@ class Users extends Source
      * @param  \Grid $grid
      * @return null
      */
-    function prepare($grid)
+    function prepare($columns)
     {
-        $grid->addColumn(new Range('v.id', 'Id', 120));
+        $columns->addColumn(new Range('v.id', 'Id', 120));
 
         $textColumn = new Text('v.authors', 'Authors', 200, true, true);
         $textColumn->setCallback(function($value, $row, $router) { return '<a style="color:#F00;" href="'.$router->generate('logout').'">'.$value.'</a>'; });
 
-        $grid->addColumn($textColumn);
-        $grid->addColumn(new Select('v.mode', 'a', array('admin' => 'Admin', 'user' => 'User')));
-        $grid->addColumn(new Text('v.admins', 'Admin', 200, true, true));
-
-        $this->grid = $grid;
+        $columns->addColumn($textColumn);
+        $columns->addColumn(new Select('v.mode', 'a', array('admin' => 'Admin', 'user' => 'User')));
+        $columns->addColumn(new Text('v.admins', 'Admin', 200, true, true));
     }
 
-    function execute()
+    function execute($columns, $page)
     {
         //http://www.doctrine-project.org/docs/orm/2.0/en/reference/query-builder.html
         /*
@@ -66,7 +64,7 @@ class Users extends Source
         for ($i = 0;$i < 20; $i++)
         {
             $row = new Row();
-            foreach ($this->grid->getColumns() as $column)
+            foreach ($columns as $column)
             {
                 $row->addField($column->getId(), $column->getTitle().'-'.$i);
                 if ($i == 10)
