@@ -188,11 +188,11 @@ class Grid
             {
                 if ($column->isVisible())
                 {
-                    $item[] = $column->drawCell($row[$column->getId()], $row, $this->router);
+                    $item[] = $column->drawCell($row->getField($column->getId()), $row, $this->router);
                 }
             }
 
-            $this->data['items'][] = $item;
+            $this->data['items'][] = array('fields' => $item, 'color' => $row->getColor());
         }
 
         $this->data['show_filters'] = $_filter;

@@ -4,6 +4,7 @@ namespace Sorien\DataGridBundle\Samples;
 
 use Sorien\DataGridBundle\Source;
 use Sorien\DataGridBundle\Grid;
+use Sorien\DataGridBundle\Row;
 use Sorien\DataGridBundle\Column\Text;
 use Sorien\DataGridBundle\Column\Select;
 use Sorien\DataGridBundle\Column\Range;
@@ -61,15 +62,17 @@ class Users extends Source
         $query->from('Article', 'a');*/
         //$query->setMaxResults(20);
 
-        $data = array();
+        $data = new \SplObjectStorage();
         for ($i = 0;$i < 20; $i++)
         {
-            $array = array();
+            $row = new Row();
             foreach ($this->grid->getColumns() as $column)
             {
-                $array[$column->getId()] = $column->getTitle().'-'.$i;
+                $row->addField($column->getId(), $column->getTitle().'-'.$i);
+                if ($i == 10) $row->setColor('#ffd9d5');
             }
-            $data[] = $array;
+
+            $data->attach($row);
         }
 
         $this->setCount(20);

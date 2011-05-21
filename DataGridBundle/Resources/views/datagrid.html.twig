@@ -41,12 +41,12 @@
 
 {% block grid_items %}
     {% for row in items %}
-    <tr>
-    {% for col in row %}
+    <tr{% if row.color != '' %} style="background-color:{{row.color}};"{% endif %}>
+    {% for col in row.fields %}
        {% if loop.last %}
-       <td class="last"> {{row[loop.index0]|raw}}</td>
+       <td class="last"> {{row.fields[loop.index0]|raw}}</td>
     {% else %}
-       <td> {{row[loop.index0]|raw}}</td>
+       <td> {{row.fields[loop.index0]|raw}}</td>
     {% endif %}
     {% endfor %}
     </tr>
