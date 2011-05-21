@@ -11,21 +11,22 @@
 
 namespace Sorien\DataGridBundle;
 
-class Columns implements \IteratorAggregate {
+class Rows implements \IteratorAggregate {
 
     /**
-     * @var Column[]
+     * @var Rows[]
      */
-    private $columns;
+    private $rows;
+    private $countTotal;
 
     public function __construct()
     {
-        $this->columns = new \SplObjectStorage();
+        $this->rows = new \SplObjectStorage();
     }
 
     public function getIterator()
     {
-        return $this->columns;
+        return $this->rows;
     }
 
     /**
@@ -34,14 +35,24 @@ class Columns implements \IteratorAggregate {
      * @return Grid
      *
      */
-    function addColumn($column)
+    function addRow($row)
     {
-        if (!$column instanceof Column)
+        if (!$row instanceof Row)
         {
             throw new \InvalidArgumentException('Your column needs to extend class Column.');
         }
 
-        $this->columns->attach($column);
+        $this->rows->attach($row);
         return $this;
+    }
+
+    public function setCountTotal($countTotal)
+    {
+        $this->countTotal = $countTotal;
+    }
+
+    public function getCountTotal()
+    {
+        return $this->countTotal;
     }
 }

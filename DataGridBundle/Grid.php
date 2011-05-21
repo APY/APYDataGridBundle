@@ -177,22 +177,15 @@ class Grid
             }
         }
 
-        //get cell data
+         $collection = $this->source->execute($this->columns, $this->page);
 
-        $collection = $this->source->execute($this->columns, $this->page);
-
-        if(!is_array($collection) && !is_a($collection, 'Traversable'))
+        if(!$collection instanceof Rows)
         {
-            throw new \Exception('Source have to return Traversable object or Array.');
+            throw new \Exception('Source have to return Rows object.');
         }
 
         foreach ($collection as $row)
         {
-            if (!$row instanceof Row)
-            {
-                throw new \InvalidArgumentException('Execute method of Source have to return Traversable object or array containing Row(s).');
-            }
-
             $item = array();
 
             foreach ($this->columns as $column)

@@ -43,17 +43,17 @@
     {% for row in items %}
     <tr{% if row.color != '' %} style="background-color:{{row.color}};"{% endif %}>
     {% for col in row.fields %}
-       {% if loop.last %}
-       <td class="last"> {{row.fields[loop.index0]|raw}}</td>
-    {% else %}
-       <td> {{row.fields[loop.index0]|raw}}</td>
-    {% endif %}
+        {% if loop.last %}
+        <td class="last"> {{row.fields[loop.index0]|raw}}</td>
+        {% else %}
+        <td> {{row.fields[loop.index0]|raw}}</td>
+        {% endif %}
     {% endfor %}
     </tr>
     {% endfor %}
 {% endblock %}
 
 {% block grid_pager %}
-pagger
+
 {% endblock %}
 

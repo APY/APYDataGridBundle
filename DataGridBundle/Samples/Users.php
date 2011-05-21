@@ -5,6 +5,7 @@ namespace Sorien\DataGridBundle\Samples;
 use Sorien\DataGridBundle\Source;
 use Sorien\DataGridBundle\Grid;
 use Sorien\DataGridBundle\Row;
+use Sorien\DataGridBundle\Rows;
 use Sorien\DataGridBundle\Column\Text;
 use Sorien\DataGridBundle\Column\Select;
 use Sorien\DataGridBundle\Column\Range;
@@ -16,7 +17,7 @@ class Users extends Source
     /**
      * Prepare columns
      *
-     * @param  \Grid $grid
+     * @param Columns $columns
      * @return null
      */
     function prepare($columns)
@@ -60,7 +61,7 @@ class Users extends Source
         $query->from('Article', 'a');*/
         //$query->setMaxResults(20);
 
-        $data = new \SplObjectStorage();
+        $data = new Rows();
         for ($i = 0;$i < 20; $i++)
         {
             $row = new Row();
@@ -73,10 +74,9 @@ class Users extends Source
                 }
             }
 
-            $data->attach($row);
+            $data->addRow($row);
         }
 
-        $this->setCount(20);
         $this->setTotalCount(50);
 
         return $data;
