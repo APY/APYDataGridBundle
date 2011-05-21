@@ -58,7 +58,6 @@ class Grid
         $this->session = $controller->get('request')->getSession();
         $this->request = $controller->get('request');
         $this->router = $controller->get('router');
-        var_dump($this->session);
 
         $this->url = (!is_null($route)) ? $this->router->generate($route) : '';
 
@@ -180,8 +179,21 @@ class Grid
         }
 
         //get cell data
-        foreach ($this->source->execute() as $row)
+
+        $collection = $this->source->execute();
+
+        if(!is_array($collection) && !is_a($collection, 'Traversable'))
         {
+            throw new \Exception('Source have to return Traversable object or Array.');
+        }
+
+        foreach ($collection as $row)
+        {
+            if (!$row instanceof Row)
+            {
+                throw new \InvalidArgumentException('Execute method of Source have to return Traversable object or array containing Row(s).');
+            }
+
             $item = array();
 
             foreach ($this->columns as $column)
@@ -216,7 +228,7 @@ class Grid
             $this->prepare();
         }
 
-        return $this->data();
+        return $this->data;
     }
 
     /**
@@ -227,6 +239,11 @@ class Grid
      */
     function addColumn($column)
     {
+        if (!$column instanceof Column)
+        {
+            throw new \InvalidArgumentException('Your column needs to extend class Column.');
+        }
+
         $this->columns->attach($column);
         return $this;
     }

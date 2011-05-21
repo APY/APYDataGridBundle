@@ -20,6 +20,9 @@ class DataGrid extends \Twig_Extension {
      * @var \Twig_Environment
      */
     protected $environment;
+    /**
+     * @var \Twig_Template
+     */
     protected $template;
     protected $theme;
 
@@ -106,8 +109,14 @@ class DataGrid extends \Twig_Extension {
             $this->template = $this->environment->loadTemplate($this->theme);
         }
 
-        //todo exception if no proper block exist
-        return $this->template->renderBlock($name, $parameters);
+        if ($this->template->hasBlock($name))
+        {
+            return $this->template->renderBlock($name, $parameters);
+        }
+        else
+        {
+            throw new \InvalidArgumentException(sprintf('Block "%s" doesn\'t exist in grid template "%s".', $name, $this->theme));
+        }
     }
 
     public function getName()

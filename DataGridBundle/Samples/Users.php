@@ -69,7 +69,10 @@ class Users extends Source
             foreach ($this->grid->getColumns() as $column)
             {
                 $row->addField($column->getId(), $column->getTitle().'-'.$i);
-                if ($i == 10) $row->setColor('#ffd9d5');
+                if ($i == 10)
+                {
+                    $row->setColor('#ffd9d5');
+                }
             }
 
             $data->attach($row);
