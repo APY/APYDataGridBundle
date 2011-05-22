@@ -11,7 +11,7 @@
 
 namespace Sorien\DataGridBundle;
 
-class Columns implements \IteratorAggregate {
+class Columns implements \IteratorAggregate, \Countable {
 
     /**
      * @var Column[]
@@ -43,5 +43,28 @@ class Columns implements \IteratorAggregate {
 
         $this->columns->attach($column);
         return $this;
+    }
+
+    /**
+     * @todo
+     * @return bool
+     */
+    function showFilters()
+    {
+        return true;
+    }
+
+    /**
+     * @todo
+     * @return bool
+     */
+    function showTitles()
+    {
+        return true;
+    }
+
+    public function count()
+    {
+       return $this->columns->count();
     }
 }

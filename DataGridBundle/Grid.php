@@ -44,6 +44,7 @@ class Grid
     * @var Column[]
     */
     private $columns;
+    private $rows;
 
     /**
      * @param $source Data Source
@@ -135,91 +136,67 @@ class Grid
 
     }
 
-    private function negateOrder($value)
-    {
-        return  $value == 'asc' ? 'desc' : 'asc';
-    }
-
     /**
      * Get data form Source Object
      * @return void
      */
     public function prepare()
     {
-        //get titles/orders/filters
-        $this->data['columns'] = $this->data['items'] = array();
-        $_filter = $_title = false;
-
         foreach ($this->columns as $column)
         {
             if ($column->isVisible())
             {
-                $filter  = $column->isFilterable() ? $column->drawFilter('grid_'.$this->id) : '';
+                $column->prepareFilter('grid_'.$this->id);
 
                 if ($column->isSorted())
                 {
-                    $order = $this->url.'?grid_'.$this->id.'['.$column->getId().'][order]='.$this->negateOrder($column->getOrder());
+                    $column->setOrderUrl($this->url.'?grid_'.$this->id.'['.$column->getId().'][order]='.column::nextOrder($column->getOrder()));
                 }
                 else
                 {
-                    $order = $this->url.'?grid_'.$this->id.'['.$column->getId().'][order]=asc';
+                    $column->setOrderUrl($this->url.'?grid_'.$this->id.'['.$column->getId().'][order]=asc');
                 }
-
-                if (!$_filter && $column->isFilterable()) $_filter = true;
-                if (!$_title && $column->getTitle() != '') $_title = true;
-
-                $this->data['columns'][] = array(
-                    'title' => $column->getTitle(),
-                    'order' => array('type' => (string)$column->getOrder(), 'url' => $order),
-                    'width' => $column->getSize(),
-                    'filter' => $filter
-                );
             }
         }
 
-         $collection = $this->source->execute($this->columns, $this->page);
+        $this->rows = $this->source->execute($this->columns, $this->page);
 
-        if(!$collection instanceof Rows)
+        if(!$this->rows instanceof Rows)
         {
             throw new \Exception('Source have to return Rows object.');
         }
 
-        foreach ($collection as $row)
+        foreach ($this->rows as $row)
         {
-            $item = array();
-
             foreach ($this->columns as $column)
             {
-                if ($column->isVisible())
-                {
-                    $item[] = $column->drawCell($row->getField($column->getId()), $row, $this->router);
-                }
+                $row->setField($column->getId(), $column->drawCell($row->getField($column->getId()), $row, $this->router));
             }
-
-            $this->data['items'][] = array('fields' => $item, 'color' => $row->getColor());
         }
-
-        $this->data['show_filters'] = $_filter;
-        $this->data['show_titles'] = $_title;
-        $this->data['url'] = $this->url;
 
         //get size
         $this->totalRows = $this->source->getTotalCount();
+
+        return $this;
     }
 
-    /**
-     * Return Grid data for template
-     *
-     * @todo probably replace with GridView object
-     * @return Array
-     */
-    public function getData()
+    public function setUrl($url)
     {
-        if (empty($this->data))
-        {
-            $this->prepare();
-        }
+        $this->url = $url;
+    }
 
-        return $this->data;
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    public function getRows()
+    {
+        return $this->rows;
     }
 }

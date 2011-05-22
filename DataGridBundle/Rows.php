@@ -11,7 +11,7 @@
 
 namespace Sorien\DataGridBundle;
 
-class Rows implements \IteratorAggregate {
+class Rows implements \IteratorAggregate, \Countable {
 
     /**
      * @var Rows[]
@@ -54,5 +54,10 @@ class Rows implements \IteratorAggregate {
     public function getCountTotal()
     {
         return $this->countTotal;
+    }
+
+    public function count()
+    {
+       return $this->rows->count();
     }
 }

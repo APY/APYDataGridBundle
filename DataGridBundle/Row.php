@@ -22,7 +22,7 @@ class Row
         $this->color = '';
     }
 
-    public function addField($rowId, $value)
+    public function setField($rowId, $value)
     {
         $this->fields[$rowId] = $value;
     }

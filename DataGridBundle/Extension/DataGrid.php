@@ -49,7 +49,7 @@ class DataGrid extends \Twig_Extension {
             'grid'         => new \Twig_Function_Method($this, 'getGrid', array('is_safe' => array('html'))),
             'grid_titles'  => new \Twig_Function_Method($this, 'getGridTitles', array('is_safe' => array('html'))),
             'grid_filters' => new \Twig_Function_Method($this, 'getGridFilters', array('is_safe' => array('html'))),
-            'grid_items'   => new \Twig_Function_Method($this, 'getGridItems', array('is_safe' => array('html'))),
+            'grid_rows'   => new \Twig_Function_Method($this, 'getGridItems', array('is_safe' => array('html'))),
             'grid_pager'   => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html')))
         );
     }
@@ -64,7 +64,7 @@ class DataGrid extends \Twig_Extension {
     public function getGrid($grid, $theme = null)
     {
         $this->theme = $theme;
-        return $this->renderBlock('grid', array('grid' => $grid->getData()));
+        return $this->renderBlock('grid', array('grid' => $grid));
     }
 
     public function getGridTitles($columns)
@@ -77,9 +77,9 @@ class DataGrid extends \Twig_Extension {
         return $this->renderBlock('grid_filters', array('columns' => $columns));
     }
 
-    public function getGridItems($items)
+    public function getGridItems($rows, $columns)
     {
-        return $this->renderBlock('grid_items', array('items' => $items));
+        return $this->renderBlock('grid_rows', array('rows' => $rows, 'columns' => $columns));
     }
 
     public function getGridPager($columns)

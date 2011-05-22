@@ -25,6 +25,9 @@ abstract class Column
     private $filters;
     private $filterData;
     private $size;
+    private $orderUrl;
+
+    private $filterDrawCache;
 
     /**
      * Default Column constructor
@@ -46,6 +49,7 @@ abstract class Column
         $this->size = $size;
         $this->filterable = $filterable;
         $this->isSorted = false;
+        $this->order = '';
     }
 
     /**
@@ -56,6 +60,16 @@ abstract class Column
      * @return string
      */
     abstract public function drawFilter($gridId);
+
+    public final function prepareFilter($gridId)
+    {
+        $this->filterDrawCache = $this->drawFilter($gridId);
+    }
+
+    public final function getFilter()
+    {
+        return $this->filterDrawCache;
+    }
 
     /**
      * Draw cell
@@ -182,4 +196,19 @@ abstract class Column
     {
         return $this->size;
     }
+
+    public function setOrderUrl($url)
+    {
+        $this->orderUrl = $url;
+    }
+
+    public function getOrderUrl()
+    {
+        return $this->orderUrl;
+    }
+
+    public static function nextOrder($value)
+    {
+        return  $value == 'asc' ? 'desc' : 'asc';
+    }    
 }

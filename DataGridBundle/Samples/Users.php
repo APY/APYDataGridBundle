@@ -67,7 +67,7 @@ class Users extends Source
             $row = new Row();
             foreach ($columns as $column)
             {
-                $row->addField($column->getId(), $column->getTitle().'-'.$i);
+                $row->setField($column->getId(), $column->getTitle().'-'.$i);
                 if ($i == 10)
                 {
                     $row->setColor('#ffd9d5');

@@ -1,15 +1,15 @@
 {% block grid %}
 <form action="{{ grid.url }}" method="post">
     <table class="sorted-table" style="width:100%">
-    {% if grid.show_titles %}
+    {% if grid.columns.showtitles %}
         {{ grid_titles(grid.columns) }}
     {% endif %}
 
-    {% if grid.show_filters %}
+    {% if grid.columns.showfilters %}
         {{ grid_filters(grid.columns) }}
     {% endif %}
 
-    {{ grid_items(grid.items) }}
+    {{ grid_rows(grid.rows, grid.columns) }}
     </tr>
     </table>
 </form>
@@ -19,11 +19,11 @@
 {% block grid_titles %}
     <tr>
     {% for column in columns %}
-        <th class="title"{% if(column.width > 0) %} style="width:{{column.width}}px"{% endif %}>
-        <a href="{{ column.order.url }}" title="Order by {{ column.title }}">{{ column.title }}</a>
-        {% if column.order.type == 'asc' %}
+        <th class="title"{% if(column.size > 0) %} style="width:{{column.size}}px"{% endif %}>
+        <a href="{{ column.orderurl }}" title="Order by {{ column.title }}">{{ column.title }}</a>
+        {% if column.order == 'asc' %}
             <div class="sort_up"></div>
-        {% elseif column.order.type == 'desc' %}
+        {% elseif column.order == 'desc' %}
             <div class="sort_down"></div>
         {% endif %}
         </th>
@@ -39,14 +39,14 @@
     </tr>
 {% endblock %}
 
-{% block grid_items %}
-    {% for row in items %}
+{% block grid_rows %}
+    {% for row in rows %}
     <tr{% if row.color != '' %} style="background-color:{{row.color}};"{% endif %}>
-    {% for col in row.fields %}
+    {% for col in columns %}
         {% if loop.last %}
-        <td class="last"> {{row.fields[loop.index0]|raw}}</td>
+        <td class="last"> {{row.field(col.id)|raw}}</td>
         {% else %}
-        <td> {{row.fields[loop.index0]|raw}}</td>
+        <td> {{row.field(col.id)|raw}}</td>
         {% endif %}
     {% endfor %}
     </tr>
