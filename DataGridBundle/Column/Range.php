@@ -11,13 +11,11 @@
 
 namespace Sorien\DataGridBundle\Column;
 
-use Sorien\DataGridBundle\Column;
-
 class Range extends Column
 {
     private $values;
 
-    public function drawFilter($gridId)
+    public function renderFilter($gridId)
     {
         $data = $this->getFilterData();
         

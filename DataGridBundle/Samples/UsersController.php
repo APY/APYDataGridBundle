@@ -12,6 +12,9 @@ class DefaultController extends Controller
     public function filterAction()
     {
         $grid = new Grid(new Users(), $this);
+
+        $grid->addMassAction('Suspend', )
+
         return new RedirectResponse($this->generateUrl('grid'));
     }
 }

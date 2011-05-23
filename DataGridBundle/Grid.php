@@ -11,8 +11,11 @@
 
 namespace Sorien\DataGridBundle;
 
-use Sorien\DataGridBundle\Source;
-use Sorien\DataGridBundle\Columns;
+use Sorien\DataGridBundle\Source\Source;
+use Sorien\DataGridBundle\DataGrid\Columns;
+use Sorien\DataGridBundle\DataGrid\Actions;
+use Sorien\DataGridBundle\DataGrid\Rows;
+use Sorien\DataGridBundle\Column\MassAction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Grid
@@ -45,6 +48,7 @@ class Grid
     */
     private $columns;
     private $rows;
+    private $actions;
 
     /**
      * @param $source Data Source
@@ -66,8 +70,16 @@ class Grid
         $this->id = md5($name[0].$id);
 
         $this->columns = new Columns();
+        $this->actions = new Actions();
+
         //get cols from source
-        $this->source->prepare($this->columns);
+        $this->source->prepare($this->columns, $this->actions);
+
+        if ($this->actions->count() > 0)
+        {
+           $this->columns->insertColumn(0, new MassAction());
+        }
+
         $saveData = array();
 
         if (is_array($grid = $this->session->get('grid_'.$this->id)))
@@ -170,7 +182,7 @@ class Grid
         {
             foreach ($this->columns as $column)
             {
-                $row->setField($column->getId(), $column->drawCell($row->getField($column->getId()), $row, $this->router));
+                $row->setField($column->getId(), $column->renderCell($row->getField($column->getId()), $row, $this->router));
             }
         }
 

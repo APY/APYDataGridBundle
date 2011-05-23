@@ -9,7 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle;
+namespace Sorien\DataGridBundle\DataGrid;
+
+use Sorien\DataGridBundle\Column\Column;
 
 class Columns implements \IteratorAggregate, \Countable {
 
@@ -20,12 +22,12 @@ class Columns implements \IteratorAggregate, \Countable {
 
     public function __construct()
     {
-        $this->columns = new \SplObjectStorage();
+        $this->columns = array();
     }
 
     public function getIterator()
     {
-        return $this->columns;
+        return new \ArrayIterator($this->columns);
     }
 
     /**
@@ -34,14 +36,23 @@ class Columns implements \IteratorAggregate, \Countable {
      * @return Grid
      *
      */
-    function addColumn($column)
+    public function addColumn($column)
     {
         if (!$column instanceof Column)
         {
             throw new \InvalidArgumentException('Your column needs to extend class Column.');
         }
 
-        $this->columns->attach($column);
+        $this->columns[] = $column;
+        return $this;
+    }
+
+    public final function insertColumn($position, $column)
+    {
+        $head = array_slice($this->columns, 0, $position);
+        $tail = array_slice($this->columns, $position);
+        $this->columns = array_merge($head, array($column), $tail);
+
         return $this;
     }
 
@@ -65,6 +76,6 @@ class Columns implements \IteratorAggregate, \Countable {
 
     public function count()
     {
-       return $this->columns->count();
+       return count($this->columns);
     }
 }

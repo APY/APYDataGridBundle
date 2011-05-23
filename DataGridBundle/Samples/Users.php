@@ -2,34 +2,39 @@
 
 namespace Sorien\DataGridBundle\Samples;
 
-use Sorien\DataGridBundle\Source;
+use Sorien\DataGridBundle\Source\Source;
 use Sorien\DataGridBundle\Grid;
-use Sorien\DataGridBundle\Row;
-use Sorien\DataGridBundle\Rows;
+use Sorien\DataGridBundle\DataGrid\Row;
+use Sorien\DataGridBundle\DataGrid\Rows;
 use Sorien\DataGridBundle\Column\Text;
 use Sorien\DataGridBundle\Column\Select;
 use Sorien\DataGridBundle\Column\Range;
 
 class Users extends Source
 {
-    private $grid;
-
     /**
      * Prepare columns
      *
      * @param Columns $columns
+     * @param $actions
      * @return null
      */
-    function prepare($columns)
+    function prepare($columns, $actions)
     {
         $columns->addColumn(new Range('v.id', 'Id', 120));
 
         $textColumn = new Text('v.authors', 'Authors', 200, true, true);
-        $textColumn->setCallback(function($value, $row, $router) { return '<a style="color:#F00;" href="'.$router->generate('logout').'">'.$value.'</a>'; });
+        $textColumn->setCallback(function($value, $row, $router) {
+            return '<a style="color:#F00;" href="'.$router->generate('logout').'">'.$value.'</a>';
+        });
 
-        $columns->addColumn($textColumn);
-        $columns->addColumn(new Select('v.mode', 'a', array('admin' => 'Admin', 'user' => 'User')));
-        $columns->addColumn(new Text('v.admins', 'Admin', 200, true, true));
+        $columns->addColumn($textColumn)
+                ->addColumn(new Select('v.mode', 'a', array('admin' => 'Admin', 'user' => 'User')))
+                ->addColumn(new Text('v.admins', 'Admin', 200, true, true));
+
+        $actions->addMassAction('v.id', function ($ids){
+
+        });
     }
 
     function execute($columns, $page)
@@ -80,5 +85,10 @@ class Users extends Source
         $this->setTotalCount(50);
 
         return $data;
+    }
+
+    function onMassAction($ids, $allIds)
+    {
+
     }
 }

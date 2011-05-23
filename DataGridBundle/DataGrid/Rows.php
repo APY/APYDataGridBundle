@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle;
+namespace Sorien\DataGridBundle\DataGrid;
 
 class Rows implements \IteratorAggregate, \Countable {
 

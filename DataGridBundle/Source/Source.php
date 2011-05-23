@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle;
+namespace Sorien\DataGridBundle\Source;
 
 use Sorien\DataGridBundle\Column;
 
@@ -28,7 +28,7 @@ abstract class Source
      * @param $grid Columns
      * @return null
      */
-    abstract public function prepare($columns);
+    abstract public function prepare($columns, $actions);
 
     /**
      * @abstract

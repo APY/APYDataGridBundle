@@ -46,11 +46,12 @@ class DataGrid extends \Twig_Extension {
     public function getFunctions()
     {
         return array(
-            'grid'         => new \Twig_Function_Method($this, 'getGrid', array('is_safe' => array('html'))),
-            'grid_titles'  => new \Twig_Function_Method($this, 'getGridTitles', array('is_safe' => array('html'))),
-            'grid_filters' => new \Twig_Function_Method($this, 'getGridFilters', array('is_safe' => array('html'))),
-            'grid_rows'   => new \Twig_Function_Method($this, 'getGridItems', array('is_safe' => array('html'))),
-            'grid_pager'   => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html')))
+            'grid'              => new \Twig_Function_Method($this, 'getGrid', array('is_safe' => array('html'))),
+            'grid_titles'       => new \Twig_Function_Method($this, 'getGridTitles', array('is_safe' => array('html'))),
+            'grid_filters'      => new \Twig_Function_Method($this, 'getGridFilters', array('is_safe' => array('html'))),
+            'grid_rows'         => new \Twig_Function_Method($this, 'getGridItems', array('is_safe' => array('html'))),
+            'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
+            'grid_massactions'  => new \Twig_Function_Method($this, 'getGridMassActions', array('is_safe' => array('html')))
         );
     }
 
@@ -82,9 +83,14 @@ class DataGrid extends \Twig_Extension {
         return $this->renderBlock('grid_rows', array('rows' => $rows, 'columns' => $columns));
     }
 
-    public function getGridPager($columns)
+    public function getGridPager()
     {
-        return $this->renderBlock('grid_pager', array('columns' => $columns));
+        return $this->renderBlock('grid_pager', array());
+    }
+
+    public function getGridMassActions()
+    {
+        return $this->renderBlock('grid_massactions', array());
     }
 
 

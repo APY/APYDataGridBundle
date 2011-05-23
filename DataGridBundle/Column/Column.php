@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle;
+namespace Sorien\DataGridBundle\Column;
 
 abstract class Column
 {
@@ -59,11 +59,11 @@ abstract class Column
      * @param string $gridId
      * @return string
      */
-    abstract public function drawFilter($gridId);
+    abstract public function renderFilter($gridId);
 
     public final function prepareFilter($gridId)
     {
-        $this->filterDrawCache = $this->drawFilter($gridId);
+        $this->filterDrawCache = $this->renderFilter($gridId);
     }
 
     public final function getFilter()
@@ -79,7 +79,7 @@ abstract class Column
      * @param $router
      * @return string
      */
-    public function drawCell($value, $row, $router)
+    public function renderCell($value, $row, $router)
     {
         if (is_callable($this->callback))
         {

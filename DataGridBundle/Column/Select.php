@@ -11,8 +11,6 @@
 
 namespace Sorien\DataGridBundle\Column;
 
-use Sorien\DataGridBundle\Column;
-
 class Select extends Column
 {
     private $values;
@@ -23,7 +21,7 @@ class Select extends Column
         $this->values = $values;
     }
 
-    public function drawFilter($gridId)
+    public function renderFilter($gridId)
     {
         $result = '<option value=""></option>';
 

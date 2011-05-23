@@ -1,19 +1,22 @@
 {% block grid %}
-<form action="{{ grid.url }}" method="post">
-    <table class="sorted-table" style="width:100%">
-    {% if grid.columns.showtitles %}
-        {{ grid_titles(grid.columns) }}
-    {% endif %}
+<div class="grid">
+    <form action="{{ grid.url }}" method="post">
+        {{ grid_massactions() }}
+        <table style="width:100%">
+        {% if grid.columns.showtitles %}
+            {{ grid_titles(grid.columns) }}
+        {% endif %}
 
-    {% if grid.columns.showfilters %}
-        {{ grid_filters(grid.columns) }}
-    {% endif %}
+        {% if grid.columns.showfilters %}
+            {{ grid_filters(grid.columns) }}
+        {% endif %}
 
-    {{ grid_rows(grid.rows, grid.columns) }}
-    </tr>
-    </table>
-</form>
-{{ grid_pager(grid) }}
+        {{ grid_rows(grid.rows, grid.columns) }}
+        </tr>
+        </table>
+        {{ grid_pager() }}
+    </form>
+</div>
 {% endblock %}
 
 {% block grid_titles %}
@@ -54,6 +57,24 @@
 {% endblock %}
 
 {% block grid_pager %}
-
+<div class="pager">
+Page: <input type="button" class="prev" value="<"/><input type="text" value="2" size="2"/><input type="button" value=">" class="next"/> of 50,
+Display <select><option value="1">20</option></select> Items per page
+</div>
 {% endblock %}
+
+{% block grid_massactions %}
+<div class="mass-actions" style="overflow: hidden">
+<a href="#">Select Vidible</a> |
+<a href="#">Deselect Vidible</a> | 
+<a href="#">Select All</a> |
+<a href="#">Deselect All</a>
+<div style="float:right">
+Action: <select>
+    <option value="1">Remove</option>
+</select><input type="button" value="Submit Action"/>
+</div>
+</div>
+{% endblock %}
+
 
