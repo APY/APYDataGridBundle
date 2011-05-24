@@ -12,6 +12,7 @@
 namespace Sorien\DataGridBundle;
 
 use Sorien\DataGridBundle\Source\Source;
+use Sorien\DataGridBundle\Column\Column;
 use Sorien\DataGridBundle\DataGrid\Columns;
 use Sorien\DataGridBundle\DataGrid\Actions;
 use Sorien\DataGridBundle\DataGrid\Rows;
@@ -72,6 +73,7 @@ class Grid
         $this->columns = new Columns();
         $this->actions = new Actions();
 
+        $this->source->initialize($controller);
         //get cols from source
         $this->source->prepare($this->columns, $this->actions);
 

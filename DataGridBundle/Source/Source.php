@@ -32,11 +32,15 @@ abstract class Source
 
     /**
      * @abstract
-     * @param $columns Columns
+     * @param $columns Column[]
      * @param $page int
      * @return Row[] Traversable object or array @todo probably will be better to create Rows Class
      */
     abstract public function execute($columns, $page);
+
+    public function initialize($container)
+    {
+    }
 
     public function setCount($count)
     {

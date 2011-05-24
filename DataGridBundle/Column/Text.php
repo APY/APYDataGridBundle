@@ -15,6 +15,11 @@ class Text extends Column
 {
     public function renderFilter($gridId)
     {
-        return '<input type="text" style="width:100%" value="'.$this->getFilterData().'" name="'.$gridId.'['.$this->getId().'][filter]"/>';
+        return '<input type="text" style="width:100%" value="'.$this->getFilterData().'" name="'.$gridId.'['.$this->getId().'][filter]" onKeyPress="if (event.which == 13){this.form.submit();}"/>';
+    }
+
+    public function getDataFilters()
+    {
+        return array(array('operator' => 'like', 'value' => '%'.$this->getFilterData().'%'));
     }
 }

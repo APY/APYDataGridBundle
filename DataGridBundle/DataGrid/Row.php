@@ -16,9 +16,9 @@ class Row
     private $color;
     private $legend;
 
-    public function __construct()
+    public function __construct($array = array())
     {
-        $this->fields = array();
+        $this->fields = $array;
         $this->color = '';
     }
 

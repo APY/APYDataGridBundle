@@ -21,13 +21,14 @@ abstract class Column
     private $visible;
     private $callback;
     private $order;
-    private $filtersConnected;
     private $filters;
-    private $filterData;
     private $size;
     private $orderUrl;
-
     private $filterDrawCache;
+    private $filterData;
+
+    const DATA_CONJUNCTION = 0;
+    const DATA_DISJUNCTION = 1;
 
     /**
      * Default Column constructor
@@ -142,7 +143,7 @@ abstract class Column
 
     public function isFiltred()
     {
-        return true;
+        return $this->filterData != null;
     }
 
     public function isFilterable()
@@ -167,14 +168,14 @@ abstract class Column
         return $this->order;
     }
 
-    public function filtersConnected()
+    public function getDataFiltersConnection()
     {
-        return $this->filtersConnected;
+        return self::DATA_CONJUNCTION;
     }
 
-    public function getFilters()
+    public function getDataFilters()
     {
-        return $this->filters;
+        return array();
     }
 
     public function setFilterData($data)
@@ -210,5 +211,5 @@ abstract class Column
     public static function nextOrder($value)
     {
         return  $value == 'asc' ? 'desc' : 'asc';
-    }    
+    }
 }
