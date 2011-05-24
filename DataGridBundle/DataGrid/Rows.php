@@ -19,7 +19,7 @@ class Rows implements \IteratorAggregate, \Countable {
     private $rows;
     private $countTotal;
 
-    public function __construct($array)
+    public function __construct($array = array())
     {
         $this->rows = new \SplObjectStorage();
 

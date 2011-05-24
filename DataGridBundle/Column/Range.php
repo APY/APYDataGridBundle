@@ -25,4 +25,23 @@ class Range extends Column
         $result .= '</div>';
         return $result;
     }
+
+    public function getDataFilters()
+    {
+        $result = array();
+        $data = $this->getFilterData();
+
+        if (isset($data['from']) && $data['from'] != '')
+        {
+           $result[] =  array('operator' => 'gt', 'value' => $data['from']);
+        }
+
+        if (isset($data['to']) && $data['to'] != '')
+        {
+           $result[] =  array('operator' => 'lt', 'value' => $data['to']);
+        }
+
+        return $result;
+    }
+
 }

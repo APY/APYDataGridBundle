@@ -20,6 +20,6 @@ class Text extends Column
 
     public function getDataFilters()
     {
-        return array(array('operator' => 'like', 'value' => '%'.$this->getFilterData().'%'));
+        return array(array('operator' => 'like', 'value' => '\'%'.$this->getFilterData().'%\''));
     }
 }
