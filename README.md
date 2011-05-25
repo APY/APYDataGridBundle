@@ -29,13 +29,25 @@ Usage - controller
     {
         public function gridAction()
         {
-            $grid = new Grid(new Users(), $this, 'filter');
-            return $this->render('YourBundle::default.html.twig', array('data' => $grid));
+            /**
+             * create simple grid based on your entity.
+             * @hint to add custom columns or actions you need to extend Source\Doctrine class
+             *
+             * 1st param Source object inherited from Source class
+             * 2nd param Controller
+             * 3th param route to controller action which is handling grid actions (filtering, ordering ...)
+             *           http://en.wikipedia.org/wiki/Post/Redirect/Get to prevent reposting until ajax support is ready
+             */
+            $grid = new Grid(new Doctrine('YourBundle:YourEntity'), $this, 'filter');
+            return $this->render('AdminBundle::default_index.html.twig', array('data' => $grid->prepare()));
         }
 
         public function filterAction()
         {
-            $grid = new Grid(new Users(), $this);
+            /**
+             * process actions and redirect to gridAction to show changes
+             */
+            $grid = new Grid(new Doctrine('YourBundle:YourEntity'), $this);
             return new RedirectResponse($this->generateUrl('grid'));
         }
 
@@ -43,12 +55,12 @@ Usage - controller
 
 Usage - view
 -----
-template
+view:
 
     //second parameter is optional and defining template
     {{ grid(data, 'YourBundle::own_grid_theme_template.html.twig') }}
 
-own grid theme template: you can override blocks - grid, grid_titles, grid_filters, grid_pager
+your own grid theme template: you can override blocks - grid, grid_titles, grid_filters, grid_rows, grid_pager, grid_massactions
 
     //file: YourBundle::own_grid_theme.html.twig
     {% extends 'DataGridBundle::datagrid.html.twig' %}
