@@ -1,7 +1,7 @@
 {% block grid %}
 <div class="grid">
-    <form action="{{ grid.url }}" method="post">
-        {% if grid.isMassActionVisible %}
+    <form action="{{ grid.routeUrl }}" method="post">
+        {% if grid.actions.count > 0 %}
         {{ grid_massactions() }}
         {% endif %}
         <table style="width:100%">

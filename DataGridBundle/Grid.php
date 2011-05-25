@@ -11,11 +11,12 @@
 
 namespace Sorien\DataGridBundle;
 
-use Sorien\DataGridBundle\Column\Column;
 use Sorien\DataGridBundle\DataGrid\Columns;
 use Sorien\DataGridBundle\DataGrid\Actions;
 use Sorien\DataGridBundle\DataGrid\Rows;
+use Sorien\DataGridBundle\Column\Column;
 use Sorien\DataGridBundle\Column\MassAction;
+use Sorien\DataGridBundle\Source\Source;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Grid
@@ -33,8 +34,8 @@ class Grid
     * @var \Symfony\Component\Routing\Router
     */
     private $router;
-
-    private $url;
+    private $route;
+    private $routeUrl;
     private $id;
     /**
     * @var \Sorien\DataGridBundle\Source\Source
@@ -52,23 +53,28 @@ class Grid
     private $rows;
     private $actions;
 
-    private $displayMassActions;
+    private $updated;
 
     /**
      * @param $source Data Source
      * @param $controller
-     * @param $route route for
+     * @param $route string if null current route will be used 
      * @param string $id set if you are using more then one grid inside controller
      */
     public function __construct($source, $controller, $route = null, $id = '')
     {
+        if(!$source instanceof Source)
+        {
+            throw new \Exception('Supplied Source have to extend Source class.');
+        }       
+        
         $this->source = $source;
 
         $this->session = $controller->get('request')->getSession();
         $this->request = $controller->get('request');
         $this->router = $controller->get('router');
 
-        $this->url = (!is_null($route)) ? $this->router->generate($route) : '';
+        $this->setRoute($route);
 
         $name = explode('::', $controller->get('request')->get('_controller'));
         $this->id = md5($name[0].$id);
@@ -77,35 +83,37 @@ class Grid
         $this->actions = new Actions();
 
         $this->source->initialize($controller);
+        
         //get cols from source
         $this->source->prepare($this->columns, $this->actions);
 
         if ($this->actions->count() > 0)
         {
            $this->columns->insertColumn(0, new MassAction());
-           $this->displayMassActions = true;
-        }
-        else
-        {
-            $this->displayMassActions = false;
         }
 
+        $this->updated = false;
+        $this->update();
+    }
+
+    public function update()
+    {
         $saveData = array();
 
-        if (is_array($grid = $this->session->get('grid_'.$this->id)))
+        if (is_array($grid = $this->session->get($this->getHash())))
         {
             foreach ($this->columns as $column)
             {
-                if (isset($grid[$column->getId()]) && is_array($grid[$column->getId()]) )
+                if (isset($grid[$column->getId()]) && is_array($grid[$column->getId()])) 
                 {
                     //set orders
-                    if (isset($grid[$column->getId()]['order']))
+                    if (isset($grid[$column->getId()]['order'])) 
                     {
                         $column->setOrder($grid[$column->getId()]['order']);
                     }
 
                     //set filters
-                    if (isset($grid[$column->getId()]['filter']))
+                    if (isset($grid[$column->getId()]['filter'])) 
                     {
                         $column->setFilterData($grid[$column->getId()]['filter']);
                     }
@@ -114,16 +122,16 @@ class Grid
         }
 
         //set order form get
-        if (is_array($orders = $this->request->query->get('grid_'.$this->id)))
+        if (is_array($orders = $this->request->query->get($this->getHash())))
         {
             foreach ($this->columns as $column)
             {
-                if (isset($orders[$column->getId()]))
+                if (isset($orders[$column->getId()])) 
                 {
                     $column->setOrder($orders[$column->getId()]['order']);
                     $saveData[$column->getId()]['order'] = $column->getOrder();
 
-                    if ($column->isFiltred())
+                    if ($column->isFiltred()) 
                     {
                         $saveData[$column->getId()]['filter'] = $column->getFilterData();
                     }
@@ -133,16 +141,16 @@ class Grid
         }
 
         //set filter from post
-        if (is_array($filters = $this->request->request->get('grid_'.$this->id)))
+        if (is_array($filters = $this->request->request->get($this->getHash())))
         {
             foreach ($this->columns as $column)
             {
-                if (isset($filters[$column->getId()]))
+                if (isset($filters[$column->getId()])) 
                 {
                     $column->setFilterData($filters[$column->getId()]['filter']);
                     $saveData[$column->getId()]['filter'] = $column->getFilterData();
 
-                    if ($column->isSorted())
+                    if ($column->isSorted()) 
                     {
                         $saveData[$column->getId()]['order'] = $column->getOrder();
                     }
@@ -151,14 +159,15 @@ class Grid
         }
 
         // if we need save sessions
-        if (!empty($saveData))
+        if (!empty($saveData)) 
         {
-            $this->session->set('grid_'.$this->id, $saveData);
+            $this->session->set($this->getHash(), $saveData);
         }
 
         //@todo remove
         $this->limit = 20;
 
+        $this->updated = true;
     }
 
     /**
@@ -171,15 +180,15 @@ class Grid
         {
             if ($column->isVisible())
             {
-                $column->prepareFilter('grid_'.$this->id);
+                $column->prepareFilter($this->getHash());
 
                 if ($column->isSorted())
                 {
-                    $column->setOrderUrl($this->url.'?grid_'.$this->id.'['.$column->getId().'][order]='.column::nextOrder($column->getOrder()));
+                    $column->setOrderUrl($this->getRouteUrl().'?'.$this->getHash().'['.$column->getId().'][order]='.column::nextOrder($column->getOrder()));
                 }
                 else
                 {
-                    $column->setOrderUrl($this->url.'?grid_'.$this->id.'['.$column->getId().'][order]=asc');
+                    $column->setOrderUrl($this->getRouteUrl().'?'.$this->getHash().'['.$column->getId().'][order]=asc');
                 }
             }
         }
@@ -205,19 +214,22 @@ class Grid
         return $this;
     }
 
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
     public function getColumns()
     {
         return $this->columns;
+    }
+    
+    public function setColumns($columns)
+    {
+        if(!$columns instanceof Columns)
+        {
+            throw new \Exception('Supplied object have to extend Columns class.');
+        }
+
+        $this->columns = $columns;
+        $this->update();
+        
+        return $this;
     }
 
     public function getRows()
@@ -225,9 +237,36 @@ class Grid
         return $this->rows;
     }
 
-    public function isMassActionVisible()
+    public function getActions()
     {
-        return $this->displayMassActions;
+        return $this->actions;
+    }
+    
+    public function setRoute($route = null)
+    {
+        $this->route = is_null($route) ? $this->request->get('_route') : $route;
+
+        return $this;
     }
 
+    public function getRouteUrl()
+    {
+        if ($this->routeUrl == null)
+        {
+            $this->routeUrl = $this->router->generate($this->route);
+        }
+
+        return $this->routeUrl;
+    }
+
+    public function getReadyForRedirect()
+    {
+        return ($this->updated && $this->route == $this->request->get('_route'));
+    }
+    
+    private function getHash()
+    {
+        return 'grid_'.$this->id;
+    }
+    
 }

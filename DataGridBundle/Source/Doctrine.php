@@ -117,6 +117,7 @@ class Doctrine extends Source
                 $query->where($where);
             }
         }
+
         return new Rows($query->getQuery()->getResult());
     }
 }

@@ -21,6 +21,17 @@ Compatibility
 
 Symfony2 beta 2
 
+Usage - routes
+-----
+    two routs goes to the same controller action
+
+    grid:
+        pattern:  /grid
+        defaults: { _controller: YourBundle:Default:grid }
+
+    filter:
+        pattern:  /filter
+        defaults: { _controller: YourBundle:Default:grid }
 
 Usage - controller
 -----
@@ -39,18 +50,17 @@ Usage - controller
              *           http://en.wikipedia.org/wiki/Post/Redirect/Get to prevent reposting until ajax support is ready
              */
             $grid = new Grid(new Doctrine('YourBundle:YourEntity'), $this, 'filter');
-            return $this->render('AdminBundle::default_index.html.twig', array('data' => $grid->prepare()));
+            if ($grid->getReadyForRedirect())
+            {
+                //data are store do redirect
+                return new RedirectResponse($this->generateUrl('grid'));
+            }
+            else
+            {
+                //show grid
+                return $this->render('YourBundle::default_index.html.twig', array('data' => $grid->prepare()));
+            }
         }
-
-        public function filterAction()
-        {
-            /**
-             * process actions and redirect to gridAction to show changes
-             */
-            $grid = new Grid(new Doctrine('YourBundle:YourEntity'), $this);
-            return new RedirectResponse($this->generateUrl('grid'));
-        }
-
     }
 
 Usage - view
