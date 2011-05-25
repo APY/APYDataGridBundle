@@ -11,6 +11,8 @@
 
 namespace Sorien\DataGridBundle\Column;
 
+use Sorien\DataGridBundle\DataGrid\Filter;
+
 class Text extends Column
 {
     public function renderFilter($gridId)
@@ -20,6 +22,6 @@ class Text extends Column
 
     public function getDataFilters()
     {
-        return array(array('operator' => 'like', 'value' => '\'%'.$this->getFilterData().'%\''));
+        return array(new Filter(self::OPERATOR_LIKE, '\'%'.$this->getFilterData().'%\''));
     }
 }

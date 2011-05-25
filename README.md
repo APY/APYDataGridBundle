@@ -19,7 +19,7 @@ it's just sketch, and far from final implementation, if you have any ideas let m
 Compatibility
 -----
 
-Symfony2 beta 1
+Symfony2 beta 2
 
 
 Usage - controller

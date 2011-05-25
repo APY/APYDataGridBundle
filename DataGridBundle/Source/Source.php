@@ -25,18 +25,20 @@ abstract class Source
 
     /**
      * @abstract
-     * @param $grid Columns
+     * @param $columns \Sorien\DataGridBundle\DataGrid\Columns
+     * @param $actions
      * @return null
      */
     abstract public function prepare($columns, $actions);
 
     /**
      * @abstract
-     * @param $columns Column[]
+     * @param $columns \Sorien\DataGridBundle\Column\Column[]
      * @param $page int
-     * @return Row[] Traversable object or array @todo probably will be better to create Rows Class
+     * @param $limit
+     * @return \Sorien\DataGridBundle\DataGrid\Rows
      */
-    abstract public function execute($columns, $page);
+    abstract public function execute($columns, $page, $limit);
 
     public function initialize($container)
     {

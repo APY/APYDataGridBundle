@@ -11,7 +11,6 @@
 
 namespace Sorien\DataGridBundle;
 
-use Sorien\DataGridBundle\Source\Source;
 use Sorien\DataGridBundle\Column\Column;
 use Sorien\DataGridBundle\DataGrid\Columns;
 use Sorien\DataGridBundle\DataGrid\Actions;
@@ -38,18 +37,22 @@ class Grid
     private $url;
     private $id;
     /**
-    * @var Source
+    * @var \Sorien\DataGridBundle\Source\Source
     */
     private $source;
+
     private $totalRows;
     private $page;
-    private $data;
+    private $limit;
+
     /**
-    * @var Column[]
+    * @var \Sorien\DataGridBundle\Column\Column[]
     */
     private $columns;
     private $rows;
     private $actions;
+
+    private $displayMassActions;
 
     /**
      * @param $source Data Source
@@ -80,6 +83,11 @@ class Grid
         if ($this->actions->count() > 0)
         {
            $this->columns->insertColumn(0, new MassAction());
+           $this->displayMassActions = true;
+        }
+        else
+        {
+            $this->displayMassActions = false;
         }
 
         $saveData = array();
@@ -148,6 +156,9 @@ class Grid
             $this->session->set('grid_'.$this->id, $saveData);
         }
 
+        //@todo remove
+        $this->limit = 20;
+
     }
 
     /**
@@ -173,7 +184,7 @@ class Grid
             }
         }
 
-        $this->rows = $this->source->execute($this->columns, $this->page);
+        $this->rows = $this->source->execute($this->columns, $this->page, $this->limit);
 
         if(!$this->rows instanceof Rows)
         {
@@ -213,4 +224,10 @@ class Grid
     {
         return $this->rows;
     }
+
+    public function isMassActionVisible()
+    {
+        return $this->displayMassActions;
+    }
+
 }

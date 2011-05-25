@@ -1,7 +1,9 @@
 {% block grid %}
 <div class="grid">
     <form action="{{ grid.url }}" method="post">
+        {% if grid.isMassActionVisible %}
         {{ grid_massactions() }}
+        {% endif %}
         <table style="width:100%">
         {% if grid.columns.showtitles %}
             {{ grid_titles(grid.columns) }}

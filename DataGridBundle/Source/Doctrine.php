@@ -2,11 +2,10 @@
 
 namespace Sorien\DataGridBundle\Source;
 
+use Sorien\DataGridBundle\Source\Source;
 use Sorien\DataGridBundle\Column\Range;
 use Sorien\DataGridBundle\Column\Text;
 use Sorien\DataGridBundle\Column\Column;
-use Sorien\DataGridBundle\Source\Source;
-use Sorien\DataGridBundle\DataGrid\Row;
 use Sorien\DataGridBundle\DataGrid\Rows;
 use Doctrine\ORM\Query\Expr\Orx;
 
@@ -45,6 +44,11 @@ class Doctrine extends Source
         return $this->tablePrefix.'.'.$name;
     }
 
+    /**
+     * @param $columns \Sorien\DataGridBundle\DataGrid\Columns
+     * @param $actions
+     * @return null
+     */
     public function prepare($columns, $actions)
     {
         foreach ($this->columnMappings as $columnMappingData)
@@ -62,15 +66,25 @@ class Doctrine extends Source
         }
     }
 
-    public function execute($columns, $page)
+    /**
+     * @param $columns \Sorien\DataGridBundle\Column\Column[]
+     * @param $page int Page Number
+     * @param $limit int Rows Per Page
+     * @return \Sorien\DataGridBundle\DataGrid\Rows
+     */
+    public function execute($columns, $page, $limit)
     {
         $query = $this->entityManager->createQueryBuilder();
         $query->from($this->table, $this->tablePrefix);
 
-        $query->setFirstResult(1);
-        $query->setMaxResults(20);
+        if ($page > 0)
+        {
+            $query->setFirstResult($page * $limit);
+        }
 
+        $query->setMaxResults($limit);
         $where = $query->expr()->andx();
+
         foreach ($columns as $column)
         {
             $query->addSelect($this->getPrefixedName($column->getId()));
@@ -86,8 +100,8 @@ class Doctrine extends Source
                 {
                     foreach ($column->getDataFilters() as $filter)
                     {
-                        $operator = $filter['operator'];
-                        $where->add($query->expr()->$operator($this->getPrefixedName($column->getId()), $filter['value']));
+                        $operator = $filter->getOperator();
+                        $where->add($query->expr()->$operator($this->getPrefixedName($column->getId()), $filter->getValue()));
                     }
                 }
                 elseif($column->getDataFiltersConnection() == column::DATA_DISJUNCTION)
@@ -95,8 +109,8 @@ class Doctrine extends Source
                     $sub = $query->expr()->orx();
                     foreach ($column->getDataFilters() as $filter)
                     {
-                        $operator = $filter['operator'];
-                        $sub->add($query->expr()->$operator($this->getPrefixedName($column->getId()), $filter['value']));
+                        $operator = $filter->getOperator();
+                        $sub->add($query->expr()->$operator($this->getPrefixedName($column->getId()), $filter->getValue()));
                     }
                     $where->add($sub);
                 }

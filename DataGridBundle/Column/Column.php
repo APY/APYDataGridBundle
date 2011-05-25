@@ -30,6 +30,15 @@ abstract class Column
     const DATA_CONJUNCTION = 0;
     const DATA_DISJUNCTION = 1;
 
+    const OPERATOR_EQ   = 'eq';
+    const OPERATOR_NEQ  = 'neq';
+    const OPERATOR_LT   = 'lt';
+    const OPERATOR_LTE  = 'lte';
+    const OPERATOR_GT   = 'gt';
+    const OPERATOR_GTE  = 'gte';
+    const OPERATOR_LIKE = 'like';
+
+
     /**
      * Default Column constructor
      *
@@ -168,11 +177,17 @@ abstract class Column
         return $this->order;
     }
 
+    /**
+     * @return int
+     */
     public function getDataFiltersConnection()
     {
         return self::DATA_CONJUNCTION;
     }
 
+    /**
+     * @return \Sorien\DataGridBundle\DataGrid\Filter[]
+     */
     public function getDataFilters()
     {
         return array();

@@ -11,6 +11,8 @@
 
 namespace Sorien\DataGridBundle\Column;
 
+use Sorien\DataGridBundle\DataGrid\Filter;
+
 class Range extends Column
 {
     private $values;
@@ -20,8 +22,8 @@ class Range extends Column
         $data = $this->getFilterData();
         
         $result = '<div class="range-column-filter">';
-        $result .= '<input class="first-filter" placeholder="From:" type="text" style="width:100%" value="'.$data['from'].'" name="'.$gridId.'['.$this->getId().'][filter][from]"/><br/>';
-        $result .= '<input class="second-filter" placeholder="To:" type="text" style="width:100%" value="'.$data['to'].'" name="'.$gridId.'['.$this->getId().'][filter][to]"/><br/>';
+        $result .= '<input class="first-filter" placeholder="From:" type="text" style="width:100%" value="'.$data['from'].'" name="'.$gridId.'['.$this->getId().'][filter][from]" onKeyPress="if (event.which == 13){this.form.submit();}"/><br/>';
+        $result .= '<input class="second-filter" placeholder="To:" type="text" style="width:100%" value="'.$data['to'].'" name="'.$gridId.'['.$this->getId().'][filter][to]" onKeyPress="if (event.which == 13){this.form.submit();}"/><br/>';
         $result .= '</div>';
         return $result;
     }
@@ -33,12 +35,12 @@ class Range extends Column
 
         if (isset($data['from']) && $data['from'] != '')
         {
-           $result[] =  array('operator' => 'gt', 'value' => $data['from']);
+           $result[] =  new Filter(self::OPERATOR_GTE, $data['from']);
         }
 
         if (isset($data['to']) && $data['to'] != '')
         {
-           $result[] =  array('operator' => 'lt', 'value' => $data['to']);
+           $result[] =  new Filter(self::OPERATOR_LTE, $data['to']);
         }
 
         return $result;
