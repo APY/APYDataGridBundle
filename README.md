@@ -5,16 +5,17 @@ datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
 
 planed features:
 
- - sorting
- - magento like filters but highly customizable
- - customizable columns
- - mass actions
- - sources: doctrine(entities), xml, array ...
- - exports: xml, excel, pdf ...
- - theme support like Symfony\Bridge\Twig\Extension
+ - sorting - done
+ - paggination - done
+ - customizable columns with filters - done
+ - mass actions - partially done
+ - sources: doctrine(entities) - done , xml, array ... - later
+ - exports: xml, excel, pdf ... - later
+ - theme support like Symfony\Bridge\Twig\Extension - done but wil be changed a bit
 
+let's call it beta but it's usable
 
-it's just sketch, and far from final implementation, if you have any ideas let me know on irc, nick sorien
+if you want to help or change any part according your needs im open to any idea just create PR or open issue ticket
 
 Compatibility
 -----
@@ -23,7 +24,7 @@ Symfony2 beta 2
 
 Usage - routes
 -----
-    two routs goes to the same controller action
+two routs goes to the same controller action
 
     grid:
         pattern:  /grid
@@ -46,7 +47,7 @@ Usage - controller
              *
              * 1st param Source object inherited from Source class
              * 2nd param Controller
-             * 3th param route to controller action which is handling grid actions (filtering, ordering ...)
+             * 3th param route to controller action which is handling grid actions (filtering, ordering, pagination ...)
              *           http://en.wikipedia.org/wiki/Post/Redirect/Get to prevent reposting until ajax support is ready
              */
             $grid = new Grid(new Doctrine('YourBundle:YourEntity'), $this, 'filter');
