@@ -80,5 +80,6 @@ your own grid theme template: you can override blocks - grid, grid_titles, grid_
     {% endblock %}
 
 
-Working preview:
+Working preview
+-----
 <img src="http://vortex-portal.com/datagrid/grid2.png" alt="Screenshot" />
