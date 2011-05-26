@@ -25,7 +25,7 @@ abstract class Column
     private $size;
     private $orderUrl;
     private $filterDrawCache;
-    private $filterData;
+    protected $data;
 
     const DATA_CONJUNCTION = 0;
     const DATA_DISJUNCTION = 1;
@@ -152,7 +152,7 @@ abstract class Column
 
     public function isFiltred()
     {
-        return $this->filterData != null;
+        return $this->data != null;
     }
 
     public function isFilterable()
@@ -193,16 +193,6 @@ abstract class Column
         return array();
     }
 
-    public function setFilterData($data)
-    {
-        $this->filterData = $data;
-    }
-
-    public function getFilterData()
-    {
-        return $this->filterData;
-    }
-
     public function setSize($size)
     {
         $this->size = $size;
@@ -223,8 +213,21 @@ abstract class Column
         return $this->orderUrl;
     }
 
-    public static function nextOrder($value)
+    public function setData($data)
     {
-        return  $value == 'asc' ? 'desc' : 'asc';
+        if (isset($data) && $data != '')
+        {
+            $this->data = $data;
+        }
+    }
+
+    public function getData()
+    {
+        if ($this->isFiltred())
+        {
+            return $this->data;
+        }
+
+        return null;
     }
 }

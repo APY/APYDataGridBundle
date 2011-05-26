@@ -2,30 +2,29 @@
 <div class="grid">
     <form action="{{ grid.routeUrl }}" method="post">
         {% if grid.actions.count > 0 %}
-        {{ grid_massactions() }}
+        {{ grid_massactions(grid) }}
         {% endif %}
         <table style="width:100%">
         {% if grid.columns.showtitles %}
-            {{ grid_titles(grid.columns) }}
+            {{ grid_titles(grid) }}
         {% endif %}
 
         {% if grid.columns.showfilters %}
-            {{ grid_filters(grid.columns) }}
+            {{ grid_filters(grid) }}
         {% endif %}
 
-        {{ grid_rows(grid.rows, grid.columns) }}
-        </tr>
+        {{ grid_rows(grid) }}
         </table>
-        {{ grid_pager() }}
+        {{ grid_pager(grid) }}
     </form>
 </div>
 {% endblock %}
 
 {% block grid_titles %}
     <tr>
-    {% for column in columns %}
+    {% for column in grid.columns %}
         <th class="title"{% if(column.size > 0) %} style="width:{{column.size}}px"{% endif %}>
-        <a href="{{ column.orderurl }}" title="Order by {{ column.title }}">{{ column.title }}</a>
+        <a href="{{ grid_url('order', grid, column) }}" title="Order by {{ column.title }}">{{ column.title }}</a>
         {% if column.order == 'asc' %}
             <div class="sort_up"></div>
         {% elseif column.order == 'desc' %}
@@ -38,16 +37,16 @@
 
 {% block grid_filters %}
     <tr>
-    {% for column in columns %}
+    {% for column in grid.columns %}
         <th>{{ column.filter|raw }}</th>
     {% endfor %}
     </tr>
 {% endblock %}
 
 {% block grid_rows %}
-    {% for row in rows %}
+    {% for row in grid.rows %}
     <tr{% if row.color != '' %} style="background-color:{{row.color}};"{% endif %}>
-    {% for col in columns %}
+    {% for col in grid.columns %}
         {% if loop.last %}
         <td class="last"> {{row.field(col.id)|raw}}</td>
         {% else %}
@@ -60,8 +59,19 @@
 
 {% block grid_pager %}
 <div class="pager">
-Page: <input type="button" class="prev" value="<"/><input type="text" value="2" size="2"/><input type="button" value=">" class="next"/> of 50,
-Display <select><option value="1">20</option></select> Items per page
+Page:
+<input type="button" class="prev" value="<"/>
+<input type="text" value="{{grid.page}}" size="2"/>
+<input type="button" value=">" class="next"/> of {{grid.currentlimit}},
+Display <select onchange="window.location.href='{{grid_url('limit', grid)}}'+this.value">
+{% for key, value in grid.limits %}
+    {% if key == grid.currentlimit %}
+        <option value="{{key}}" selected="selected">{{value}}</option>
+    {% else %}
+        <option value="{{key}}">{{value}}</option>
+    {% endif %}
+{% endfor %}
+</select> Items per page
 </div>
 {% endblock %}
 

@@ -19,11 +19,9 @@ class Range extends Column
 
     public function renderFilter($gridId)
     {
-        $data = $this->getFilterData();
-        
         $result = '<div class="range-column-filter">';
-        $result .= '<input class="first-filter" placeholder="From:" type="text" style="width:100%" value="'.$data['from'].'" name="'.$gridId.'['.$this->getId().'][filter][from]" onKeyPress="if (event.which == 13){this.form.submit();}"/><br/>';
-        $result .= '<input class="second-filter" placeholder="To:" type="text" style="width:100%" value="'.$data['to'].'" name="'.$gridId.'['.$this->getId().'][filter][to]" onKeyPress="if (event.which == 13){this.form.submit();}"/><br/>';
+        $result .= '<input class="first-filter" placeholder="From:" type="text" style="width:100%" value="'.$this->data['from'].'" name="'.$gridId.'['.$this->getId().'][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
+        $result .= '<input class="second-filter" placeholder="To:" type="text" style="width:100%" value="'.$this->data['to'].'" name="'.$gridId.'['.$this->getId().'][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
         $result .= '</div>';
         return $result;
     }
@@ -31,16 +29,15 @@ class Range extends Column
     public function getDataFilters()
     {
         $result = array();
-        $data = $this->getFilterData();
 
-        if (isset($data['from']) && $data['from'] != '')
+        if (isset($this->data['from']) && $this->data['from'] != '')
         {
-           $result[] =  new Filter(self::OPERATOR_GTE, $data['from']);
+           $result[] =  new Filter(self::OPERATOR_GTE, $this->data['from']);
         }
 
-        if (isset($data['to']) && $data['to'] != '')
+        if (isset($this->data['to']) && $this->data['to'] != '')
         {
-           $result[] =  new Filter(self::OPERATOR_LTE, $data['to']);
+           $result[] =  new Filter(self::OPERATOR_LTE, $this->data['to']);
         }
 
         return $result;

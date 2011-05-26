@@ -17,11 +17,11 @@ class Text extends Column
 {
     public function renderFilter($gridId)
     {
-        return '<input type="text" style="width:100%" value="'.$this->getFilterData().'" name="'.$gridId.'['.$this->getId().'][filter]" onKeyPress="if (event.which == 13){this.form.submit();}"/>';
+        return '<input type="text" style="width:100%" value="'.$this->data.'" name="'.$gridId.'['.$this->getId().']" onKeyPress="if (event.which == 13){this.form.submit();}"/>';
     }
 
     public function getDataFilters()
     {
-        return array(new Filter(self::OPERATOR_LIKE, '\'%'.$this->getFilterData().'%\''));
+        return array(new Filter(self::OPERATOR_LIKE, '\'%'.$this->data.'%\''));
     }
 }

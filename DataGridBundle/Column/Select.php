@@ -27,7 +27,7 @@ class Select extends Column
 
         foreach ($this->values as $key => $value)
         {
-            if ($this->getFilterData() == $key)
+            if ($this->data == $key)
             {
                 $result .= '<option value="'.$key.'" selected="selected">'.$value.'</option>';
             }
@@ -37,6 +37,6 @@ class Select extends Column
             }
         }
 
-        return '<select name="'.$gridId.'['.$this->getId().'][filter]" onchange="this.form.submit();">'.$result.'</select>';
+        return '<select name="'.$gridId.'['.$this->getId().']" onchange="this.form.submit();">'.$result.'</select>';
     }
 }

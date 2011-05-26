@@ -45,6 +45,7 @@ class Grid
     private $totalRows;
     private $page;
     private $limit;
+    private $limits;
 
     /**
     * @var \Sorien\DataGridBundle\Column\Column[]
@@ -92,70 +93,90 @@ class Grid
            $this->columns->insertColumn(0, new MassAction());
         }
 
-        $this->updated = false;
+        $this->limits = array('20' => '20', '50' => '50', '100' => '100');
+        $this->limit = key($this->limits);
+        $this->page = 0;
+
         $this->update();
+    }
+
+    private function getData($column)
+    {
+        $result = null;
+        if (is_array($data = $this->session->get($this->getHash())))
+        {
+            if (isset($data[$column]))
+            {
+                $result = $data[$column];
+            }
+        }
+
+        if (is_array($data = $this->request->get($this->getHash())))
+        {
+            if (isset($data[$column]))
+            {
+                $result = $data[$column];
+            }
+        }
+
+        return $result;
     }
 
     public function update()
     {
         $saveData = array();
 
-        if (is_array($grid = $this->session->get($this->getHash())))
+        foreach ($this->columns as $column)
         {
-            foreach ($this->columns as $column)
-            {
-                if (isset($grid[$column->getId()]) && is_array($grid[$column->getId()])) 
-                {
-                    //set orders
-                    if (isset($grid[$column->getId()]['order'])) 
-                    {
-                        $column->setOrder($grid[$column->getId()]['order']);
-                    }
+            $column->setData($this->getData($column->getId()));
+        }
 
-                    //set filters
-                    if (isset($grid[$column->getId()]['filter'])) 
-                    {
-                        $column->setFilterData($grid[$column->getId()]['filter']);
-                    }
-                }
+        $limit = $this->getData('_limit');
+        if (!is_null($limit))
+        {
+            $this->limit = $limit;
+        }
+
+        $page = $this->getData('_page');
+        if (!is_null($page))
+        {
+            $this->limit = $page;
+        }
+
+        $order = $this->getData('_order');
+        if (!is_null($order))
+        {
+            list($columnId, $columnOrder) = explode('|', $order);
+
+            $column = $this->columns->getColumnById($columnId);
+            if (!is_null($column))
+            {
+                $column->setOrder($columnOrder);
             }
         }
 
-        //set order form get
-        if (is_array($orders = $this->request->query->get($this->getHash())))
+        if (!is_null($order))
         {
-            foreach ($this->columns as $column)
+            $saveData['_order'] = $order;
+        }
+
+        foreach ($this->columns as $column)
+        {
+            $data = $column->getData();
+            if (!is_null($data))
             {
-                if (isset($orders[$column->getId()])) 
-                {
-                    $column->setOrder($orders[$column->getId()]['order']);
-                    $saveData[$column->getId()]['order'] = $column->getOrder();
-
-                    if ($column->isFiltred()) 
-                    {
-                        $saveData[$column->getId()]['filter'] = $column->getFilterData();
-                    }
-
-                }
+                $saveData[$column->getId()] = $data;
             }
         }
 
-        //set filter from post
-        if (is_array($filters = $this->request->request->get($this->getHash())))
+        if ($this->limit != key($this->limits))
         {
-            foreach ($this->columns as $column)
-            {
-                if (isset($filters[$column->getId()])) 
-                {
-                    $column->setFilterData($filters[$column->getId()]['filter']);
-                    $saveData[$column->getId()]['filter'] = $column->getFilterData();
+            $saveData['_limit'] = $this->limit;
+        }
 
-                    if ($column->isSorted()) 
-                    {
-                        $saveData[$column->getId()]['order'] = $column->getOrder();
-                    }
-                }
-            }
+        if ($this->page != 0)
+        {
+            $saveData['_page'] = $this->page;
         }
 
         // if we need save sessions
@@ -163,9 +184,6 @@ class Grid
         {
             $this->session->set($this->getHash(), $saveData);
         }
-
-        //@todo remove
-        $this->limit = 20;
 
         $this->updated = true;
     }
@@ -181,15 +199,6 @@ class Grid
             if ($column->isVisible())
             {
                 $column->prepareFilter($this->getHash());
-
-                if ($column->isSorted())
-                {
-                    $column->setOrderUrl($this->getRouteUrl().'?'.$this->getHash().'['.$column->getId().'][order]='.column::nextOrder($column->getOrder()));
-                }
-                else
-                {
-                    $column->setOrderUrl($this->getRouteUrl().'?'.$this->getHash().'['.$column->getId().'][order]=asc');
-                }
             }
         }
 
@@ -264,9 +273,34 @@ class Grid
         return ($this->updated && $this->route == $this->request->get('_route'));
     }
     
-    private function getHash()
+    public function getHash()
     {
         return 'grid_'.$this->id;
     }
-    
+
+    public function setLimits($limits)
+    {
+        $this->limits = $limits;
+    }
+
+    public function getLimits()
+    {
+        return $this->limits;
+    }
+
+    public function getCurrentLimit()
+    {
+        return $this->limit;
+    }
+
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+
+    public function getPage()
+    {
+        return $this->page;
+    }
+
 }

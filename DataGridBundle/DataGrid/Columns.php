@@ -56,6 +56,19 @@ class Columns implements \IteratorAggregate, \Countable {
         return $this;
     }
 
+    public function getColumnById($columnId)
+    {
+        foreach ($this->columns as $column)
+        {
+            if ($column->getId() == $columnId)
+            {
+                return $column;
+            }
+        }
+        
+        return null;
+    }
+
     /**
      * @todo
      * @return bool

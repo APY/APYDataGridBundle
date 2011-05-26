@@ -51,7 +51,9 @@ class DataGrid extends \Twig_Extension {
             'grid_filters'      => new \Twig_Function_Method($this, 'getGridFilters', array('is_safe' => array('html'))),
             'grid_rows'         => new \Twig_Function_Method($this, 'getGridItems', array('is_safe' => array('html'))),
             'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
-            'grid_massactions'  => new \Twig_Function_Method($this, 'getGridMassActions', array('is_safe' => array('html')))
+            'grid_massactions'  => new \Twig_Function_Method($this, 'getGridMassActions', array('is_safe' => array('html'))),
+
+            'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl'),
         );
     }
 
@@ -68,31 +70,58 @@ class DataGrid extends \Twig_Extension {
         return $this->renderBlock('grid', array('grid' => $grid));
     }
 
-    public function getGridTitles($columns)
+    public function getGridTitles($grid)
     {
-        return $this->renderBlock('grid_titles', array('columns' => $columns));
+        return $this->renderBlock('grid_titles', array('grid' => $grid));
     }
 
-    public function getGridFilters($columns)
+    public function getGridFilters($grid)
     {
-        return $this->renderBlock('grid_filters', array('columns' => $columns));
+        return $this->renderBlock('grid_filters', array('grid' => $grid));
     }
 
-    public function getGridItems($rows, $columns)
+    public function getGridItems($grid)
     {
-        return $this->renderBlock('grid_rows', array('rows' => $rows, 'columns' => $columns));
+        return $this->renderBlock('grid_rows', array('grid' => $grid));
     }
 
-    public function getGridPager()
+    public function getGridPager($grid)
     {
-        return $this->renderBlock('grid_pager', array());
+        return $this->renderBlock('grid_pager', array('grid' => $grid));
     }
 
-    public function getGridMassActions()
+    public function getGridMassActions($grid)
     {
-        return $this->renderBlock('grid_massactions', array());
+        return $this->renderBlock('grid_massactions', array('grid' => $grid));
     }
 
+    public function getGridUrl($section, $grid, $param = null)
+    {
+        if ($section == 'order')
+        {
+            if ($param->isSorted())
+            {
+                return $grid->getRouteUrl().'?'.$grid->getHash().'[_order]='.$param->getId().'|'.$this->nextOrder($param->getOrder());
+            }
+            else
+            {
+                return $grid->getRouteUrl().'?'.$grid->getHash().'[_order]='.$param->getId().'|asc';
+            }
+        }
+        elseif ($section == 'page')
+        {
+            return $grid->getRouteUrl().'?'.$grid->getHash().'[_page]=';
+        }
+        elseif ($section == 'limit')
+        {
+            return $grid->getRouteUrl().'?'.$grid->getHash().'[_limit]=';
+        }
+    }
+
+    public function nextOrder($value)
+    {
+        return  $value == 'asc' ? 'desc' : 'asc';
+    }
 
     /**
      * Render block.
