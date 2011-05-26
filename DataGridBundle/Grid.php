@@ -138,9 +138,9 @@ class Grid
         }
 
         $page = $this->getData('_page');
-        if (!is_null($page))
+        if (!is_null($page) && $page > 0)
         {
-            $this->limit = $page;
+            $this->page = $page;
         }
 
         $order = $this->getData('_order');
@@ -174,7 +174,7 @@ class Grid
             $saveData['_limit'] = $this->limit;
         }
 
-        if ($this->page != 0)
+        if ($this->page > 0)
         {
             $saveData['_page'] = $this->page;
         }

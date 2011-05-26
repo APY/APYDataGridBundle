@@ -29,7 +29,7 @@ class Row
 
     public function getField($rowId)
     {
-        return $this->fields[$rowId];
+        return isset($this->fields[$rowId]) ? $this->fields[$rowId] : '';
     }
 
     public function setColor($color)

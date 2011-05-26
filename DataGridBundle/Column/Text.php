@@ -17,7 +17,7 @@ class Text extends Column
 {
     public function renderFilter($gridId)
     {
-        return '<input type="text" style="width:100%" value="'.$this->data.'" name="'.$gridId.'['.$this->getId().']" onKeyPress="if (event.which == 13){this.form.submit();}"/>';
+        return '<input type="text" style="width:100%" value="'.$this->data.'" name="'.$gridId.'['.$this->getId().']" onkeypress="if (event.which == 13){this.form.submit();}"/>';
     }
 
     public function getDataFilters()

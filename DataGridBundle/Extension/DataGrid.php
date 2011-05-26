@@ -110,7 +110,7 @@ class DataGrid extends \Twig_Extension {
         }
         elseif ($section == 'page')
         {
-            return $grid->getRouteUrl().'?'.$grid->getHash().'[_page]=';
+            return $grid->getRouteUrl().'?'.$grid->getHash().'[_page]='.$param;
         }
         elseif ($section == 'limit')
         {

@@ -60,10 +60,12 @@
 {% block grid_pager %}
 <div class="pager">
 Page:
-<input type="button" class="prev" value="<"/>
-<input type="text" value="{{grid.page}}" size="2"/>
-<input type="button" value=">" class="next"/> of {{grid.currentlimit}},
-Display <select onchange="window.location.href='{{grid_url('limit', grid)}}'+this.value">
+{% spaceless %}
+<input type="button" class="prev" value="<" onclick="window.location.href='{{grid_url('page', grid, grid.page-1)}}'"/>
+<input type="text" value="{{grid.page+1}}" size="2" onkeypress="if (event.which == 13){window.location.href='{{grid_url('page', grid)}}'+(parseInt(this.value)-1)}"/>
+<input type="button" value=">" class="next" onclick="window.location.href='{{grid_url('page', grid, grid.page+1)}}'"/> of {{grid.currentlimit}}
+{% endspaceless %}
+, Display <select onchange="window.location.href='{{grid_url('limit', grid)}}'+this.value">
 {% for key, value in grid.limits %}
     {% if key == grid.currentlimit %}
         <option value="{{key}}" selected="selected">{{value}}</option>

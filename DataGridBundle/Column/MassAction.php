@@ -27,7 +27,7 @@ class MassAction extends Column
 
     public function renderCell($value, $row, $router)
     {
-        return '<input type="checkbox" style="width:100%" value="'.$this->getFilterData().'" name="[MassId]['.$this->getId().']"/>';
+        return '<input type="checkbox" style="width:100%" value="'.$this->data.'" name="[MassId]['.$this->getId().']"/>';
     }
 
     public function setMassActionColumnId($massActionColumnId)
@@ -39,4 +39,10 @@ class MassAction extends Column
     {
         return $this->massActionColumnId;
     }
+
+    public function isSpecial()
+    {
+        return true;
+    }
+
 }

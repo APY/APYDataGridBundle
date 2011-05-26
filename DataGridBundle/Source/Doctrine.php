@@ -87,6 +87,8 @@ class Doctrine extends Source
 
         foreach ($columns as $column)
         {
+            if ($column->isSpecial()) continue;
+
             $query->addSelect($this->getPrefixedName($column->getId()));
 
             if ($column->isSorted())

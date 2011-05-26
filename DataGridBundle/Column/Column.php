@@ -25,6 +25,7 @@ abstract class Column
     private $size;
     private $orderUrl;
     private $filterDrawCache;
+    private $special;
     protected $data;
 
     const DATA_CONJUNCTION = 0;
@@ -60,6 +61,7 @@ abstract class Column
         $this->filterable = $filterable;
         $this->isSorted = false;
         $this->order = '';
+        $this->special = false;
     }
 
     /**
@@ -229,5 +231,15 @@ abstract class Column
         }
 
         return null;
+    }
+
+    public function setSpecial($special)
+    {
+        $this->special = $special;
+    }
+
+    public function isSpecial()
+    {
+        return $this->special;
     }
 }
