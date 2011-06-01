@@ -42,7 +42,7 @@ class Grid
     */
     private $source;
 
-    private $totalRows;
+    private $totalCount;
     private $page;
     private $limit;
     private $limits;
@@ -218,7 +218,7 @@ class Grid
         }
 
         //get size
-        $this->totalRows = $this->source->getTotalCount();
+        $this->totalCount = $this->source->getTotalCount();
 
         return $this;
     }
@@ -302,5 +302,10 @@ class Grid
     {
         return $this->page;
     }
+
+	public function getTotalCount()
+	{
+		return $this->totalCount;
+	}
 
 }

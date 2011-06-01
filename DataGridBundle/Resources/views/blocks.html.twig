@@ -1,3 +1,4 @@
+{# ------------------------------------------------------ qrid ------------------------------------------------------ #}
 {% block grid %}
 <div class="grid">
     <form action="{{ grid.routeUrl }}" method="post">
@@ -19,7 +20,7 @@
     </form>
 </div>
 {% endblock %}
-
+{# --------------------------------------------------- grid_titles -------------------------------------------------- #}
 {% block grid_titles %}
     <tr>
     {% for column in grid.columns %}
@@ -34,7 +35,7 @@
     {% endfor %}
     </tr>
 {% endblock %}
-
+{# -------------------------------------------------- grid_filters -------------------------------------------------- #}
 {% block grid_filters %}
     <tr>
     {% for column in grid.columns %}
@@ -56,14 +57,14 @@
     </tr>
     {% endfor %}
 {% endblock %}
-
+{# ---------------------------------------------------- grid_pager -------------------------------------------------- #}
 {% block grid_pager %}
 <div class="pager">
 Page:
 {% spaceless %}
-<input type="button" class="prev" value="<" onclick="window.location.href='{{grid_url('page', grid, grid.page-1)}}'"/>
+<input type="button" class="prev" {% if grid.page <= 0 %}disabled="disabled"{% endif %} value="<" onclick="window.location.href='{{grid_url('page', grid, grid.page-1)}}'"/>
 <input type="text" value="{{grid.page+1}}" size="2" onkeypress="if (event.which == 13){window.location.href='{{grid_url('page', grid)}}'+(parseInt(this.value)-1)}"/>
-<input type="button" value=">" class="next" onclick="window.location.href='{{grid_url('page', grid, grid.page+1)}}'"/> of {{grid.currentlimit}}
+<input type="button" value=">" class="next" onclick="window.location.href='{{grid_url('page', grid, grid.page+1)}}'"/> of {{grid_pages_count(grid)}}
 {% endspaceless %}
 , Display <select onchange="window.location.href='{{grid_url('limit', grid)}}'+this.value">
 {% for key, value in grid.limits %}
@@ -76,15 +77,16 @@ Page:
 </select> Items per page
 </div>
 {% endblock %}
-
+{# ------------------------------------------------ grid_massactions ------------------------------------------------ #}
 {% block grid_massactions %}
 <div class="mass-actions" style="overflow: hidden">
-<a href="#">Select Vidible</a> |
+<a href="#" onclick="{#{qrid_scripts('check_all') }#}">Select Vidible</a> |
 <a href="#">Deselect Vidible</a> | 
 <a href="#">Select All</a> |
 <a href="#">Deselect All</a>
 <div style="float:right">
 Action: <select>
+    <option value="0"></option>
     <option value="1">Remove</option>
 </select><input type="button" value="Submit Action"/>
 </div>

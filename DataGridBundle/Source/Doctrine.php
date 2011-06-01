@@ -19,6 +19,7 @@ class Doctrine extends Source
     private $columnMappings;
     private $table;
     private $tablePrefix;
+	private $query;
 
     public function __construct($entityName)
     {
@@ -74,26 +75,20 @@ class Doctrine extends Source
      */
     public function execute($columns, $page, $limit)
     {
-        $query = $this->entityManager->createQueryBuilder();
-        $query->from($this->table, $this->tablePrefix);
+        $this->query = $this->entityManager->createQueryBuilder();
+        $this->query->from($this->table, $this->tablePrefix);
 
-        if ($page > 0)
-        {
-            $query->setFirstResult($page * $limit);
-        }
-
-        $query->setMaxResults($limit);
-        $where = $query->expr()->andx();
+        $where = $this->query->expr()->andx();
 
         foreach ($columns as $column)
         {
             if ($column->isSpecial()) continue;
 
-            $query->addSelect($this->getPrefixedName($column->getId()));
+            $this->query->addSelect($this->getPrefixedName($column->getId()));
 
             if ($column->isSorted())
             {
-                $query->orderBy($this->getPrefixedName($column->getId()), $column->getOrder());
+                $this->query->orderBy($this->getPrefixedName($column->getId()), $column->getOrder());
             }
 
             if ($column->isFiltred())
@@ -103,23 +98,40 @@ class Doctrine extends Source
                     foreach ($column->getDataFilters() as $filter)
                     {
                         $operator = $filter->getOperator();
-                        $where->add($query->expr()->$operator($this->getPrefixedName($column->getId()), $filter->getValue()));
+                        $where->add($this->query->expr()->$operator($this->getPrefixedName($column->getId()), $filter->getValue()));
                     }
                 }
                 elseif($column->getDataFiltersConnection() == column::DATA_DISJUNCTION)
                 {
-                    $sub = $query->expr()->orx();
+                    $sub = $this->query->expr()->orx();
                     foreach ($column->getDataFilters() as $filter)
                     {
                         $operator = $filter->getOperator();
-                        $sub->add($query->expr()->$operator($this->getPrefixedName($column->getId()), $filter->getValue()));
+                        $sub->add($this->query->expr()->$operator($this->getPrefixedName($column->getId()), $filter->getValue()));
                     }
                     $where->add($sub);
                 }
-                $query->where($where);
+                $this->query->where($where);
             }
         }
 
-        return new Rows($query->getQuery()->getResult());
+        if ($page > 0)
+        {
+            $this->query->setFirstResult($page * $limit);
+        }
+
+        $this->query->setMaxResults($limit);
+
+        return new Rows($this->query->getQuery()->getResult());
     }
+
+	public function getTotalCount()
+	{
+		$this->query->select("count (a.id)");
+		$this->query->setFirstResult(null);
+		$this->query->setMaxResults(null);
+		$result = $this->query->getQuery()->getSingleResult();
+
+		return $result[1];
+	}
 }
