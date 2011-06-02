@@ -62,7 +62,7 @@ class Grid
      * @param $route string if null current route will be used 
      * @param string $id set if you are using more then one grid inside controller
      */
-    public function __construct($source, $controller, $route = null, $id = '')
+    public function __construct($source, $controller, $route = '', $id = '')
     {
         if(!$source instanceof Source)
         {
@@ -251,16 +251,21 @@ class Grid
         return $this->actions;
     }
     
-    public function setRoute($route = null)
+    public function setRoute($route = '')
     {
-        $this->route = is_null($route) ? $this->request->get('_route') : $route;
+        $this->route = $route == '' ? $this->request->get('_route') : $route;
 
         return $this;
     }
 
+    public function getRoute()
+    {
+        return $this->route;
+    }
+
     public function getRouteUrl()
     {
-        if ($this->routeUrl == null)
+        if ($this->routeUrl == '')
         {
             $this->routeUrl = $this->router->generate($this->route);
         }
@@ -268,7 +273,7 @@ class Grid
         return $this->routeUrl;
     }
 
-    public function getReadyForRedirect()
+    public function isReadyForRedirect()
     {
         return ($this->updated && $this->route == $this->request->get('_route'));
     }
@@ -303,9 +308,14 @@ class Grid
         return $this->page;
     }
 
-	public function getTotalCount()
-	{
-		return $this->totalCount;
-	}
+    public function getPageCount()
+    {
+        return ceil($this->getTotalCount() / $this->getCurrentLimit());
+    }
+
+    public function getTotalCount()
+    {
+        return $this->totalCount;
+    }
 
 }

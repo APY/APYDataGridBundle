@@ -19,7 +19,7 @@ class Doctrine extends Source
     private $columnMappings;
     private $table;
     private $tablePrefix;
-	private $query;
+    private $query;
 
     public function __construct($entityName)
     {
@@ -125,13 +125,13 @@ class Doctrine extends Source
         return new Rows($this->query->getQuery()->getResult());
     }
 
-	public function getTotalCount()
-	{
-		$this->query->select("count (a.id)");
-		$this->query->setFirstResult(null);
-		$this->query->setMaxResults(null);
-		$result = $this->query->getQuery()->getSingleResult();
+    public function getTotalCount()
+    {
+        $this->query->select("count (a.id)");
+        $this->query->setFirstResult(null);
+        $this->query->setMaxResults(null);
+        $result = $this->query->getQuery()->getSingleResult();
 
-		return $result[1];
-	}
+        return $result[1];
+    }
 }

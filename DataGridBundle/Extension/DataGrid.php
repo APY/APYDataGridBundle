@@ -52,7 +52,6 @@ class DataGrid extends \Twig_Extension {
             'grid_rows'         => new \Twig_Function_Method($this, 'getGridItems', array('is_safe' => array('html'))),
             'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
             'grid_massactions'  => new \Twig_Function_Method($this, 'getGridMassActions', array('is_safe' => array('html'))),
-			'grid_pages_count'  => new \Twig_Function_Method($this, 'getGridPagesCount'),
             'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl'),
         );
     }
@@ -117,11 +116,6 @@ class DataGrid extends \Twig_Extension {
             return $grid->getRouteUrl().'?'.$grid->getHash().'[_limit]=';
         }
     }
-
-	public function getGridPagesCount($grid)
-	{
-		return ceil($grid->getTotalCount() / $grid->getCurrentLimit());
-	}
 
     public function nextOrder($value)
     {
