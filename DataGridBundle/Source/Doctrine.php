@@ -1,10 +1,23 @@
 <?php
 
+/*
+ * This file is part of the DataGridBundle.
+ *
+ * (c) Stanislav Turza <sorien@mail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ *
+ * @todo use repositories http://symfony.com/doc/current/book/doctrine.html#using-doctrine-s-query-builder
+ */
+
 namespace Sorien\DataGridBundle\Source;
 
 use Sorien\DataGridBundle\Source\Source;
 use Sorien\DataGridBundle\Column\Range;
 use Sorien\DataGridBundle\Column\Text;
+use Sorien\DataGridBundle\Column\Select;
 use Sorien\DataGridBundle\Column\Column;
 use Sorien\DataGridBundle\DataGrid\Rows;
 use Doctrine\ORM\Query\Expr\Orx;
@@ -29,6 +42,9 @@ class Doctrine extends Source
 
     public function initialize($container)
     {
+        /**
+         * todo: use repositories
+         */
         $this->entityManager = $container->get('doctrine')->getEntityManager();
         $metadata = $this->entityManager->getClassMetadata($this->entityName);
 
@@ -37,7 +53,7 @@ class Doctrine extends Source
             $this->columnMappings[] = $metadata->getFieldMapping($value);
         }
 
-        $this->table = $metadata->getReflectionClass()->name;//$metadata->getTableName();
+        $this->table = $metadata->getReflectionClass()->name;
     }
 
     public function getPrefixedName($name)
@@ -52,16 +68,28 @@ class Doctrine extends Source
      */
     public function prepare($columns, $actions)
     {
-        foreach ($this->columnMappings as $columnMappingData)
+        foreach ($this->columnMappings as $mapping)
         {
-            switch ($columnMappingData['type'])
+            switch ($mapping['type'])
             {
                 case 'integer':
-                    $columns->addColumn(new Range($columnMappingData['fieldName'], $columnMappingData['fieldName'], 100));
+                case 'smallint':
+                case 'bigint':
+                case 'integer':
+                case 'float':
+                    $columns->addColumn(new Range($mapping['fieldName'], $mapping['fieldName'], $mapping['length'] === null ? 100 : $mapping['length']*10));
                 break;
 
                 case 'string':
-                    $columns->addColumn(new Text($columnMappingData['fieldName'], $columnMappingData['fieldName'], 100));
+                    $columns->addColumn(new Text($mapping['fieldName'], $mapping['fieldName'], $mapping['length']));
+                break;
+
+                case 'text':
+                    $columns->addColumn(new Text($mapping['fieldName'], $mapping['fieldName']));
+                break;
+
+                case 'boolean':
+                    $columns->addColumn(new Select($mapping['fieldName'], $mapping['fieldName'], array('true', 'false'), 50));
                 break;
             }
         }

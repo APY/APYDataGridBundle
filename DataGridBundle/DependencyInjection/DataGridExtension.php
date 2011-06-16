@@ -20,7 +20,7 @@ class DataGridExtension extends Extension {
 
     public function load(array $config, ContainerBuilder $container)
     {
-        $definition = new Definition('Sorien\DatagridBundle\Extension\DataGrid');
+        $definition = new Definition('Sorien\DataGridBundle\Extension\DataGrid');
         $definition->addTag('twig.extension');
         $container->setDefinition('datagrid_twig_extension', $definition);
     }
