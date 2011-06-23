@@ -19,10 +19,6 @@ abstract class Source
     private $totalCount;
     private $page;
 
-    public function __construct()
-    {
-    }
-
     /**
      * @abstract
      * @param $columns \Sorien\DataGridBundle\DataGrid\Columns
@@ -64,12 +60,6 @@ abstract class Source
     public function getPage()
     {
         return $this->page;
-    }
-
-    public function setTotalCount($totalCount)
-    {
-        $this->totalCount = $totalCount;
-        return $this;
     }
 
     /**

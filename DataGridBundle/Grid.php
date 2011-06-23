@@ -15,7 +15,7 @@ use Sorien\DataGridBundle\DataGrid\Columns;
 use Sorien\DataGridBundle\DataGrid\Actions;
 use Sorien\DataGridBundle\DataGrid\Rows;
 use Sorien\DataGridBundle\Column\Column;
-use Sorien\DataGridBundle\Column\MassAction;
+use Sorien\DataGridBundle\Column\Action;
 use Sorien\DataGridBundle\Source\Source;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -90,7 +90,7 @@ class Grid
 
         if ($this->actions->count() > 0)
         {
-           $this->columns->insertColumn(0, new MassAction());
+           $this->columns->insertColumn(0, new Action());
         }
 
         $this->limits = array('20' => '20', '50' => '50', '100' => '100');
@@ -126,11 +126,13 @@ class Grid
     {
         $saveData = array();
 
+        //set column data
         foreach ($this->columns as $column)
         {
             $column->setData($this->getData($column->getId()));
         }
 
+        //set internal data
         $limit = $this->getData('_limit');
         if (!is_null($limit))
         {
@@ -153,10 +155,7 @@ class Grid
             {
                 $column->setOrder($columnOrder);
             }
-        }
 
-        if (!is_null($order))
-        {
             $saveData['_order'] = $order;
         }
 
@@ -179,7 +178,7 @@ class Grid
             $saveData['_page'] = $this->page;
         }
 
-        // if we need save sessions
+        // save data to sessions if needed
         if (!empty($saveData)) 
         {
             $this->session->set($this->getHash(), $saveData);

@@ -17,7 +17,6 @@ class Rows implements \IteratorAggregate, \Countable {
      * @var Rows[]
      */
     private $rows;
-    private $countTotal;
 
     public function __construct($array = array())
     {
@@ -27,7 +26,6 @@ class Rows implements \IteratorAggregate, \Countable {
         {
             $this->addRow(new Row($rows));
         }
-
     }
 
     public function getIterator()
@@ -36,10 +34,10 @@ class Rows implements \IteratorAggregate, \Countable {
     }
 
     /**
-     * Add column, column object have to extend Column
-     * @param $column Column
-     * @return Grid
+     * Add row
      *
+     * @param Row $row
+     * @return Rows
      */
     function addRow($row)
     {
@@ -47,19 +45,10 @@ class Rows implements \IteratorAggregate, \Countable {
         {
             throw new \InvalidArgumentException('Your column needs to extend class Column.');
         }
-
+        
         $this->rows->attach($row);
+
         return $this;
-    }
-
-    public function setCountTotal($countTotal)
-    {
-        $this->countTotal = $countTotal;
-    }
-
-    public function getCountTotal()
-    {
-        return $this->countTotal;
     }
 
     public function count()

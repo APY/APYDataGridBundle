@@ -11,10 +11,8 @@
 
 namespace Sorien\DataGridBundle\Column;
 
-class MassAction extends Column
+class Action extends Column
 {
-    private $massActionColumnId;
-
     public function __construct()
     {
         parent::__construct('mass', '', 10, false, true);
@@ -27,22 +25,11 @@ class MassAction extends Column
 
     public function renderCell($value, $row, $router, $primaryColumnValue)
     {
-        return '<input type="checkbox" style="width:100%" value="'.$this->data.'" name="[mass]['.$primaryColumnValue.']"/>';
-    }
-
-    public function setMassActionColumnId($massActionColumnId)
-    {
-        $this->massActionColumnId = $massActionColumnId;
-    }
-
-    public function getMassActionColumnId()
-    {
-        return $this->massActionColumnId;
+        return '<input type="checkbox" class="action" value="'.$this->data.'" name="[mass]['.$primaryColumnValue.']"/>';
     }
 
     public function isSpecial()
     {
         return true;
     }
-
 }
