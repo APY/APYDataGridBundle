@@ -15,19 +15,28 @@ use Sorien\DataGridBundle\Column;
 
 abstract class Source
 {
-    private $count;
-    private $totalCount;
-    private $page;
+    /**
+     * Prepare source when service is needed
+     *
+     * @param $container
+     */
+    public function initialize($container)
+    {
+    }
 
     /**
+     * Prepare all Columns and Actions
+     *
      * @abstract
      * @param $columns \Sorien\DataGridBundle\DataGrid\Columns
-     * @param $actions
+     * @param $actions \Sorien\DataGridBundle\DataGrid\Actions
      * @return null
      */
     abstract public function prepare($columns, $actions);
 
     /**
+     * Find data for current page
+     *
      * @abstract
      * @param $columns \Sorien\DataGridBundle\Column\Column[]
      * @param $page int
@@ -36,38 +45,11 @@ abstract class Source
      */
     abstract public function execute($columns, $page, $limit);
 
-    public function initialize($container)
-    {
-    }
-
-    public function setCount($count)
-    {
-        $this->count = $count;
-        return $this;
-    }
-
-    public function getCount()
-    {
-        return $this->count;
-    }
-
-    public function setPage($page)
-    {
-        $this->page = $page;
-        return $this;
-    }
-
-    public function getPage()
-    {
-        return $this->page;
-    }
-
     /**
+     * Get Total count of data items
+     *
      * @param $columns \Sorien\DataGridBundle\Column\Columns
      * @return int
      */
-    public function getTotalCount($columns)
-    {
-        return $this->totalCount;
-    }
+    abstract public function getTotalCount($columns);
 }
