@@ -46,7 +46,7 @@
     <tr>
     {% for column in grid.columns %}
         {% if (column.visible )%}
-        <th>{{ column.filter|raw }}</th>
+        <th>{{ grid_filter(column, grid)|raw }}</th>
         {% endif %}
     {% endfor %}
     </tr>

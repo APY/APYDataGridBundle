@@ -125,18 +125,18 @@ class Doctrine extends Source
 
             if ($column->isFiltred())
             {
-                if($column->getDataFiltersConnection() == column::DATA_CONJUNCTION)
+                if($column->getFiltersConnection() == column::DATA_CONJUNCTION)
                 {
-                    foreach ($column->getDataFilters() as $filter)
+                    foreach ($column->getFilters() as $filter)
                     {
                         $operator = $filter->getOperator();
                         $where->add($this->query->expr()->$operator($this->getPrefixedName($column->getId()), $filter->getValue()));
                     }
                 }
-                elseif($column->getDataFiltersConnection() == column::DATA_DISJUNCTION)
+                elseif($column->getFiltersConnection() == column::DATA_DISJUNCTION)
                 {
                     $sub = $this->query->expr()->orx();
-                    foreach ($column->getDataFilters() as $filter)
+                    foreach ($column->getFilters() as $filter)
                     {
                         $operator = $filter->getOperator();
                         $sub->add($this->query->expr()->$operator($this->getPrefixedName($column->getId()), $filter->getValue()));

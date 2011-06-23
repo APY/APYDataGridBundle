@@ -53,6 +53,7 @@ class DataGrid extends \Twig_Extension {
             'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
             'grid_massactions'  => new \Twig_Function_Method($this, 'getGridMassActions', array('is_safe' => array('html'))),
             'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl'),
+            'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter'),
         );
     }
 
@@ -120,6 +121,11 @@ class DataGrid extends \Twig_Extension {
     public function nextOrder($value)
     {
         return  $value == 'asc' ? 'desc' : 'asc';
+    }
+
+    public function getGridFilter($column, $grid)
+    {
+        return $column->renderFilter($grid->getHash());
     }
 
     /**

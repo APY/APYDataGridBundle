@@ -15,8 +15,6 @@ use Sorien\DataGridBundle\DataGrid\Filter;
 
 class Range extends Column
 {
-    private $values;
-
     public function renderFilter($gridId)
     {
         $result = '<div class="range-column-filter">';
@@ -26,7 +24,7 @@ class Range extends Column
         return $result;
     }
 
-    public function getDataFilters()
+    public function getFilters()
     {
         $result = array();
 
@@ -42,5 +40,4 @@ class Range extends Column
 
         return $result;
     }
-
 }

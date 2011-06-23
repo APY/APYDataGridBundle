@@ -20,7 +20,7 @@ class Text extends Column
         return '<input type="text" style="width:100%" value="'.$this->data.'" name="'.$gridId.'['.$this->getId().']" onkeypress="if (event.which == 13){this.form.submit();}"/>';
     }
 
-    public function getDataFilters()
+    public function getFilters()
     {
         return array(new Filter(self::OPERATOR_LIKE, '\'%'.$this->data.'%\''));
     }

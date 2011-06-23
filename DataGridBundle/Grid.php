@@ -193,14 +193,6 @@ class Grid
      */
     public function prepare()
     {
-        foreach ($this->columns as $column)
-        {
-            if ($column->isVisible())
-            {
-                $column->prepareFilter($this->getHash());
-            }
-        }
-
         $this->rows = $this->source->execute($this->columns, $this->page, $this->limit);
 
         if(!$this->rows instanceof Rows)

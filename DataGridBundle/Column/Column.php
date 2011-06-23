@@ -23,7 +23,6 @@ abstract class Column
     private $order;
     private $size;
     private $orderUrl;
-    private $filterDrawCache;
     private $special;
 
     protected $data;
@@ -71,16 +70,6 @@ abstract class Column
      * @return string
      */
     abstract public function renderFilter($gridId);
-
-    public final function prepareFilter($gridId)
-    {
-        $this->filterDrawCache = $this->renderFilter($gridId);
-    }
-
-    public final function getFilter()
-    {
-        return $this->filterDrawCache;
-    }
 
     /**
      * Draw cell
@@ -263,7 +252,7 @@ abstract class Column
      *
      * @return bool column::DATA_CONJUNCTION | column::DATA_DISJUNCTION
      */
-    public function getDataFiltersConnection()
+    public function getFiltersConnection()
     {
         return self::DATA_CONJUNCTION;
     }
@@ -274,7 +263,7 @@ abstract class Column
      *
      * @return \Sorien\DataGridBundle\DataGrid\Filter[]
      */
-    public function getDataFilters()
+    public function getFilters()
     {
         return array();
     }
