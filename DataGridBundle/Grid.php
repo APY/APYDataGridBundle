@@ -209,16 +209,18 @@ class Grid
             throw new \Exception('Source have to return Rows object.');
         }
 
+        $primaryColumnId =  $this->columns->getPrimaryColumn()->getId();
+
         foreach ($this->rows as $row)
         {
             foreach ($this->columns as $column)
             {
-                $row->setField($column->getId(), $column->renderCell($row->getField($column->getId()), $row, $this->router));
+                $row->setField($column->getId(), $column->renderCell($row->getField($column->getId()), $row, $this->router, $row->getField($primaryColumnId)));
             }
         }
 
         //get size
-        $this->totalCount = $this->source->getTotalCount();
+        $this->totalCount = $this->source->getTotalCount($this->columns);
 
         return $this;
     }

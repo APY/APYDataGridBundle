@@ -72,7 +72,11 @@ abstract class Source
         return $this;
     }
 
-    public function getTotalCount()
+    /**
+     * @param $columns \Sorien\DataGridBundle\Column\Columns
+     * @return int
+     */
+    public function getTotalCount($columns)
     {
         return $this->totalCount;
     }

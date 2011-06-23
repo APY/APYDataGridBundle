@@ -19,6 +19,7 @@ class Columns implements \IteratorAggregate, \Countable {
      * @var Column[]
      */
     private $columns;
+    private $primary;
 
     public function __construct()
     {
@@ -65,9 +66,20 @@ class Columns implements \IteratorAggregate, \Countable {
                 return $column;
             }
         }
-        
-        return null;
+
+        throw new \InvalidArgumentException(sprintf('Column with id "%s" doesn\'t exists', $columnId));
     }
+
+    public function setPrimaryColumn($columnId)
+    {
+        $this->primary = $columnId;
+    }
+
+    public function getPrimaryColumn()
+    {
+        return $this->getColumnById($this->primary);
+    }
+
 
     /**
      * @todo

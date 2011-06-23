@@ -42,9 +42,6 @@ class Doctrine extends Source
 
     public function initialize($container)
     {
-        /**
-         * todo: use repositories
-         */
         $this->entityManager = $container->get('doctrine')->getEntityManager();
         $metadata = $this->entityManager->getClassMetadata($this->entityName);
 
@@ -77,7 +74,7 @@ class Doctrine extends Source
                 case 'bigint':
                 case 'integer':
                 case 'float':
-                    $columns->addColumn(new Range($mapping['fieldName'], $mapping['fieldName'], $mapping['length'] === null ? 100 : $mapping['length']*10));
+                    $columns->addColumn(new Range($mapping['fieldName'], $mapping['fieldName'], $mapping['length'] === null ? 100 : $mapping['length']*10, false, false, false));
                 break;
 
                 case 'string':
@@ -92,7 +89,14 @@ class Doctrine extends Source
                     $columns->addColumn(new Select($mapping['fieldName'], $mapping['fieldName'], array('true', 'false'), 50));
                 break;
             }
+
+            if (isset($mapping['id']) && $mapping['id'] === true)
+            {
+                $columns->setPrimaryColumn($mapping['fieldName']);
+            }
         }
+
+        //$actions->addMassAction('action', null);
     }
 
     /**
@@ -153,9 +157,9 @@ class Doctrine extends Source
         return new Rows($this->query->getQuery()->getResult());
     }
 
-    public function getTotalCount()
+    public function getTotalCount($columns)
     {
-        $this->query->select("count (a.id)");
+        $this->query->select(sprintf("count (%s)", $this->getPrefixedName($columns->getPrimaryColumn()->getId())));
         $this->query->setFirstResult(null);
         $this->query->setMaxResults(null);
         $result = $this->query->getQuery()->getSingleResult();

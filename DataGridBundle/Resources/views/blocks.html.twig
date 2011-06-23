@@ -24,14 +24,20 @@
 {% block grid_titles %}
     <tr>
     {% for column in grid.columns %}
+        {% if (column.visible )%}
         <th class="title"{% if(column.size > 0) %} style="width:{{column.size}}px"{% endif %}>
-        <a href="{{ grid_url('order', grid, column) }}" title="Order by {{ column.title }}">{{ column.title }}</a>
-        {% if column.order == 'asc' %}
-            <div class="sort_up"></div>
-        {% elseif column.order == 'desc' %}
-            <div class="sort_down"></div>
+        {% if (column.sortable) %}
+            <a href="{{ grid_url('order', grid, column) }}" title="Order by {{ column.title }}">{{ column.title }}</a>
+            {% if column.order == 'asc' %}
+                <div class="sort_up"></div>
+            {% elseif column.order == 'desc' %}
+                <div class="sort_down"></div>
+            {% endif %}
+        {% else %}
+            {{ column.title }}
         {% endif %}
         </th>
+        {% endif %}
     {% endfor %}
     </tr>
 {% endblock %}
@@ -39,19 +45,23 @@
 {% block grid_filters %}
     <tr>
     {% for column in grid.columns %}
+        {% if (column.visible )%}
         <th>{{ column.filter|raw }}</th>
+        {% endif %}
     {% endfor %}
     </tr>
 {% endblock %}
-
+{# ---------------------------------------------------- grid_rows --------------------------------------------------- #}
 {% block grid_rows %}
     {% for row in grid.rows %}
     <tr{% if row.color != '' %} style="background-color:{{row.color}};"{% endif %}>
-    {% for col in grid.columns %}
-        {% if loop.last %}
-        <td class="last"> {{row.field(col.id)|raw}}</td>
-        {% else %}
-        <td> {{row.field(col.id)|raw}}</td>
+    {% for column in grid.columns %}
+        {% if (column.visible )%}
+            {% if loop.last %}
+            <td class="last">{{row.field(column.id)|raw}}</td>
+            {% else %}
+            <td>{{row.field(column.id)|raw}}</td>
+            {% endif %}
         {% endif %}
     {% endfor %}
     </tr>

@@ -22,12 +22,12 @@ class MassAction extends Column
 
     public function renderFilter($gridId)
     {
-        return '<input type="checkbox" style="width:100%"/>';
+        return '<input type="checkbox"/>';
     }
 
-    public function renderCell($value, $row, $router)
+    public function renderCell($value, $row, $router, $primaryColumnValue)
     {
-        return '<input type="checkbox" style="width:100%" value="'.$this->data.'" name="[MassId]['.$this->getId().']"/>';
+        return '<input type="checkbox" style="width:100%" value="'.$this->data.'" name="[mass]['.$primaryColumnValue.']"/>';
     }
 
     public function setMassActionColumnId($massActionColumnId)

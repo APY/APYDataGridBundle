@@ -26,6 +26,7 @@ abstract class Column
     private $orderUrl;
     private $filterDrawCache;
     private $special;
+
     protected $data;
 
     const DATA_CONJUNCTION = 0;
@@ -38,7 +39,6 @@ abstract class Column
     const OPERATOR_GT   = 'gt';
     const OPERATOR_GTE  = 'gte';
     const OPERATOR_LIKE = 'like';
-
 
     /**
      * Default Column constructor
@@ -91,11 +91,11 @@ abstract class Column
      * @param $router
      * @return string
      */
-    public function renderCell($value, $row, $router)
+    public function renderCell($value, $row, $router, $primaryColumnValue)
     {
         if (is_callable($this->callback))
         {
-            return call_user_func($this->callback, $value, $row, $router);
+            return call_user_func($this->callback, $value, $row, $router, $primaryColumnValue);
         }
         else
         {
