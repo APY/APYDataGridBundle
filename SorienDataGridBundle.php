@@ -13,6 +13,6 @@ namespace Sorien\DataGridBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class DataGridBundle extends Bundle
+class SorienDataGridBundle extends Bundle
 {
 }
