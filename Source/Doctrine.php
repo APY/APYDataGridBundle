@@ -21,7 +21,7 @@ use Sorien\DataGridBundle\Column\Column;
 use Sorien\DataGridBundle\DataGrid\Rows;
 use Doctrine\ORM\Query\Expr\Orx;
 
-class DoctrineSource extends Source
+class Doctrine extends Source
 {
     /**
      * @var \Doctrine\ORM\EntityManager

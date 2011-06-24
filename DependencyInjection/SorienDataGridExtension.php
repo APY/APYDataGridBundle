@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
 
-class DataGridExtension extends Extension {
+class SorienDataGridExtension extends Extension {
 
     public function load(array $config, ContainerBuilder $container)
     {

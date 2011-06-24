@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>    
-        <parameter key="sorien_datagrid.twig_extention.class">Sorien\DataGridBundle\Twig\DataGridExtention</parameter>
+        <parameter key="sorien_datagrid.twig_extention.class">Sorien\DataGridBundle\Twig\DataGridExtension</parameter>
     </parameters>
 
     <services>
