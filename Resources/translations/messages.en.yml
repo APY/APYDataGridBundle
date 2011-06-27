@@ -1,0 +1,14 @@
+datagrid:
+    page: 'Page:'
+    display: ', Display'
+    count: 'of %count%'
+    items: 'Items per page'
+    select:
+        visible: 'Select visible'
+        all: 'Select all'
+    deselect:
+        visible: 'Deselect visible'
+        all: 'Deselect all'
+    action:
+        label: 'Action:'
+        submit: 'Submit Action'
