@@ -37,7 +37,7 @@ two routs goes to the same controller action
 Usage - controller
 -----
 
-``` php
+```php
 class DefaultController extends Controller
 {
     public function gridAction()
