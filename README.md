@@ -20,7 +20,7 @@ if you want to help or change any part according your needs im open to any idea 
 Compatibility
 -----
 
-Symfony2 beta 2
+Symfony2 beta 5
 
 Usage - routes
 -----
@@ -36,6 +36,7 @@ two routs goes to the same controller action
 
 Usage - controller
 -----
+
 ``` php
 class DefaultController extends Controller
 {
