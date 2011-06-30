@@ -22,31 +22,13 @@ class Actions implements \IteratorAggregate, \Countable {
 
     public function getIterator()
     {
-        return $this->actions;
+        return new \ArrayIterator($this->actions);
     }
 
-    function addMassAction($title, $callback)
+    function addAction($title, $callback, $confirm = true)
     {
-        $this->actions[] = array('title' => $title, 'callback' => $callback);
+        $this->actions[] = array('title' => $title, 'callback' => $callback, 'confirm' => $confirm);
         return $this;
-    }
-
-    /**
-     * @todo
-     * @return bool
-     */
-    function showFilters()
-    {
-        return true;
-    }
-
-    /**
-     * @todo
-     * @return bool
-     */
-    function showTitles()
-    {
-        return true;
     }
 
     public function count()

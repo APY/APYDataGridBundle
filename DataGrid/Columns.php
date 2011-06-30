@@ -12,6 +12,7 @@
 namespace Sorien\DataGridBundle\DataGrid;
 
 use Sorien\DataGridBundle\Column\Column;
+use Sorien\DataGridBundle\DataGrid\ColumnsIterator;
 
 class Columns implements \IteratorAggregate, \Countable {
 
@@ -26,9 +27,9 @@ class Columns implements \IteratorAggregate, \Countable {
         $this->columns = array();
     }
 
-    public function getIterator()
+    public function getIterator($showOnlySourceColumns = false)
     {
-        return new \ArrayIterator($this->columns);
+        return new ColumnsIterator(new \ArrayIterator($this->columns), $showOnlySourceColumns);
     }
 
     /**

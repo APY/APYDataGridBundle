@@ -11,7 +11,7 @@
 
 namespace Sorien\DataGridBundle\Column;
 
-abstract class Column
+class Column
 {
     private $id;
     private $title;
@@ -23,7 +23,7 @@ abstract class Column
     private $order;
     private $size;
     private $orderUrl;
-    private $special;
+    private $visibleForSource;
 
     protected $data;
 
@@ -59,17 +59,19 @@ abstract class Column
         $this->filterable = $filterable;
         $this->isSorted = false;
         $this->order = '';
-        $this->special = false;
+        $this->visibleForSource = true;
     }
 
     /**
      * Draw filter
      *
-     * @abstract
      * @param string $gridId
      * @return string
      */
-    abstract public function renderFilter($gridId);
+    public function renderFilter($gridId)
+    {
+        return '';
+    }
 
     /**
      * Draw cell
@@ -335,16 +337,13 @@ abstract class Column
         return null;
     }
 
-    //todo: change name
-    public function setSpecial($special)
+    public function setIsVisibleForSource($value)
     {
-        $this->special = $special;
-
-        return $this;
+        $this->visibleForSource = $value;
     }
 
-    public function isSpecial()
+    public function isVisibleForSource()
     {
-        return $this->special;
+        return $this->visibleForSource;
     }
 }

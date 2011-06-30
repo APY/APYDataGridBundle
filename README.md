@@ -37,34 +37,32 @@ two routs goes to the same controller action
 Usage - controller
 -----
 
-```php
-class DefaultController extends Controller
-{
-    public function gridAction()
+    class DefaultController extends Controller
     {
-        /**
-         * create simple grid based on your entity.
-         * @hint to add custom columns or actions you need to extend Source\Doctrine class
-         *
-         * 1st param Source object inherited from Source class
-         * 2nd param Controller
-         * 3th param route to controller action which is handling grid actions (filtering, ordering, pagination ...)
-         *           until ajax support is ready
-         */
-        $grid = new Grid(new Doctrine('YourBundle:YourEntity'), $this, 'filter');
-        if ($grid->isReadyForRedirect())
+        public function gridAction()
         {
-            //data are stored, do redirect
-            return new RedirectResponse($this->generateUrl('grid'));
-        }
-        else
-        {
-            //show grid
-            return $this->render('YourBundle::default_index.html.twig', array('data' => $grid->prepare()));
+            /**
+             * create simple grid based on your entity.
+             * @hint to add custom columns or actions you need to extend Source\Doctrine class
+             *
+             * 1st param Source object inherited from Source class
+             * 2nd param Controller
+             * 3th param route to controller action which is handling grid actions (filtering, ordering, pagination ...)
+             *           until ajax support is ready
+             */
+            $grid = new Grid(new Doctrine('YourBundle:YourEntity'), $this, 'filter');
+            if ($grid->isReadyForRedirect())
+            {
+                //data are stored, do redirect
+                return new RedirectResponse($this->generateUrl('grid'));
+            }
+            else
+            {
+                //show grid
+                return $this->render('YourBundle::default_index.html.twig', array('data' => $grid->prepare()));
+            }
         }
     }
-}
-```
 
 Usage - view
 -----

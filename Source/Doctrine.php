@@ -59,7 +59,7 @@ class Doctrine extends Source
 
     /**
      * @param $columns \Sorien\DataGridBundle\DataGrid\Columns
-     * @param $actions
+     * @param $actions \Sorien\DataGridBundle\DataGrid\Actions
      * @return null
      */
     public function prepare($columns, $actions)
@@ -95,7 +95,13 @@ class Doctrine extends Source
             }
         }
 
-        //$actions->addMassAction('action', null);
+//        just a test data will be removed
+//        $column = new Column('callbacks', '', '24', false, false, true);
+//        $column->setCallback( function ($value, $row, $router, $primaryColumnValue) { return 'hallo'; });
+//        $column->setIsVisibleForSource(false);
+//        $columns->addColumn($column);
+//
+//        $actions->addAction('Suspend', function(){ echo 'ok'; });
     }
 
     /**
@@ -113,8 +119,6 @@ class Doctrine extends Source
 
         foreach ($columns as $column)
         {
-            if ($column->isSpecial()) continue;
-
             $this->query->addSelect($this->getPrefixedName($column->getId()));
 
             if ($column->isSorted())

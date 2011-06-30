@@ -51,7 +51,7 @@ class DataGridExtension extends \Twig_Extension {
             'grid_filters'      => new \Twig_Function_Method($this, 'getGridFilters', array('is_safe' => array('html'))),
             'grid_rows'         => new \Twig_Function_Method($this, 'getGridItems', array('is_safe' => array('html'))),
             'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
-            'grid_massactions'  => new \Twig_Function_Method($this, 'getGridMassActions', array('is_safe' => array('html'))),
+            'grid_actions'      => new \Twig_Function_Method($this, 'getGridActions', array('is_safe' => array('html'))),
             'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl'),
             'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter'),
         );
@@ -90,9 +90,9 @@ class DataGridExtension extends \Twig_Extension {
         return $this->renderBlock('grid_pager', array('grid' => $grid));
     }
 
-    public function getGridMassActions($grid)
+    public function getGridActions($grid)
     {
-        return $this->renderBlock('grid_massactions', array('grid' => $grid));
+        return $this->renderBlock('grid_actions', array('grid' => $grid));
     }
 
     public function getGridUrl($section, $grid, $param = null)

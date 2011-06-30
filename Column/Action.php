@@ -28,8 +28,8 @@ class Action extends Column
         return '<input type="checkbox" class="action" value="'.$this->data.'" name="[mass]['.$primaryColumnValue.']"/>';
     }
 
-    public function isSpecial()
+    public function isVisibleForSource()
     {
-        return true;
+        return false;
     }
 }

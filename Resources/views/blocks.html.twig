@@ -3,7 +3,7 @@
 <div class="grid">
     <form action="{{ grid.routeUrl }}" method="post">
         {% if grid.actions.count > 0 %}
-        {{ grid_massactions(grid) }}
+        {{ grid_actions(grid) }}
         {% endif %}
         <table style="width:100%">
         {% if grid.columns.showtitles %}
@@ -87,8 +87,8 @@
 </select> {{ 'datagrid.items'|trans }}
 </div>
 {% endblock %}
-{# ------------------------------------------------ grid_massactions ------------------------------------------------ #}
-{% block grid_massactions %}
+{# --------------------------------------------------- grid_actions ------------------------------------------------- #}
+{% block grid_actions %}
 <div class="mass-actions">
 <a href="#">{{ 'datagrid.select.visible'|trans }}</a> |
 <a href="#">{{ 'datagrid.deselect.visible'|trans }}</a> |
@@ -97,6 +97,9 @@
 <div style="float:right">
 {{ 'datagrid.action.label'|trans }} <select>
     <option value="0"></option>
+    {% for key, value in grid.actions %}
+    <option value="{{key}}">{{ value.title|trans }}</option>
+    {% endfor %}
 </select><input type="button" value="{{ 'datagrid.action.submit'|trans }}"/>
 </div>
 </div>

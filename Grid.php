@@ -51,7 +51,15 @@ class Grid
     * @var \Sorien\DataGridBundle\Column\Column[]
     */
     private $columns;
+
+    /**
+    * @var \Sorien\DataGridBundle\DataGrid\Rows
+    */
     private $rows;
+
+    /**
+    * @var \Sorien\DataGridBundle\DataGrid\Actions
+    */
     private $actions;
 
     private $updated;
@@ -77,8 +85,11 @@ class Grid
 
         $this->setRoute($route);
 
-        $name = explode('::', $controller->get('request')->get('_controller'));
+        $name = explode('::', $this->request->get('_controller'));
         $this->id = md5($name[0].$id);
+        $this->limits = array('20' => '20', '50' => '50', '100' => '100');
+        $this->limit = key($this->limits);
+        $this->page = 0;
 
         $this->columns = new Columns();
         $this->actions = new Actions();
@@ -88,22 +99,21 @@ class Grid
         //get cols from source
         $this->source->prepare($this->columns, $this->actions);
 
-        if ($this->actions->count() > 0)
+        if ($this->columns->count() > 0)
         {
-           $this->columns->insertColumn(0, new Action());
+            $this->update();
         }
 
-        $this->limits = array('20' => '20', '50' => '50', '100' => '100');
-        $this->limit = key($this->limits);
-        $this->page = 0;
-
-        $this->update();
+        if ($this->actions->count() > 0)
+        {
+           // $this->executeActions();
+        }
     }
 
-    private function getData($column)
+    private function getData($column, $onlyFromRequest = false)
     {
         $result = null;
-        if (is_array($data = $this->session->get($this->getHash())))
+        if (!$onlyFromRequest && is_array($data = $this->session->get($this->getHash())))
         {
             if (isset($data[$column]))
             {
@@ -193,11 +203,17 @@ class Grid
      */
     public function prepare()
     {
-        $this->rows = $this->source->execute($this->columns, $this->page, $this->limit);
+        $this->rows = $this->source->execute($this->columns->getIterator(true), $this->page, $this->limit);
 
         if(!$this->rows instanceof Rows)
         {
             throw new \Exception('Source have to return Rows object.');
+        }
+
+        //add action column
+        if ($this->actions->count() > 0)
+        {
+            $this->columns->insertColumn(0, new Action());
         }
 
         $primaryColumnId =  $this->columns->getPrimaryColumn()->getId();
