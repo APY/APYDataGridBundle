@@ -62,7 +62,9 @@ class Grid
     */
     private $actions;
 
-    private $updated;
+    private $showFilters;
+    private $showTitles;
+
 
     /**
      * @param $source Data Source
@@ -90,6 +92,7 @@ class Grid
         $this->limits = array('20' => '20', '50' => '50', '100' => '100');
         $this->limit = key($this->limits);
         $this->page = 0;
+        $this->showTitles = $this->showFilters = true;
 
         $this->columns = new Columns();
         $this->actions = new Actions();
@@ -99,17 +102,23 @@ class Grid
         //get cols from source
         $this->source->prepare($this->columns, $this->actions);
 
-        if ($this->columns->count() > 0)
-        {
-            $this->update();
-        }
+        //store column data
+        $this->fetchAndSaveColumnData();
 
-        if ($this->actions->count() > 0)
-        {
-           // $this->executeActions();
-        }
+        //execute actions
+        $this->executeActions();
+
+        //store drid data
+        $this->fetchAndSaveGridData();
     }
 
+    /**
+     * Retrieve Column Data from Session and Request
+     *
+     * @param string $column
+     * @param bool $onlyFromRequest
+     * @return null|string
+     */
     private function getData($column, $onlyFromRequest = false)
     {
         $result = null;
@@ -132,15 +141,39 @@ class Grid
         return $result;
     }
 
-    public function update()
+    /**
+     * Set and Store Columns data
+     *
+     * @return void
+     */
+    private function fetchAndSaveColumnData()
     {
-        $saveData = array();
+        $storage = array();
 
-        //set column data
         foreach ($this->columns as $column)
         {
             $column->setData($this->getData($column->getId()));
+
+            if (!is_null($data = $column->getData()))
+            {
+                $storage[$column->getId()] = $data;
+            }
         }
+
+        if (!empty($storage))
+        {
+            $this->session->set($this->getHash(), $storage);
+        }
+    }
+
+    /**
+     * Set and Store Initial Grid data
+     *
+     * @return void
+     */
+    private function fetchAndSaveGridData()
+    {
+        $storage = array();
 
         //set internal data
         $limit = $this->getData('_limit');
@@ -166,39 +199,46 @@ class Grid
                 $column->setOrder($columnOrder);
             }
 
-            $saveData['_order'] = $order;
-        }
-
-        foreach ($this->columns as $column)
-        {
-            $data = $column->getData();
-            if (!is_null($data))
-            {
-                $saveData[$column->getId()] = $data;
-            }
+            $storage['_order'] = $order;
         }
 
         if ($this->limit != key($this->limits))
         {
-            $saveData['_limit'] = $this->limit;
+            $storage['_limit'] = $this->limit;
         }
 
         if ($this->page > 0)
         {
-            $saveData['_page'] = $this->page;
+            $storage['_page'] = $this->page;
         }
 
         // save data to sessions if needed
-        if (!empty($saveData)) 
+        if (!empty($storage))
         {
-            $this->session->set($this->getHash(), $saveData);
+            $this->session->set($this->getHash(), $storage);
         }
-
-        $this->updated = true;
     }
 
+    public function executeActions()
+    {
+        $id = $this->getData('__action_id', true);
+        $data = $this->getData('__action', true);
+
+        if ($id > -1 && is_array($data))
+        {
+            $action = $this->actions->getAction($id);
+
+            if (is_callable($action['callback']))
+            {
+                call_user_func($action['callback'], array_keys($data), false, $this->session);
+            }
+        }
+    }
+
+
     /**
-     * Get data form Source Object
+     * Prepare Grid for Drawing
+     *
      * @return void
      */
     public function prepare()
@@ -213,16 +253,32 @@ class Grid
         //add action column
         if ($this->actions->count() > 0)
         {
-            $this->columns->insertColumn(0, new Action());
+            $this->columns->addColumn(new Action($this->getHash()), 0);
         }
 
-        $primaryColumnId =  $this->columns->getPrimaryColumn()->getId();
+        $primaryColumnId = $this->columns->getPrimaryColumn()->getId();
 
         foreach ($this->rows as $row)
         {
             foreach ($this->columns as $column)
             {
                 $row->setField($column->getId(), $column->renderCell($row->getField($column->getId()), $row, $this->router, $row->getField($primaryColumnId)));
+            }
+        }
+
+        //autohie titles when no title is set
+        if (!$this->showTitles)
+        {
+            $this->showTitles = false;
+            foreach ($this->columns as $column)
+            {
+                if (!$this->showTitles) break;
+
+                if ($column->getTitle() != '')
+                {
+                    $this->showTitles = true;
+                    break;
+                }
             }
         }
 
@@ -236,7 +292,7 @@ class Grid
     {
         return $this->columns;
     }
-    
+
     public function setColumns($columns)
     {
         if(!$columns instanceof Columns)
@@ -245,8 +301,8 @@ class Grid
         }
 
         $this->columns = $columns;
-        $this->update();
-        
+        $this->fetchAndSaveColumnData();
+
         return $this;
     }
 
@@ -284,7 +340,7 @@ class Grid
 
     public function isReadyForRedirect()
     {
-        return ($this->updated && $this->route == $this->request->get('_route'));
+        return ($this->route == $this->request->get('_route'));
     }
     
     public function getHash()
@@ -325,6 +381,32 @@ class Grid
     public function getTotalCount()
     {
         return $this->totalCount;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTitleSectionVisible()
+    {
+        return $this->showTitles;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFilterSectionVisible()
+    {
+        return $this->showFilters;
+    }
+
+    public function hideFilters()
+    {
+        $this->showFilters = false;
+    }
+
+    public function hideTitles()
+    {
+        $this->showTitles = false;
     }
 
 }

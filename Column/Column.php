@@ -65,10 +65,10 @@ class Column
     /**
      * Draw filter
      *
-     * @param string $gridId
+     * @param string $gridHash
      * @return string
      */
-    public function renderFilter($gridId)
+    public function renderFilter($gridHash)
     {
         return '';
     }

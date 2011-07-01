@@ -13,19 +13,22 @@ namespace Sorien\DataGridBundle\Column;
 
 class Action extends Column
 {
-    public function __construct()
+    private $gridHash;
+
+    public function __construct($gridHash)
     {
-        parent::__construct('mass', '', 10, false, true);
+        $this->gridHash = $gridHash;
+        parent::__construct('__action', '', 10, false, true);
     }
 
-    public function renderFilter($gridId)
+    public function renderFilter($gridHash)
     {
         return '<input type="checkbox"/>';
     }
 
     public function renderCell($value, $row, $router, $primaryColumnValue)
     {
-        return '<input type="checkbox" class="action" value="'.$this->data.'" name="[mass]['.$primaryColumnValue.']"/>';
+        return '<input type="checkbox" class="action" value="1" name="'.$this->gridHash.'[__action]['.$primaryColumnValue.']"/>';
     }
 
     public function isVisibleForSource()

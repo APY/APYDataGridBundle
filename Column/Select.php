@@ -21,7 +21,7 @@ class Select extends Column
         $this->values = $values;
     }
 
-    public function renderFilter($gridId)
+    public function renderFilter($gridHash)
     {
         $result = '<option value=""></option>';
 
@@ -37,6 +37,6 @@ class Select extends Column
             }
         }
 
-        return '<select name="'.$gridId.'['.$this->getId().']" onchange="this.form.submit();">'.$result.'</select>';
+        return '<select name="'.$gridHash.'['.$this->getId().']" onchange="this.form.submit();">'.$result.'</select>';
     }
 }

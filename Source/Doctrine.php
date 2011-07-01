@@ -96,12 +96,12 @@ class Doctrine extends Source
         }
 
 //        just a test data will be removed
-//        $column = new Column('callbacks', '', '24', false, false, true);
-//        $column->setCallback( function ($value, $row, $router, $primaryColumnValue) { return 'hallo'; });
-//        $column->setIsVisibleForSource(false);
-//        $columns->addColumn($column);
-//
-//        $actions->addAction('Suspend', function(){ echo 'ok'; });
+        $column = new Column('callbacks', '', '24', false, false, true);
+        $column->setCallback( function ($value, $row, $router, $primaryColumnValue) { return 'hallo'; });
+        $column->setIsVisibleForSource(false);
+        $columns->addColumn($column);
+
+        $actions->addAction('Suspend', function($ids, $all, $session){ return $session->setFlash('notice', 'Congratulations, your action succeeded!'); });
     }
 
     /**

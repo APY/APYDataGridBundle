@@ -34,26 +34,28 @@ class Columns implements \IteratorAggregate, \Countable {
 
     /**
      * Add column, column object have to extend Column
-     * @param $column Column
+     * @param Column $column
+     * @param int $position
      * @return Grid
      *
      */
-    public function addColumn($column)
+    public function addColumn($column, $position = -1)
     {
         if (!$column instanceof Column)
         {
             throw new \InvalidArgumentException('Your column needs to extend class Column.');
         }
 
-        $this->columns[] = $column;
-        return $this;
-    }
-
-    public final function insertColumn($position, $column)
-    {
-        $head = array_slice($this->columns, 0, $position);
-        $tail = array_slice($this->columns, $position);
-        $this->columns = array_merge($head, array($column), $tail);
+        if ($position >= 0)
+        {
+            $head = array_slice($this->columns, 0, $position);
+            $tail = array_slice($this->columns, $position);
+            $this->columns = array_merge($head, array($column), $tail);
+        }
+        else
+        {
+            $this->columns[] = $column;
+        }
 
         return $this;
     }
@@ -79,25 +81,6 @@ class Columns implements \IteratorAggregate, \Countable {
     public function getPrimaryColumn()
     {
         return $this->getColumnById($this->primary);
-    }
-
-
-    /**
-     * @todo
-     * @return bool
-     */
-    function showFilters()
-    {
-        return true;
-    }
-
-    /**
-     * @todo
-     * @return bool
-     */
-    function showTitles()
-    {
-        return true;
     }
 
     public function count()

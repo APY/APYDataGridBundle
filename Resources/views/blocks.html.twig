@@ -6,11 +6,11 @@
         {{ grid_actions(grid) }}
         {% endif %}
         <table style="width:100%">
-        {% if grid.columns.showtitles %}
+        {% if grid.isTitleSectionVisible %}
             {{ grid_titles(grid) }}
         {% endif %}
 
-        {% if grid.columns.showfilters %}
+        {% if grid.isFilterSectionVisible %}
             {{ grid_filters(grid) }}
         {% endif %}
 
@@ -95,12 +95,12 @@
 <a href="#">{{ 'datagrid.select.all'|trans }}</a> |
 <a href="#">{{ 'datagrid.deselect.all'|trans }}</a>
 <div style="float:right">
-{{ 'datagrid.action.label'|trans }} <select>
-    <option value="0"></option>
+{{ 'datagrid.action.label'|trans }} <select name="{{grid.getHash}}[__action_id]">
+    <option value="-1"></option>
     {% for key, value in grid.actions %}
     <option value="{{key}}">{{ value.title|trans }}</option>
     {% endfor %}
-</select><input type="button" value="{{ 'datagrid.action.submit'|trans }}"/>
+</select><input type="submit"  value="{{ 'datagrid.action.submit'|trans }}"/>
 </div>
 </div>
 {% endblock %}

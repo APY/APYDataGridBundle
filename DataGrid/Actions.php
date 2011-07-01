@@ -31,6 +31,11 @@ class Actions implements \IteratorAggregate, \Countable {
         return $this;
     }
 
+    function getAction($id)
+    {
+        return $this->actions[$id];
+    }
+
     public function count()
     {
        return count($this->actions);
