@@ -8,10 +8,11 @@ planed features:
  - sorting - done
  - paggination - done
  - customizable columns with filters - done
- - mass actions - partially done
+ - mass actions - almost done
  - sources: doctrine(entities) - done , xml, array ... - later
  - exports: xml, excel, pdf ... - later
  - theme support like Symfony\Bridge\Twig\Extension - done but wil be changed a bit
+ - ajax support <- next step
 
 let's call it beta but it's usable
 
@@ -20,7 +21,7 @@ if you want to help or change any part according your needs im open to any idea 
 Compatibility
 -----
 
-Symfony2 beta 5
+Symfony2 RC3
 
 Usage - routes
 -----
@@ -34,7 +35,7 @@ two routs goes to the same controller action
         pattern:  /filter
         defaults: { _controller: YourBundle:Default:grid }
 
-Usage - controller
+Usage - Datagrid with Doctrine Entity as source
 -----
 
     class DefaultController extends Controller
@@ -71,7 +72,7 @@ view:
     //second parameter is optional and defining template
     {{ grid(data, 'YourBundle::own_grid_theme_template.html.twig') }}
 
-your own grid theme template: you can override blocks - `grid`, `grid_titles`, `grid_filters`, `grid_rows`, `grid_pager`, `grid_massactions`
+your own grid theme template: you can override blocks - `grid`, `grid_titles`, `grid_filters`, `grid_rows`, `grid_pager`, `grid_actions`
 
     //file: YourBundle::own_grid_theme.html.twig
     {% extends 'DataGridBundle::datagrid.html.twig' %}
