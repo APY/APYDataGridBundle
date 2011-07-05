@@ -22,13 +22,11 @@ use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
-class Doctrine extends EntityRepository implements Source
+class Entity extends EntityRepository implements Source
 {
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-   // private $entityManager;
-//    private $entityName;
     private $columnMappings;
     private $table;
     private $tablePrefix;
@@ -66,7 +64,7 @@ class Doctrine extends EntityRepository implements Source
         $this->tablePrefix = 'a';
     }
 
-    public function getPrefixedName($name)
+    private function getPrefixedName($name)
     {
         return $this->tablePrefix.'.'.$name;
     }

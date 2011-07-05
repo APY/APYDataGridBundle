@@ -38,6 +38,8 @@ two routs goes to the same controller action
 
 Usage - Datagrid with Doctrine Entity as source
 -----
+    use Sorien\DataGridBundle\Grid;
+    use Sorien\DataGridBundle\Source\Entity;
 
     class DefaultController extends Controller
     {
@@ -53,11 +55,11 @@ Usage - Datagrid with Doctrine Entity as source
              *           until ajax support is ready
              */
             $em = $this->getDoctrine()->getEntityManager();
-            $grid = new Grid(new Doctrine($em, 'YourBundle:YourEntity'), $this, 'filter');
+            $grid = new Grid(new Entity($em, 'YourBundle:YourEntity'), $this, 'filter');
 
             or
 
-            $grid = new Grid($this->getDoctrine()->getRepository('Admin:User'), $this, 'filter'); // when repository extends Source\Doctrine
+            $grid = new Grid($this->getDoctrine()->getRepository('Admin:User'), $this, 'filter'); // when repository extends Source\Entity
 
             if ($grid->isReadyForRedirect())
             {
