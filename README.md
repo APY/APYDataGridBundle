@@ -13,6 +13,7 @@ planed features:
  - exports: xml, excel, pdf ... - later
  - theme support like Symfony\Bridge\Twig\Extension - done but wil be changed a bit
  - ajax support <- next step
+ - entity anotations
 
 let's call it beta but it's usable
 
@@ -43,7 +44,7 @@ Usage - Datagrid with Doctrine Entity as source
         public function gridAction()
         {
             /**
-             * create simple grid based on your entity.
+             * creates simple grid based on your entity.
              * @hint to add custom columns or actions you need to extend Source\Doctrine class
              *
              * 1st param Source object inherited from Source class
@@ -51,7 +52,13 @@ Usage - Datagrid with Doctrine Entity as source
              * 3th param route to controller action which is handling grid actions (filtering, ordering, pagination ...)
              *           until ajax support is ready
              */
-            $grid = new Grid(new Doctrine('YourBundle:YourEntity'), $this, 'filter');
+            $em = $this->getDoctrine()->getEntityManager();
+            $grid = new Grid(new Doctrine($em, 'YourBundle:YourEntity'), $this, 'filter');
+
+            or
+
+            $grid = new Grid($this->getDoctrine()->getRepository('Admin:User'), $this, 'filter'); // when repository extends Source\Doctrine
+
             if ($grid->isReadyForRedirect())
             {
                 //data are stored, do redirect

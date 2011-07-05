@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  *
  *
- * @todo use repositories http://symfony.com/doc/current/book/doctrine.html#using-doctrine-s-query-builder
  */
 
 namespace Sorien\DataGridBundle\Source;
@@ -20,29 +19,42 @@ use Sorien\DataGridBundle\Column\Select;
 use Sorien\DataGridBundle\Column\Column;
 use Sorien\DataGridBundle\DataGrid\Rows;
 use Doctrine\ORM\Query\Expr\Orx;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
-class Doctrine extends Source
+class Doctrine extends EntityRepository implements Source
 {
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    private $entityManager;
-    private $entityName;
+   // private $entityManager;
+//    private $entityName;
     private $columnMappings;
     private $table;
     private $tablePrefix;
     private $query;
 
-    public function __construct($entityName)
+    /**
+     * @param \Doctrine\ORM\EntityManager $entity Entity Manager
+     * @param \Doctrine\ORM\Mapping\ClassMetadata|string $class ClassMetadata or Entity Name
+     */
+    public function __construct($em, $class)
     {
-        $this->entityName = $entityName;
-        $this->tablePrefix = 'a';
-    }
+        $this->_em = $em;
 
-    public function initialize($container)
-    {
-        $this->entityManager = $container->get('doctrine')->getEntityManager();
-        $metadata = $this->entityManager->getClassMetadata($this->entityName);
+        if ($class instanceof ClassMetadata)
+        {
+            $this->_entityName = $class->name;
+            $this->_class = $class;
+        }
+
+        if (is_string($class))
+        {
+            $this->_entityName = $class;
+            $this->_class = $this->_em->getClassMetadata($this->_entityName);
+        }
+
+        $metadata = $this->getClassMetadata();
 
         foreach ($metadata->getColumnNames() as $value)
         {
@@ -50,6 +62,8 @@ class Doctrine extends Source
         }
 
         $this->table = $metadata->getReflectionClass()->name;
+
+        $this->tablePrefix = 'a';
     }
 
     public function getPrefixedName($name)
@@ -94,6 +108,14 @@ class Doctrine extends Source
                 $columns->setPrimaryColumn($mapping['fieldName']);
             }
         }
+
+//        just a test data will be removed
+        $column = new Column('callbacks', '', '24', false, false, true);
+        $column->setCallback( function ($value, $row, $router, $primaryColumnValue) { return 'hallo'; });
+        $column->setIsVisibleForSource(false);
+        $columns->addColumn($column);
+
+        $actions->addAction('Suspend', function($ids, $all, $session){ return $session->setFlash('notice', 'Congratulations, your action succeeded!'); });
     }
 
     /**
@@ -104,7 +126,7 @@ class Doctrine extends Source
      */
     public function execute($columns, $page, $limit)
     {
-        $this->query = $this->entityManager->createQueryBuilder();
+        $this->query = $this->_em->createQueryBuilder();
         $this->query->from($this->table, $this->tablePrefix);
 
         $where = $this->query->expr()->andx();
