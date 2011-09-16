@@ -3,7 +3,7 @@
 <div class="grid">
     <form action="{{ grid.routeUrl }}" method="post">
         {% if grid.actions.count > 0 %}
-        {{ grid_actions(grid) }}
+            {{ grid_actions(grid) }}
         {% endif %}
         <table>
         {% if grid.isTitleSectionVisible %}
@@ -16,7 +16,9 @@
 
         {{ grid_rows(grid) }}
         </table>
-        {{ grid_pager(grid) }}
+        {% if grid.isPagerSectionVisible %}
+            {{ grid_pager(grid) }}
+        {% endif %}
     </form>
 </div>
 {% endblock %}
@@ -25,7 +27,7 @@
     <tr>
     {% for column in grid.columns %}
         {% if (column.visible )%}
-        <th class="title"{% if(column.size > 0) %} style="width:{{column.size}}px"{% endif %}>
+        <th class="title"{% if(column.size > -1) %} style="width:{{column.size}}px"{% endif %}>
         {% if (column.sortable) %}
             <a href="{{ grid_url('order', grid, column) }}" title="Order by {{ column.title }}">{{ column.title }}</a>
             {% if column.order == 'asc' %}
@@ -45,8 +47,8 @@
 {% block grid_filters %}
     <tr>
     {% for column in grid.columns %}
-        {% if (column.visible )%}
-        <th>{{ grid_filter(column, grid)|raw }}</th>
+        {% if (column.visible)%}
+        <th>{% if column.filterable %}{{ grid_filter(column, grid)|raw }}{% endif %}</th>
         {% endif %}
     {% endfor %}
     </tr>
@@ -58,9 +60,9 @@
     {% for column in grid.columns %}
         {% if (column.visible )%}
             {% if loop.last %}
-            <td class="last">{{row.field(column.id)|raw}}</td>
+            <td class="last">{{ grid_cell(column, row)|raw }}</td>
             {% else %}
-            <td>{{row.field(column.id)|raw}}</td>
+            <td>{{ grid_cell(column, row)|raw }}</td>
             {% endif %}
         {% endif %}
     {% endfor %}

@@ -11,6 +11,7 @@
     <services>
         <service id="sorien_datagrid.twig_extention" class="%sorien_datagrid.twig_extention.class%" public="false">
             <tag name="twig.extension" />
+            <argument type="service" id="router" />
         </service>
     </services>
 </container>

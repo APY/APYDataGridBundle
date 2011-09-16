@@ -25,9 +25,14 @@ class DataGridExtension extends \Twig_Extension {
      */
     protected $template;
     protected $theme;
+    /**
+    * @var \Symfony\Component\Routing\Router
+    */
+    protected $router;
 
-    public function __construct()
+    public function __construct($router)
     {
+        $this->router = $router;
     }
 
     /**
@@ -54,6 +59,7 @@ class DataGridExtension extends \Twig_Extension {
             'grid_actions'      => new \Twig_Function_Method($this, 'getGridActions', array('is_safe' => array('html'))),
             'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl'),
             'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter'),
+            'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
         );
     }
 
@@ -93,6 +99,14 @@ class DataGridExtension extends \Twig_Extension {
     public function getGridActions($grid)
     {
         return $this->renderBlock('grid_actions', array('grid' => $grid));
+    }
+
+    public function getGridCell($column, $row)
+    {
+        $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
+        $block = 'grid_column_'.$column->getId().'_cell';
+
+        return $this->hasBlock($block) ? $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row)) : $value;
     }
 
     public function getGridUrl($section, $grid, $param = null)
@@ -140,23 +154,51 @@ class DataGridExtension extends \Twig_Extension {
         //load template if needed
         if (is_null($this->template))
         {
-            //get template name
-            if(is_null($this->theme))
-            {
-                $this->theme = 'SorienDataGridBundle::blocks.html.twig';
-            }
-
-            $this->template = $this->environment->loadTemplate($this->theme);
+            $this->loadTemplate();
         }
 
         if ($this->template->hasBlock($name))
         {
             return $this->template->renderBlock($name, $parameters);
         }
+        elseif (($parent = $this->template->getParent(array())) !== false)
+        {
+            return $parent->renderBlock($name, $parameters);
+        }
         else
         {
             throw new \InvalidArgumentException(sprintf('Block "%s" doesn\'t exist in grid template "%s".', $name, $this->theme));
         }
+    }
+
+    private function hasBlock($name)
+    {
+        //load template if needed
+        if (is_null($this->template))
+        {
+            $this->loadTemplate();
+        }
+
+        if ($this->template->hasBlock($name))
+        {
+            return true;
+        }
+
+        if (!$this->template->hasBlock($name) && ($parent = $this->template->getParent(array())) !== false)
+        {
+            return $parent->hasBlock($name);
+        }
+    }
+
+    private function loadTemplate()
+    {
+        //get template name
+        if(is_null($this->theme))
+        {
+            $this->theme = 'SorienDataGridBundle::grid.html.twig';
+        }
+
+        $this->template = $this->environment->loadTemplate($this->theme);
     }
 
     public function getName()
