@@ -3,6 +3,10 @@ What is DataGridBundle?
 
 datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
 
+last changes
+ - annotations
+ - ODM support
+
 planed features:
 
  - sorting - done
@@ -13,16 +17,16 @@ planed features:
  - exports: xml, excel, pdf ... - later
  - theme support like Symfony\Bridge\Twig\Extension - done but wil be changed a bit
  - ajax support <- next step
- - entity anotations
+ - entity anotations - done
+ - ODM support - done
 
-let's call it beta but it's usable
 
 if you want to help or change any part according your needs im open to any idea just create PR or open issue ticket
 
 Compatibility
 -----
 
-Symfony2 RC3
+Symfony2 2.01
 
 Usage - routes
 -----
@@ -36,7 +40,7 @@ two routs goes to the same controller action
         pattern:  /filter
         defaults: { _controller: YourBundle:Default:grid }
 
-Usage - Datagrid with Doctrine Entity as source
+Usage - Grid with Doctrine ORM Entity or ODM Document as source
 -----
     use Sorien\DataGridBundle\Grid;
     use Sorien\DataGridBundle\Source\Entity;
@@ -49,17 +53,16 @@ Usage - Datagrid with Doctrine Entity as source
              * creates simple grid based on your entity.
              * @hint to add custom columns or actions you need to extend Source\Doctrine class
              *
-             * 1st param Source object inherited from Source class
+             * 1st param Source object inherited from Source class (ORM in sample)
              * 2nd param Controller
              * 3th param route to controller action which is handling grid actions (filtering, ordering, pagination ...)
              *           until ajax support is ready
              */
-            $em = $this->getDoctrine()->getEntityManager();
-            $grid = new Grid(new Entity($em, 'YourBundle:YourEntity'), $this, 'filter');
+            $grid = new Grid(new Entity('Bundle:Entity'), $this, 'filter');
 
-            or
+            // or use Document source class for ODM
 
-            $grid = new Grid($this->getDoctrine()->getRepository('Admin:User'), $this, 'filter'); // when repository extends Source\Entity
+            $grid = new Grid(new Document('Bundle:Entity'), $this, 'filter'); // when repository extends Source\Entity
 
             if ($grid->isReadyForRedirect())
             {
@@ -88,6 +91,63 @@ your own grid theme template: you can override blocks - `grid`, `grid_titles`, `
     {% block grid %}
         extended grid!
     {% endblock %}
+
+    // cell rendering in template
+    {% block grid_column_callbacks_cell %}
+    {% if row.field('type') == 1 %}
+    <span style="color:#f00">My row id is: {{ row.getPrimaryFieldValue() }}</span>
+    {% endif %}
+    {% endblock %}
+
+
+Usage - Document or Entity annotations
+
+    Entity and Document source uses doctrine annotations for type guessing, for better customization you can use own annotations
+
+    use Sorien\DataGridBundle\Grid\Mapping as GRID;
+
+    /**
+     * Annotation Test Class
+     *
+     * @GRID\Entity(columns="id, ...")
+     */
+    class Test
+    {
+        /**
+         * @var integer $id
+         *
+         * @ORM\Column(name="id", type="integer")
+         * @GRID\Column(title="my own column name", size="120", type="text", visible="true", ... )
+         */
+        private $id;
+    }
+
+Available types form '@GRID\Column' notation
+
+ - title [string] - own column name
+ - size [int] - column width in pixels
+ - type [string] - column type (Date, Range, Select, Text)
+ - values [array] - options (only Select Column)
+ - format [string] - format (only Date Column)
+ - sortable [boolean]- turns on or off column sorting
+ - filterable [boolean] - turns on or off visibility of column filter
+ - source [boolean] - turns on or off column visibility for Source Class
+ - visible [boolean] -  turns on or off column visibility
+
+Available types form '@GRID\Column' notation
+ - columns [array] order of columns in grid
+ - filterable [bool] turns on or off visibility of all columns
+
+Usage - Examples
+
+    // Adding custom column to source - will be also possible by annotation in short time
+
+    $source = new Entity('Test:Test');
+    $source->setPrepareCallback(function ($columns){
+        $columns->addColumn(new Column(array('id' => 'callbacks', 'size' => '54', 'sortable' => false, 'filterable' => false, 'source' => false)));
+    });
+
+    $grid = new Grid($source, $this, 'path');
 
 
 Working preview
