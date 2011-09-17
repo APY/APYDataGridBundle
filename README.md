@@ -4,6 +4,7 @@ What is DataGridBundle?
 datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
 
 last changes
+
  - annotations
  - ODM support
 
@@ -26,7 +27,7 @@ if you want to help or change any part according your needs im open to any idea 
 Compatibility
 -----
 
-Symfony2 2.01
+Symfony - 2.01
 
 Usage - routes
 -----
@@ -44,6 +45,7 @@ Usage - Grid with Doctrine ORM Entity or ODM Document as source
 -----
     use Sorien\DataGridBundle\Grid;
     use Sorien\DataGridBundle\Source\Entity;
+    use Sorien\DataGridBundle\Source\Document;
 
     class DefaultController extends Controller
     {
@@ -95,7 +97,7 @@ your own grid theme template: you can override blocks - `grid`, `grid_titles`, `
 
 cell rendering inside template
 
-    {% block grid_column_callbacks_cell %}
+    {% block grid_column_yourcolumnname_cell %}
     {% if row.field('type') == 1 %}
     <span style="color:#f00">My row id is: {{ row.getPrimaryFieldValue() }}</span>
     {% endif %}
