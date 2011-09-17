@@ -43,6 +43,7 @@ class Grid
     */
     private $router;
     private $route;
+    private $container;
     private $routeUrl;
     private $id;
     /**
@@ -79,14 +80,14 @@ class Grid
      * @param $route string if null current route will be used 
      * @param string $id set if you are using more then one grid inside controller
      */
-    public function __construct($source, $container, $route = '', $id = '')
+    public function __construct($container, $source = null, $route = '', $id = '')
     {
-        if(!$source instanceof Source)
+        if(!is_null($source) && !($source instanceof Source))
         {
-            throw new \Exception('Supplied Source have to extend Source class.');
-        }       
-        
-        $this->source = $source;
+            throw new \Exception('Supplied Source have to extend Source class and not '.get_class($source));
+        }
+
+        $this->container = $container;
 
         $this->router = $container->get('router');
         $this->request = $container->get('request');
@@ -103,7 +104,28 @@ class Grid
         $this->columns = new Columns();
         $this->actions = new Actions();
 
-        $this->source->initialise($container);
+        if (!is_null($source))
+        {
+            $this->setSource($source);
+        }
+
+    }
+
+    public function setSource($source)
+    {
+        if(!is_null($this->source))
+        {
+            throw new \Exception('Source can be set just once.');
+        }
+
+        if (!($source instanceof Source))
+        {
+            throw new \Exception('Supplied Source have to extend Source class.');
+        }
+
+        $this->source = $source;
+
+        $this->source->initialise($this->container);
 
         //get cols from source
         $this->source->_prepare($this->columns, $this->actions);
@@ -116,6 +138,8 @@ class Grid
 
         //store grid data
         $this->fetchAndSaveGridData();
+
+        return $this;
     }
 
     /**

@@ -55,16 +55,20 @@ Usage - Grid with Doctrine ORM Entity or ODM Document as source
              * creates simple grid based on your entity.
              * @hint to add custom columns or actions you need to extend Source\Doctrine class
              *
-             * 1st param Source object inherited from Source class (ORM in sample)
-             * 2nd param Controller
+             * 1st param Controller 
+             * 2nd param Source object inherited from Source class (ORM in sample)
              * 3th param route to controller action which is handling grid actions (filtering, ordering, pagination ...)
              *           until ajax support is ready
              */
-            $grid = new Grid(new Entity('Bundle:Entity'), $this, 'filter');
+            $grid = new Grid($this, new Entity('Bundle:Entity'), 'filter');
 
             // or use Document source class for ODM
 
-            $grid = new Grid(new Document('Bundle:Entity'), $this, 'filter'); // when repository extends Source\Entity
+            $grid = new Grid($this, new Document('Bundle:Entity'), 'filter'); // when repository extends Source\Entity
+
+            // or as service
+
+            $grid = $this->get('grid')->setSource(new Document('Bundle:Entity'))->setRoute('filter');
 
             if ($grid->isReadyForRedirect())
             {

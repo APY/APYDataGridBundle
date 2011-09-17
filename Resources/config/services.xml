@@ -6,6 +6,7 @@
 
     <parameters>    
         <parameter key="sorien_datagrid.twig_extention.class">Sorien\DataGridBundle\Twig\DataGridExtension</parameter>
+        <parameter key="sorien_datagrid.grid.class">Sorien\DataGridBundle\Grid\Grid</parameter>
     </parameters>
 
     <services>
@@ -13,5 +14,10 @@
             <tag name="twig.extension" />
             <argument type="service" id="router" />
         </service>
+
+        <service id="grid" class="%sorien_datagrid.grid.class%">
+            <argument type="service" id="service_container" />
+        </service>
+
     </services>
 </container>
