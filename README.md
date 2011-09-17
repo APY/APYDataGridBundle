@@ -87,12 +87,14 @@ view:
 your own grid theme template: you can override blocks - `grid`, `grid_titles`, `grid_filters`, `grid_rows`, `grid_pager`, `grid_actions`
 
     //file: YourBundle::own_grid_theme.html.twig
+
     {% extends 'DataGridBundle::datagrid.html.twig' %}
     {% block grid %}
         extended grid!
     {% endblock %}
 
-    // cell rendering in template
+cell rendering inside template
+
     {% block grid_column_callbacks_cell %}
     {% if row.field('type') == 1 %}
     <span style="color:#f00">My row id is: {{ row.getPrimaryFieldValue() }}</span>
@@ -122,7 +124,7 @@ Usage - Document or Entity annotations
         private $id;
     }
 
-Available types form '@GRID\Column' notation
+Available types for '@GRID\Column' notation
 
  - title [string] - own column name
  - size [int] - column width in pixels
@@ -134,7 +136,8 @@ Available types form '@GRID\Column' notation
  - source [boolean] - turns on or off column visibility for Source Class
  - visible [boolean] -  turns on or off column visibility
 
-Available types form '@GRID\Column' notation
+Available types for '@GRID\Column' notation
+
  - columns [array] order of columns in grid
  - filterable [bool] turns on or off visibility of all columns
 
