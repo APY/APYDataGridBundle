@@ -77,7 +77,7 @@ class Entity extends Annotation
      */
     public function prepare($columns, $actions)
     {
-        foreach ($this->getColumnMappings($this->_entityName, $this->table) as $params)
+        foreach ($this->getColumnsMapping($this->_entityName, $this->table) as $params)
         {
             $columnName = $params['type'];
             $columns->addColumn(new $columnName($params));

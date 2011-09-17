@@ -39,7 +39,7 @@ abstract class Annotation extends Source
         }
     }
 
-    protected function getColumnMappings($documentName, $class)
+    protected function getColumnsMapping($documentName, $class)
     {
         $DoctrineODMClassMetadata = $this->manager->getClassMetadata($documentName);
 

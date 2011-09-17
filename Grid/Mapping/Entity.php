@@ -4,8 +4,8 @@ namespace Sorien\DataGridBundle\Grid\Mapping;
 /**
  * @Annotation
  */
-class Entity {
-
+class Entity
+{
     private $columns;
     private $filterable;
     private $fields;

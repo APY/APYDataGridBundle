@@ -8,10 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @todo annotation source class
  * @todo add blank column by annotation
- * @todo render filter by template
- * @todo reneame gridHash
+ * @todo rename gridHash
  * @todo gridTranslate columns + konfigurovatelne cez anotacie
  */
 
@@ -33,6 +31,7 @@ class Grid
      * @var \Symfony\Component\HttpFoundation\Session;
      */
     private $session;
+
     /**
     * @var \Symfony\Component\HttpFoundation\Request
     */
@@ -46,6 +45,7 @@ class Grid
     private $container;
     private $routeUrl;
     private $id;
+
     /**
     * @var \Sorien\DataGridBundle\Grid\Source\Source
     */
