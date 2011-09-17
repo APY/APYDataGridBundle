@@ -57,7 +57,7 @@ Usage - Grid with Doctrine ORM Entity or ODM Document as source
              *
              * 1st param Controller 
              * 2nd param Source object inherited from Source class (ORM in sample)
-             * 3th param route to controller action which is handling grid actions (filtering, ordering, pagination ...)
+             * 3th param route to controller action that is handling grid actions (filtering, ordering, pagination ...)
              *           until ajax support is ready
              */
             $grid = new Grid($this, new Entity('Bundle:Entity'), 'filter');
@@ -99,14 +99,17 @@ your own grid theme template: you can override blocks - `grid`, `grid_titles`, `
         extended grid!
     {% endblock %}
 
-cell rendering inside template
+custom cell rendering inside template
 
     {% block grid_column_yourcolumnname_cell %}
-    {% if row.field('type') == 1 %}
     <span style="color:#f00">My row id is: {{ row.getPrimaryFieldValue() }}</span>
-    {% endif %}
     {% endblock %}
 
+custom filter rendering inside template
+
+    {% block grid_column_yourcolumnname_filter %}
+    <span style="color:#f00">My custom filter</span>
+    {% endblock %}
 
 Usage - Document or Entity annotations
 

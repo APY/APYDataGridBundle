@@ -101,12 +101,35 @@ class DataGridExtension extends \Twig_Extension {
         return $this->renderBlock('grid_actions', array('grid' => $grid));
     }
 
+    /**
+     * Cell Drawing override
+     *
+     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
+     * @param \Sorien\DataGridBundle\Grid\Row $row
+     *
+     * @return string
+     */
     public function getGridCell($column, $row)
     {
         $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
         $block = 'grid_column_'.$column->getId().'_cell';
 
         return $this->hasBlock($block) ? $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row)) : $value;
+    }
+
+    /**
+     * Filter Drawing override
+     *
+     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
+     * @param \Sorien\DataGridBundle\Grid\Grid $grid
+     *
+     * @return string
+     */
+    public function getGridFilter($column, $grid)
+    {
+        $block = 'grid_column_'.$column->getId().'_filter';
+
+        return $this->hasBlock($block) ?  $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash())) : $column->renderFilter($grid->getHash());
     }
 
     public function getGridUrl($section, $grid, $param = null)
@@ -137,13 +160,8 @@ class DataGridExtension extends \Twig_Extension {
         return  $value == 'asc' ? 'desc' : 'asc';
     }
 
-    public function getGridFilter($column, $grid)
-    {
-        return $column->renderFilter($grid->getHash());
-    }
-
     /**
-     * Render block.
+     * Render block 
      *
      * @param $name string
      * @param $parameters string
@@ -171,6 +189,12 @@ class DataGridExtension extends \Twig_Extension {
         }
     }
 
+    /**
+     * Return true is block exist in template or parent template
+     * @param string $name
+     *
+     * @return boolean
+     */
     private function hasBlock($name)
     {
         //load template if needed

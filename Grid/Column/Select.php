@@ -59,6 +59,11 @@ class Select extends Column
         return array(new Filter(self::OPERATOR_EQ, '\''.$this->data.'\''));
     }
 
+    public function getValues()
+    {
+        return $this->values;
+    }
+
     public function renderCell($value, $row, $router)
     {
         if (key_exists($value, $this->values))
