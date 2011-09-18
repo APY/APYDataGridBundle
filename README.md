@@ -35,7 +35,7 @@ two routs goes to the same controller action
         pattern:  /filter
         defaults: { _controller: YourBundle:Default:grid }
 
-Usage - Grid with Doctrine ORM Entity or ODM Document as source
+Usage - Grid with ORM /ODM as source
 -----
     use Sorien\DataGridBundle\Grid;
     use Sorien\DataGridBundle\Source\Entity;
@@ -45,16 +45,10 @@ Usage - Grid with Doctrine ORM Entity or ODM Document as source
     {
         public function gridAction()
         {
-            /**
-             * creates simple grid based on your entity.
-             * @hint to add custom columns or actions you need to extend Source\Doctrine class
-             *
-             */
-
-            $grid = $this->get('grid')->setSource(new Document('Bundle:Entity'))->setRoute('filter');
+            // creates simple grid based on your entity (ORM)
+            $grid = $this->get('grid')->setSource(new Entity('Bundle:Entity'))->setRoute('filter');
 
             // or use Document source class for ODM
-
             $grid = $this->get('grid')->setSource(new Document('Bundle:Entity'))->setRoute('filter');
 
             if ($grid->isReadyForRedirect())
@@ -64,7 +58,7 @@ Usage - Grid with Doctrine ORM Entity or ODM Document as source
             }
             else
             {
-                //show grid
+                // to obtain data for template you need to call prepare function
                 return $this->render('YourBundle::default_index.html.twig', array('data' => $grid->prepare()));
             }
         }
@@ -147,7 +141,7 @@ Usage - Examples
         $columns->addColumn(new Column(array('id' => 'callbacks', 'size' => '54', 'sortable' => false, 'filterable' => false, 'source' => false)));
     });
 
-    $grid = new Grid($source, $this, 'path');
+    $grid = $this->get('grid')->setSource($source)->setRoute('filter');
 
 
 Working preview
