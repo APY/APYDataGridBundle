@@ -20,7 +20,7 @@ class Columns implements \IteratorAggregate, \Countable
      * @var \Sorien\DataGridBundle\Grid\Column\Column[]
      */
     private $columns;
-    private $primary;
+    private $extensions;
 
     public function __construct()
     {
@@ -89,5 +89,20 @@ class Columns implements \IteratorAggregate, \Countable
     public function count()
     {
        return count($this->columns);
+    }
+
+    public function addExtension($type, $extension)
+    {
+        $this->extensions[$type] = $extension;
+    }
+
+    public function hasExtensionForColumnType($type)
+    {
+        return isset($this->extensions[$type]);
+    }
+
+    public function getExtensionForColumnType($type)
+    {
+        return $this->extensions[$type];
     }
 }

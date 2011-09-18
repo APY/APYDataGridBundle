@@ -11,55 +11,56 @@ abstract class Annotation extends Source
         $this->reader = $container->get('annotation_reader');
     }
 
-    protected function getColumnTypeFromCombinedMapping($mappingFromDoctrine, $mappingFromGrid)
+    /**
+     * @throws \Exception
+     * @param $mappingFromDoctrine
+     * @param $mappingFromGrid
+     * @param  \Sorien\DataGridBundle\Grid\Columns $columns
+     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     */
+    protected function getColumnClassFromMappings($mappingFromDoctrine, $mappingFromGrid, $columns)
     {
-        //todo: check for available type
-        if (isset($mappingFromGrid['type']) && $mappingFromGrid['type'] !== null)
+        //check if we have extension based on Grid mapping
+        if (isset($mappingFromGrid['type']) && $columns->hasExtensionForColumnType($mappingFromGrid['type']))
         {
-            return 'Sorien\DataGridBundle\Grid\Column\\'.ucfirst($mappingFromGrid['type']);
+            return clone $columns->getExtensionForColumnType($mappingFromGrid['type']);
+        }
+        //check if we have extension based on Doctrine mapping
+        elseif (isset($mappingFromDoctrine['type']) && $columns->hasExtensionForColumnType($mappingFromDoctrine['type']))
+        {
+            return clone $columns->getExtensionForColumnType($mappingFromDoctrine['type']);
         }
         else
         {
-            //todo: normalize switch for ORM and ODM
-            switch ($mappingFromDoctrine['type'])
-            {
-                case 'integer':
-                case 'smallint':
-                case 'bigint':
-                case 'integer':
-                case 'float':
-                    return 'Sorien\DataGridBundle\Grid\Column\Range';
-                case 'boolean':
-                    return 'Sorien\DataGridBundle\Grid\Column\Select';
-                case 'datetime':
-                    return 'Sorien\DataGridBundle\Grid\Column\Date';
-                default:
-                    return 'Sorien\DataGridBundle\Grid\Column\Text';
-            }
+            throw new \Exception(sprintf("No suitable Column Extension found for column type [%s, %s]", @$mappingFromGrid['type'], @$mappingFromDoctrine['type']));
         }
     }
 
-    protected function getColumnsMapping($documentName, $class)
+    protected function getColumnsMapping($documentName, $class, $columnsExtensions)
     {
-        $DoctrineODMClassMetadata = $this->manager->getClassMetadata($documentName);
+        $DoctrineDoctrineClassMetadata = $this->manager->getClassMetadata($documentName);
 
         $GridClassMetadata = new \Sorien\DataGridBundle\Grid\Mapping\Entity();
         $GridClassMetadata->loadMetadataFromReader($class, $this->reader);
 
-        $columns = ($GridClassMetadata->hasColumns()) ? $GridClassMetadata->getColumns() : $DoctrineODMClassMetadata->getFieldNames();
-        $mappings = array();
+        $columns = ($GridClassMetadata->hasColumns()) ? $GridClassMetadata->getColumns() : $DoctrineDoctrineClassMetadata->getFieldNames();
+        $mappings = new \SplObjectStorage();
 
         foreach ($columns as $value)
         {
-            $ODMFieldMetadata = $DoctrineODMClassMetadata->getFieldMapping($value);
+            $ODMFieldMetadata = $DoctrineDoctrineClassMetadata->getFieldMapping($value);
+            //get parameters
             $params = $GridClassMetadata->getFieldMapping($value);
-
-            $params['type'] = $this->getColumnTypeFromCombinedMapping($ODMFieldMetadata, $params);
+            //get suitable class
+            $column = $this->getColumnClassFromMappings($ODMFieldMetadata, $params, $columnsExtensions);
+            //correct parameters
             $params['title'] = isset($params['title']) ? $params['title'] : $ODMFieldMetadata['fieldName'];
             $params['primary'] = isset($ODMFieldMetadata['id']) && $ODMFieldMetadata['id'] === true;
             $params['id'] = isset($params['id']) ? $params['id'] : $ODMFieldMetadata['fieldName'];
+            //init columns parameters
+            $column->__initialize($params);
 
-            $mappings[] = $params;
+            $mappings->attach($column);
         }
 
         return $mappings;

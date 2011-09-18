@@ -17,10 +17,15 @@ class Date extends Text
 {
     private $format;
 
-    public function __construct($params)
+    public function __initialize(array $params)
     {
-        parent::__construct($params);
+        parent::__initialize($params);
         $this->format = $this->getParam('format', 'Y-m-d H:i:s');
+    }
+
+    public function __types()
+    {
+        return array('datetime', 'date', 'time');
     }
 
     public function renderFilter($gridHash)

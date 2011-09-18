@@ -19,10 +19,15 @@ class Select extends Column
 
     private $values;
 
-    public function __construct($params)
+    public function __initialize(array $params)
     {
-        parent::__construct($params);
+        parent::__initialize($params);
         $this->values = $this->getParam('values', array());
+    }
+
+    public function __types()
+    {
+        return array('select');
     }
 
     public function renderFilter($gridHash)

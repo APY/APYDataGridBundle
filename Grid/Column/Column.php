@@ -46,9 +46,19 @@ class Column
      * @param array $params
      * @return \Sorien\DataGridBundle\Grid\Column\Column
      */
-    public function __construct(array $params)
+    public function __construct($params = null)
+    {
+        $this->__initialize((array) $params);
+        $this->isSorted = false;
+        $this->data = null;
+        $this->order = '';
+    }
+
+    public function __initialize(array $params)
     {
         $this->params = $params;
+
+        //var_dump('i:'.@$params['primary'].$this->getParam('primary', false));
 
         $this->id = $this->getParam('id', null);
         $this->title = $this->getParam('title', '');
@@ -58,16 +68,18 @@ class Column
         $this->filterable = $this->getParam('filterable', true);
         $this->visibleForSource = $this->getParam('source', true);
         $this->primary = $this->getParam('primary', false);
+    }
 
-        $this->isSorted = false;
-        $this->data = null;
-        $this->order = '';
+    public function __types()
+    {
+        return array();
     }
 
     protected function getParam($id, $default)
     {
         return isset($this->params[$id]) ? $this->params[$id] : $default;
     }
+
 
     /**
      * Draw filter

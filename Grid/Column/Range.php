@@ -15,6 +15,11 @@ use Sorien\DataGridBundle\Grid\Filter;
 
 class Range extends Column
 {
+    public function __types()
+    {
+        return array('integer', 'smallint', 'bigint', 'integer', 'float', 'range');
+    }
+
     public function renderFilter($gridHash)
     {
         $result = '<div class="range-column-filter">';
@@ -60,7 +65,6 @@ class Range extends Column
 
         return $this;
     }
-
 
     public function getData()
     {

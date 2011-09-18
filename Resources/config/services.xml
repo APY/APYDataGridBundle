@@ -5,18 +5,38 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>    
-        <parameter key="sorien_datagrid.twig_extention.class">Sorien\DataGridBundle\Twig\DataGridExtension</parameter>
-        <parameter key="sorien_datagrid.grid.class">Sorien\DataGridBundle\Grid\Grid</parameter>
+        <parameter key="grid.twig_extension.class">Sorien\DataGridBundle\Twig\DataGridExtension</parameter>
+        <parameter key="grid.base.class">Sorien\DataGridBundle\Grid\Grid</parameter>
+        <parameter key="grid.column.text.class">Sorien\DataGridBundle\Grid\Column\Text</parameter>
+        <parameter key="grid.column.select.class">Sorien\DataGridBundle\Grid\Column\Select</parameter>
+        <parameter key="grid.column.range.class">Sorien\DataGridBundle\Grid\Column\Range</parameter>
+        <parameter key="grid.column.date.class">Sorien\DataGridBundle\Grid\Column\Date</parameter>
     </parameters>
 
     <services>
-        <service id="sorien_datagrid.twig_extention" class="%sorien_datagrid.twig_extention.class%" public="false">
+        <service id="grid.twig_extension" class="%grid.twig_extension.class%" public="false">
             <tag name="twig.extension" />
             <argument type="service" id="router" />
         </service>
 
-        <service id="grid" class="%sorien_datagrid.grid.class%">
+        <service id="grid" class="%grid.base.class%">
             <argument type="service" id="service_container" />
+        </service>
+
+        <service id="grid.column.text" class="%grid.column.text.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.select" class="%grid.column.select.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.range" class="%grid.column.range.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.date" class="%grid.column.date.class%" public="false">
+            <tag name="grid.column.extension" />
         </service>
 
     </services>

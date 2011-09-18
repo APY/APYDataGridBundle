@@ -74,6 +74,8 @@ class Grid
     private $showFilters;
     private $showTitles;
 
+    private $columnExtensions;
+
     /**
      * @param \Source\Source $source Data Source
      * @param $container
@@ -108,7 +110,6 @@ class Grid
         {
             $this->setSource($source);
         }
-
     }
 
     public function setSource($source)
@@ -298,10 +299,6 @@ class Grid
             foreach ($this->columns as $column)
             {
                 $row->setPrimaryField($primaryColumnId);
-
-//                $row->setField($column->getId(), $column->renderCell($row->getField($column->getId()), $row, $this->router, $row->getField($primaryColumnId)));
-
-//                $row->setField($column->getId(), $column->renderCell($row->getField($column->getId()), $row, $this->router, $row->getField($primaryColumnId)));
             }
         }
 
@@ -480,4 +477,17 @@ class Grid
     {
         $this->showTitles = false;
     }
+
+    /**
+     * @param \Sorien\DataGridBundle\Grid\Column\Column $extension
+     * @return void
+     */
+    public function addColumnExtension($extension)
+    {
+        foreach ($extension->__types() as $type)
+        {
+            $this->columns->addExtension($type, $extension);
+        }
+    }
+
 }

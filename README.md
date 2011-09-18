@@ -3,26 +3,20 @@ What is DataGridBundle?
 
 datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
 
-last changes
+last changes:
 
+ - possible registrations of custom column types in container - look at Resources/Config/services
+ - grid need to be created as service
  - annotations
  - ODM support
 
-planed features:
+todo:
 
- - sorting - done
- - paggination - done
- - customizable columns with filters - done
- - mass actions - almost done
- - sources: doctrine(entities) - done , xml, array ... - later
  - exports: xml, excel, pdf ... - later
  - theme support like Symfony\Bridge\Twig\Extension - done but wil be changed a bit
- - ajax support <- next step
- - entity anotations - done
- - ODM support - done
+ - ajax support
 
-
-if you want to help or change any part according your needs im open to any idea just create PR or open issue ticket
+if you want to help or change any part according your needs im open to any idea, just create PR or open issue ticket
 
 Compatibility
 -----
@@ -55,18 +49,11 @@ Usage - Grid with Doctrine ORM Entity or ODM Document as source
              * creates simple grid based on your entity.
              * @hint to add custom columns or actions you need to extend Source\Doctrine class
              *
-             * 1st param Controller 
-             * 2nd param Source object inherited from Source class (ORM in sample)
-             * 3th param route to controller action that is handling grid actions (filtering, ordering, pagination ...)
-             *           until ajax support is ready
              */
-            $grid = new Grid($this, new Entity('Bundle:Entity'), 'filter');
+
+            $grid = $this->get('grid')->setSource(new Document('Bundle:Entity'))->setRoute('filter');
 
             // or use Document source class for ODM
-
-            $grid = new Grid($this, new Document('Bundle:Entity'), 'filter'); // when repository extends Source\Entity
-
-            // or as service
 
             $grid = $this->get('grid')->setSource(new Document('Bundle:Entity'))->setRoute('filter');
 
@@ -144,6 +131,7 @@ Available types for '@GRID\Column' notation
  - filterable [boolean] - turns on or off visibility of column filter
  - source [boolean] - turns on or off column visibility for Source Class
  - visible [boolean] -  turns on or off column visibility
+ - primary [boolean] - sets column as primary
 
 Available types for '@GRID\Column' notation
 

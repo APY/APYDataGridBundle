@@ -15,6 +15,11 @@ use Sorien\DataGridBundle\Grid\Filter;
 
 class Text extends Column
 {
+    public function __types()
+    {
+        return array('string', 'text');
+    }
+
     public function renderFilter($gridHash)
     {
         return '<input type="text" style="width:100%" value="'.$this->data.'" name="'.$gridHash.'['.$this->getId().']" onkeypress="if (event.which == 13){this.form.submit();}"/>';

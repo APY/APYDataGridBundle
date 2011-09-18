@@ -69,10 +69,9 @@ class Document extends Annotation
      */
     public function prepare($columns, $actions)
     {
-        foreach ($this->getColumnsMapping($this->documentName, $this->class) as $params)
+        foreach ($this->getColumnsMapping($this->documentName, $this->class, $columns) as $column)
         {
-            $columnName = $params['type'];
-            $columns->addColumn(new $columnName($params));
+            $columns->addColumn($column);
         }
     }
 
