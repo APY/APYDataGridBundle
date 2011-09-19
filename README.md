@@ -102,7 +102,7 @@ Usage - Document or Entity annotations
     /**
      * Annotation Test Class
      *
-     * @GRID\source(columns="id, ...", attach={id="callbacks", type="text", size="36"})
+     * @GRID\Source(columns="id, ...")
      * @GRID\Column(id="attached1", size="120", type="text") //add custom column to grid
      */
     class Test
