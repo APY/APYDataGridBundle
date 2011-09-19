@@ -5,6 +5,7 @@ datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
 
 last changes:
 
+ - own columns can be added by anotations
  - possible registrations of custom column types in container - look at Resources/Config/services
  - grid need to be created as service
  - annotations
@@ -101,7 +102,8 @@ Usage - Document or Entity annotations
     /**
      * Annotation Test Class
      *
-     * @GRID\Entity(columns="id, ...")
+     * @GRID\source(columns="id, ...", attach={id="callbacks", type="text", size="36"})
+     * @GRID\Column(id="attached1", size="120", type="text") //add custom column to grid
      */
     class Test
     {
@@ -127,9 +129,9 @@ Available types for '@GRID\Column' notation
  - visible [boolean] -  turns on or off column visibility
  - primary [boolean] - sets column as primary
 
-Available types for '@GRID\Column' notation
+Available types for '@GRID\Source' notation
 
- - columns [array] order of columns in grid
+ - columns [string] order of columns in grid (columns are separated by ",")
  - filterable [bool] turns on or off visibility of all columns
 
 Usage - Examples

@@ -77,10 +77,35 @@ class Entity extends Annotation
      */
     public function prepare($columns, $actions)
     {
-        foreach ($this->getColumnsMapping($this->_entityName, $this->table, $columns) as $column)
+        foreach ($this->getColumnsFromMapping($this->table, $columns) as $column)
         {
             $columns->addColumn($column);
         }
+    }
+
+    protected function getMetadataFromClassProperty($class, $name = null)
+    {
+        parent::getMetadataFromClassProperty($class, $name);
+
+        if (is_a($class, 'Doctrine\ORM\Mapping\Column'))
+        {
+            //guess id and type
+            if (isset($class->type))
+            {
+                $this->setFieldMapping($name, 'type', $class->type);
+            }
+
+            if (isset($class->name))
+            {
+                $this->setFieldMapping($name, 'id', $class->name);
+            }
+        }
+        elseif (is_a($class, 'Doctrine\ORM\Mapping\Id'))
+        {
+            // guess primary table column as a primary grid column
+            $this->setFieldMapping($name, 'primary', true);
+        }
+
     }
 
     private function normalizeOperator($operator)
@@ -152,6 +177,8 @@ class Entity extends Annotation
         {
             $this->query->setFirstResult($page * $limit);
         }
+
+//        var_dump($this->query->getQuery()); die();
 
         return new Rows($this->query->getQuery()->getResult());
     }
