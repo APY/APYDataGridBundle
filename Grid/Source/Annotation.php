@@ -16,31 +16,6 @@ abstract class Annotation extends Source
         $this->fields = array();
     }
 
-    /**
-     * @throws \Exception
-     * @param $mappingFromDoctrine
-     * @param $mappingFromGrid
-     * @param  \Sorien\DataGridBundle\Grid\Columns $columns
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
-     */
-    private function getColumnClassFromMappings($mappingFromDoctrine, $mappingFromGrid, $columns)
-    {
-        //check if we have extension based on Grid mapping
-        if (isset($mappingFromGrid['type']) && $columns->hasExtensionForColumnType($mappingFromGrid['type']))
-        {
-            return clone $columns->getExtensionForColumnType($mappingFromGrid['type']);
-        }
-        //check if we have extension based on Doctrine mapping
-        elseif (isset($mappingFromDoctrine['type']) && $columns->hasExtensionForColumnType($mappingFromDoctrine['type']))
-        {
-            return clone $columns->getExtensionForColumnType($mappingFromDoctrine['type']);
-        }
-        else
-        {
-            throw new \Exception(sprintf("No suitable Column Extension found for column type [%s, %s]", @$mappingFromGrid['type'], @$mappingFromDoctrine['type']));
-        }
-    }
-
     protected function loadMetadataFromReader($className)
     {
         $reflection = new \ReflectionClass($className);
@@ -57,7 +32,6 @@ abstract class Annotation extends Source
         {
             $this->getMetadataFromClass($class);
         }
-
     }
 
     protected function getMetadataFromClassProperty($class, $name = null)
