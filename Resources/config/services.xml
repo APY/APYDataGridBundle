@@ -44,5 +44,10 @@
             <tag name="grid.column.extension" />
         </service>
 
+        <service id="form.type_guesser.grid" class="Sorien\DataGridBundle\Form\GridTypeGuesser">
+            <tag name="form.type_guesser" />
+            <argument type="service" id="document_reader" />
+        </service>
+
     </services>
 </container>

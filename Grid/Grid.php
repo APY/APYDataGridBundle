@@ -8,9 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @todo add blank column by annotation
  * @todo rename gridHash
- * @todo gridTranslate columns + konfigurovatelne cez anotacie
+ * @todo form type guesser it will need custom driver and maybe type guesser
  */
 
 namespace Sorien\DataGridBundle\Grid;
@@ -437,7 +436,7 @@ class Grid
 
     /**
      * @return bool
-     * @todo finish as isFilterSectionVisible
+     * @todo fix according as isFilterSectionVisible
      */
     public function isTitleSectionVisible()
     {

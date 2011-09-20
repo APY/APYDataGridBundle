@@ -38,7 +38,6 @@ two routs goes to the same controller action
 
 Usage - Grid with ORM /ODM as source
 -----
-    use Sorien\DataGridBundle\Grid;
     use Sorien\DataGridBundle\Source\Entity;
     use Sorien\DataGridBundle\Source\Document;
 

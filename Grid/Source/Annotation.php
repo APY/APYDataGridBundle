@@ -103,7 +103,7 @@ abstract class Annotation extends Source
         return !empty($this->columns) ? $this->columns : array_keys($this->fields);
     }
 
-    protected function getColumnsFromMapping($class, $columnsExtensions)
+    protected function getColumnsFromMapping($class, $columns)
     {
         $this->loadMetadataFromReader($class);
 
@@ -115,9 +115,9 @@ abstract class Annotation extends Source
 
             if (isset($params['type']))
             {
-                if ($columnsExtensions->hasExtensionForColumnType($params['type']))
+                if ($columns->hasExtensionForColumnType($params['type']))
                 {
-                    $column = clone $columnsExtensions->getExtensionForColumnType($params['type']);
+                    $column = clone $columns->getExtensionForColumnType($params['type']);
                     $column->__initialize($params);
 
                     $mappings->attach($column);
