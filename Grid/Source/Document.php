@@ -29,7 +29,7 @@ class Document extends Annotation
      * @var \Doctrine\ODM\MongoDB\Query\Builder;
      */
     private $query;
-    private $reader;
+
     /**
      * @var \Doctrine\ODM\MongoDB\DocumentManager
      */
@@ -39,12 +39,11 @@ class Document extends Annotation
      * e.g. Base\Cms\Document\Page
      */
     private $class;
+
     /**
      * e.g. Cms:Page
      */
     private $documentName;
-
-    const TABLE_ALIAS = 'a';
 
     /**
      * @param string $documentName e.g. "Cms:Page"
@@ -130,6 +129,7 @@ class Document extends Annotation
 
         //execute and get results
         $result = new Rows();
+
         foreach($this->query->getQuery()->execute() as $resource)
         {
             $row = new Row();
@@ -152,13 +152,6 @@ class Document extends Annotation
         $this->query->skip(null);
 
         return $this->query->getQuery()->execute()->count();
-
-//        $this->query->select(sprintf("count (%s)", $this->getPrefixedName($columns->getPrimaryColumn()->getId())));
-//        $this->query->setFirstResult(null);
-//        //$this->query->setMaxResults(null);
-//        $result = $this->query->getQuery()->getSingleResult();
-
-        return 10; //(int)$result[1];
     }
 
     private function getClassProperties($obj)
