@@ -44,6 +44,7 @@ class Grid
     private $container;
     private $routeUrl;
     private $id;
+    private $hash;
 
     /**
     * @var \Sorien\DataGridBundle\Grid\Source\Source
@@ -96,8 +97,9 @@ class Grid
 
         $this->setRoute($route);
 
-        $name = explode('::', $this->request->get('_controller'));
-        $this->id = md5($name[0].$id);
+        $this->hash = md5($this->request->get('_controller').$id);
+        $this->id = $id;
+
         $this->setLimits(array('20' => '20', '50' => '50', '100' => '100'));
         $this->page = 0;
         $this->showTitles = $this->showFilters = true;
@@ -487,6 +489,16 @@ class Grid
         {
             $this->columns->addExtension($type, $extension);
         }
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
 }

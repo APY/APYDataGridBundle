@@ -70,9 +70,15 @@ class DataGridExtension extends \Twig_Extension {
      * @param $theme
      * @return string
      */
-    public function getGrid($grid, $theme = null)
+    public function getGrid($grid, $theme = null, $id = '')
     {
         $this->theme = $theme;
+
+        if ($id != '')
+        {
+            $grid->setId($id);
+        }
+
         return $this->renderBlock('grid', array('grid' => $grid));
     }
 
@@ -104,17 +110,30 @@ class DataGridExtension extends \Twig_Extension {
     /**
      * Cell Drawing override
      *
-     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
-     * @param \Sorien\DataGridBundle\Grid\Row $row
+     * @param Sorien\DataGridBundle\Grid\Column\Column $column
+     * @param Sorien\DataGridBundle\Grid\Row $row
+     * @param Sorien\DataGridBundle\Grid\Grid $grid
      *
      * @return string
      */
-    public function getGridCell($column, $row)
+    public function getGridCell($column, $row, $grid)
     {
         $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
-        $block = 'grid_column_'.$column->getId().'_cell';
 
-        return $this->hasBlock($block) ? $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row)) : $value;
+        if ($id = $grid->getId() != '')
+        {
+            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getId().'_cell'))
+            {
+                return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
+            }
+        }
+
+        if ($this->hasBlock($block = 'grid_column_'.$column->getId().'_cell'))
+        {
+            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
+        }
+
+        return $value;
     }
 
     /**

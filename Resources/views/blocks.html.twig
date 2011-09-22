@@ -60,9 +60,9 @@
     {% for column in grid.columns %}
         {% if (column.visible )%}
             {% if loop.last %}
-            <td class="last">{{ grid_cell(column, row)|raw }}</td>
+            <td class="last">{{ grid_cell(column, row, grid)|raw }}</td>
             {% else %}
-            <td>{{ grid_cell(column, row)|raw }}</td>
+            <td>{{ grid_cell(column, row, grid)|raw }}</td>
             {% endif %}
         {% endif %}
     {% endfor %}
