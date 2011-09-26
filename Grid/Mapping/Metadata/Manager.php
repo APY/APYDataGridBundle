@@ -75,6 +75,7 @@ class Manager
                 }
             }
         }
+
         $metadata->setFieldsMappings($mappings);
 
         return $metadata;

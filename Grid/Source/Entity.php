@@ -19,11 +19,13 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 class Entity extends Source
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $manager;
 
-
+    /**
+     * @var \Doctrine\ORM\QueryBuilder
+     */
     private $query;
 
     /**
@@ -112,9 +114,9 @@ class Entity extends Source
      */
     public function execute($columns, $page, $limit)
     {
-        $this->query = $this->manager->createQueryBuilder($this->entityName);
-        $this->query->from($this->entityName, self::TABLE_ALIAS);
-
+        $this->query = $this->manager->createQueryBuilder($this->class);
+        $this->query->from($this->class, self::TABLE_ALIAS);
+        
         $where = $this->query->expr()->andx();
 
         foreach ($columns as $column)
@@ -164,7 +166,7 @@ class Entity extends Source
             $this->query->setFirstResult($page * $limit);
         }
 
-       //var_dump($this->query->getQuery()->get); die();
+        //var_dump($this->query->getDql()); die();
 
         return new Rows($this->query->getQuery()->getResult());
     }

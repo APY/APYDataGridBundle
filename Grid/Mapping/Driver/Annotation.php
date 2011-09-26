@@ -89,6 +89,8 @@ class Annotation implements DriverInterface
                 {
                     throw new \Exception(sprintf('Missing id for Column %s', $metadata['title']));
                 }
+
+                $name = $metadata['id'];
             }
 
             foreach ($metadata as $key => $value)
