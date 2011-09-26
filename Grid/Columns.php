@@ -91,9 +91,10 @@ class Columns implements \IteratorAggregate, \Countable
        return count($this->columns);
     }
 
-    public function addExtension($type, $extension)
+    public function addExtension($extension)
     {
-        $this->extensions[$type] = $extension;
+        $name = strtolower(get_class($extension));
+        $this->extensions[substr($name, strrpos($name, '\\')+1)] = $extension;
     }
 
     public function hasExtensionForColumnType($type)

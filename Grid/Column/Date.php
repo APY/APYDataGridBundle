@@ -23,11 +23,6 @@ class Date extends Text
         $this->format = $this->getParam('format', 'Y-m-d H:i:s');
     }
 
-    public function __types()
-    {
-        return array('datetime', 'date', 'time');
-    }
-
     public function renderFilter($gridHash)
     {
         return '';

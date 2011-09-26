@@ -25,11 +25,6 @@ class Select extends Column
         $this->values = $this->getParam('values', array());
     }
 
-    public function __types()
-    {
-        return array('select');
-    }
-
     public function renderFilter($gridHash)
     {
         $result = '<option value="'.$this::BLANK.'"></option>';

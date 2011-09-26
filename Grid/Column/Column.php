@@ -58,8 +58,6 @@ class Column
     {
         $this->params = $params;
 
-        //var_dump('i:'.@$params['primary'].$this->getParam('primary', false));
-
         $this->id = $this->getParam('id', null);
         $this->title = $this->getParam('title', '');
         $this->sortable = $this->getParam('sortable', true);
@@ -68,11 +66,6 @@ class Column
         $this->filterable = $this->getParam('filterable', true);
         $this->visibleForSource = $this->getParam('source', true);
         $this->primary = $this->getParam('primary', false);
-    }
-
-    public function __types()
-    {
-        return array();
     }
 
     protected function getParam($id, $default)

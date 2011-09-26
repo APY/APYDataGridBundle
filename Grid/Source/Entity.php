@@ -13,56 +13,67 @@
 
 namespace Sorien\DataGridBundle\Grid\Source;
 
-use Sorien\DataGridBundle\Grid\Mapping\Entity as GridClassMetadata;
 use Sorien\DataGridBundle\Grid\Column\Column;
 use Sorien\DataGridBundle\Grid\Rows;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
-class Entity extends Annotation
+class Entity extends Source
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var Doctrine\ORM\EntityManager
+     */
+    protected $manager;
+
+
+    private $query;
+
+    /**
+     * @var string e.g Vendor\Bundle\Entity\Page
+     */
+    private $class;
+
+    /**
+     * @var string e.g cms_pages
      */
     private $table;
-    private $query;
-    private $_class;
-    private $_entityName;
+
+    /**
+     * @var string e.g Cms:Page
+     */
+    private $entityName;
+
+    /**
+     * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
+     */
+    private $metadata;
+
+    /**
+     * @var \Doctrine\ORM\Mapping\ClassMetadata
+     */
+    private $ormMetadata;
 
     const TABLE_ALIAS = 'a';
 
     /**
-     * @param \Doctrine\ORM\Mapping\ClassMetadata|string $class ClassMetadata or Document Name
+     * @param string $class e.g Cms:Page
      */
-    public function __construct($class)
+    public function __construct($entityName)
     {
-        if ($class instanceof ClassMetadata)
-        {
-            $this->_entityName = $class->name;
-            $this->_class = $class;
-        }
-
-        if (is_string($class))
-        {
-            $this->_entityName = $class;
-        }
+        $this->entityName = $entityName;
     }
 
     public function initialise($container)
     {
-        parent::initialise($container);
+        $this->manager = $container->get('doctrine')->getEntityManager();
+        $this->ormMetadata = $this->manager->getClassMetadata($this->entityName);
 
-        if ($this->manager === null)
-        {
-            $this->manager = $container->get('doctrine')->getEntityManager();
-        }
+        $this->class = $this->ormMetadata->getReflectionClass()->name;
 
-        if ($this->_class === null)
-        {
-            $this->_class = $this->manager->getClassMetadata($this->_entityName);
-        }
+        $mapping = $container->get('grid.mapping.manager');
+        $mapping->addDriver($this, -1);
+        $this->metadata = $mapping->getMetadata($this->class);
 
-        $this->table = $this->_class->getReflectionClass()->name;
     }
 
     private function getPrefixedName($name)
@@ -77,35 +88,10 @@ class Entity extends Annotation
      */
     public function prepare($columns, $actions)
     {
-        foreach ($this->getColumnsFromMapping($this->table, $columns) as $column)
+        foreach ($this->metadata->getColumnsFromMapping($columns) as $column)
         {
             $columns->addColumn($column);
         }
-    }
-
-    protected function getMetadataFromClassProperty($class, $name = null)
-    {
-        parent::getMetadataFromClassProperty($class, $name);
-
-        if (is_a($class, 'Doctrine\ORM\Mapping\Column'))
-        {
-            //guess id and type
-            if (isset($class->type))
-            {
-                $this->setFieldMapping($name, 'type', $class->type);
-            }
-
-            if (isset($class->name))
-            {
-                $this->setFieldMapping($name, 'id', $class->name);
-            }
-        }
-        elseif (is_a($class, 'Doctrine\ORM\Mapping\Id'))
-        {
-            // guess primary table column as a primary grid column
-            $this->setFieldMapping($name, 'primary', true);
-        }
-
     }
 
     private function normalizeOperator($operator)
@@ -123,11 +109,13 @@ class Entity extends Annotation
      * @param $page int Page Number
      * @param $limit int Rows Per Page
      * @return \Sorien\DataGridBundle\Grid\Rows
+     *
+     * @todo remove table alias
      */
     public function execute($columns, $page, $limit)
     {
-        $this->query = $this->manager->createQueryBuilder();
-        $this->query->from($this->table, self::TABLE_ALIAS);
+        $this->query = $this->manager->createQueryBuilder($this->entityName);
+        $this->query->from($this->entityName, self::TABLE_ALIAS);
 
         $where = $this->query->expr()->andx();
 
@@ -178,7 +166,7 @@ class Entity extends Annotation
             $this->query->setFirstResult($page * $limit);
         }
 
-//        var_dump($this->query->getQuery()); die();
+       //var_dump($this->query->getQuery()->get); die();
 
         return new Rows($this->query->getQuery()->getResult());
     }
@@ -192,4 +180,55 @@ class Entity extends Annotation
 
         return (int)$result[1];
     }
+
+    public function getFieldsMetadata($class)
+    {
+        $result = array();
+        foreach ($this->ormMetadata->getFieldNames() as $name)
+        {
+            $mapping = $this->ormMetadata->getFieldMapping($name);
+
+            $values = array();
+
+            $values['title'] = $name;
+
+            if (isset($mapping['fieldName']))
+            {
+                $values['id'] = $mapping['fieldName'];
+            }
+
+            if (isset($mapping['id']) && $mapping['id'] == 'id')
+            {
+                $values['primary'] = true;
+            }
+
+            switch ($mapping['type'])
+            {
+                case 'integer':
+                case 'smallint':
+                case 'bigint':
+                    $values['type'] = 'range';
+                    break;
+                case 'boolean':
+                    $values['type'] = 'select';
+                break;
+                case 'string':
+                case 'text':
+                case 'float':
+                case 'decimal':
+                    $values['type'] = 'text';
+                break;
+                case 'date':
+                case 'datetime':
+                case 'time':
+                    $values['type'] = 'date';
+                break;
+            }
+
+            $result[$name] = $values;
+        }
+
+        return $result;
+    }
+
 }

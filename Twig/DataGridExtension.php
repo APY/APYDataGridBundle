@@ -238,7 +238,7 @@ class DataGridExtension extends \Twig_Extension {
         //get template name
         if(is_null($this->theme))
         {
-            $this->theme = 'SorienDataGridBundle::grid.html.twig';
+            $this->theme = 'SorienDataGridBundle::blocks.html.twig';
         }
 
         $this->template = $this->environment->loadTemplate($this->theme);

@@ -12,8 +12,9 @@
 namespace Sorien\DataGridBundle\Grid\Source;
 
 use Sorien\DataGridBundle\Grid\Column;
+use Sorien\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
 
-abstract class Source
+abstract class Source implements DriverInterface
 {
     private $prepareCallback;
     /**
@@ -74,4 +75,18 @@ abstract class Source
      * @return void
      */
     abstract public function initialise($container);
+
+    /**
+     * @param $class
+     * @return array
+     */
+    public function getClassColumns($class)
+    {
+        return array();
+    }
+
+    public function getFieldsMetadata($class)
+    {
+        return array();
+    }
 }

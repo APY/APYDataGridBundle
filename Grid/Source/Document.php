@@ -13,18 +13,12 @@
 
 namespace Sorien\DataGridBundle\Grid\Source;
 
-use Sorien\DataGridBundle\Grid\Mapping\Entity as GridClassMetadata;
 use Sorien\DataGridBundle\Grid\Column\Column;
 use Sorien\DataGridBundle\Grid\Rows;
 use Sorien\DataGridBundle\Grid\Row;
-//use Doctrine\ORM\Query\Expr\Orx;
-//use Doctrine\ORM\Mapping\ClassMetadata;
 
-class Document extends Annotation
+class Document extends Source
 {
-    private $columnMappings;
-    private $table;
-
     /**
      * @var \Doctrine\ODM\MongoDB\Query\Builder;
      */
@@ -33,7 +27,7 @@ class Document extends Annotation
     /**
      * @var \Doctrine\ODM\MongoDB\DocumentManager
      */
-    private $manager;
+    protected $manager;
 
     /**
      * e.g. Base\Cms\Document\Page
@@ -41,9 +35,19 @@ class Document extends Annotation
     private $class;
 
     /**
+     * @var \Doctrine\ODM\MongoDB\Mapping\ClassMetadata
+     */
+    private $odmMetadata;
+
+    /**
      * e.g. Cms:Page
      */
     private $documentName;
+
+    /**
+     * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
+     */
+    private $metadata;
 
     /**
      * @param string $documentName e.g. "Cms:Page"
@@ -55,10 +59,13 @@ class Document extends Annotation
 
     public function initialise($container)
     {
-        parent::initialise($container);
-
         $this->manager = $container->get('doctrine.odm.mongodb.document_manager');
-        $this->class = $this->manager->getClassMetadata($this->documentName)->getReflectionClass()->name;
+        $this->odmMetadata = $this->manager->getClassMetadata($this->documentName);
+        $this->class = $this->odmMetadata->getReflectionClass()->name;
+
+        $mapping = $container->get('grid.mapping.manager');
+        $mapping->addDriver($this, -1);
+        $this->metadata = $mapping->getMetadata($this->class);
     }
 
     /**
@@ -68,7 +75,7 @@ class Document extends Annotation
      */
     public function prepare($columns, $actions)
     {
-        foreach ($this->getColumnsFromMapping($this->class, $columns) as $column)
+        foreach ($this->metadata->getColumnsFromMapping($columns) as $column)
         {
             $columns->addColumn($column);
         }
@@ -177,4 +184,51 @@ class Document extends Annotation
 
         return $result;
     }
+
+    public function getFieldsMetadata($class)
+    {
+        $result = array();
+        foreach ($this->odmMetadata->getReflectionProperties() as $property)
+        {
+            $name = $property->getName();
+            $mapping = $this->odmMetadata->getFieldMapping($name);
+
+            $values = array();
+
+            $values['title'] = $name;
+
+            if (isset($mapping['fieldName']))
+            {
+                $values['id'] = $mapping['fieldName'];
+            }
+
+            if (isset($mapping['id']) && $mapping['id'] == 'id')
+            {
+                $values['primary'] = true;
+            }
+
+            switch ($mapping['type'])
+            {
+                case 'id':
+                case 'int':
+                    $values['type'] = 'range';
+                    break;
+                case 'boolean':
+                    $values['type'] = 'select';
+                break;
+                case 'string':
+                case 'float':
+                    $values['type'] = 'text';
+                break;
+                case 'date':
+                    $values['type'] = 'date';
+                break;
+            }
+
+            $result[$name] = $values;
+        }
+
+        return $result;
+    }
+
 }

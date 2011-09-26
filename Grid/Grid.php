@@ -485,10 +485,7 @@ class Grid
      */
     public function addColumnExtension($extension)
     {
-        foreach ($extension->__types() as $type)
-        {
-            $this->columns->addExtension($type, $extension);
-        }
+        $this->columns->addExtension($extension);
     }
 
     public function setId($id)
