@@ -384,7 +384,7 @@ class Grid
     
     public function getHash()
     {
-        return 'grid_'.$this->id;
+        return 'grid_'.$this->hash;
     }
 
     /**
