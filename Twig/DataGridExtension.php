@@ -14,8 +14,8 @@ namespace Sorien\DataGridBundle\Twig;
 /**
  * @todo use {% grid_theme grid '' %} instead of second argument in grid function
  */
-class DataGridExtension extends \Twig_Extension {
-
+class DataGridExtension extends \Twig_Extension
+{
     /**
      * @var \Twig_Environment
      */

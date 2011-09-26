@@ -34,11 +34,6 @@ class Entity extends Source
     private $class;
 
     /**
-     * @var string e.g cms_pages
-     */
-    private $table;
-
-    /**
      * @var string e.g Cms:Page
      */
     private $entityName;
@@ -109,8 +104,6 @@ class Entity extends Source
      * @param $page int Page Number
      * @param $limit int Rows Per Page
      * @return \Sorien\DataGridBundle\Grid\Rows
-     *
-     * @todo remove table alias
      */
     public function execute($columns, $page, $limit)
     {
@@ -166,7 +159,7 @@ class Entity extends Source
             $this->query->setFirstResult($page * $limit);
         }
 
-        //var_dump($this->query->getDql()); die();
+        //var_dump($this->query->getDQL()); die();
 
         return new Rows($this->query->getQuery()->getResult());
     }
@@ -230,5 +223,4 @@ class Entity extends Source
 
         return $result;
     }
-
 }

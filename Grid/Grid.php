@@ -8,8 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @todo rename gridHash
- * @todo form type guesser it will need custom driver and maybe type guesser
  */
 
 namespace Sorien\DataGridBundle\Grid;

@@ -60,22 +60,28 @@ class Manager
             $fieldsMetadata[] = $driver->getFieldsMetadata($className);
         }
 
-        $metadata->setFields($columns);
-        $mappings = array();
+        $mappings = $cols = array();
 
         foreach ($columns as $fieldName)
         {
-            $mappings[$fieldName] = array();
+            $map = array();
 
             foreach($fieldsMetadata as $field)
             {
                 if (isset($field[$fieldName]))
                 {
-                    $mappings[$fieldName] = array_merge($mappings[$fieldName], $field[$fieldName]);
+                    $map = array_merge($map, $field[$fieldName]);
                 }
+            }
+
+            if (!empty($map))
+            {
+                $mappings[$fieldName] = $map;
+                $cols[] = $fieldName;
             }
         }
 
+        $metadata->setFields($cols);
         $metadata->setFieldsMappings($mappings);
 
         return $metadata;
