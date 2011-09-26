@@ -7,8 +7,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
- *
  */
 
 namespace Sorien\DataGridBundle\Grid\Source;
@@ -56,7 +54,7 @@ class Entity extends Source
     const TABLE_ALIAS = 'a';
 
     /**
-     * @param string $class e.g Cms:Page
+     * @param string $entityName e.g Cms:Page
      */
     public function __construct($entityName)
     {

@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of the DataGridBundle.
+ *
+ * (c) Stanislav Turza <sorien@mail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @todo check for column extensions
+ */
+
 namespace Sorien\DataGridBundle\Grid\Mapping\Metadata;
 
 class DriverHeap extends \SplPriorityQueue
@@ -27,13 +39,22 @@ class Manager
         $this->drivers->insert($driver, $priority);
     }
 
+    /**
+     * @todo remove this hack
+     * @return \Sorien\DataGridBundle\Grid\Mapping\Driver\DriverInterface[]|DriverHeap
+     */
+    public function getDrivers()
+    {
+        return clone $this->drivers;
+    }
+
     public function getMetadata($className)
     {
         $metadata = new Metadata();
 
         $columns = $fieldsMetadata = array();
 
-        foreach ($this->drivers as $driver)
+        foreach ($this->getDrivers() as $driver)
         {
             $columns = array_merge($columns, $driver->getClassColumns($className));
             $fieldsMetadata[] = $driver->getFieldsMetadata($className);

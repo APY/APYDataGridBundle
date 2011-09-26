@@ -46,7 +46,7 @@
 
         <service id="form.type_guesser.grid" class="Sorien\DataGridBundle\Form\GridTypeGuesser">
             <tag name="form.type_guesser" />
-            <argument type="service" id="annotation_reader" />
+            <argument type="service" id="grid.mapping.manager" />
         </service>
 
         <service id="grid.metadata.driver.annotation" class="Sorien\DataGridBundle\Grid\Mapping\Driver\Annotation">

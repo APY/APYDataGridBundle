@@ -1,4 +1,14 @@
 <?php
+
+/*
+ * This file is part of the DataGridBundle.
+ *
+ * (c) Stanislav Turza <sorien@mail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Sorien\DataGridBundle\Grid\Mapping\Metadata;
 
 class Metadata
@@ -6,17 +16,6 @@ class Metadata
     private $name;
     private $fields;
     private $fieldsMappings;
-    private $classMapping;
-
-    public function setClassMapping($classMapping)
-    {
-        $this->classMapping = $classMapping;
-    }
-
-    public function getClassMapping()
-    {
-        return $this->classMapping;
-    }
 
     public function setFields($fields)
     {
@@ -33,14 +32,19 @@ class Metadata
         $this->fieldsMappings = $fieldsMappings;
     }
 
-    public function getFieldsMappings()
+    public function hasFieldMapping($field)
     {
-        return $this->fieldsMappings;
+        return isset($this->fieldsMappings[$field]);
     }
 
     public function getFieldMapping($field)
     {
         return $this->fieldsMappings[$field];
+    }
+
+    public function getFieldMappingType($field)
+    {
+        return (isset($this->fieldsMappings[$field]['type'])) ? $this->fieldsMappings[$field]['type'] : 'text';
     }
 
     public function setName($name)
@@ -60,19 +64,18 @@ class Metadata
         foreach ($this->getFields() as $value)
         {
             $params = $this->getFieldMapping($value);
+            $type = $this->getFieldMappingType($value);
 
-            if (isset($params['type']))
+            //todo move available extensions from columns
+            if ($columnExtensions->hasExtensionForColumnType($type))
             {
-                if ($columnExtensions->hasExtensionForColumnType($params['type']))
-                {
-                    $column = clone $columnExtensions->getExtensionForColumnType($params['type']);
-                    $column->__initialize($params);
-                    $columns->attach($column);
-                }
-                else
-                {
-                    throw new \Exception(sprintf("No suitable Column Extension found for column type: %s", $params['type']));
-                }
+                $column = clone $columnExtensions->getExtensionForColumnType($type);
+                $column->__initialize($params);
+                $columns->attach($column);
+            }
+            else
+            {
+                throw new \Exception(sprintf("No suitable Column Extension found for column type: %s", $type));
             }
         }
 
