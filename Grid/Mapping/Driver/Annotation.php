@@ -50,9 +50,10 @@ class Annotation implements DriverInterface
 
         foreach ($reflection->getProperties() as $property)
         {
+            $this->fields[$className][$property->getName()] = array();
+
             foreach ($this->reader->getPropertyAnnotations($property) as $class)
             {
-                $this->fields[$className][$property->getName()] = array();
                 $this->getMetadataFromClassProperty($className, $class, $property->getName());
                 $properties[] = $property->getName();
             }
