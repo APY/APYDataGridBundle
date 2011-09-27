@@ -200,16 +200,14 @@ class Entity extends Source
                 case 'integer':
                 case 'smallint':
                 case 'bigint':
-                    $values['type'] = 'range';
-                    break;
-                case 'boolean':
-                    $values['type'] = 'select';
-                break;
                 case 'string':
                 case 'text':
                 case 'float':
                 case 'decimal':
                     $values['type'] = 'text';
+                break;
+                case 'boolean':
+                    $values['type'] = 'select';
                 break;
                 case 'date':
                 case 'datetime':

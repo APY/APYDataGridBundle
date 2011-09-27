@@ -211,15 +211,15 @@ class Document extends Source
             {
                 case 'id':
                 case 'int':
-                    $values['type'] = 'range';
-                    break;
-                case 'boolean':
-                    $values['type'] = 'select';
-                break;
                 case 'string':
                 case 'float':
                     $values['type'] = 'text';
                 break;
+                
+                case 'boolean':
+                    $values['type'] = 'select';
+                break;
+
                 case 'date':
                     $values['type'] = 'date';
                 break;
