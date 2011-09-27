@@ -120,7 +120,7 @@ class DataGridExtension extends \Twig_Extension
     {
         $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
 
-        if ($id = $grid->getId() != '')
+        if (($id = $grid->getId()) != '')
         {
             if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getId().'_cell'))
             {
