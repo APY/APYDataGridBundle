@@ -93,7 +93,7 @@ class Document extends Source
 
         foreach ($columns as $column)
         {
-            $this->query->select($column->getId());
+            $this->query->select(array($column->getId()));
 
             if ($column->isSorted())
             {

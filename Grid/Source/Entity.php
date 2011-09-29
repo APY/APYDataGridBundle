@@ -48,7 +48,12 @@ class Entity extends Source
      */
     private $ormMetadata;
 
-    const TABLE_ALIAS = 'a';
+    /**
+     * @var
+     */
+    private $joins;
+
+    const TABLE_ALIAS = '__base__';
 
     /**
      * @param string $entityName e.g Cms:Page
@@ -68,12 +73,24 @@ class Entity extends Source
         $mapping = $container->get('grid.mapping.manager');
         $mapping->addDriver($this, -1);
         $this->metadata = $mapping->getMetadata($this->class);
-
     }
 
+    /**
+     * @param $name
+     * @return string e.g. vendor.name or name
+     */
     private function getPrefixedName($name)
     {
-        return self::TABLE_ALIAS.'.'.$name;
+        if (strpos($name, '.') !== false)
+        {
+            list($parent, $id) = explode('.', $name);
+            $this->joins[$parent] = self::TABLE_ALIAS.'.'.$parent;
+            return $name;
+        }
+        else
+        {
+            return self::TABLE_ALIAS.'.'.$name;
+        }
     }
 
     /**
@@ -154,6 +171,13 @@ class Entity extends Source
             }
         }
 
+        foreach ($this->joins as $alias => $field)
+        {
+            $this->query->leftJoin($field, $alias);
+        }
+
+        
+
         if ($page > 0)
         {
             $this->query->setFirstResult($page * $limit);
@@ -217,6 +241,8 @@ class Entity extends Source
             }
 
             $result[$name] = $values;
+
+
         }
 
         return $result;

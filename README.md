@@ -3,13 +3,6 @@ What is DataGridBundle?
 
 datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
 
-last changes:
-
- - own columns can be added by anotations
- - possible registrations of custom column types in container - look at Resources/Config/services
- - grid need to be created as service
- - annotations
- - ODM support
 
 todo:
 
@@ -133,9 +126,9 @@ Available types for '@GRID\Source' notation
  - columns [string] order of columns in grid (columns are separated by ",")
  - filterable [bool] turns on or off visibility of all columns
 
-Usage - Examples
+Examples
 
-    // Adding custom column to source - will be also possible by annotation in short time
+    // Adding custom column from controller
 
     $source = new Entity('Test:Test');
     $source->setPrepareCallback(function ($columns){
@@ -143,6 +136,16 @@ Usage - Examples
     });
 
     $grid = $this->get('grid')->setSource($source)->setRoute('filter');
+
+    // Many to One association support with `.` notation (just ORM)
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Vendors")
+     * @ORM\JoinColumn(name="vendor", referencedColumnName="id")
+     *
+     * @GRID\Column(id="vendor.name")
+     */
+    private $vendor;
 
 
 Working preview
