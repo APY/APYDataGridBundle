@@ -127,7 +127,7 @@ Available types for '@GRID\Source' notation
  - filterable [bool] turns on or off visibility of all columns
 
 Examples
-
+-----
     // Adding custom column from controller
 
     $source = new Entity('Test:Test');
@@ -136,6 +136,7 @@ Examples
     });
 
     $grid = $this->get('grid')->setSource($source)->setRoute('filter');
+
 
     // Many to One association support with `.` notation (just ORM)
 
