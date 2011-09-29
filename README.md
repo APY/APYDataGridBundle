@@ -3,7 +3,6 @@ What is DataGridBundle?
 
 datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
 
-
 todo:
 
  - exports: xml, excel, pdf ... - later
@@ -31,8 +30,8 @@ two routs goes to the same controller action
 
 Usage - Grid with ORM /ODM as source
 -----
-    use Sorien\DataGridBundle\Source\Entity;
-    use Sorien\DataGridBundle\Source\Document;
+    use Sorien\DataGridBundle\Grid\Source\Entity;
+    use Sorien\DataGridBundle\Grid\Source\Document;
 
     class DefaultController extends Controller
     {
@@ -61,21 +60,22 @@ Usage - view
 -----
 view:
 
-    //second parameter is optional and defining template
-    {{ grid(data, 'YourBundle::own_grid_theme_template.html.twig') }}
+    //2nd parameter is optional and defines template
+    //3th parameter is optional and defines grid id, like calling $grid->setId() from controller
+    {{ grid(data, 'YourBundle::own_grid_theme_template.html.twig', 'custom_grid_id') }}
 
 your own grid theme template: you can override blocks - `grid`, `grid_titles`, `grid_filters`, `grid_rows`, `grid_pager`, `grid_actions`
 
     //file: YourBundle::own_grid_theme.html.twig
 
-    {% extends 'DataGridBundle::datagrid.html.twig' %}
+    {% extends 'DataGridBundle::blocks.html.twig' %}
     {% block grid %}
         extended grid!
     {% endblock %}
 
 custom cell rendering inside template
 
-    {% block grid_column_yourcolumnname_cell %}
+    {% block grid_column_yourcolumnid_cell %}
     <span style="color:#f00">My row id is: {{ row.getPrimaryFieldValue() }}</span>
     {% endblock %}
 
@@ -95,7 +95,7 @@ Usage - Document or Entity annotations
      * Annotation Test Class
      *
      * @GRID\Source(columns="id, ...")
-     * @GRID\Column(id="attached1", size="120", type="text") //add custom column to grid
+     * @GRID\Column(id="attached1", size="120", type="text") //add custom column to grid, id has to be specified
      */
     class Test
     {
@@ -110,6 +110,7 @@ Usage - Document or Entity annotations
 
 Available types for '@GRID\Column' notation
 
+ - id [string] - column id - default is property name, Source overrides it to field name
  - title [string] - own column name
  - size [int] - column width in pixels
  - type [string] - column type (Date, Range, Select, Text)
@@ -117,9 +118,9 @@ Available types for '@GRID\Column' notation
  - format [string] - format (only Date Column)
  - sortable [boolean]- turns on or off column sorting
  - filterable [boolean] - turns on or off visibility of column filter
- - source [boolean] - turns on or off column visibility for Source Class
+ - source [boolean] - turns on or off column visibility for Source class
  - visible [boolean] -  turns on or off column visibility
- - primary [boolean] - sets column as primary
+ - primary [boolean] - sets column as primary - default is primary key form Entity/Document
 
 Available types for '@GRID\Source' notation
 
