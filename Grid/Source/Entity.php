@@ -13,6 +13,8 @@ namespace Sorien\DataGridBundle\Grid\Source;
 
 use Sorien\DataGridBundle\Grid\Column\Column;
 use Sorien\DataGridBundle\Grid\Rows;
+use Sorien\DataGridBundle\Grid\Row;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
@@ -49,7 +51,7 @@ class Entity extends Source
     private $ormMetadata;
 
     /**
-     * @var
+     * @var array
      */
     private $joins;
 
@@ -61,6 +63,7 @@ class Entity extends Source
     public function __construct($entityName)
     {
         $this->entityName = $entityName;
+        $this->joins = array();
     }
 
     public function initialise($container)
@@ -76,15 +79,16 @@ class Entity extends Source
     }
 
     /**
-     * @param $name
-     * @return string e.g. vendor.name or name
+     * @param $name e.g. vendor.name or name
+     * @return string e.g. vendor.name or __base__.name
      */
     private function getPrefixedName($name)
     {
-        if (strpos($name, '.') !== false)
+        if (($pos = strpos($name, '.')) !== false)
         {
-            list($parent, $id) = explode('.', $name);
+            $parent = substr($name, 0, $pos);
             $this->joins[$parent] = self::TABLE_ALIAS.'.'.$parent;
+
             return $name;
         }
         else
@@ -131,7 +135,8 @@ class Entity extends Source
 
         foreach ($columns as $column)
         {
-            $this->query->addSelect($this->getPrefixedName($column->getId()));
+            $this->query->addSelect(
+                $this->getPrefixedName($column->getId()));
 
             if ($column->isSorted())
             {
@@ -176,16 +181,28 @@ class Entity extends Source
             $this->query->leftJoin($field, $alias);
         }
 
-        
-
         if ($page > 0)
         {
             $this->query->setFirstResult($page * $limit);
         }
 
-        //var_dump($this->query->getDQL()); die();
+        // get guery result
+        $result = $this->query->getQuery()->execute(array(), Query::HYDRATE_ARRAY);
 
-        return new Rows($this->query->getQuery()->getResult());
+        // hydrate result
+        $rows = new Rows();
+        foreach ($result as $item)
+        {
+            $row = new Row();
+            foreach ($columns as $column)
+            {
+               $value = array_shift($item);
+               $row->setField($column->getId(), $value);
+            }
+            $rows->addRow($row);
+        }
+
+        return $rows;
     }
 
     public function getTotalCount($columns)

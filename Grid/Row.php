@@ -18,9 +18,9 @@ class Row
     private $legend;
     private $primaryField;
 
-    public function __construct($array = array())
+    public function __construct()
     {
-        $this->fields = $array;
+        $this->fields = array();
         $this->color = '';
     }
 
