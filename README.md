@@ -134,9 +134,15 @@ Examples
     $source = new Entity('Test:Test');
     $source->setPrepareCallback(function ($columns){
         $columns->addColumn(new Column(array('id' => 'callbacks', 'size' => '54', 'sortable' => false, 'filterable' => false, 'source' => false)));
+        $actions->addAction('Delete', 'YourProject\YourBundle\Controller\YourControllerClass::yourDeleteMethod');
     });
 
-    $grid = $this->get('grid')->setSource($source)->setRoute('filter');
+    $gridManager = $this->get('grid');
+    
+    // Configure page and limits before the source
+    $gridManager->setLimits(array('3' => '3', '6' => '6', '9' => '9'));
+    
+    $grid = $gridManager->setSource($source)->setRoute('filter');
 
 
     // Many to One association support with `.` notation (just ORM)
