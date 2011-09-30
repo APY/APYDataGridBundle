@@ -139,7 +139,7 @@ Examples
 
     $gridManager = $this->get('grid');
     
-    // Configure page and limits before the source
+    // Configure limits and first page shown before the source
     $gridManager->setLimits(array('3' => '3', '6' => '6', '9' => '9'));
     
     $grid = $gridManager->setSource($source)->setRoute('filter');
