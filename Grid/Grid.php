@@ -72,8 +72,6 @@ class Grid
     private $showFilters;
     private $showTitles;
 
-    private $columnExtensions;
-
     /**
      * @param \Source\Source $source Data Source
      * @param $container
@@ -98,7 +96,7 @@ class Grid
         $this->hash = md5($this->request->get('_controller').$id);
         $this->id = $id;
 
-        $this->setLimits(array('20' => '20', '50' => '50', '100' => '100'));
+        $this->setLimits(array(20 => '20', 50 => '50', 100 => '100'));
         $this->page = 0;
         $this->showTitles = $this->showFilters = true;
 
@@ -149,11 +147,11 @@ class Grid
      * @param bool $onlyFromRequest
      * @return null|string
      */
-    private function getData($column, $onlyFromRequest = false)
+    private function getData($column, $fromRequest = true, $fromSession = true)
     {
         $result = null;
 
-        if (!$onlyFromRequest && is_array($data = $this->session->get($this->getHash())))
+        if ($fromSession && is_array($data = $this->session->get($this->getHash())))
         {
             if (isset($data[$column]))
             {
@@ -161,7 +159,7 @@ class Grid
             }
         }
 
-        if (is_array($data = $this->request->get($this->getHash())))
+        if ($fromRequest && is_array($data = $this->request->get($this->getHash())))
         {
             if (isset($data[$column]))
             {
@@ -237,7 +235,7 @@ class Grid
             $storage['_order'] = $order;
         }
 
-        if ($this->limit != key($this->limits))
+        if ($this->limit != $this->getData('_limit', false))
         {
             $storage['_limit'] = $this->limit;
         }
@@ -256,8 +254,8 @@ class Grid
 
     public function executeActions()
     {
-        $id = $this->getData('__action_id', true);
-        $data = $this->getData('__action', true);
+        $id = $this->getData('__action_id', true, false);
+        $data = $this->getData('__action', true, false);
 
         if ($id > -1 && is_array($data))
         {
@@ -402,6 +400,8 @@ class Grid
             $this->limits = array($limits => $limits);
             $this->limit = $limits;
         }
+
+        return $this;
     }
 
     public function getLimits()
@@ -464,7 +464,8 @@ class Grid
 
     public function isPagerSectionVisible()
     {
-        return $this->getCurrentLimit() < $this->totalCount;
+        $limits = sizeof($this->getLimits());
+        return $limits > 1 || ($limits == 0 && $this->getCurrentLimit() < $this->totalCount);
     }
 
     public function hideFilters()
