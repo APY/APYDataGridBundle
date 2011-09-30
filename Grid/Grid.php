@@ -218,7 +218,7 @@ class Grid
         }
 
         $page = $this->getData('_page');
-        if (!is_null($page) && $page > 0)
+        if (!is_null($page) && $page >= 0)
         {
             $this->page = $page;
         }
@@ -242,7 +242,7 @@ class Grid
             $storage['_limit'] = $this->limit;
         }
 
-        if ($this->page > 0)
+        if ($this->page >= 0)
         {
             $storage['_page'] = $this->page;
         }
