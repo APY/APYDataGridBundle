@@ -185,6 +185,8 @@ class Entity extends Source
         {
             $this->query->setFirstResult($page * $limit);
         }
+        
+        $this->query->setMaxResults($limit);
 
         // get guery result
         $result = $this->query->getQuery()->execute(array(), Query::HYDRATE_ARRAY);
