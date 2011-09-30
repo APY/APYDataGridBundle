@@ -28,6 +28,6 @@ class Action extends Column
 
     public function renderCell($value, $row, $router)
     {
-        return '<input type="checkbox" class="action" value="1" name="'.$this->gridHash.'[__action]['.$row->getPrimaryField().']"/>';
+        return '<input type="checkbox" class="action" value="1" name="'.$this->gridHash.'[__action]['.$row->getPrimaryFieldValue().']"/>';
     }
 }
