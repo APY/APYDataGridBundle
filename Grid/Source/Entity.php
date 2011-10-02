@@ -79,7 +79,7 @@ class Entity extends Source
     }
 
     /**
-     * @param $name e.g. vendor.name or name
+     * @param string $name e.g. vendor.name or name
      * @return string e.g. vendor.name or __base__.name
      */
     private function getPrefixedName($name)
@@ -108,6 +108,9 @@ class Entity extends Source
         {
             $columns->addColumn($column);
         }
+
+        //call associated closures
+        parent::prepare($columns, $actions);
     }
 
     private function normalizeOperator($operator)
@@ -188,23 +191,32 @@ class Entity extends Source
         
         $this->query->setMaxResults($limit);
 
+        //call overrided prepareQuery or associated closure
+        $this->prepareQuery($this->query);
+
         // get guery result
-        $result = $this->query->getQuery()->execute(array(), Query::HYDRATE_ARRAY);
+        $items = $this->query->getQuery()->execute(array(), Query::HYDRATE_ARRAY);
 
         // hydrate result
-        $rows = new Rows();
-        foreach ($result as $item)
+        $result = new Rows();
+        foreach ($items as $item)
         {
             $row = new Row();
+
             foreach ($columns as $column)
             {
                $value = array_shift($item);
                $row->setField($column->getId(), $value);
             }
-            $rows->addRow($row);
+
+            //call overrided prepareRow or associated closure
+            if (($modifiedRow = $this->prepareRow($row)) != null)
+            {
+                $result->addRow($modifiedRow);
+            }            
         }
 
-        return $rows;
+        return $result;
     }
 
     public function getTotalCount($columns)

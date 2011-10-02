@@ -16,45 +16,67 @@ use Sorien\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
 
 abstract class Source implements DriverInterface
 {
-    private $prepareCallback;
+    const EVENT_PREPARE = 0;
+    const EVENT_PREPARE_QUERY = 1;
+    const EVENT_PREPARE_ROW = 2;
+
+    private $callbacks;
     /**
      * Prepare all Columns and Actions
      *
-     * @abstract
-     * @param $columns \Sorien\DataGridBundle\Grid\Columns
-     * @param $actions \Sorien\DataGridBundle\Grid\Actions
+     * @param \Sorien\DataGridBundle\Grid\Columns $columns
+     * @param \Sorien\DataGridBundle\Grid\Actions $actions
      * @return null
      */
     public function prepare($columns, $actions)
     {
-    }
-
-    final public function _prepare($columns, $actions)
-    {
-        if (is_callable($this->prepareCallback))
+        if (isset($this->callbacks[$this::EVENT_PREPARE]) && is_callable($this->callbacks[$this::EVENT_PREPARE]))
         {
-            $this->prepare($columns, $actions);
-
-            call_user_func($this->prepareCallback, $columns, $actions);
-        }
-        else
-        {
-            $this->prepare($columns, $actions);
+            call_user_func($this->callbacks[$this::EVENT_PREPARE], $columns, $actions);
         }
     }
 
-    public function setPrepareCallback($callback)
+    /**
+     * @param \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder
+     */
+    public function prepareQuery($queryBuilder)
     {
-        $this->prepareCallback = $callback;
+        if (isset($this->callbacks[$this::EVENT_PREPARE_QUERY]) && is_callable($this->callbacks[$this::EVENT_PREPARE_QUERY]))
+        {
+            call_user_func($this->callbacks[$this::EVENT_PREPARE_QUERY], $queryBuilder);
+        }
+    }
+
+    /**
+     * @param \Sorien\DataGridBundle\Grid\Row $row
+     * @return \Sorien\DataGridBundle\Grid\Row|null
+     */
+    public function prepareRow($row)
+    {
+        if (isset($this->callbacks[$this::EVENT_PREPARE_ROW]) && is_callable($this->callbacks[$this::EVENT_PREPARE_ROW]))
+        {
+            return call_user_func($this->callbacks[$this::EVENT_PREPARE_ROW], $row);
+        }
+
+        return $row;
+    }
+
+    /**
+     * @param int $type Source::EVENT_PREPARE*
+     * @param \Closure $callback
+     */
+    public function setCallback($type, $callback)
+    {
+        $this->callbacks[$type] = $callback;
     }
 
     /**
      * Find data for current page
      *
      * @abstract
-     * @param $columns \Sorien\DataGridBundle\Grid\Column\Column[]
-     * @param $page int
-     * @param $limit
+     * @param \Sorien\DataGridBundle\Grid\Column\Column[] $columns
+     * @param int $page
+     * @param int $limit
      * @return \Sorien\DataGridBundle\DataGrid\Rows
      */
     abstract public function execute($columns, $page, $limit);
@@ -62,7 +84,7 @@ abstract class Source implements DriverInterface
     /**
      * Get Total count of data items
      *
-     * @param $columns \Sorien\DataGridBundle\Grid\Column\Columns
+     * @param \Sorien\DataGridBundle\Grid\Column\Columns $columns
      * @return int
      */
     abstract function getTotalCount($columns);

@@ -126,7 +126,7 @@ class Grid
         $this->source->initialise($this->container);
 
         //get cols from source
-        $this->source->_prepare($this->columns, $this->actions);
+        $this->source->prepare($this->columns, $this->actions);
 
         //store column data
         $this->fetchAndSaveColumnData();

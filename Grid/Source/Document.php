@@ -79,6 +79,9 @@ class Document extends Source
         {
             $columns->addColumn($column);
         }
+                
+        //call associated closures
+        parent::prepare($columns, $actions);
     }
 
     /**
@@ -134,6 +137,9 @@ class Document extends Source
 
         $this->query->limit($limit);
 
+        //call overrided prepareQuery or associated closure
+        $this->prepareQuery($this->query);
+
         //execute and get results
         $result = new Rows();
 
@@ -147,7 +153,11 @@ class Document extends Source
                 $row->setField($column->getId(), $properties[$column->getId()]);
             }
 
-            $result->addRow($row);
+            //call overrided prepareRow or associated closure
+            if (($modifiedRow = $this->prepareRow($row)) != null)
+            {
+                $result->addRow($modifiedRow);
+            }
         }
 
         return $result;

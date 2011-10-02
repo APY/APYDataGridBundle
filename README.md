@@ -130,11 +130,15 @@ Available types for '@GRID\Source' notation
 Examples
 -----
     // Adding custom column from controller
-
     $source = new Entity('Test:Test');
-    $source->setPrepareCallback(function ($columns){
+    $source->setCallback(Source::EVENT_PREPARE, function ($columns){
         $columns->addColumn(new Column(array('id' => 'callbacks', 'size' => '54', 'sortable' => false, 'filterable' => false, 'source' => false)));
         $actions->addAction('Delete', 'YourProject\YourBundle\Controller\YourControllerClass::yourDeleteMethod');
+    });
+
+    //modify returned items from source
+    $entity->setCallback(Source::EVENT_PREPARE_QUERY, function ($query) {
+            $query->setMaxResults(1);
     });
 
     $gridManager = $this->get('grid');
