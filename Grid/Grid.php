@@ -82,7 +82,7 @@ class Grid
     {
         if(!is_null($source) && !($source instanceof Source))
         {
-            throw new \Exception('Supplied Source have to extend Source class and not '.get_class($source));
+            throw new \InvalidArgumentException(sprintf('Supplied Source have to extend Source class and not %s', get_class($source)));
         }
 
         $this->container = $container;
@@ -113,12 +113,12 @@ class Grid
     {
         if(!is_null($this->source))
         {
-            throw new \Exception('Source can be set just once.');
+            throw new \InvalidArgumentException('Source can be set just once.');
         }
 
         if (!($source instanceof Source))
         {
-            throw new \Exception('Supplied Source have to extend Source class.');
+            throw new \InvalidArgumentException('Supplied Source have to extend Source class.');
         }
 
         $this->source = $source;
@@ -318,7 +318,7 @@ class Grid
         //get size
         if(!is_int($this->totalCount = $this->source->getTotalCount($this->columns)))
         {
-            throw new \Exception('Source function getTotalCount need to return integer result, returned: '.print_r($this->totalCount));
+            throw new \Exception(sprintf('Source function getTotalCount need to return integer result, returned: %s', gettype($this->totalCount)));
         }
         
         return $this;
@@ -333,7 +333,7 @@ class Grid
     {
         if(!$columns instanceof Columns)
         {
-            throw new \Exception('Supplied object have to extend Columns class.');
+            throw new \InvalidArgumentException('Supplied object have to extend Columns class.');
         }
 
         $this->columns = $columns;
@@ -385,7 +385,7 @@ class Grid
 
     /**
      * @param array|int $limits
-     * @return void
+     * @return \Sorien\DataGridBundle\Grid\Grid
      */
     public function setLimits($limits)
     {
@@ -496,5 +496,4 @@ class Grid
     {
         return $this->id;
     }
-
 }

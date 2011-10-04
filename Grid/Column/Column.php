@@ -26,6 +26,7 @@ class Column
     private $visibleForSource;
     private $primary;
     private $params;
+    private $align;
 
     protected $data;
 
@@ -39,6 +40,10 @@ class Column
     const OPERATOR_GT   = 'gt';
     const OPERATOR_GTE  = 'gte';
     const OPERATOR_REGEXP = 'req';
+
+    const ALIGN_LEFT = 'left';
+    const ALIGN_RIGHT = 'right';
+    const ALIGN_CENTER = 'center';
 
     /**
      * Default Column constructor
@@ -58,14 +63,15 @@ class Column
     {
         $this->params = $params;
 
-        $this->id = $this->getParam('id', null);
-        $this->title = $this->getParam('title', '');
+        $this->setId($this->getParam('id', null));
+        $this->setTitle($this->getParam('title', ''));
         $this->sortable = $this->getParam('sortable', true);
         $this->visible = $this->getParam('visible', true);
-        $this->size = $this->getParam('size', -1);
+        $this->setSize($this->getParam('size', -1));
         $this->filterable = $this->getParam('filterable', true);
         $this->visibleForSource = $this->getParam('source', true);
         $this->primary = $this->getParam('primary', false);
+        $this->setAlign($this->getParam('align', $this::ALIGN_LEFT));
     }
 
     protected function getParam($id, $default)
@@ -291,7 +297,11 @@ class Column
      */
     public function setSize($size)
     {
-        $this->size = $size;
+        if ($size >= -1)
+        {
+            $this->size = $size;
+        }
+        else throw new \InvalidArgumentException(sprintf('Unsupported column size %s, use positive value or -1 for auto resize', $size));
 
         return $this;
     }
@@ -342,6 +352,11 @@ class Column
         return $this->data;
     }
 
+    /**
+     * Set column visibility for source class
+     * @param $value
+     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     */
     public function setIsVisibleForSource($value)
     {
         $this->visibleForSource = $value;
@@ -349,13 +364,43 @@ class Column
         return $this;
     }
 
+    /**
+     * Return true is column in visible for source class
+     * @return boolean
+     */
     public function isVisibleForSource()
     {
         return $this->visibleForSource;
     }
 
+    /**
+     * Return true is column in primary
+     * @return boolean
+     */
     public function isPrimary()
     {
         return $this->primary;
+    }
+
+    /**
+     * Set column align
+     * @param string $align left/right/center
+     */
+    public function setAlign($align)
+    {
+        if ($align == $this::ALIGN_LEFT || $align == $this::ALIGN_CENTER || $align == $this::ALIGN_RIGHT)
+        {
+            $this->align = $align;
+        }
+        else throw new \InvalidArgumentException(sprintf('Unsupported align %s, just left, right and center are supported', $align));
+    }
+
+    /**
+     * get column align
+     * @return bool
+     */
+    public function getAlign()
+    {
+        return $this->align;
     }
 }

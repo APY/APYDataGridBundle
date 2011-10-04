@@ -27,7 +27,7 @@
     <tr>
     {% for column in grid.columns %}
         {% if (column.visible )%}
-        <th class="title"{% if(column.size > -1) %} style="width:{{column.size}}px"{% endif %}>
+        <th class="title{% if column.align != 'left'%} align-{{column.align}}{% endif %}"{% if(column.size > -1) %} style="width:{{column.size}}px"{% endif %}>
         {% if (column.sortable) %}
             <a href="{{ grid_url('order', grid, column) }}" title="Order by {{ column.title }}">{{ column.title }}</a>
             {% if column.order == 'asc' %}
@@ -60,9 +60,9 @@
     {% for column in grid.columns %}
         {% if (column.visible )%}
             {% if loop.last %}
-            <td class="last">{{ grid_cell(column, row, grid)|raw }}</td>
+            <td class="last{% if column.align != 'left'%} align-{{column.align}}{% endif %}">{{ grid_cell(column, row, grid)|raw }}</td>
             {% else %}
-            <td>{{ grid_cell(column, row, grid)|raw }}</td>
+            <td{% if column.align != 'left'%} class="align-{{column.align}}"{% endif %}>{{ grid_cell(column, row, grid)|raw }}</td>
             {% endif %}
         {% endif %}
     {% endfor %}

@@ -112,7 +112,7 @@ Available types for '@GRID\Column' notation
 
  - id [string] - column id - default is property name, Source overrides it to field name
  - title [string] - own column name
- - size [int] - column width in pixels
+ - size [int] - column width in pixels, default -1, -1 means auto resize
  - type [string] - column type (Date, Range, Select, Text, Boolean)
  - values [array] - options (only Select Column)
  - format [string] - format (only Date Column)
@@ -121,6 +121,7 @@ Available types for '@GRID\Column' notation
  - source [boolean] - turns on or off column visibility for Source class
  - visible [boolean] -  turns on or off column visibility
  - primary [boolean] - sets column as primary - default is primary key form Entity/Document
+ - align [string(left|right|center)] - default left,
 
 Available types for '@GRID\Source' notation
 
