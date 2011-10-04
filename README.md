@@ -113,7 +113,7 @@ Available types for '@GRID\Column' notation
  - id [string] - column id - default is property name, Source overrides it to field name
  - title [string] - own column name
  - size [int] - column width in pixels
- - type [string] - column type (Date, Range, Select, Text)
+ - type [string] - column type (Date, Range, Select, Text, Boolean)
  - values [array] - options (only Select Column)
  - format [string] - format (only Date Column)
  - sortable [boolean]- turns on or off column sorting
@@ -131,13 +131,13 @@ Examples
 -----
     // Adding custom column from controller
     $source = new Entity('Test:Test');
-    $source->setCallback(Source::EVENT_PREPARE, function ($columns, $actions){
+    $source->setCallback(Entity::EVENT_PREPARE, function ($columns, $actions){
         $columns->addColumn(new Column(array('id' => 'callbacks', 'size' => '54', 'sortable' => false, 'filterable' => false, 'source' => false)));
         $actions->addAction('Delete', 'YourProject\YourBundle\Controller\YourControllerClass::yourDeleteMethod');
     });
 
     //modify returned items from source
-    $entity->setCallback(Source::EVENT_PREPARE_QUERY, function ($query) {
+    $entity->setCallback(Entity::EVENT_PREPARE_QUERY, function ($query) {
             $query->setMaxResults(1);
     });
 

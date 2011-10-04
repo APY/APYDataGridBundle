@@ -227,7 +227,7 @@ class Document extends Source
                 break;
                 
                 case 'boolean':
-                    $values['type'] = 'select';
+                    $values['type'] = 'boolean';
                 break;
 
                 case 'date':

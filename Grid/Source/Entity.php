@@ -262,7 +262,7 @@ class Entity extends Source
                     $values['type'] = 'text';
                 break;
                 case 'boolean':
-                    $values['type'] = 'select';
+                    $values['type'] = 'boolean';
                 break;
                 case 'date':
                 case 'datetime':

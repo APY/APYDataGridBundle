@@ -52,7 +52,8 @@ class GridTypeGuesser implements FormTypeGuesserInterface
                     {
                         return new TypeGuess('choice', array('choices' => $values), Guess::HIGH_CONFIDENCE);
                     }
-
+                case 'boolean':
+                        return new TypeGuess('choice', array('choices' => array('1'=>'true','0'=>'false')), Guess::HIGH_CONFIDENCE);
                 break;
             }
         }
