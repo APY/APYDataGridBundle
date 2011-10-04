@@ -131,7 +131,7 @@ Examples
 -----
     // Adding custom column from controller
     $source = new Entity('Test:Test');
-    $source->setCallback(Source::EVENT_PREPARE, function ($columns){
+    $source->setCallback(Source::EVENT_PREPARE, function ($columns, $actions){
         $columns->addColumn(new Column(array('id' => 'callbacks', 'size' => '54', 'sortable' => false, 'filterable' => false, 'source' => false)));
         $actions->addAction('Delete', 'YourProject\YourBundle\Controller\YourControllerClass::yourDeleteMethod');
     });
