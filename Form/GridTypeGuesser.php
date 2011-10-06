@@ -42,19 +42,29 @@ class GridTypeGuesser implements FormTypeGuesserInterface
 
         if ($metadata->hasFieldMapping($property))
         {
+            $params = $metadata->getFieldMapping($property);
             switch ($metadata->getFieldMappingType($property))
             {
-                case 'select':
-                    $params = $metadata->getFieldMapping($property);
-                    $values = $params['values'];
+//                case 'text':
+//                    if (isset($params['title']) && $params['title'] != '') // && strpos($params['id'], '.') === false
+//                    {
+//                        return new TypeGuess('text', array('label' => $params['title']), Guess::LOW_CONFIDENCE);
+//                    }
+//                break;
 
-                    if (!empty($values))
+                case 'select':
+                    if (!empty($params['values']))
                     {
-                        return new TypeGuess('choice', array('choices' => $values), Guess::HIGH_CONFIDENCE);
+                        return new TypeGuess('choice', array('choices' => $params['values']), Guess::HIGH_CONFIDENCE);
                     }
-                case 'boolean':
-                        return new TypeGuess('choice', array('choices' => array('1'=>'true','0'=>'false')), Guess::HIGH_CONFIDENCE);
                 break;
+
+                case 'boolean':
+                    return new TypeGuess('choice', array('choices' => array('1'=>'true','0'=>'false')), Guess::HIGH_CONFIDENCE);
+                break;
+                
+                default:
+                    return null;
             }
         }
    }
