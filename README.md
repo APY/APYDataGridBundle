@@ -1,20 +1,14 @@
 What is DataGridBundle?
 -----
 
-datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid
-
-todo:
-
- - exports: xml, excel, pdf ... - later
- - theme support like Symfony\Bridge\Twig\Extension - done but wil be changed a bit
- - ajax support
+datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid but not compatible
 
 if you want to help or change any part according your needs im open to any idea, just create PR or open issue ticket
 
 Compatibility
 -----
 
-Symfony - 2.0+
+Symfony - 2.0+ and will follow stable releases
 
 Usage - routes
 -----
@@ -127,27 +121,25 @@ Available types for '@GRID\Source' notation
 
 Examples
 -----
-    // Adding custom column from controller
+Adding custom column from controller
+
     $source = new Entity('Test:Test');
     $source->setCallback(Entity::EVENT_PREPARE, function ($columns, $actions){
         $columns->addColumn(new Column(array('id' => 'callbacks', 'size' => '54', 'sortable' => false, 'filterable' => false, 'source' => false)));
         $actions->addAction('Delete', 'YourProject\YourBundle\Controller\YourControllerClass::yourDeleteMethod');
     });
 
-    //modify returned items from source
+modify returned items from source
+
     $source->setCallback(Entity::EVENT_PREPARE_QUERY, function ($query) {
             $query->setMaxResults(1);
     });
 
-    $gridManager = $this->get('grid');
-    
-    // Configure limits and first page shown before the source
-    $gridManager->setLimits(array(3 => '3', 6 => '6', 9 => '9'));
+Configure limits and first page shown before the source
 
-    $gridManager->setSource($source);
+    $grid->setLimits(array(3 => '3', 6 => '6', 9 => '9'));
 
-
-    // Many to One association support with `.` notation (just ORM)
+Many to One association support with `.` notation (just ORM)
 
     /**
      * @ORM\ManyToOne(targetEntity="Vendors")
