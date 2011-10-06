@@ -10,16 +10,7 @@ Compatibility
 
 Symfony - 2.0+ and will follow stable releases
 
-Usage - routes
------
-two routs goes to the same controller action
-
-    grid:
-        pattern:  /grid
-        defaults: { _controller: YourBundle:Default:grid }
-
-
-Usage - Grid with ORM /ODM as source
+Usage - controller
 -----
     use Sorien\DataGridBundle\Grid\Source\Entity;
     use Sorien\DataGridBundle\Grid\Source\Document;
@@ -32,7 +23,7 @@ Usage - Grid with ORM /ODM as source
             $grid = $this->get('grid')->setSource(new Entity('Bundle:Entity'));
 
             // or use Document source class for ODM
-            $grid = $this->get('grid')->setSource(new Document('Bundle:Entity'));
+            $grid = $this->get('grid')->setSource(new Document('Bundle:Document'));
 
             if ($grid->isReadyForRedirect())
             {
@@ -49,8 +40,6 @@ Usage - Grid with ORM /ODM as source
 
 Usage - view
 -----
-view:
-
     //2nd parameter is optional and defines template
     //3th parameter is optional and defines grid id, like calling $grid->setId() from controller
     {{ grid(data, 'YourBundle::own_grid_theme_template.html.twig', 'custom_grid_id') }}
@@ -62,18 +51,6 @@ your own grid theme template: you can override blocks - `grid`, `grid_titles`, `
     {% extends 'DataGridBundle::blocks.html.twig' %}
     {% block grid %}
         extended grid!
-    {% endblock %}
-
-custom cell rendering inside template
-
-    {% block grid_column_yourcolumnid_cell %}
-    <span style="color:#f00">My row id is: {{ row.getPrimaryFieldValue() }}</span>
-    {% endblock %}
-
-custom filter rendering inside template
-
-    {% block grid_column_yourcolumnname_filter %}
-    <span style="color:#f00">My custom filter</span>
     {% endblock %}
 
 Usage - Document or Entity annotations
@@ -119,7 +96,7 @@ Available types for '@GRID\Source' notation
  - columns [string] order of columns in grid (columns are separated by ",")
  - filterable [bool] turns on or off visibility of all columns
 
-Examples
+Another Examples
 -----
 Adding custom column from controller
 
@@ -129,15 +106,16 @@ Adding custom column from controller
         $actions->addAction('Delete', 'YourProject\YourBundle\Controller\YourControllerClass::yourDeleteMethod');
     });
 
-modify returned items from source
+Modify returned items from source
 
     $source->setCallback(Entity::EVENT_PREPARE_QUERY, function ($query) {
             $query->setMaxResults(1);
     });
 
-Configure limits and first page shown before the source
+Configure limits and first page shown, have to be done before setting source to grid
 
     $grid->setLimits(array(3 => '3', 6 => '6', 9 => '9'));
+
 
 Many to One association support with `.` notation (just ORM)
 
@@ -149,6 +127,17 @@ Many to One association support with `.` notation (just ORM)
      */
     private $vendor;
 
+Custom cell rendering inside template defined as 2nd argument in twig function `grid`
+
+    {% block grid_column_yourcolumnid_cell %}
+    <span style="color:#f00">My row id is: {{ row.getPrimaryFieldValue() }}</span>
+    {% endblock %}
+
+Custom filter rendering inside template defined as 2nd argument in twig function `grid`
+
+    {% block grid_column_yourcolumnname_filter %}
+    <span style="color:#f00">My custom filter</span>
+    {% endblock %}
 
 Working preview
 -----
