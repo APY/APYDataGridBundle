@@ -108,7 +108,6 @@ class Entity extends Source
         {
             $columns->addColumn($column);
         }
-
         //call associated closures
         parent::prepare($columns, $actions);
     }
@@ -138,8 +137,7 @@ class Entity extends Source
 
         foreach ($columns as $column)
         {
-            $this->query->addSelect(
-                $this->getPrefixedName($column->getId()));
+            $this->query->addSelect($this->getPrefixedName($column->getId()));
 
             if ($column->isSorted())
             {
@@ -155,7 +153,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $where->add($this->query->expr()->$operator(
-                            $this->getPrefixedName($column->getId()),
+                            $this->getPrefixedName($filter->hasId() ? $filter->getId() : $column->getId()),
                             $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -169,7 +167,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $sub->add($this->query->expr()->$operator(
-                              $this->getPrefixedName($column->getId()),
+                              $this->getPrefixedName($filter->hasId() ? $filter->getId() : $column->getId()),
                               $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -235,10 +233,7 @@ class Entity extends Source
         foreach ($this->ormMetadata->getFieldNames() as $name)
         {
             $mapping = $this->ormMetadata->getFieldMapping($name);
-
-            $values = array();
-
-            $values['title'] = $name;
+            $values = array('title' => $name);
 
             if (isset($mapping['fieldName']))
             {
@@ -272,8 +267,6 @@ class Entity extends Source
             }
 
             $result[$name] = $values;
-
-
         }
 
         return $result;

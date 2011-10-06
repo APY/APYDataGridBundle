@@ -14,7 +14,7 @@ if you want to help or change any part according your needs im open to any idea,
 Compatibility
 -----
 
-Symfony - 2.01
+Symfony - 2.0+
 
 Usage - routes
 -----
