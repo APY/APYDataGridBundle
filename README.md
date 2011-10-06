@@ -103,7 +103,7 @@ Usage - Document or Entity annotations
          * @var integer $id
          *
          * @ORM\Column(name="id", type="integer")
-         * @GRID\Column(title="my own column name", size="120", type="text", visible="true", ... )
+         * @GRID\Column(title="my own column name", size="120", type="text", visible=true, ... )
          */
         private $id;
     }
