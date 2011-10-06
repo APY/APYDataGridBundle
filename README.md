@@ -54,7 +54,7 @@ your own grid theme template: you can override blocks - `grid`, `grid_titles`, `
     {% endblock %}
 
 Usage - Document or Entity annotations
-
+-----
     Entity and Document source uses doctrine annotations for type guessing, for better customization you can use own annotations
 
     use Sorien\DataGridBundle\Grid\Mapping as GRID;
