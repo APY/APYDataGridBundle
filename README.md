@@ -24,9 +24,6 @@ two routs goes to the same controller action
         pattern:  /grid
         defaults: { _controller: YourBundle:Default:grid }
 
-    filter:
-        pattern:  /filter
-        defaults: { _controller: YourBundle:Default:grid }
 
 Usage - Grid with ORM /ODM as source
 -----
@@ -38,10 +35,10 @@ Usage - Grid with ORM /ODM as source
         public function gridAction()
         {
             // creates simple grid based on your entity (ORM)
-            $grid = $this->get('grid')->setSource(new Entity('Bundle:Entity'))->setRoute('filter');
+            $grid = $this->get('grid')->setSource(new Entity('Bundle:Entity'));
 
             // or use Document source class for ODM
-            $grid = $this->get('grid')->setSource(new Document('Bundle:Entity'))->setRoute('filter');
+            $grid = $this->get('grid')->setSource(new Document('Bundle:Entity'));
 
             if ($grid->isReadyForRedirect())
             {
@@ -138,16 +135,16 @@ Examples
     });
 
     //modify returned items from source
-    $entity->setCallback(Entity::EVENT_PREPARE_QUERY, function ($query) {
+    $source->setCallback(Entity::EVENT_PREPARE_QUERY, function ($query) {
             $query->setMaxResults(1);
     });
 
     $gridManager = $this->get('grid');
     
     // Configure limits and first page shown before the source
-    $gridManager->setLimits(array('3' => '3', '6' => '6', '9' => '9'));
-    
-    $grid = $gridManager->setSource($source)->setRoute('filter');
+    $gridManager->setLimits(array(3 => '3', 6 => '6', 9 => '9'));
+
+    $gridManager->setSource($source);
 
 
     // Many to One association support with `.` notation (just ORM)
@@ -164,3 +161,5 @@ Examples
 Working preview
 -----
 <img src="http://vortex-portal.com/datagrid/grid2.png" alt="Screenshot" />
+
+you can find assets from preview on wiki 

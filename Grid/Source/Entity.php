@@ -189,10 +189,10 @@ class Entity extends Source
         
         $this->query->setMaxResults($limit);
 
-        //call overrided prepareQuery or associated closure
+        //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
 
-        // get guery result
+        // get query result
         $items = $this->query->getQuery()->execute(array(), Query::HYDRATE_ARRAY);
 
         // hydrate result
@@ -207,7 +207,7 @@ class Entity extends Source
                $row->setField($column->getId(), $value);
             }
 
-            //call overrided prepareRow or associated closure
+            //call overridden prepareRow or associated closure
             if (($modifiedRow = $this->prepareRow($row)) != null)
             {
                 $result->addRow($modifiedRow);

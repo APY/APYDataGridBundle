@@ -78,7 +78,7 @@ class Grid
      * @param $route string if null current route will be used 
      * @param string $id set if you are using more then one grid inside controller
      */
-    public function __construct($container, $source = null, $route = '', $id = '')
+    public function __construct($container, $source = null, $id = '')
     {
         if(!is_null($source) && !($source instanceof Source))
         {
@@ -90,8 +90,6 @@ class Grid
         $this->router = $container->get('router');
         $this->request = $container->get('request');
         $this->session = $this->request->getSession();
-
-        $this->setRoute($route);
 
         $this->hash = md5($this->request->get('_controller').$id);
         $this->id = $id;
@@ -352,22 +350,11 @@ class Grid
         return $this->actions;
     }
     
-    public function setRoute($route = '')
-    {
-        $this->route = $route == '' ? $this->request->get('_route') : $route;
-        return $this;
-    }
-
-    public function getRoute()
-    {
-        return $this->route;
-    }
-
     public function getRouteUrl()
     {
         if ($this->routeUrl == '')
         {
-            $this->routeUrl = $this->router->generate($this->route);
+            $this->routeUrl = $this->router->generate($this->request->get('_route'));
         }
 
         return $this->routeUrl;
@@ -375,7 +362,8 @@ class Grid
 
     public function isReadyForRedirect()
     {
-        return ($this->route == $this->request->get('_route'));
+        $data = $this->request->get($this->getHash());
+        return !empty($data);
     }
     
     public function getHash()

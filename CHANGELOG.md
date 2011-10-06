@@ -1,5 +1,8 @@
 beta 1:
 
+ - removed custom route for filtering and ordering grid columns
+ - added events to modify source data query building and data hydration
+ - added column->setAlign('left/right/center')
  - support relations in Entity source
  - support custom mapping divers
  - form type guesser from Source column

@@ -137,7 +137,7 @@ class Document extends Source
 
         $this->query->limit($limit);
 
-        //call overrided prepareQuery or associated closure
+        //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
 
         //execute and get results
@@ -153,7 +153,7 @@ class Document extends Source
                 $row->setField($column->getId(), $properties[$column->getId()]);
             }
 
-            //call overrided prepareRow or associated closure
+            //call overridden prepareRow or associated closure
             if (($modifiedRow = $this->prepareRow($row)) != null)
             {
                 $result->addRow($modifiedRow);
