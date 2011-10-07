@@ -81,7 +81,7 @@ In YAML:
 ``` yaml
 # app/config/routing.yml
 my_controller_grid:
-	pattern:  /grid
+	pattern:  /my_grid
 	defaults: { _controller: MyBundle:Default:myGrid }
 ```
 
@@ -89,7 +89,7 @@ Or if you prefer XML:
 
 ``` xml
 <!-- app/config/routing.xml -->
-<route id="my_controller_grid" pattern="/grid">
+<route id="my_controller_grid" pattern="/my_grid">
 	<default key="_controller">MyBundle:Default:myGrid</default>
 </route>
 ```
@@ -102,16 +102,16 @@ of the bundle.
 
 The following documents are available:
 
-1. [Grid Configuration](https://github.com/Sorien/DataGridBundle/blob/master/Resources/doc/grid_configuration.md)
-2. [Annotations](https://github.com/Sorien/DataGridBundle/blob/master/Resources/doc/annotations.md)
-3. [Overriding Templates](https://github.com/Sorien/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
+1. [Grid Configuration](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/grid_configuration.md)
+2. [Annotations](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/annotations.md)
+3. [Overriding Templates](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
 
 ## Simple grid with ORM or ODM as source
 
 ```php
 <?php
 // MyProject\MyBundle\DefaultController.php
-namespace Djette\UserBundle\Controller;
+namespace MyProject\MyBundle\Controller;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

@@ -3,7 +3,7 @@ Annotations
 
 ## Usage - Document or Entity annotations
 
-Entity and Document source uses doctrine annotations for type guessing, for better customization you can use own annotations
+Entity and Document sources use doctrine annotations for type guessing, for better customization you can use grid mapping annotations
 
 ```php
 <?php
@@ -22,9 +22,19 @@ class Test
      * @var integer $id
      *
      * @ORM\Column(name="id", type="integer")
-     * @GRID\Column(title="my own column name", size="120", type="text", visible=true, ... )
+     * @GRID\Column(title="my own column name", size="120", type="text", visible=true, source=true, ... )
      */
     private $id;
+	
+	
+	/**
+     * @var integer $type
+     *
+     * @ORM\Column(type="string", length="32")
+     * @GRID\Column(title="Type", size="120", type="select", visible=true, values={"type1"="Type 1","type2"="Type 2"})
+     */
+	private $type;
+	
 }
 ```
 

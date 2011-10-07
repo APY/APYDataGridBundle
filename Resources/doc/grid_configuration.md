@@ -3,7 +3,7 @@ Grid configurations
 
 ## Handle multiple grids on the same page
 
-You can set the id of your grid if you have more than one grid on your page.
+You can set the identifier of your grid if you have more than one grid on your page.
 
 ```php
 <?php
@@ -33,6 +33,7 @@ A column must be defined after the source otherwise it will appear always before
 <?php
 $grid->setSource($source);
 
+// First parameter : Associative array of parameters (See annotations) 
 $MyColumn = new Column(array('id' => 'My Column', 'title'=>'My Column', 'size' => '54', 'sortable' => true, 'filterable' => false, 'source' => false));
 
 // Add the column to the last position
@@ -42,7 +43,7 @@ $grid->addColumn($MyColumn);
 $grid->addColumn($MyColumn, 3);
 ```
 
-**Note**: To keep the correct position of each column, it is best to define them in ascending order of position.
+**Note**: To keep the correct position of each column, it's better to define them in ascending order of position.
 
 ## Add a mass action
 
@@ -63,7 +64,7 @@ $grid->setSource($source);
 
 If you define mass actions, a selector appears and a new column of checkboxes is displayed on the left of the grid.
 
-### Add a default delete mass action
+### Add a default delete mass action `Beta`
 
 ```php
 <?php
@@ -74,11 +75,13 @@ $grid->setSource($source);
 
 This mass action calls the delete method of the source.
 
-**Note**: The primary field of the grid must be the same that the primary key of your source.
+**Notes**: 
+`The primary field of the grid must be the same that the primary key of your source.
+Don't use this mass action with the 'one' Entity or Document of a one-to-many relation.`
 
 ## Add row actions
 
-A row action is an action performed only on the current row. It's represented by a route to a controller with the identifiant of the row.
+A row action is an action performed only on the current row. It's represented by a route to a controller with the identifier of the row.
 
 Row actions are all put in the same new action column at the last position of the grid.
 
@@ -90,7 +93,7 @@ Row actions must be defined after the source otherwise it will appear always bef
 $grid->setSource($source);
 
 // First parameter : Title displayed in the column
-// Second parameter : Identifiant of your route defined in your routing file
+// Second parameter : Identifier of your route defined in your routing file
 // Third parameter : Set to true if you want a confirm message (default: false)
 // Fourth parameter : Set the target of the generated link (default:_self, _blank, _top, _parent)
 $myRowAction = new RowAction('Delete', 'route_to_delete', true, '_self');
@@ -109,14 +112,14 @@ You can create other columns of row actions and choose the position of these one
 $grid->setSource($source);
 
 // Add an actions column to the grid with the wanted position
-// First parameter : Identifiant of the column
+// First parameter : Identifier of the column
 // Second parameter : Title of the column
 $myActionsColumn = new ActionsColumn('info_column','Info');
 $grid->addColumn($myActionsColumn, 1);
 
 // and linked your row action to this new column
 $myRowAction = new RowAction('Show', 'route_to_show');
-// First parameter : Identifiant of the column
+// First parameter : Identifier of the actions column
 $myRowAction->setColumn('info_column');
 $grid->addRowAction($myRowAction);
 
@@ -185,7 +188,7 @@ class DefaultController extends Controller
     
     public function gridAction()
     {
-        $source = new Entity('DjetteUserBundle:User');
+        $source = new Entity('MyProjectMyBundle:User');
 		
         /* @var $grid Sorien\DataGridBundle\Grid\Grid */
         
