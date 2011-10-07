@@ -63,7 +63,7 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function getColumnById($columnId)
     {
-        $column = hasColumnById($columnId, true);
+        $column = $this->hasColumnById($columnId, true);
         
         if ($column === false) {
             throw new \InvalidArgumentException(sprintf('Column with id "%s" doesn\'t exists', $columnId));
