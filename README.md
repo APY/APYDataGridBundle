@@ -42,7 +42,7 @@ $ git submodule update --init
 
 ### Step 2: Configure the Autoloader
 
-Add the `FOS` namespace to your autoloader:
+Add the `Sorien` namespace to your autoloader:
 
 ``` php
 <?php
