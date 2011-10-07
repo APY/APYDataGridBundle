@@ -71,13 +71,10 @@ public function registerBundles()
 }
 ```
 
-### Step 3: Import FOSUserBundle routing files
+### Step 3: Add a route to your grid
 
-Now that you have activated and configured the bundle, all that is left to do is
-import the FOSUserBundle routing files.
+Now that you have activated and configured the bundle, all that is left to add a route to your grid controller.
 
-By importing the routing files you will have ready made pages for things such as
-logging in, creating users, etc.
 
 In YAML:
 
