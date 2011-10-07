@@ -1,146 +1,165 @@
-What is DataGridBundle?
------
+Getting Started With DataGridBundle
+===================================
 
-datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid but not compatible
+Datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid but not compatible.
 
-if you want to help or change any part according your needs im open to any idea, just create PR or open issue ticket
+**Compatibility**: Symfony 2.0+ and will follow stable releases
 
-Compatibility
------
+## Installation
 
-Symfony - 2.0+ and will follow stable releases
+### Step 1: Download DataGridBundle
 
-Usage - controller
------
-    use Sorien\DataGridBundle\Grid\Source\Entity;
-    use Sorien\DataGridBundle\Grid\Source\Document;
+Ultimately, the DataGridBundle files should be downloaded to the
+`vendor/bundles/Sorien/DataGridBundle` directory.
 
-    class DefaultController extends Controller
-    {
-        public function gridAction()
-        {
-            // creates simple grid based on your entity (ORM)
-            $grid = $this->get('grid')->setSource(new Entity('Bundle:Entity'));
+This can be done in several ways, depending on your preference. The first
+method is the standard Symfony2 method.
 
-            // or use Document source class for ODM
-            $grid = $this->get('grid')->setSource(new Document('Bundle:Document'));
+**Using the vendors script**
 
-            if ($grid->isReadyForRedirect())
-            {
-                //data are stored, do redirect
-                return new RedirectResponse($this->generateUrl('grid'));
-            }
-            else
-            {
-                // to obtain data for template you need to call prepare function
-                return $this->render('YourBundle::default_index.html.twig', array('data' => $grid->prepare()));
-            }
-        }
-    }
+Add the following lines in your `deps` file:
 
-Usage - view
------
-    //2nd parameter is optional and defines template
-    //3th parameter is optional and defines grid id, like calling $grid->setId() from controller
-    {{ grid(data, 'YourBundle::own_grid_theme_template.html.twig', 'custom_grid_id') }}
+```
+[DataGridBundle]
+    git=git://github.com/S0RIEN/DataGridBundle.git
+    target=bundles/Sorien/DataGridBundle
+```
 
-your own grid theme template: you can override blocks - `grid`, `grid_titles`, `grid_filters`, `grid_rows`, `grid_pager`, `grid_actions`
+Now, run the vendors script to download the bundle:
 
-    //file: YourBundle::own_grid_theme.html.twig
+``` bash
+$ php bin/vendors install
+```
 
-    {% extends 'DataGridBundle::blocks.html.twig' %}
-    {% block grid %}
-        extended grid!
-    {% endblock %}
+**Using submodules**
 
-Usage - Document or Entity annotations
------
-    Entity and Document source uses doctrine annotations for type guessing, for better customization you can use own annotations
+If you prefer instead to use git submodules, the run the following:
 
-    use Sorien\DataGridBundle\Grid\Mapping as GRID;
+``` bash
+$ git submodule add git://github.com/S0RIEN/DataGridBundle.git vendor/bundles/Sorien/DataGridBundle
+$ git submodule update --init
+```
 
-    /**
-     * Annotation Test Class
-     *
-     * @GRID\Source(columns="id, ...")
-     * @GRID\Column(id="attached1", size="120", type="text") //add custom column to grid, id has to be specified
-     */
-    class Test
-    {
-        /**
-         * @var integer $id
-         *
-         * @ORM\Column(name="id", type="integer")
-         * @GRID\Column(title="my own column name", size="120", type="text", visible=true, ... )
-         */
-        private $id;
-    }
+### Step 2: Configure the Autoloader
 
-Available types for '@GRID\Column' notation
+Add the `FOS` namespace to your autoloader:
 
- - id [string] - column id - default is property name, Source overrides it to field name
- - title [string] - own column name
- - size [int] - column width in pixels, default -1, -1 means auto resize
- - type [string] - column type (Date, Range, Select, Text, Boolean)
- - values [array] - options (only Select Column)
- - format [string] - format (only Date Column)
- - sortable [boolean]- turns on or off column sorting
- - filterable [boolean] - turns on or off visibility of column filter
- - source [boolean] - turns on or off column visibility for Source class
- - visible [boolean] -  turns on or off column visibility
- - primary [boolean] - sets column as primary - default is primary key form Entity/Document
- - align [string(left|right|center)] - default left,
+``` php
+<?php
+// app/autoload.php
 
-Available types for '@GRID\Source' notation
+$loader->registerNamespaces(array(
+    // ...
+    'Sorien' => __DIR__.'/../vendor/bundles',
+));
+```
 
- - columns [string] order of columns in grid (columns are separated by ",")
- - filterable [bool] turns on or off visibility of all columns
+### Step 3: Enable the bundle
 
-Another Examples
------
-Adding custom column from controller
+Finally, enable the bundle in the kernel:
 
-    $source = new Entity('Test:Test');
-    $source->setCallback(Entity::EVENT_PREPARE, function ($columns, $actions){
-        $columns->addColumn(new Column(array('id' => 'callbacks', 'size' => '54', 'sortable' => false, 'filterable' => false, 'source' => false)));
-        $actions->addAction('Delete', 'YourProject\YourBundle\Controller\YourControllerClass::yourDeleteMethod');
-    });
+``` php
+<?php
+// app/AppKernel.php
 
-Modify returned items from source
+public function registerBundles()
+{
+    $bundles = array(
+        // ...
+		new Sorien\DataGridBundle\SorienDataGridBundle(),
+    );
+}
+```
 
-    $source->setCallback(Entity::EVENT_PREPARE_QUERY, function ($query) {
-            $query->setMaxResults(1);
-    });
+### Step 3: Import FOSUserBundle routing files
 
-Configure limits and first page shown, have to be done before setting source to grid
+Now that you have activated and configured the bundle, all that is left to do is
+import the FOSUserBundle routing files.
 
-    $grid->setLimits(array(3 => '3', 6 => '6', 9 => '9'));
+By importing the routing files you will have ready made pages for things such as
+logging in, creating users, etc.
 
+In YAML:
 
-Many to One association support with `.` notation (just ORM)
+``` yaml
+# app/config/routing.yml
+my_controller_grid:
+	pattern:  /grid
+	defaults: { _controller: MyBundle:Default:myGrid }
+```
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Vendors")
-     * @ORM\JoinColumn(name="vendor", referencedColumnName="id")
-     *
-     * @GRID\Column(id="vendor.name")
-     */
-    private $vendor;
+Or if you prefer XML:
 
-Custom cell rendering inside template defined as 2nd argument in twig function `grid`
+``` xml
+<!-- app/config/routing.xml -->
+<route id="my_controller_grid" pattern="/grid">
+	<default key="_controller">MyBundle:Default:myGrid</default>
+</route>
+```
 
-    {% block grid_column_yourcolumnid_cell %}
-    <span style="color:#f00">My row id is: {{ row.getPrimaryFieldValue() }}</span>
-    {% endblock %}
+### Next Steps
 
-Custom filter rendering inside template defined as 2nd argument in twig function `grid`
+Now that you have completed the basic installation and configuration of the
+DataGridBundle, you are ready to learn about more advanced features and usages
+of the bundle.
 
-    {% block grid_column_yourcolumnname_filter %}
-    <span style="color:#f00">My custom filter</span>
-    {% endblock %}
+The following documents are available:
+
+1. [Grid Configuration](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/grid_configuration.md)
+2. [Annotations](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/annotations.md)
+3. [Overriding Templates](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
+
+## Simple grid with ORM or ODM as source
+
+```php
+<?php
+// MyProject\MyBundle\DefaultController.php
+namespace Djette\UserBundle\Controller;
+
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Sorien\DataGridBundle\Grid\Source\Entity;
+use Sorien\DataGridBundle\Grid\Source\Document;
+
+class DefaultController extends Controller
+{
+	public function myGridAction()
+	{
+		// Creates simple grid based on your entity (ORM)
+		$source = new Entity('MyProjectMyBundle:MyEntity');
+		
+		// or use Document source class for ODM
+		$source = new Document('MyProjectMyBundle:MyDocument');
+		
+		$grid = $this->get('grid');
+
+		// Mass actions, query and row manipulations are defined here
+		
+		$grid->setSource($source);
+		
+		// Columns, row actions are defined here
+
+		if ($grid->isReadyForRedirect())
+		{
+			// Data are stored, do redirect
+			return new RedirectResponse($this->generateUrl('my_controller_filter'));
+		}
+		else
+		{
+			// To obtain data for template you need to call prepare function
+			return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid->prepare()));
+		}
+	}
+}
+?>
+```
+
+```html
+<!-- MyProject\MyBundle\Resources\views\my_grid.html.twig -->
+{{ grid(data) }}
+```
 
 Working preview
 -----
 <img src="http://vortex-portal.com/datagrid/grid2.png" alt="Screenshot" />
-
-you can find assets from preview on wiki 

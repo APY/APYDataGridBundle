@@ -77,7 +77,7 @@ class Entity extends Source
         $mapping->addDriver($this, -1);
         $this->metadata = $mapping->getMetadata($this->class);
     }
-
+    
     /**
      * @param string $name e.g. vendor.name or name
      * @return string e.g. vendor.name or __base__.name
@@ -102,14 +102,12 @@ class Entity extends Source
      * @param \Sorien\DataGridBundle\Grid\Actions $actions
      * @return null
      */
-    public function prepare($columns, $actions)
+    public function getColumns($columns)
     {
         foreach ($this->metadata->getColumnsFromMapping($columns) as $column)
         {
             $columns->addColumn($column);
         }
-        //call associated closures
-        parent::prepare($columns, $actions);
     }
 
     private function normalizeOperator($operator)
@@ -270,5 +268,21 @@ class Entity extends Source
         }
 
         return $result;
+    }
+    
+    public function delete(array $ids) {
+        $repository = $this->manager->getRepository($this->entityName);
+        
+        foreach ($ids as $id) {
+            $object = $repository->find($id);
+
+            if (!$object) {
+                throw $this->createNotFoundException(sprintf('No %s found for id %s', $this->entityName, $id));
+            }
+
+            $this->manager->remove($object);  
+        }
+        
+        $this->manager->flush();
     }
 }

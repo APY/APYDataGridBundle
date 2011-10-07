@@ -39,15 +39,16 @@ class Columns implements \IteratorAggregate, \Countable
      * @return Grid
      *
      */
-    public function addColumn($column, $position = -1)
+    public function addColumn($column, $position = 0)
     {
         if (!$column instanceof Column)
         {
             throw new \InvalidArgumentException('Your column needs to extend class Column.');
         }
 
-        if ($position >= 0)
+        if ($position > 0)
         {
+            $position--;
             $head = array_slice($this->columns, 0, $position);
             $tail = array_slice($this->columns, $position);
             $this->columns = array_merge($head, array($column), $tail);
@@ -62,15 +63,26 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function getColumnById($columnId)
     {
+        $column = hasColumnById($columnId, true);
+        
+        if ($column === false) {
+            throw new \InvalidArgumentException(sprintf('Column with id "%s" doesn\'t exists', $columnId));
+        }
+
+        return $column;
+    }
+    
+    public function hasColumnById($columnId, $returnColumn = false)
+    {
         foreach ($this->columns as $column)
         {
             if ($column->getId() == $columnId)
             {
-                return $column;
+                return $returnColumn ? $column : true;
             }
         }
 
-        throw new \InvalidArgumentException(sprintf('Column with id "%s" doesn\'t exists', $columnId));
+        return false;
     }
 
     public function getPrimaryColumn()
@@ -93,8 +105,7 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function addExtension($extension)
     {
-        $name = strtolower(get_class($extension));
-        $this->extensions[substr($name, strrpos($name, '\\')+1)] = $extension;
+        $this->extensions[strtolower($extension->getName())] = $extension;
     }
 
     public function hasExtensionForColumnType($type)

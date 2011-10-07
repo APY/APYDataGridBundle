@@ -13,7 +13,7 @@ namespace Sorien\DataGridBundle\Grid\Column;
 
 use Sorien\DataGridBundle\Grid\Filter;
 
-class Text extends Column
+class TextColumn extends Column
 {
     public function renderFilter($gridHash)
     {
@@ -33,5 +33,10 @@ class Text extends Column
         }
 
         return $this;
+    }
+    
+    public function getName()
+    {
+        return 'text';
     }
 }

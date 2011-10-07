@@ -13,10 +13,12 @@
 namespace Sorien\DataGridBundle\Grid;
 
 use Sorien\DataGridBundle\Grid\Columns;
-use Sorien\DataGridBundle\Grid\Actions;
 use Sorien\DataGridBundle\Grid\Rows;
+use Sorien\DataGridBundle\Grid\Action\MassActionInterface;
+use Sorien\DataGridBundle\Grid\Action\RowActionInterface;
 use Sorien\DataGridBundle\Grid\Column\Column;
-use Sorien\DataGridBundle\Grid\Column\Action;
+use Sorien\DataGridBundle\Grid\Column\MassActionColumn;
+use Sorien\DataGridBundle\Grid\Column\ActionsColumn;
 use Sorien\DataGridBundle\Grid\Source\Source;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -64,10 +66,8 @@ class Grid
     */
     private $rows;
 
-    /**
-    * @var \Sorien\DataGridBundle\Grid\Actions
-    */
-    private $actions;
+    private $massActions;
+    private $rowActions;
 
     private $showFilters;
     private $showTitles;
@@ -99,12 +99,38 @@ class Grid
         $this->showTitles = $this->showFilters = true;
 
         $this->columns = new Columns();
-        $this->actions = new Actions();
+        $this->massActions = array();
+        $this->rowActions = array();
 
         if (!is_null($source))
         {
             $this->setSource($source);
         }
+    }
+    
+    function addColumn($column, $position = 0)
+    {
+        $this->columns->addColumn($column, $position);
+        
+        return $this;
+    }
+    
+    function addMassAction(MassActionInterface $action)
+    {
+        if ($this->source instanceof Source)
+        {
+            throw new \RuntimeException('The actions have to be defined before the source.');
+        }
+        $this->massActions[] = $action;
+        
+        return $this;
+    }
+    
+    function addRowAction(RowActionInterface $action)
+    {
+        $this->rowActions[$action->getColumn()][] = $action;
+        
+        return $this;
     }
 
     public function setSource($source)
@@ -124,14 +150,14 @@ class Grid
         $this->source->initialise($this->container);
 
         //get cols from source
-        $this->source->prepare($this->columns, $this->actions);
+        $this->source->getColumns($this->columns);
 
         //store column data
         $this->fetchAndSaveColumnData();
 
-        //execute actions
-        $this->executeActions();
-
+        //execute massActions
+        $this->executeMassActions();
+        
         //store grid data
         $this->fetchAndSaveGridData();
 
@@ -250,22 +276,29 @@ class Grid
         }
     }
 
-    public function executeActions()
-    {
+    public function executeMassActions()
+    {        
         $id = $this->getData('__action_id', true, false);
         $data = $this->getData('__action', true, false);
 
         if ($id > -1 && is_array($data))
         {
-            $action = $this->actions->getAction($id);
-
-            if (is_callable($action['callback']))
-            {
-                call_user_func($action['callback'], array_keys($data), false, $this->session);
+            if (array_key_exists($id, $this->massActions)) {
+                $action = $this->massActions[$id];
+                
+                if (is_callable($action->getCallback()))
+                {
+                    call_user_func($action->getCallback(), array_keys($data), false, $this->session);
+                }
+                else {
+                    throw new \RuntimeException(sprintf('Callback %s is not callable.', $action->getCallback()));
+                }
+            }
+            else {
+                throw new \OutOfBoundsException(sprintf('Action %s is not defined.', $id));
             }
         }
     }
-
 
     /**
      * Prepare Grid for Drawing
@@ -273,20 +306,33 @@ class Grid
      * @return Grid
      */
     public function prepare()
-    {
+    {        
         $this->rows = $this->source->execute($this->columns->getIterator(true), $this->page, $this->limit);
 
         if(!$this->rows instanceof Rows)
         {
             throw new \Exception('Source have to return Rows object.');
         }
-
-        //add action column
-        if ($this->actions->count() > 0)
+        
+        //add row actions column
+        if (count($this->rowActions) > 0)
         {
-            $this->columns->addColumn(new Action($this->getHash()), 0);
+            foreach ($this->rowActions as $column => $rowActions) {
+                if ($rowAction = $this->columns->hasColumnById($column, true)) {
+                    $rowAction->setRowActions($rowActions);
+                }
+                else {
+                    $this->columns->addColumn(new ActionsColumn($column, 'Actions', $rowActions));
+                }
+            }
         }
 
+        //add mass actions column
+        if (count($this->massActions) > 0)
+        {
+            $this->columns->addColumn(new MassActionColumn($this->getHash()), 1);
+        }
+        
         $primaryColumnId = $this->columns->getPrimaryColumn()->getId();
 
         foreach ($this->rows as $row)
@@ -345,9 +391,14 @@ class Grid
         return $this->rows;
     }
 
-    public function getActions()
+    public function getMassActions()
     {
-        return $this->actions;
+        return $this->massActions;
+    }
+    
+    public function getRowActions()
+    {
+        return $this->rowActions;
     }
     
     public function getRouteUrl()
@@ -404,7 +455,13 @@ class Grid
 
     public function setPage($page)
     {
-        $this->page = $page;
+        if ($page > 0) {
+            $this->page = intVal($page) - 1;
+            return $this;
+        }
+        else {
+            throw new \InvalidArgumentException('Page should be 1 or more.');
+        }
     }
 
     public function getPage()
@@ -478,10 +535,16 @@ class Grid
     public function setId($id)
     {
         $this->id = $id;
+        
+        return $this;
     }
 
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function deleteAction($ids) {
+        $this->source->delete($ids);
     }
 }

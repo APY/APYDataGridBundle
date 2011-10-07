@@ -11,7 +11,7 @@
 
 namespace Sorien\DataGridBundle\Grid\Column;
 
-class Action extends Column
+class MassActionColumn extends Column
 {
     private $gridHash;
 

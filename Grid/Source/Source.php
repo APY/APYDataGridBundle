@@ -21,20 +21,6 @@ abstract class Source implements DriverInterface
     const EVENT_PREPARE_ROW = 2;
 
     private $callbacks;
-    /**
-     * Prepare all Columns and Actions
-     *
-     * @param \Sorien\DataGridBundle\Grid\Columns $columns
-     * @param \Sorien\DataGridBundle\Grid\Actions $actions
-     * @return null
-     */
-    public function prepare($columns, $actions)
-    {
-        if (isset($this->callbacks[$this::EVENT_PREPARE]) && is_callable($this->callbacks[$this::EVENT_PREPARE]))
-        {
-            call_user_func($this->callbacks[$this::EVENT_PREPARE], $columns, $actions);
-        }
-    }
 
     /**
      * @param \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder
@@ -97,7 +83,24 @@ abstract class Source implements DriverInterface
      * @return void
      */
     abstract public function initialise($container);
-
+    
+    /**
+     * Set container
+     *
+     * @abstract
+     * @param  $container
+     * @return void
+     */
+    abstract public function getColumns($columns);
+    
+    /**
+     * Delete one or more objects
+     *
+     * @abstract
+     * @param array $ids
+     * @return void
+     */
+    abstract public function delete(array $ids);
     /**
      * @param $class
      * @return array

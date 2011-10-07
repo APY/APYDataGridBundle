@@ -2,7 +2,7 @@
 {% block grid %}
 <div class="grid">
     <form action="{{ grid.routeUrl }}" method="post">
-        {% if grid.actions.count > 0 %}
+        {% if grid.massActions|length > 0 %}
             {{ grid_actions(grid) }}
         {% endif %}
         <table>
@@ -99,7 +99,7 @@
 <div style="float:right">
 {{ 'datagrid.action.label'|trans }} <select name="{{grid.getHash}}[__action_id]">
     <option value="-1"></option>
-    {% for key, value in grid.actions %}
+    {% for key, value in grid.massActions %}
     <option value="{{key}}">{{ value.title|trans }}</option>
     {% endfor %}
 </select><input type="submit"  value="{{ 'datagrid.action.submit'|trans }}"/>

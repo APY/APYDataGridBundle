@@ -13,7 +13,7 @@ namespace Sorien\DataGridBundle\Grid\Column;
 
 use Sorien\DataGridBundle\Grid\Filter;
 
-class Range extends Column
+class RangeColumn extends Column
 {
     public function renderFilter($gridHash)
     {
@@ -84,4 +84,8 @@ class Range extends Column
         return $this->data['from'] != '' || $this->data['to'] != '';
     }
 
+    public function getName()
+    {
+        return 'range';
+    }
 }

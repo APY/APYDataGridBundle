@@ -13,7 +13,7 @@ namespace Sorien\DataGridBundle\Grid\Column;
 
 use Sorien\DataGridBundle\Grid\Filter;
 
-class Blank extends Column
+class BlankColumn extends Column
 {
     public function __initialize(array $params)
     {
@@ -23,5 +23,10 @@ class Blank extends Column
     public function __types()
     {
         return array('blank');
+    }
+    
+    public function getName()
+    {
+        return 'blank';
     }
 }

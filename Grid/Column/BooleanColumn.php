@@ -11,11 +11,16 @@
 
 namespace Sorien\DataGridBundle\Grid\Column;
 
-class Boolean extends Select
+class BooleanColumn extends SelectColumn
 {
     public function __initialize(array $params)
     {
         $params['values'] = array('1'=>'true','0'=>'false');
         parent::__initialize($params);  
+    }
+    
+    public function getName()
+    {
+        return 'boolean';
     }
 }

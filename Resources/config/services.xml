@@ -7,12 +7,12 @@
     <parameters>    
         <parameter key="grid.twig_extension.class">Sorien\DataGridBundle\Twig\DataGridExtension</parameter>
         <parameter key="grid.base.class">Sorien\DataGridBundle\Grid\Grid</parameter>
-        <parameter key="grid.column.text.class">Sorien\DataGridBundle\Grid\Column\Text</parameter>
-        <parameter key="grid.column.select.class">Sorien\DataGridBundle\Grid\Column\Select</parameter>
-        <parameter key="grid.column.range.class">Sorien\DataGridBundle\Grid\Column\Range</parameter>
-        <parameter key="grid.column.date.class">Sorien\DataGridBundle\Grid\Column\Date</parameter>
-        <parameter key="grid.column.blank.class">Sorien\DataGridBundle\Grid\Column\Blank</parameter>
-        <parameter key="grid.column.boolean.class">Sorien\DataGridBundle\Grid\Column\Boolean</parameter>
+        <parameter key="grid.column.text.class">Sorien\DataGridBundle\Grid\Column\TextColumn</parameter>
+        <parameter key="grid.column.select.class">Sorien\DataGridBundle\Grid\Column\SelectColumn</parameter>
+        <parameter key="grid.column.range.class">Sorien\DataGridBundle\Grid\Column\RangeColumn</parameter>
+        <parameter key="grid.column.date.class">Sorien\DataGridBundle\Grid\Column\DateColumn</parameter>
+        <parameter key="grid.column.blank.class">Sorien\DataGridBundle\Grid\Column\BlankColumn</parameter>
+        <parameter key="grid.column.boolean.class">Sorien\DataGridBundle\Grid\Column\BooleanColumn</parameter>
     </parameters>
 
     <services>

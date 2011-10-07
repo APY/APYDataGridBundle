@@ -13,7 +13,7 @@ namespace Sorien\DataGridBundle\Grid\Column;
 
 use Sorien\DataGridBundle\Grid\Filter;
 
-class Date extends Text
+class DateColumn extends TextColumn
 {
     private $format;
 
@@ -40,5 +40,10 @@ class Date extends Text
             return '';
         }
 
+    }
+    
+    public function getName()
+    {
+        return 'date';
     }
 }

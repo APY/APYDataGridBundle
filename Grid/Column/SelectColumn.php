@@ -13,7 +13,7 @@ namespace Sorien\DataGridBundle\Grid\Column;
 
 use Sorien\DataGridBundle\Grid\Filter;
 
-class Select extends Column
+class SelectColumn extends Column
 {
     const BLANK = '_default';
 
@@ -71,5 +71,10 @@ class Select extends Column
             $value = $this->values[$value];
         }
         return parent::renderCell($value, $row, $router);
+    }
+    
+    public function getName()
+    {
+        return 'select';
     }
 }
