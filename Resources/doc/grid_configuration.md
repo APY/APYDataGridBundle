@@ -232,7 +232,7 @@ class DefaultController extends Controller
         if ($grid->isReadyForRedirect())
         {
             //data are stored, do redirect
-            return new RedirectResponse($this->getRequest()->get('_route'));
+            return new RedirectResponse($this->generateUrl($this->getRequest()->get('_route')));
         }
         else
         {
