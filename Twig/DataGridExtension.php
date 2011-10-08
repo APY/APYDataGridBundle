@@ -16,6 +16,8 @@ namespace Sorien\DataGridBundle\Twig;
  */
 class DataGridExtension extends \Twig_Extension
 {
+    const DEFAULT_TEMPLATE = 'SorienDataGridBundle::blocks.html.twig';
+
     /**
      * @var \Twig_Environment
      */
@@ -23,7 +25,7 @@ class DataGridExtension extends \Twig_Extension
     /**
      * @var \Twig_Template
      */
-    protected $template;
+    protected $templates;
     protected $theme;
     /**
     * @var \Symfony\Component\Routing\Router
@@ -188,60 +190,76 @@ class DataGridExtension extends \Twig_Extension
      */
     private function renderBlock($name, $parameters)
     {
-        //load template if needed
-        if (is_null($this->template))
+        if (empty($this->templates))
         {
-            $this->loadTemplate();
+            $this->loadTemplates();
         }
 
-        if ($this->template->hasBlock($name))
+        foreach ($this->templates as $template)
         {
-            return $this->template->renderBlock($name, $parameters);
+            if ($template->hasBlock($name))
+            {
+                return $template->renderBlock($name, $parameters);
+            }
         }
-        elseif (($parent = $this->template->getParent(array())) !== false)
-        {
-            return $parent->renderBlock($name, $parameters);
-        }
-        else
-        {
-            throw new \InvalidArgumentException(sprintf('Block "%s" doesn\'t exist in grid template "%s".', $name, $this->theme));
-        }
+
+        throw new \InvalidArgumentException(sprintf('Block "%s" doesn\'t exist in grid template "%s".', $name, $this->theme));
     }
 
     /**
-     * Return true is block exist in template or parent template
-     * @param string $name
+     * Has block
      *
+     * @param $name string
      * @return boolean
      */
     private function hasBlock($name)
     {
-        //load template if needed
-        if (is_null($this->template))
+        if (empty($this->templates))
         {
-            $this->loadTemplate();
+            $this->loadTemplates();
         }
 
-        if ($this->template->hasBlock($name))
+        foreach ($this->templates as $template)
         {
-            return true;
+            if ($template->hasBlock($name))
+            {
+                return true;
+            }
         }
 
-        if (!$this->template->hasBlock($name) && ($parent = $this->template->getParent(array())) !== false)
-        {
-            return $parent->hasBlock($name);
-        }
+        return false;
     }
 
-    private function loadTemplate()
+    /**
+     * @throws \Exception
+     */
+    private function loadTemplates()
     {
         //get template name
-        if(is_null($this->theme))
+        if ($this->theme instanceof \Twig_Template)
         {
-            $this->theme = 'SorienDataGridBundle::blocks.html.twig';
+            $this->templates[] = $this->theme;
+            $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
         }
+        elseif (is_string($this->theme))
+        {
+            $template = $this->environment->loadTemplate($this->theme);
+            while ($template != null)
+            {
+                $this->templates[] = $template;
+                $template = $template->getParent(array());
+            }
 
-        $this->template = $this->environment->loadTemplate($this->theme);
+            $this->templates[] = $this->environment->loadTemplate($this->theme);
+        }
+        elseif (is_null($this->theme))
+        {
+            $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
+        }
+        else
+        {
+            throw new \Exception('Bad template definition for grid');
+        }
     }
 
     public function getName()
