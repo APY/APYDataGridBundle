@@ -213,6 +213,13 @@ class DefaultController extends Controller
 		// Add a column in the third position
 		$MyColumn = new Column(array('id' => 'My Column', 'title'=>'My Column', 'size' => '54', 'sortable' => true, 'filterable' => false, 'source' => false));
 		$grid->addColumn($MyColumn, 3);
+		
+		// Add row actions in the default row actions column
+		$myRowAction = new RowAction('Edit', 'route_to_edit');
+		$grid->addRowAction($myRowAction);
+		
+		$myRowAction = new RowAction('Delete', 'route_to_delete', true, '_self');
+		$grid->addRowAction($myRowAction);
         
 		// Custom actions column in the wanted position
 		$myActionsColumn = new ActionsColumn('info_column','Info');
@@ -222,17 +229,10 @@ class DefaultController extends Controller
 		$myRowAction->setColumn('info_column');
 		$grid->addRowAction($myRowAction);
 
-		// Add row actions in the default row actions column
-		$myRowAction = new RowAction('Edit', 'route_to_edit');
-		$grid->addRowAction($myRowAction);
-		
-		$myRowAction = new RowAction('Delete', 'route_to_delete', true, '_self');
-		$grid->addRowAction($myRowAction);
-        
         if ($grid->isReadyForRedirect())
         {
             //data are stored, do redirect
-            return new RedirectResponse($this->generateUrl('grid'));
+            return new RedirectResponse($this->getRequest()->get('_route'));
         }
         else
         {
