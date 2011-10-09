@@ -10,6 +10,19 @@ Overriding templates
 
 ```
 
+If you want to override blocks inside current template you can use `_self` parameter
+in grid template definition. Current template will automatically extended from base block template
+
+```html
+<!-- MyProjectMyBundle::my_grid.html.twig -->
+{{ grid(data, _self, 'custom_grid_id') }}
+
+{% block grid %}
+    extended grid!
+{% endblock %}
+
+```
+
 ## Grid theme template
 
 You can override blocks - `grid`, `grid_titles`, `grid_filters`, `grid_rows`, `grid_pager`, `grid_actions`
@@ -27,7 +40,10 @@ You can override blocks - `grid`, `grid_titles`, `grid_filters`, `grid_rows`, `g
 {% endblock %}
 ```
 
-## Custom cell rendering inside template defined as 2nd argument in twig function `grid`
+## Custom cell rendering
+
+syntax is `grid_%grid_id%_column_%column_id%_cell`, 
+when no grid id is present you can use `grid_column_%column_id%_cell`
 
 ```html
 <!-- MyProjectMyBundle::my_grid_template.html.twig -->
@@ -37,7 +53,10 @@ You can override blocks - `grid`, `grid_titles`, `grid_filters`, `grid_rows`, `g
 {% endblock %}
 ```
 
-## Custom filter rendering inside template defined as 2nd argument in twig function `grid`
+## Custom filter rendering
+
+syntax is `grid_%grid_id%_column_%column_id%_filter`, 
+when no grid id is present you can use `grid_column_%column_id%_filter`
 
 ```html
 <!-- MyProjectMyBundle::my_grid_template.html.twig -->
