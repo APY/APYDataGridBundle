@@ -71,29 +71,6 @@ public function registerBundles()
 }
 ```
 
-### Step 3: Add a route to your grid
-
-Now that you have activated and configured the bundle, all that is left to add a route to your grid controller.
-
-
-In YAML:
-
-``` yaml
-# app/config/routing.yml
-my_controller_grid:
-	pattern:  /my_grid
-	defaults: { _controller: MyBundle:Default:myGrid }
-```
-
-Or if you prefer XML:
-
-``` xml
-<!-- app/config/routing.xml -->
-<route id="my_controller_grid" pattern="/my_grid">
-	<default key="_controller">MyBundle:Default:myGrid</default>
-</route>
-```
-
 ### Next Steps
 
 Now that you have completed the basic installation and configuration of the
