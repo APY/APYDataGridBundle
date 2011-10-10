@@ -72,13 +72,13 @@
 {# ---------------------------------------------------- grid_pager -------------------------------------------------- #}
 {% block grid_pager %}
 <div class="pager">
-{{ 'datagrid.page'|trans }}
+{{ 'Page'|trans }}
 {% spaceless %}
 <input type="button" class="prev" {% if grid.page <= 0 %}disabled="disabled"{% endif %} value="<" onclick="window.location.href='{{grid_url('page', grid, grid.page-1)}}'"/>
 <input type="text" value="{{grid.page+1}}" size="2" onkeypress="if (event.which == 13)window.location.href='{{grid_url('page', grid)}}'+(parseInt(this.value)-1)"/>
-<input type="button" value=">" class="next" {% if grid.page >= grid.pagecount-1 %}disabled="disabled"{% endif %} onclick="window.location.href='{{grid_url('page', grid, grid.page+1)}}'"/> {{ 'datagrid.count'|trans({'%count%': grid.pagecount}) }}
+<input type="button" value=">" class="next" {% if grid.page >= grid.pagecount-1 %}disabled="disabled"{% endif %} onclick="window.location.href='{{grid_url('page', grid, grid.page+1)}}'"/> {{ 'of %count%'|trans({'%count%': grid.pagecount}) }}
 {% endspaceless %}
-{{ 'datagrid.display'|trans }} <select onchange="window.location.href='{{grid_url('limit', grid)}}'+this.value">
+{{ ', Display'|trans }} <select onchange="window.location.href='{{grid_url('limit', grid)}}'+this.value">
 {% for key, value in grid.limits %}
     {% if key == grid.currentlimit %}
         <option value="{{key}}" selected="selected">{{value}}</option>
@@ -86,23 +86,23 @@
         <option value="{{key}}">{{value}}</option>
     {% endif %}
 {% endfor %}
-</select> {{ 'datagrid.items'|trans }}
+</select> {{ 'Items per page'|trans }}
 </div>
 {% endblock %}
 {# --------------------------------------------------- grid_actions ------------------------------------------------- #}
 {% block grid_actions %}
 <div class="mass-actions">
-<a href="#">{{ 'datagrid.select.visible'|trans }}</a> |
-<a href="#">{{ 'datagrid.deselect.visible'|trans }}</a> |
-<a href="#">{{ 'datagrid.select.all'|trans }}</a> |
-<a href="#">{{ 'datagrid.deselect.all'|trans }}</a>
+<a href="#">{{ 'Select visible'|trans }}</a> |
+<a href="#">{{ 'Deselect visible'|trans }}</a> |
+<a href="#">{{ 'Select all'|trans }}</a> |
+<a href="#">{{ 'Deselect all'|trans }}</a>
 <div style="float:right">
-{{ 'datagrid.action.label'|trans }} <select name="{{grid.getHash}}[__action_id]">
+{{ 'Action'|trans }} <select name="{{grid.getHash}}[__action_id]">
     <option value="-1"></option>
     {% for key, value in grid.massActions %}
     <option value="{{key}}">{{ value.title|trans }}</option>
     {% endfor %}
-</select><input type="submit"  value="{{ 'datagrid.action.submit'|trans }}"/>
+</select><input type="submit"  value="{{ 'Submit Action'|trans }}"/>
 </div>
 </div>
 {% endblock %}

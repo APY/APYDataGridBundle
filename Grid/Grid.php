@@ -40,7 +40,6 @@ class Grid
     * @var \Symfony\Component\Routing\Router
     */
     private $router;
-    private $route;
     private $container;
     private $routeUrl;
     private $id;
@@ -74,8 +73,7 @@ class Grid
 
     /**
      * @param \Source\Source $source Data Source
-     * @param $container
-     * @param $route string if null current route will be used 
+     * @param \Symfony\Component\DependencyInjection\Container $container
      * @param string $id set if you are using more then one grid inside controller
      */
     public function __construct($container, $source = null, $id = '')
@@ -168,7 +166,8 @@ class Grid
      * Retrieve Column Data from Session and Request
      *
      * @param string $column
-     * @param bool $onlyFromRequest
+     * @param bool $fromRequest
+     * @param bool $fromSession
      * @return null|string
      */
     private function getData($column, $fromRequest = true, $fromSession = true)
@@ -283,18 +282,21 @@ class Grid
 
         if ($id > -1 && is_array($data))
         {
-            if (array_key_exists($id, $this->massActions)) {
+            if (array_key_exists($id, $this->massActions))
+            {
                 $action = $this->massActions[$id];
                 
                 if (is_callable($action->getCallback()))
                 {
                     call_user_func($action->getCallback(), array_keys($data), false, $this->session);
                 }
-                else {
+                else
+                {
                     throw new \RuntimeException(sprintf('Callback %s is not callable.', $action->getCallback()));
                 }
             }
-            else {
+            else
+            {
                 throw new \OutOfBoundsException(sprintf('Action %s is not defined.', $id));
             }
         }
@@ -423,7 +425,7 @@ class Grid
     }
 
     /**
-     * @param array|int $limits
+     * @param mixed $limits
      * @return \Sorien\DataGridBundle\Grid\Grid
      */
     public function setLimits($limits)
@@ -455,11 +457,13 @@ class Grid
 
     public function setPage($page)
     {
-        if ($page > 0) {
+        if ($page > 0)
+        {
             $this->page = intVal($page) - 1;
             return $this;
         }
-        else {
+        else
+        {
             throw new \InvalidArgumentException('Page should be 1 or more.');
         }
     }
@@ -488,9 +492,6 @@ class Grid
         return $this->showTitles ;
     }
 
-    /**
-     * @return bool
-     */
     public function isFilterSectionVisible()
     {
         if ($this->showFilters == true)
@@ -507,17 +508,26 @@ class Grid
         return false;
     }
 
+    /**
+     * @return bool return true if pager is visible
+     */
     public function isPagerSectionVisible()
     {
         $limits = sizeof($this->getLimits());
         return $limits > 1 || ($limits == 0 && $this->getCurrentLimit() < $this->totalCount);
     }
 
+    /**
+     * Function will hide all column filters
+     */
     public function hideFilters()
     {
         $this->showFilters = false;
     }
 
+    /**
+     * function will hide all column titles
+     */
     public function hideTitles()
     {
         $this->showTitles = false;
@@ -532,6 +542,12 @@ class Grid
         $this->columns->addExtension($extension);
     }
 
+    /**
+     * Sets unique filter identification
+     *
+     * @param $id
+     * @return Grid
+     */
     public function setId($id)
     {
         $this->id = $id;
@@ -544,7 +560,8 @@ class Grid
         return $this->id;
     }
     
-    public function deleteAction($ids) {
+    public function deleteAction($ids)
+    {
         $this->source->delete($ids);
     }
 }

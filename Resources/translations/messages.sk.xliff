@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>Page</source>
+                <target>Strana</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>, Display</source>
+                <target>, Zobraz</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>of %count%</source>
+                <target>z %count%</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Items per page</source>
+                <target>Položiek na stranu</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Select visible</source>
+                <target>Označ viditelné</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Select all</source>
+                <target>Označ všetko</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Deselect visible</source>
+                <target>Odznač viditelné</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Deselect all</source>
+                <target>Odznač všetko</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>Action</source>
+                <target>Akcia</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Submit Action</source>
+                <target>Odoslať</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
