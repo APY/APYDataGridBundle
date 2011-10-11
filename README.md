@@ -134,6 +134,6 @@ class DefaultController extends Controller
 {{ grid(data) }}
 ```
 
-Working preview
+Working preview with [assets](https://github.com/S0RIEN/DataGridBundle/wiki/Working-preview-assets)
 -----
 <img src="http://vortex-portal.com/datagrid/grid2.png" alt="Screenshot" />
