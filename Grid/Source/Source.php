@@ -65,7 +65,7 @@ abstract class Source implements DriverInterface
      * @param int $limit
      * @return \Sorien\DataGridBundle\DataGrid\Rows
      */
-    abstract public function execute($columns, $page, $limit);
+    abstract public function execute($columns, $page = 0, $limit = 0);
 
     /**
      * Get Total count of data items

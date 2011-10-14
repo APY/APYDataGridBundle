@@ -50,6 +50,11 @@ class Document extends Source
     private $metadata;
 
     /**
+     * @var int Items count
+     */
+    private $count;
+
+    /**
      * @param string $documentName e.g. "Cms:Page"
      */
     public function __construct($documentName)
@@ -70,7 +75,6 @@ class Document extends Source
 
     /**
      * @param \Sorien\DataGridBundle\Grid\Columns $columns
-     * @param \Sorien\DataGridBundle\Grid\Actions $actions
      * @return null
      */
     public function getColumns($columns)
@@ -81,13 +85,23 @@ class Document extends Source
         }
     }
 
+    private function normalizeOperator($operator)
+    {
+        return ($operator == COLUMN::OPERATOR_REGEXP ? 'equals' : $operator);
+    }
+
+    private function normalizeValue($operator, $value)
+    {
+        return ($operator == COLUMN::OPERATOR_REGEXP ? new \MongoRegex($value) : $value);
+    }
+
     /**
      * @param \Sorien\DataGridBundle\Grid\Column\Column[] $columns
      * @param int $page  Page Number
      * @param int $limit  Rows Per Page
      * @return \Sorien\DataGridBundle\Grid\Rows
      */
-    public function execute($columns, $page, $limit)
+    public function execute($columns, $page = 0, $limit = 0)
     {
         $this->query = $this->manager->createQueryBuilder($this->documentName);
 
@@ -106,8 +120,11 @@ class Document extends Source
                 {
                     foreach ($column->getFilters() as $filter)
                     {
-                        $operator = $filter->getOperator();
-                        $this->query->field($column->getId()->$operator($filter->getValue()));
+                        //normalize values
+                        $operator = $this->normalizeOperator($filter->getOperator());
+                        $value = $this->normalizeValue($filter->getOperator(), $filter->getValue());
+
+                        $this->query->field($column->getId())->$operator($value);
                     }
                 }
                 elseif($column->getFiltersConnection() == column::DATA_DISJUNCTION)
@@ -121,7 +138,8 @@ class Document extends Source
 
                     if (!empty($values))
                     {
-                       $this->query->field($column->getId())->all($values);
+                        //@todo probably value normalization needed
+                        $this->query->field($column->getId())->all($values);
                     }
                 }
             }
@@ -132,7 +150,10 @@ class Document extends Source
             $this->query->skip($page * $limit);
         }
 
-        $this->query->limit($limit);
+        if ($limit > 0)
+        {
+            $this->query->limit($limit);
+        }
 
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
@@ -140,7 +161,10 @@ class Document extends Source
         //execute and get results
         $result = new Rows();
 
-        foreach($this->query->getQuery()->execute() as $resource)
+        $cursor = $this->query->getQuery()->execute();
+        $this->count = $cursor->count();
+
+        foreach($cursor as $resource)
         {
             $row = new Row();
             $properties = $this->getClassProperties($resource);
@@ -162,10 +186,7 @@ class Document extends Source
 
     public function getTotalCount($columns)
     {
-        $this->query->limit(null);
-        $this->query->skip(null);
-
-        return $this->query->getQuery()->execute()->count();
+        return $this->count;
     }
 
     private function getClassProperties($obj)
@@ -238,14 +259,15 @@ class Document extends Source
         return $result;
     }
     
-    public function delete(array $ids) {
+    public function delete(array $ids)
+    {
         $repository = $this->manager->getRepository($this->entityName);
         
         foreach ($ids as $id) {
             $object = $repository->find($id);
 
             if (!$object) {
-                throw $this->createNotFoundException(sprintf('No %s found for id %s', $this->entityName, $id));
+                throw new \Exception(sprintf('No %s found for id %s', $this->entityName, $id));
             }
 
             $this->manager->remove($object);  

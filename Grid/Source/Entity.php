@@ -17,6 +17,7 @@ use Sorien\DataGridBundle\Grid\Row;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\Expr\Comparison;
 
 class Entity extends Source
 {
@@ -117,7 +118,15 @@ class Entity extends Source
 
     private function normalizeValue($operator, $value)
     {
-        return ($operator == COLUMN::OPERATOR_REGEXP ? '\''.str_replace('.*', '%', $value).'\'' : $value);
+        if ($operator == COLUMN::OPERATOR_REGEXP)
+        {
+            preg_match('/\/\.\*([^\/]+)\.\*\//s', $value, $matches);
+            return '\'%'.$matches[1].'%\'';
+        }
+        else
+        {
+            return $value;
+        }
     }
 
     /**
@@ -126,7 +135,7 @@ class Entity extends Source
      * @param $limit int Rows Per Page
      * @return \Sorien\DataGridBundle\Grid\Rows
      */
-    public function execute($columns, $page, $limit)
+    public function execute($columns, $page = 0, $limit = 0)
     {
         $this->query = $this->manager->createQueryBuilder($this->class);
         $this->query->from($this->class, self::TABLE_ALIAS);
@@ -184,8 +193,11 @@ class Entity extends Source
         {
             $this->query->setFirstResult($page * $limit);
         }
-        
-        $this->query->setMaxResults($limit);
+
+        if ($limit > 0)
+        {
+            $this->query->setMaxResults($limit);
+        }
 
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
@@ -270,14 +282,15 @@ class Entity extends Source
         return $result;
     }
     
-    public function delete(array $ids) {
+    public function delete(array $ids)
+    {
         $repository = $this->manager->getRepository($this->entityName);
         
         foreach ($ids as $id) {
             $object = $repository->find($id);
 
             if (!$object) {
-                throw $this->createNotFoundException(sprintf('No %s found for id %s', $this->entityName, $id));
+                throw new \Exception(sprintf('No %s found for id %s', $this->entityName, $id));
             }
 
             $this->manager->remove($object);  

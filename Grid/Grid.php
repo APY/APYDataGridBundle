@@ -24,7 +24,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Grid
 {
-    const UNLIMITED = PHP_INT_MAX;
+    const UNLIMITED = 0;
 
     /**
      * @var \Symfony\Component\HttpFoundation\Session;
@@ -92,7 +92,7 @@ class Grid
         $this->hash = md5($this->request->get('_controller').$id);
         $this->id = $id;
 
-        $this->setLimits(array(20 => '20', 50 => '50', 100 => '100'));
+        $this->setLimits(array(5 => '5', 50 => '50', 100 => '100'));
         $this->page = 0;
         $this->showTitles = $this->showFilters = true;
 
@@ -232,20 +232,17 @@ class Grid
         $storage = $this->session->get($this->getHash());
         
         //set internal data
-        $limit = $this->getData('_limit');
-        if (!is_null($limit))
+        if ($limit = $this->getData('_limit'))
         {
             $this->limit = $limit;
         }
 
-        $page = $this->getData('_page');
-        if (!is_null($page) && $page >= 0)
+        if ($page = $this->getData('_page'))
         {
-            $this->page = $page;
+            $this->setPage($page);
         }
 
-        $order = $this->getData('_order');
-        if (!is_null($order))
+        if (!is_null($order = $this->getData('_order')))
         {
             list($columnId, $columnOrder) = explode('|', $order);
 
@@ -258,14 +255,14 @@ class Grid
             $storage['_order'] = $order;
         }
 
-        if ($this->limit != $this->getData('_limit', false))
+        if ($this->getCurrentLimit() != $this->getData('_limit', false) && $this->getCurrentLimit() >= 0)
         {
-            $storage['_limit'] = $this->limit;
+            $storage['_limit'] =$this->getCurrentLimit();
         }
 
-        if ($this->page >= 0)
+        if ($this->getPage() >= 0)
         {
-            $storage['_page'] = $this->page;
+            $storage['_page'] = $this->getPage();
         }
 
         // save data to sessions if needed
@@ -433,13 +430,16 @@ class Grid
         if (is_array($limits))
         {
             $this->limits = $limits;
-            $this->limit = key($this->limits);
+            $this->limit = (int)key($this->limits);
         }
-
-        if (is_numeric($limits))
+        elseif (is_int($limits))
         {
-            $this->limits = array($limits => $limits);
+            $this->limits = array($limits => (string)$limits);
             $this->limit = $limits;
+        }
+        else
+        {
+            throw new \InvalidArgumentException('Limit has to be array or integer');
         }
 
         return $this;
@@ -457,15 +457,15 @@ class Grid
 
     public function setPage($page)
     {
-        if ($page > 0)
+        if ((int)$page > 0)
         {
-            $this->page = intVal($page) - 1;
-            return $this;
+            $this->page = (int)$page;
         }
         else
         {
-            throw new \InvalidArgumentException('Page should be 1 or more.');
+            throw new \InvalidArgumentException('Page has to have a positive number');
         }
+        return $this;
     }
 
     public function getPage()

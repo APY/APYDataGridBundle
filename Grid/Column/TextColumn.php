@@ -22,7 +22,7 @@ class TextColumn extends Column
 
     public function getFilters()
     {
-        return array(new Filter(self::OPERATOR_REGEXP, '.*'.$this->data.'.*'));
+        return array(new Filter(self::OPERATOR_REGEXP, '/.*'.$this->data.'.*/i'));
     }
 
     public function setData($data)
