@@ -18,8 +18,8 @@ class RangeColumn extends Column
     public function renderFilter($gridHash)
     {
         $result = '<div class="range-column-filter">';
-        $result .= '<input class="first-filter" placeholder="From:" type="text" style="width:100%" value="'.$this->data['from'].'" name="'.$gridHash.'['.$this->getId().'][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
-        $result .= '<input class="second-filter" placeholder="To:" type="text" style="width:100%" value="'.$this->data['to'].'" name="'.$gridHash.'['.$this->getId().'][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
+        $result .= '<input class="first-filter" placeholder="From:" type="text" value="'.$this->data['from'].'" name="'.$gridHash.'['.$this->getId().'][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
+        $result .= '<input class="second-filter" placeholder="To:" type="text" value="'.$this->data['to'].'" name="'.$gridHash.'['.$this->getId().'][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
         $result .= '</div>';
         return $result;
     }
