@@ -92,7 +92,7 @@ class Grid
         $this->hash = md5($this->request->get('_controller').$id);
         $this->id = $id;
 
-        $this->setLimits(array(5 => '5', 50 => '50', 100 => '100'));
+        $this->setLimits(array(20 => '20', 50 => '50', 100 => '100'));
         $this->page = 0;
         $this->showTitles = $this->showFilters = true;
 
