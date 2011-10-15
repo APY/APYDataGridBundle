@@ -257,7 +257,7 @@ class Grid
 
         if ($this->getCurrentLimit() != $this->getData('_limit', false) && $this->getCurrentLimit() >= 0)
         {
-            $storage['_limit'] =$this->getCurrentLimit();
+            $storage['_limit'] = $this->getCurrentLimit();
         }
 
         if ($this->getPage() >= 0)
@@ -563,5 +563,13 @@ class Grid
     public function deleteAction($ids)
     {
         $this->source->delete($ids);
+    }
+
+    function __clone()
+    {
+        /**
+         * clone all objects
+         */
+        $this->columns = clone $this->columns;
     }
 }

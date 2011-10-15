@@ -160,7 +160,7 @@ class Document extends Source
 
         //execute and get results
         $result = new Rows();
-
+  
         $cursor = $this->query->getQuery()->execute();
         $this->count = $cursor->count();
 

@@ -66,7 +66,7 @@ class Metadata
             $params = $this->getFieldMapping($value);
             $type = $this->getFieldMappingType($value);
 
-            //todo move available extensions from columns
+            /** todo move available extensions from columns */
             if ($columnExtensions->hasExtensionForColumnType($type))
             {
                 $column = clone $columnExtensions->getExtensionForColumnType($type);

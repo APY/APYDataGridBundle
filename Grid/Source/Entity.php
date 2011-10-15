@@ -75,6 +75,8 @@ class Entity extends Source
         $this->class = $this->ormMetadata->getReflectionClass()->name;
 
         $mapping = $container->get('grid.mapping.manager');
+        
+        /** todo autoregister mapping drivers with tag */
         $mapping->addDriver($this, -1);
         $this->metadata = $mapping->getMetadata($this->class);
     }
@@ -100,7 +102,6 @@ class Entity extends Source
 
     /**
      * @param \Sorien\DataGridBundle\Grid\Columns $columns
-     * @param \Sorien\DataGridBundle\Grid\Actions $actions
      * @return null
      */
     public function getColumns($columns)
@@ -207,6 +208,7 @@ class Entity extends Source
 
         // hydrate result
         $result = new Rows();
+
         foreach ($items as $item)
         {
             $row = new Row();
