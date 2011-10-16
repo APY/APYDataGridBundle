@@ -97,6 +97,11 @@ class Annotation implements DriverInterface
                 $name = $metadata['id'];
             }
 
+            if (!isset($metadata['id']))
+            {
+                $metadata['id'] = $name;
+            }
+
             foreach ($metadata as $key => $value)
             {
                 $this->fields[$className][$name][$key] = $value;

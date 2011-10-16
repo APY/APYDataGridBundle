@@ -35,7 +35,7 @@ class TextColumn extends Column
         return $this;
     }
     
-    public function getName()
+    public function getType()
     {
         return 'text';
     }

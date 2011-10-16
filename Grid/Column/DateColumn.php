@@ -39,10 +39,9 @@ class DateColumn extends TextColumn
         {
             return '';
         }
-
     }
     
-    public function getName()
+    public function getType()
     {
         return 'date';
     }

@@ -19,7 +19,7 @@ class BooleanColumn extends SelectColumn
         parent::__initialize($params);  
     }
     
-    public function getName()
+    public function getType()
     {
         return 'boolean';
     }

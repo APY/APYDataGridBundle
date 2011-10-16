@@ -24,6 +24,6 @@ class ColumnsIterator extends \FilterIterator
     public function accept()
     {
         $current = $this->getInnerIterator()->current();
-        return $this->showOnlySourceColumns ? $current->isVisibleForSource() && $current->getId() != '' : true;
+        return $this->showOnlySourceColumns ? $current->isVisibleForSource() : true;
     }
 }

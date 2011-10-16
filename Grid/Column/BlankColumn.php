@@ -20,12 +20,7 @@ class BlankColumn extends Column
         parent::__initialize(array_merge(array('sortable' => false, 'filterable' => false, 'source' => false), $params));
     }
 
-    public function __types()
-    {
-        return array('blank');
-    }
-    
-    public function getName()
+    public function getType()
     {
         return 'blank';
     }

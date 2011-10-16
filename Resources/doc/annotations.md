@@ -40,7 +40,8 @@ class Test
 
 ### Available types for '@GRID\Column' notation
 
- - id [string] - column id - default is property name, Source overrides it to field name
+ - id [string] - column id - property name, should by set only if column is defined inside class annotations
+ - field [string] - table column /collection name
  - title [string] - own column name
  - size [int] - column width in pixels, default -1, -1 means auto resize
  - type [string] - column type (Date, Range, Select, Text, Boolean)

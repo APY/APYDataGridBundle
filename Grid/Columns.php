@@ -105,7 +105,7 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function addExtension($extension)
     {
-        $this->extensions[strtolower($extension->getName())] = $extension;
+        $this->extensions[strtolower($extension->getType())] = $extension;
     }
 
     public function hasExtensionForColumnType($type)

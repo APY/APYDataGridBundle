@@ -84,7 +84,7 @@ class RangeColumn extends Column
         return $this->data['from'] != '' || $this->data['to'] != '';
     }
 
-    public function getName()
+    public function getType()
     {
         return 'range';
     }

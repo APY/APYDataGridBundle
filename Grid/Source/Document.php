@@ -107,11 +107,11 @@ class Document extends Source
 
         foreach ($columns as $column)
         {
-            $this->query->select($column->getId());
+            $this->query->select($column->getField());
 
             if ($column->isSorted())
             {
-                $this->query->sort($column->getId(), $column->getOrder());
+                $this->query->sort($column->getField(), $column->getOrder());
             }
 
             if ($column->isFiltered())
@@ -124,7 +124,7 @@ class Document extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
                         $value = $this->normalizeValue($filter->getOperator(), $filter->getValue());
 
-                        $this->query->field($column->getId())->$operator($value);
+                        $this->query->field($column->getField())->$operator($value);
                     }
                 }
                 elseif($column->getFiltersConnection() == column::DATA_DISJUNCTION)
@@ -139,7 +139,7 @@ class Document extends Source
                     if (!empty($values))
                     {
                         //@todo probably value normalization needed
-                        $this->query->field($column->getId())->all($values);
+                        $this->query->field($column->getField())->all($values);
                     }
                 }
             }
@@ -220,14 +220,11 @@ class Document extends Source
         {
             $name = $property->getName();
             $mapping = $this->odmMetadata->getFieldMapping($name);
-
-            $values = array();
-
-            $values['title'] = $name;
+            $values = array('title' => $name, 'source' => true);
 
             if (isset($mapping['fieldName']))
             {
-                $values['id'] = $mapping['fieldName'];
+                $values['field'] = $mapping['fieldName'];
             }
 
             if (isset($mapping['id']) && $mapping['id'] == 'id')
@@ -241,6 +238,7 @@ class Document extends Source
                 case 'int':
                 case 'string':
                 case 'float':
+                case 'many':
                     $values['type'] = 'text';
                 break;
                 
@@ -261,13 +259,13 @@ class Document extends Source
     
     public function delete(array $ids)
     {
-        $repository = $this->manager->getRepository($this->entityName);
+        $repository = $this->manager->getRepository($this->documentName);
         
         foreach ($ids as $id) {
             $object = $repository->find($id);
 
             if (!$object) {
-                throw new \Exception(sprintf('No %s found for id %s', $this->entityName, $id));
+                throw new \Exception(sprintf('No %s found for id %s', $this->documentName, $id));
             }
 
             $this->manager->remove($object);  

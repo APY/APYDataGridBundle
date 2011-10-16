@@ -27,6 +27,7 @@ class Column
     private $primary;
     private $params;
     private $align;
+    private $field;
 
     protected $data;
 
@@ -69,9 +70,10 @@ class Column
         $this->visible = $this->getParam('visible', true);
         $this->setSize($this->getParam('size', -1));
         $this->filterable = $this->getParam('filterable', true);
-        $this->visibleForSource = $this->getParam('source', true);
+        $this->visibleForSource = $this->getParam('source', false);
         $this->primary = $this->getParam('primary', false);
         $this->setAlign($this->getParam('align', $this::ALIGN_LEFT));
+        $this->setField($this->getParam('field', null));
     }
 
     protected function getParam($id, $default)
@@ -402,5 +404,15 @@ class Column
     public function getAlign()
     {
         return $this->align;
+    }
+
+    public function setField($field)
+    {
+        $this->field = $field;
+    }
+
+    public function getField()
+    {
+        return $this->field;
     }
 }

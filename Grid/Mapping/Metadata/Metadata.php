@@ -57,6 +57,12 @@ class Metadata
         return $this->name;
     }
 
+    /**
+     * @todo move to another place
+     * @param $columnExtensions
+     * @return \SplObjectStorage
+     * @throws \Exception
+     */
     public function getColumnsFromMapping($columnExtensions)
     {
         $columns = new \SplObjectStorage();
@@ -71,6 +77,7 @@ class Metadata
             {
                 $column = clone $columnExtensions->getExtensionForColumnType($type);
                 $column->__initialize($params);
+
                 $columns->attach($column);
             }
             else

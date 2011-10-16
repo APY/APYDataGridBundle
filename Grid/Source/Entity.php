@@ -145,11 +145,11 @@ class Entity extends Source
 
         foreach ($columns as $column)
         {
-            $this->query->addSelect($this->getPrefixedName($column->getId()));
+            $this->query->addSelect($this->getPrefixedName($column->getField()));
 
             if ($column->isSorted())
             {
-                $this->query->orderBy($this->getPrefixedName($column->getId()), $column->getOrder());
+                $this->query->orderBy($this->getPrefixedName($column->getField()), $column->getOrder());
             }
 
             if ($column->isFiltered())
@@ -161,7 +161,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $where->add($this->query->expr()->$operator(
-                            $this->getPrefixedName($filter->hasId() ? $filter->getId() : $column->getId()),
+                            $this->getPrefixedName($filter->hasId() ? $filter->getId() : $column->getField()),
                             $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -175,7 +175,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $sub->add($this->query->expr()->$operator(
-                              $this->getPrefixedName($filter->hasId() ? $filter->getId() : $column->getId()),
+                              $this->getPrefixedName($filter->hasId() ? $filter->getId() : $column->getField()),
                               $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -245,11 +245,11 @@ class Entity extends Source
         foreach ($this->ormMetadata->getFieldNames() as $name)
         {
             $mapping = $this->ormMetadata->getFieldMapping($name);
-            $values = array('title' => $name);
+            $values = array('title' => $name, 'source' => true);
 
             if (isset($mapping['fieldName']))
             {
-                $values['id'] = $mapping['fieldName'];
+                $values['field'] = $mapping['fieldName'];
             }
 
             if (isset($mapping['id']) && $mapping['id'] == 'id')
@@ -268,9 +268,11 @@ class Entity extends Source
                 case 'decimal':
                     $values['type'] = 'text';
                 break;
+
                 case 'boolean':
                     $values['type'] = 'boolean';
                 break;
+
                 case 'date':
                 case 'datetime':
                 case 'time':
