@@ -8,9 +8,22 @@ You can set the identifier of your grid if you have more than one grid on your p
 ```php
 <?php
 $grid = $this->get('grid');
-$grid->setId('user_grid');
+$grid2 = $this->get('grid'); // or clone $grid;
 
-$grid->setSource($source);
+$grid->setId('first');
+$grid->setSource(new Entity('App\Name\Entity1'));
+
+$grid2->setId('second');
+$grid2->setSource(new Entity('App\Name\Entity2'));
+
+if ($grid->isReadyForRedirect() || $grid2->isReadyForRedirect())
+{
+  return new RedirectResponse($this->generateUrl($this->getRequest()->get('_route')));
+}
+else
+{
+  return $this->render('App:Name:index.html.twig', array('data' => $grid->prepare(), 'data2' => $grid2->prepare()));
+}
 ```
 
 ## Configure the pager
