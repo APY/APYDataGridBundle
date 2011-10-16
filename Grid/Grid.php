@@ -89,8 +89,7 @@ class Grid
         $this->request = $container->get('request');
         $this->session = $this->request->getSession();
 
-        $this->hash = md5($this->request->get('_controller').$id);
-        $this->id = $id;
+        $this->setId($id);
 
         $this->setLimits(array(20 => '20', 50 => '50', 100 => '100'));
         $this->page = 0;
@@ -551,6 +550,7 @@ class Grid
     public function setId($id)
     {
         $this->id = $id;
+        $this->hash = md5($this->request->get('_controller').$id);
         
         return $this;
     }
