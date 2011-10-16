@@ -10,11 +10,11 @@ You can set the identifier of your grid if you have more than one grid on your p
 $grid = $this->get('grid');
 $grid2 = $this->get('grid'); // or clone $grid;
 
-$grid->setSource(new Entity('App\Name\Entity1'));
 $grid->setId('first');
+$grid->setSource(new Entity('App\Name\Entity1'));
 
-$grid2->setSource(new Entity('App\Name\Entity2'));
 $grid2->setId('second');
+$grid2->setSource(new Entity('App\Name\Entity2'));
 
 if ($grid->isReadyForRedirect() || $grid2->isReadyForRedirect())
 {
