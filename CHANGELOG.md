@@ -1,5 +1,6 @@
 beta 1:
 
+ - when rendering template calling `prepare` function is not needed
  - removed custom route for filtering and ordering grid columns
  - added events to modify source data query building and data hydration
  - added column->setAlign('left/right/center')

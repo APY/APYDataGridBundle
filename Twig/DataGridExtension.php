@@ -22,11 +22,17 @@ class DataGridExtension extends \Twig_Extension
      * @var \Twig_Environment
      */
     protected $environment;
+
     /**
-     * @var \Twig_Template
+     * @var \Twig_TemplateInterface[]
      */
     protected $templates;
+
+    /**
+     * @var string
+     */
     protected $theme;
+
     /**
     * @var \Symfony\Component\Routing\Router
     */
@@ -37,9 +43,6 @@ class DataGridExtension extends \Twig_Extension
         $this->router = $router;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
@@ -66,10 +69,11 @@ class DataGridExtension extends \Twig_Extension
     }
 
     /**
-     * Render grid block.
+     * Render grid block
      *
-     * @param $grid
-     * @param $theme
+     * @param \Sorien\DataGridBundle\Grid\Grid $grid
+     * @param string $theme
+     * @param string $id
      * @return string
      */
     public function getGrid($grid, $theme = null, $id = '')
@@ -81,7 +85,7 @@ class DataGridExtension extends \Twig_Extension
             $grid->setId($id);
         }
 
-        return $this->renderBlock('grid', array('grid' => $grid));
+        return $this->renderBlock('grid', array('grid' => $grid->prepare()));
     }
 
     public function getGridTitles($grid)
@@ -112,9 +116,9 @@ class DataGridExtension extends \Twig_Extension
     /**
      * Cell Drawing override
      *
-     * @param Sorien\DataGridBundle\Grid\Column\Column $column
-     * @param Sorien\DataGridBundle\Grid\Row $row
-     * @param Sorien\DataGridBundle\Grid\Grid $grid
+     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
+     * @param \Sorien\DataGridBundle\Grid\Row $row
+     * @param \Sorien\DataGridBundle\Grid\Grid $grid
      *
      * @return string
      */
@@ -153,6 +157,12 @@ class DataGridExtension extends \Twig_Extension
         return $this->hasBlock($block) ?  $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash())) : $column->renderFilter($grid->getHash());
     }
 
+    /**
+     * @param string $section
+     * @param \Sorien\DataGridBundle\Grid\Grid $grid
+     * @param \Sorien\DataGridBundle\Grid\Column\Column $param
+     * @return string
+     */
     public function getGridUrl($section, $grid, $param = null)
     {
         if ($section == 'order')
@@ -190,12 +200,7 @@ class DataGridExtension extends \Twig_Extension
      */
     private function renderBlock($name, $parameters)
     {
-        if (empty($this->templates))
-        {
-            $this->loadTemplates();
-        }
-
-        foreach ($this->templates as $template)
+        foreach ($this->getTemplates() as $template)
         {
             if ($template->hasBlock($name))
             {
@@ -214,12 +219,7 @@ class DataGridExtension extends \Twig_Extension
      */
     private function hasBlock($name)
     {
-        if (empty($this->templates))
-        {
-            $this->loadTemplates();
-        }
-
-        foreach ($this->templates as $template)
+        foreach ($this->getTemplates() as $template)
         {
             if ($template->hasBlock($name))
             {
@@ -231,35 +231,43 @@ class DataGridExtension extends \Twig_Extension
     }
 
     /**
+     * Template Loader
+     *
+     * @return \Twig_TemplateInterface[]
      * @throws \Exception
      */
-    private function loadTemplates()
+    private function getTemplates()
     {
-        //get template name
-        if ($this->theme instanceof \Twig_Template)
+        if (empty($this->templates))
         {
-            $this->templates[] = $this->theme;
-            $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
-        }
-        elseif (is_string($this->theme))
-        {
-            $template = $this->environment->loadTemplate($this->theme);
-            while ($template != null)
+            //get template name
+            if ($this->theme instanceof \Twig_Template)
             {
-                $this->templates[] = $template;
-                $template = $template->getParent(array());
+                $this->templates[] = $this->theme;
+                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
             }
+            elseif (is_string($this->theme))
+            {
+                $template = $this->environment->loadTemplate($this->theme);
+                while ($template != null)
+                {
+                    $this->templates[] = $template;
+                    $template = $template->getParent(array());
+                }
 
-            $this->templates[] = $this->environment->loadTemplate($this->theme);
+                $this->templates[] = $this->environment->loadTemplate($this->theme);
+            }
+            elseif (is_null($this->theme))
+            {
+                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
+            }
+            else
+            {
+                throw new \Exception('Unable to load template');
+            }
         }
-        elseif (is_null($this->theme))
-        {
-            $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
-        }
-        else
-        {
-            throw new \Exception('Bad template definition for grid');
-        }
+
+        return $this->templates;
     }
 
     public function getName()
