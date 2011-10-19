@@ -18,7 +18,6 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr\Comparison;
-use Doctrine\ORM\QueryBuilder;
 
 class Entity extends Source
 {
@@ -232,22 +231,15 @@ class Entity extends Source
 
     public function getTotalCount($columns)
     {
-        $countAlias = '__count__';
-
-        $idField = $this->getPrefixedName($columns->getPrimaryColumn()->getId());
-        $this->query->select(sprintf("%s", $idField));
+        $this->query->select($this->getPrefixedName($columns->getPrimaryColumn()->getId()));
         $this->query->setFirstResult(null);
         $this->query->setMaxResults(null);
 
-        $qb = new QueryBuilder($this->manager);
+        $qb = $this->manager->createQueryBuilder();
         
-        $qb->select(
-                $qb->expr()->count($countAlias)
-        )->from(
-                $this->entityName, $countAlias
-        )->where(
-                $qb->expr()->in($countAlias . '.' . $columns->getPrimaryColumn()->getId(), $this->query->getDQL())
-        );
+        $qb->select($qb->expr()->count('__count__'));
+        $qb->from($this->entityName, '__count__');
+        $qb->where($qb->expr()->in('__count__' . '.' . $columns->getPrimaryColumn()->getId(), $this->query->getDQL()));
 
         //copy existing parameters.
         $qb->setParameters($this->query->getParameters());
