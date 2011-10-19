@@ -18,6 +18,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr\Comparison;
+use Doctrine\ORM\QueryBuilder;
 
 class Entity extends Source
 {
