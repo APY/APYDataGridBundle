@@ -231,12 +231,29 @@ class Entity extends Source
 
     public function getTotalCount($columns)
     {
-        $this->query->select(sprintf("count (%s)", $this->getPrefixedName($columns->getPrimaryColumn()->getId())));
+        $countAlias = '__count__';
+
+        $idField = $this->getPrefixedName($columns->getPrimaryColumn()->getId());
+        $this->query->select(sprintf("%s", $idField));
         $this->query->setFirstResult(null);
         $this->query->setMaxResults(null);
-        $result = $this->query->getQuery()->getSingleResult();
 
-        return (int)$result[1];
+        $qb = new QueryBuilder($this->manager);
+        
+        $qb->select(
+                $qb->expr()->count($countAlias)
+        )->from(
+                $this->entityName, $countAlias
+        )->where(
+                $qb->expr()->in($countAlias . '.' . $columns->getPrimaryColumn()->getId(), $this->query->getDQL())
+        );
+
+        //copy existing parameters.
+        $qb->setParameters($this->query->getParameters());
+
+        $result = $qb->getQuery()->getSingleResult();
+
+        return (int) $result[1];
     }
 
     public function getFieldsMetadata($class)
