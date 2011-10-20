@@ -56,7 +56,8 @@ class Entity extends Source
      */
     private $joins;
 
-    const TABLE_ALIAS = '__base__';
+    const TABLE_ALIAS = '_a';
+    const COUNT_ALIAS = '__count';
 
     /**
      * @param string $entityName e.g Cms:Page
@@ -82,17 +83,19 @@ class Entity extends Source
     }
     
     /**
-     * @param string $name e.g. vendor.name or name
-     * @return string e.g. vendor.name or __base__.name
+     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
+     * @return string
      */
-    private function getPrefixedName($name)
+    private function getFieldName($column)
     {
+        $name = $column->getField();
+
         if (($pos = strpos($name, '.')) !== false)
         {
             $parent = substr($name, 0, $pos);
-            $this->joins[$parent] = self::TABLE_ALIAS.'.'.$parent;
+            $this->joins['_'.$parent] = self::TABLE_ALIAS.'.'.$parent;
 
-            return $name;
+            return '_'.$name.' as '.$column->getId();
         }
         else
         {
@@ -145,11 +148,11 @@ class Entity extends Source
 
         foreach ($columns as $column)
         {
-            $this->query->addSelect($this->getPrefixedName($column->getField()));
+            $this->query->addSelect($this->getFieldName($column));
 
             if ($column->isSorted())
             {
-                $this->query->orderBy($this->getPrefixedName($column->getField()), $column->getOrder());
+                $this->query->orderBy($this->getFieldName($column), $column->getOrder());
             }
 
             if ($column->isFiltered())
@@ -161,7 +164,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $where->add($this->query->expr()->$operator(
-                            $this->getPrefixedName($filter->hasId() ? $filter->getId() : $column->getField()),
+                            $this->getFieldName($column),
                             $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -175,7 +178,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $sub->add($this->query->expr()->$operator(
-                              $this->getPrefixedName($filter->hasId() ? $filter->getId() : $column->getField()),
+                              $this->getFieldName($column),
                               $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -203,8 +206,7 @@ class Entity extends Source
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
 
-        // get query result
-        $items = $this->query->getQuery()->execute(array(), Query::HYDRATE_ARRAY);
+        $items = $this->query->getQuery()->getResult();
 
         // hydrate result
         $result = new Rows();
@@ -213,10 +215,9 @@ class Entity extends Source
         {
             $row = new Row();
 
-            foreach ($columns as $column)
+            foreach ($item as $key => $value)
             {
-               $value = array_shift($item);
-               $row->setField($column->getId(), $value);
+               $row->setField($key, $value);
             }
 
             //call overridden prepareRow or associated closure
@@ -231,15 +232,15 @@ class Entity extends Source
 
     public function getTotalCount($columns)
     {
-        $this->query->select($this->getPrefixedName($columns->getPrimaryColumn()->getId()));
+        $this->query->select($this->getFieldName($columns->getPrimaryColumn()));
         $this->query->setFirstResult(null);
         $this->query->setMaxResults(null);
 
         $qb = $this->manager->createQueryBuilder();
         
-        $qb->select($qb->expr()->count('__count__'));
-        $qb->from($this->entityName, '__count__');
-        $qb->where($qb->expr()->in('__count__' . '.' . $columns->getPrimaryColumn()->getId(), $this->query->getDQL()));
+        $qb->select($qb->expr()->count(self::COUNT_ALIAS));
+        $qb->from($this->entityName, self::COUNT_ALIAS);
+        $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getId(), $this->query->getDQL()));
 
         //copy existing parameters.
         $qb->setParameters($this->query->getParameters());
