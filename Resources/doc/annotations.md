@@ -52,7 +52,8 @@ class Test
  - source [boolean] - turns on or off column visibility for Source class
  - visible [boolean] -  turns on or off column visibility
  - primary [boolean] - sets column as primary - default is primary key form Entity/Document
- - align [string(left|right|center)] - default left,
+ - align [string(left|right|center)] - default left
+ - role [string] default null - security role for current column example: role="ROLE_USER"
 
 ### Available types for '@GRID\Source' notation
 
