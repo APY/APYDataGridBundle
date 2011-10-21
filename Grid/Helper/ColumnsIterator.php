@@ -23,6 +23,9 @@ class ColumnsIterator extends \FilterIterator
 
     public function accept()
     {
+        /**
+         * @var \Sorien\DataGridBundle\Grid\Column\Column $current
+         */
         $current = $this->getInnerIterator()->current();
         return $this->showOnlySourceColumns ? $current->isVisibleForSource() : true;
     }

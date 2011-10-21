@@ -11,26 +11,10 @@
 
 namespace Sorien\DataGridBundle\Grid\Column;
 
-class Column
+use Symfony\Component\Security\Core\SecurityContextInterface;
+
+abstract class Column
 {
-    private $id;
-    private $title;
-    private $sortable;
-    private $isSorted;
-    private $filterable;
-    private $visible;
-    private $callback;
-    private $order;
-    private $size;
-    private $orderUrl;
-    private $visibleForSource;
-    private $primary;
-    private $params;
-    private $align;
-    private $field;
-
-    protected $data;
-
     const DATA_CONJUNCTION = 0;
     const DATA_DISJUNCTION = 1;
 
@@ -45,6 +29,37 @@ class Column
     const ALIGN_LEFT = 'left';
     const ALIGN_RIGHT = 'right';
     const ALIGN_CENTER = 'center';
+
+    /**
+     * Internal parameters
+     */
+    private $id;
+    private $title;
+    private $sortable;
+    private $filterable;
+    private $visible;
+    private $callback;
+    private $order;
+    private $size;
+    private $visibleForSource;
+    private $primary;
+    private $align;
+    private $field;
+    private $role;
+
+    private $params;
+    private $isSorted;
+    private $orderUrl;
+
+    /**
+     * @var \Symfony\Component\Security\Core\SecurityContextInterface
+     */
+    private $securityContext;
+
+    /**
+     * @todo make private
+     */
+    protected $data;
 
     /**
      * Default Column constructor
@@ -66,14 +81,15 @@ class Column
 
         $this->setId($this->getParam('id', null));
         $this->setTitle($this->getParam('title', ''));
-        $this->sortable = $this->getParam('sortable', true);
-        $this->visible = $this->getParam('visible', true);
+        $this->setSortable($this->getParam('sortable', true));
+        $this->setVisible($this->getParam('visible', true));
         $this->setSize($this->getParam('size', -1));
-        $this->filterable = $this->getParam('filterable', true);
-        $this->visibleForSource = $this->getParam('source', false);
-        $this->primary = $this->getParam('primary', false);
+        $this->setFilterable($this->getParam('filterable', true));
+        $this->setVisibleForSource($this->getParam('source', false));
+        $this->setPrimary($this->getParam('primary', false));
         $this->setAlign($this->getParam('align', $this::ALIGN_LEFT));
         $this->setField($this->getParam('field', null));
+        $this->setRole($this->getParam('role', null));
     }
 
     protected function getParam($id, $default)
@@ -81,10 +97,10 @@ class Column
         return isset($this->params[$id]) ? $this->params[$id] : $default;
     }
 
-
     /**
      * Draw filter
      *
+     * @todo probably make function as abstract
      * @param string $gridHash
      * @return string
      */
@@ -173,41 +189,32 @@ class Column
     }
 
     /**
-     * Show column
-     *
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
-     */
-    public function show()
-    {
-        $this->visible = true;
-
-        return $this;
-    }
-
-    /**
-     * Hide column
-     *
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
-     */
-    public function hide()
-    {
-        $this->visible = false;
-
-        return $this;
-    }
-
-    /**
-     * Column is visible
+     * Return column visibility
      *
      * @return bool return true when column is visible
      */
     public function isVisible()
     {
+        if ($this->visible && $this->securityContext !== null && $this->getRole() != null)
+        {
+            return $this->securityContext->isGranted($this->getRole());
+        }
+
         return $this->visible;
     }
 
     /**
-     * Column is sorted
+     * Set column visibility
+     *
+     * @param boolean $visible
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+    }
+
+    /**
+     * Return true is column is sorted
      *
      * @return bool return true when column is sorted
      */
@@ -216,14 +223,34 @@ class Column
         return $this->isSorted;
     }
 
+    public function setSortable($sortable)
+    {
+        $this->sortable = $sortable;
+    }
+
+    public function getSortable()
+    {
+        return $this->sortable;
+    }
+
     /**
-     * Column is filtered
+     * Return true is column is sorted filtered
      *
-     * @return bool return true when column is filtred
+     * @return boolean
      */
     public function isFiltered()
     {
         return $this->data != null;
+    }
+
+    public function setFilterable($filterable)
+    {
+        $this->filterable = $filterable;
+    }
+
+    public function getFilterable()
+    {
+        return $this->filterable;
     }
 
     /**
@@ -340,7 +367,6 @@ class Column
     public function setData($data)
     {
         $this->data = $data;
-
         return $this;
     }
 
@@ -375,6 +401,11 @@ class Column
         return $this->visibleForSource;
     }
 
+    public function setVisibleForSource($visibleForSource)
+    {
+        $this->visibleForSource = $visibleForSource;
+    }
+
     /**
      * Return true is column in primary
      * @return boolean
@@ -382,6 +413,16 @@ class Column
     public function isPrimary()
     {
         return $this->primary;
+    }
+
+    /**
+     * Set column as primary
+     *
+     * @param boolean $primary
+     */
+    public function setPrimary($primary)
+    {
+        $this->primary = $primary;
     }
 
     /**
@@ -414,5 +455,25 @@ class Column
     public function getField()
     {
         return $this->field;
+    }
+
+    public function setRole($role)
+    {
+        $this->role = $role;
+    }
+
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * Internal function
+     *
+     * @param $securityContext
+     */
+    public function setSecurityContext(SecurityContextInterface $securityContext)
+    {
+        $this->securityContext = $securityContext;
     }
 }

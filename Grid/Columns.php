@@ -13,6 +13,7 @@ namespace Sorien\DataGridBundle\Grid;
 
 use Sorien\DataGridBundle\Grid\Column\Column;
 use Sorien\DataGridBundle\Grid\Helper\ColumnsIterator;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class Columns implements \IteratorAggregate, \Countable
 {
@@ -22,9 +23,15 @@ class Columns implements \IteratorAggregate, \Countable
     private $columns;
     private $extensions;
 
-    public function __construct()
+    /**
+     * @var \Symfony\Component\Security\Core\SecurityContextInterface
+     */
+    private $securityContext;
+
+    public function __construct(SecurityContextInterface $securityContext)
     {
         $this->columns = array();
+        $this->securityContext = $securityContext;
     }
 
     public function getIterator($showOnlySourceColumns = false)
@@ -37,7 +44,6 @@ class Columns implements \IteratorAggregate, \Countable
      * @param Column $column
      * @param int $position
      * @return Grid
-     *
      */
     public function addColumn($column, $position = 0)
     {
@@ -45,6 +51,8 @@ class Columns implements \IteratorAggregate, \Countable
         {
             throw new \InvalidArgumentException('Your column needs to extend class Column.');
         }
+
+        $column->setSecurityContext($this->securityContext);
 
         if ($position > 0)
         {

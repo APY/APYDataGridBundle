@@ -95,7 +95,7 @@ class Grid
         $this->page = 0;
         $this->showTitles = $this->showFilters = true;
 
-        $this->columns = new Columns();
+        $this->columns = new Columns($container->get('security.context'));
         $this->massActions = array();
         $this->rowActions = array();
 
