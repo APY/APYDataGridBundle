@@ -11,9 +11,6 @@
 
 namespace Sorien\DataGridBundle\Twig;
 
-/**
- * @todo use {% grid_theme grid '' %} instead of second argument in grid function
- */
 class DataGridExtension extends \Twig_Extension
 {
     const DEFAULT_TEMPLATE = 'SorienDataGridBundle::blocks.html.twig';
@@ -37,6 +34,11 @@ class DataGridExtension extends \Twig_Extension
     * @var \Symfony\Component\Routing\Router
     */
     protected $router;
+
+    /**
+     * @var array
+     */
+    protected $names;
 
     public function __construct($router)
     {
@@ -79,11 +81,7 @@ class DataGridExtension extends \Twig_Extension
     public function getGrid($grid, $theme = null, $id = '')
     {
         $this->theme = $theme;
-
-        if ($id != '')
-        {
-            $grid->setId($id);
-        }
+        $this->names[$grid->getHash()] = $id == '' ? $grid->getId() : $id;
 
         return $this->renderBlock('grid', array('grid' => $grid->prepare()));
     }
@@ -126,7 +124,7 @@ class DataGridExtension extends \Twig_Extension
     {
         $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
 
-        if (($id = $grid->getId()) != '')
+        if (($id = $this->names[$grid->getHash()]) != '')
         {
             if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getId().'_cell'))
             {
@@ -152,9 +150,20 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getGridFilter($column, $grid)
     {
-        $block = 'grid_column_'.$column->getId().'_filter';
+        if (($id = $this->names[$grid->getHash()]) != '')
+        {
+            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getId().'_filter'))
+            {
+                return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
+            }
+        }
 
-        return $this->hasBlock($block) ?  $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash())) : $column->renderFilter($grid->getHash());
+        if ($this->hasBlock($block = 'grid_column_'.$column->getId().'_filter'))
+        {
+            return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
+        }
+
+        return $column->renderFilter($grid->getHash());
     }
 
     /**
@@ -169,7 +178,7 @@ class DataGridExtension extends \Twig_Extension
         {
             if ($param->isSorted())
             {
-                return $grid->getRouteUrl().'?'.$grid->getHash().'[_order]='.$param->getId().'|'.$this->nextOrder($param->getOrder());
+                return $grid->getRouteUrl().'?'.$grid->getHash().'[_order]='.$param->getId().'|'.($param->getOrder() == 'asc' ? 'desc' : 'asc');
             }
             else
             {
@@ -184,11 +193,6 @@ class DataGridExtension extends \Twig_Extension
         {
             return $grid->getRouteUrl().'?'.$grid->getHash().'[_limit]=';
         }
-    }
-
-    public function nextOrder($value)
-    {
-        return  $value == 'asc' ? 'desc' : 'asc';
     }
 
     /**
