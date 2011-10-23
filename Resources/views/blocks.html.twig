@@ -1,7 +1,7 @@
 {# ------------------------------------------------------ qrid ------------------------------------------------------ #}
 {% block grid %}
 <div class="grid">
-    <form action="{{ grid.routeUrl }}" method="post">
+    <form id="{{ grid.hash }}" action="{{ grid.routeUrl }}" method="post">
         {% if grid.massActions|length > 0 %}
             {{ grid_actions(grid) }}
         {% endif %}
@@ -56,12 +56,14 @@
 {# ---------------------------------------------------- grid_rows --------------------------------------------------- #}
 {% block grid_rows %}
     {% for row in grid.rows %}
+    {% spaceless %}
     <tr{% if row.color != '' %} style="background-color:{{row.color}};"{% endif %} class="grid-row-cells">
     {% for column in grid.columns %}
         {% if (column.visible )%}
             <td{% if column.align != 'left'%} class="align-{{column.align}}"{% endif %}>{{ grid_cell(column, row, grid)|raw }}</td>
         {% endif %}
     {% endfor %}
+    {% endspaceless %}
     </tr>
     {% endfor %}
 {% endblock %}
@@ -93,6 +95,7 @@
     <a href="#" onclick="return {{grid.getHash}}_mark_visible(false);">{{ 'Deselect visible'|trans }}</a> |
     <a href="#" onclick="return {{grid.getHash}}_mark_all(true);">{{ 'Select all'|trans }}</a> |
     <a href="#" onclick="return {{grid.getHash}}_mark_all(false);">{{ 'Deselect all'|trans }}</a>
+    {% spaceless %}
     <div style="float:right">
         {{ 'Action'|trans }}
         <input type="hidden" name="{{grid.getHash}}[__action_all]" value="0"/>
@@ -104,20 +107,26 @@
         </select>
         <input type="submit"  value="{{ 'Submit Action'|trans }}"/>
     </div>
+    {% endspaceless %}
+    {{ block('grid_scripts') }}
 </div>
 {% endblock %}
 {# --------------------------------------------------- grid_scripts ------------------------------------------------- #}
 {% block grid_scripts %}
 <script type="text/javascript">
-function {{grid.getHash}}_mark_visible($select)
+function {{ grid.hash }}_mark_visible($select)
 {
-
+    var form = document.getElementById('{{ grid.hash }}');
+    for (var i=0; i < form.elements.length; i++ ) {
+        if (form.elements[i].type == 'checkbox') {
+            form.elements[i].checked = $select;
+        }
+    }
     return false;
 }
 
-function {{grid.getHash}}_mark_all($select)
+function {{ grid.hash }}_mark_all($select)
 {
-
     return false;
 }
 </script>

@@ -18,12 +18,12 @@ class MassActionColumn extends Column
     public function __construct($gridHash)
     {
         $this->gridHash = $gridHash;
-        parent::__construct(array('id' => '__action', 'title' => '', 'size' => 15, 'sortable' => false, 'source' => false));
+        parent::__construct(array('id' => '__action', 'title' => '', 'size' => 15, 'sortable' => false, 'source' => false, 'align' => 'center'));
     }
 
     public function renderFilter($gridHash)
     {
-        return '<input type="checkbox"/>';
+        return '<input type="checkbox" class="grid-mass-selector" onclick="'.$gridHash.'_mark_visible(this.checked); return true;"/>';
     }
 
     public function renderCell($value, $row, $router)
