@@ -41,8 +41,25 @@ class Grid
     */
     private $router;
     private $container;
+
+    /**
+     * @var array
+     */
+    private $routeParameters;
+
+    /**
+     * @var string
+     */
     private $routeUrl;
+
+    /**
+     * @var string
+     */
     private $id;
+
+    /**
+     * @var string
+     */
     private $hash;
 
     /**
@@ -98,6 +115,8 @@ class Grid
         $this->columns = new Columns($container->get('security.context'));
         $this->massActions = array();
         $this->rowActions = array();
+
+        $this->routeParameters = array();
 
         if (!is_null($source))
         {
@@ -398,12 +417,22 @@ class Grid
     {
         return $this->rowActions;
     }
+
+    public function setRouteParameters($parameters)
+    {
+        $this->routeParameters = $parameters;
+    }
+
+    public function getRouteParameters()
+    {
+        $this->routeParameters;
+    }
     
     public function getRouteUrl()
     {
         if ($this->routeUrl == '')
         {
-            $this->routeUrl = $this->router->generate($this->request->get('_route'));
+            $this->routeUrl = $this->router->generate($this->request->get('_route'), $this->getRouteParameters());
         }
 
         return $this->routeUrl;
