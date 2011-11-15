@@ -238,9 +238,9 @@ class Entity extends Source
 
         $qb = $this->manager->createQueryBuilder();
         
-        $qb->select($qb->expr()->count(self::COUNT_ALIAS));
+        $qb->select($qb->expr()->count(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField()));
         $qb->from($this->entityName, self::COUNT_ALIAS);
-        $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getId(), $this->query->getDQL()));
+        $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField(), $this->query->getDQL()));
 
         //copy existing parameters.
         $qb->setParameters($this->query->getParameters());
