@@ -261,6 +261,7 @@ class Entity extends Source
             if (isset($mapping['fieldName']))
             {
                 $values['field'] = $mapping['fieldName'];
+                $values['id'] = $mapping['fieldName'];
             }
 
             if (isset($mapping['id']) && $mapping['id'] == 'id')
