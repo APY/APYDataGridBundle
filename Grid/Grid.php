@@ -40,6 +40,10 @@ class Grid
     * @var \Symfony\Component\Routing\Router
     */
     private $router;
+
+    /**
+     * @var \Symfony\Component\DependencyInjection\Container
+     */
     private $container;
 
     /**
@@ -85,7 +89,14 @@ class Grid
     private $massActions;
     private $rowActions;
 
+    /**
+     * @var boolean
+     */
     private $showFilters;
+
+    /**
+     * @var boolean
+     */
     private $showTitles;
 
     /**
@@ -116,7 +127,9 @@ class Grid
         $this->massActions = array();
         $this->rowActions = array();
 
-        $this->routeParameters = array();
+        $this->routeParameters = $this->request->attributes->all();
+        unset($this->routeParameters['_route']);
+        unset($this->routeParameters['_controller']);
 
         if (!is_null($source))
         {
@@ -418,14 +431,14 @@ class Grid
         return $this->rowActions;
     }
 
-    public function setRouteParameters($parameters)
+    public function setRouteParameter($parameter, $value)
     {
-        $this->routeParameters = $parameters;
+        $this->routeParameters[$parameter] = $value;
     }
 
     public function getRouteParameters()
     {
-        $this->routeParameters;
+        return $this->routeParameters;
     }
     
     public function getRouteUrl()
