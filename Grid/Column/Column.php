@@ -345,7 +345,6 @@ abstract class Column
         return $this->size;
     }
 
-
     public function setOrderUrl($url)
     {
         $this->orderUrl = $url;

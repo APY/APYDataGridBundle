@@ -76,12 +76,12 @@ class Entity extends Source
         $this->class = $this->ormMetadata->getReflectionClass()->name;
 
         $mapping = $container->get('grid.mapping.manager');
-        
+
         /** todo autoregister mapping drivers with tag */
         $mapping->addDriver($this, -1);
         $this->metadata = $mapping->getMetadata($this->class);
     }
-    
+
     /**
      * @param \Sorien\DataGridBundle\Grid\Column\Column $column
      * @param boolean $withAlias
@@ -148,7 +148,7 @@ class Entity extends Source
     {
         $this->query = $this->manager->createQueryBuilder($this->class);
         $this->query->from($this->class, self::TABLE_ALIAS);
-        
+
         $where = $this->query->expr()->andx();
 
         foreach ($columns as $column)
@@ -242,7 +242,7 @@ class Entity extends Source
         $this->query->setMaxResults(null);
 
         $qb = $this->manager->createQueryBuilder();
-        
+
         $qb->select($qb->expr()->count(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField()));
         $qb->from($this->entityName, self::COUNT_ALIAS);
         $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField(), $this->query->getDQL()));
@@ -284,12 +284,10 @@ class Entity extends Source
                 case 'float':
                 case 'decimal':
                     $values['type'] = 'text';
-                break;
-
+                    break;
                 case 'boolean':
                     $values['type'] = 'boolean';
-                break;
-
+                    break;
                 case 'date':
                 case 'datetime':
                 case 'time':
@@ -302,11 +300,16 @@ class Entity extends Source
 
         return $result;
     }
-    
+
+    public function getHash()
+    {
+        return $this->entityName;
+    }
+
     public function delete(array $ids)
     {
         $repository = $this->manager->getRepository($this->entityName);
-        
+
         foreach ($ids as $id) {
             $object = $repository->find($id);
 
@@ -314,9 +317,9 @@ class Entity extends Source
                 throw new \Exception(sprintf('No %s found for id %s', $this->entityName, $id));
             }
 
-            $this->manager->remove($object);  
+            $this->manager->remove($object);
         }
-        
+
         $this->manager->flush();
     }
 }

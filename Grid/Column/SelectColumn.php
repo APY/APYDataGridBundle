@@ -72,7 +72,7 @@ class SelectColumn extends Column
         }
         return parent::renderCell($value, $row, $router);
     }
-    
+
     public function getType()
     {
         return 'select';

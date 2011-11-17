@@ -4,9 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>    
+    <parameters>
         <parameter key="grid.twig_extension.class">Sorien\DataGridBundle\Twig\DataGridExtension</parameter>
         <parameter key="grid.base.class">Sorien\DataGridBundle\Grid\Grid</parameter>
+        <parameter key="grid.manager.base.class">Sorien\DataGridBundle\Grid\GridManager</parameter>
         <parameter key="grid.column.text.class">Sorien\DataGridBundle\Grid\Column\TextColumn</parameter>
         <parameter key="grid.column.select.class">Sorien\DataGridBundle\Grid\Column\SelectColumn</parameter>
         <parameter key="grid.column.range.class">Sorien\DataGridBundle\Grid\Column\RangeColumn</parameter>
@@ -22,6 +23,10 @@
         </service>
 
         <service id="grid" class="%grid.base.class%" scope="prototype">
+            <argument type="service" id="service_container" />
+        </service>
+        
+        <service id="grid.manager" class="%grid.manager.base.class%">
             <argument type="service" id="service_container" />
         </service>
 
@@ -44,7 +49,7 @@
         <service id="grid.column.blank" class="%grid.column.blank.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
-        
+
         <service id="grid.column.boolean" class="%grid.column.boolean.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
@@ -65,7 +70,6 @@
                 <argument>1</argument>
             </call>
         </service>
-
 
     </services>
 </container>

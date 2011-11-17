@@ -29,14 +29,14 @@ class ActionsColumn extends Column
         /* @var $action RowAction */
         foreach ($this->rowActions as $action) {
             $return .= "<a href='".$router->generate($action->getRoute(), array($row->getPrimaryField() => $row->getPrimaryFieldValue()), false);
-            
+
             if ($action->getConfirm())
                 $return .= "' onclick=\"return confirm('".$action->getConfirmMessage()."');\"";
-            
+
             $return .= "' target='".$action->getTarget()."'";
             $return .=">".$action->getTitle()."</a> ";
         }
-        
+
         return $return;
     }
     

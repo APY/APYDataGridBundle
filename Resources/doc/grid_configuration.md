@@ -1,31 +1,6 @@
 Grid configurations
 ===================
 
-## Handle multiple grids on the same page
-
-You can set the identifier of your grid if you have more than one grid on your page.
-
-```php
-<?php
-$grid = $this->get('grid');
-$grid2 = $this->get('grid'); // or clone $grid;
-
-$grid->setId('first');
-$grid->setSource(new Entity('App\Name\Entity1'));
-
-$grid2->setId('second');
-$grid2->setSource(new Entity('App\Name\Entity2'));
-
-if ($grid->isReadyForRedirect() || $grid2->isReadyForRedirect())
-{
-  return new RedirectResponse($this->generateUrl($this->getRequest()->get('_route')));
-}
-else
-{
-  return $this->render('App:Name:index.html.twig', array('data' => $grid, 'data2' => $grid2));
-}
-```
-
 ## Configure the pager
 ```php
 <?php
@@ -68,7 +43,11 @@ A mass action must be defined before the source because the callback to the func
 <?php
 // First parameter : Title displayed in the selector
 // Second parameter : Callback function
-$yourMassAction = new MassAction('Delete', 'MyProject\MyBundle\Controller\DefaultController::myDeleteFunction');
+$yourMassAction = new MassAction('Action 1', 'MyProject\MyBundle\Controller\DefaultController::myStaticMethod');
+
+// OR 
+
+$yourMassAction = new MassAction('Action 2', array('MyProject\MyBundle\Controller\DefaultController','myMethod'));
         
 $grid->addMassAction($yourMassAction);
 
@@ -173,6 +152,31 @@ $source->setCallback(Source::EVENT_PREPARE_ROW, function ($row) {
 $grid->setSource($source);
 ```
 
+A gridResponse method is also available which handle the redirection and the rendering
+
+```php
+<?php
+$source = new Entity('MyProjectMyBundle:MyEntity');
+
+$grid = $this->get('grid');
+
+// Mass actions, query and row manipulations are defined here
+
+$grid->setSource($source);
+
+return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
+
+```
+
+**Note:** Input arguments of gridResponse are reverse. If you use the @Template annotation, don't define a template view.
+
+```php
+<?php
+...
+return $gridManager->gridResponse(array('data' => $grid));
+
+```
+
 Working Exemple
 ----------------
 
@@ -181,7 +185,6 @@ Working Exemple
 
 namespace MyProject\MyBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -194,66 +197,65 @@ use Sorien\DataGridBundle\Grid\Action\RowAction;
 
 class DefaultController extends Controller
 {
-    static public function remove(array $ids)
+    static public function myStaticMethod(array $ids)
     {
-		// Do whatever you want with these ids
+        // Do whatever you want with these ids
+    }
+    
+    public function myMethod(array $ids)
+    {
+        // Do whatever you want with these ids
     }
     
     public function gridAction()
     {
         $source = new Entity('MyProjectMyBundle:User');
-		
+
         /* @var $grid Sorien\DataGridBundle\Grid\Grid */
-        
+
         $grid = $this->get('grid');
-		
+
         // Set the selector of the number of items per page
-		$grid->setLimits(array(5 => '5', 10 => '10', 15 => '15'));
+        $grid->setLimits(array(5 => '5', 10 => '10', 15 => '15'));
 
-		// Set the default page
-		$grid->setPage(1);
-		
-		// Add a mass action
-        $yourMassAction = new MassAction('Remove', 'MyProject\MyBundle\Controller\DefaultController::remove');
+        // Set the default page
+        $grid->setPage(1);
+
+        // Add a mass action
+        $yourMassAction = new MassAction('Action 1', 'MyProject\MyBundle\Controller\DefaultController::myStaticMethod');
         $grid->addMassAction($yourMassAction);
-        
-		// Add a delete mass action
-        $grid->addMassAction(new DeleteMassAction());
-		
-		// Set the source
-        $grid->setSource($source);
-		
-		// Add a column in the third position
-		$MyColumn = new Column(array('id' => 'My Column', 'title'=>'My Column', 'size' => '54', 'sortable' => true, 'filterable' => false, 'source' => false));
-		$grid->addColumn($MyColumn, 3);
-		
-		// Add row actions in the default row actions column
-		$myRowAction = new RowAction('Edit', 'route_to_edit');
-		$grid->addRowAction($myRowAction);
-		
-		$myRowAction = new RowAction('Delete', 'route_to_delete', true, '_self');
-		$grid->addRowAction($myRowAction);
-        
-		// Custom actions column in the wanted position
-		$myActionsColumn = new ActionsColumn('info_column','Info');
-		$grid->addColumn($myActionsColumn, 1);
-		
-		$myRowAction = new RowAction('Show', 'route_to_show');
-		$myRowAction->setColumn('info_column');
-		$grid->addRowAction($myRowAction);
 
-        if ($grid->isReadyForRedirect())
-        {
-            //data are stored, do redirect
-            return new RedirectResponse($this->generateUrl($this->getRequest()->get('_route')));
-        }
-        else
-        {
-            // to obtain data for template simply pass in the grid instance
-            return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid));
-        }
+        // Add a mass action
+        $yourMassAction = new MassAction('Action 2', array('MyProject\MyBundle\Controller\DefaultController','myMethod'));
+        $grid->addMassAction($yourMassAction);
+
+        // Add a delete mass action
+        $grid->addMassAction(new DeleteMassAction());
+
+        // Set the source
+        $grid->setSource($source);
+
+        // Add a column in the third position
+        $MyColumn = new Column(array('id' => 'My Column', 'title'=>'My Column', 'size' => '54', 'sortable' => true, 'filterable' => false, 'source' => false));
+        $grid->addColumn($MyColumn, 3);
+
+        // Add row actions in the default row actions column
+        $myRowAction = new RowAction('Edit', 'route_to_edit');
+        $grid->addRowAction($myRowAction);
+
+        $myRowAction = new RowAction('Delete', 'route_to_delete', true, '_self');
+        $grid->addRowAction($myRowAction);
+
+        // Custom actions column in the wanted position
+        $myActionsColumn = new ActionsColumn('info_column','Info');
+        $grid->addColumn($myActionsColumn, 1);
+
+        $myRowAction = new RowAction('Show', 'route_to_show');
+        $myRowAction->setColumn('info_column');
+        $grid->addRowAction($myRowAction);
+
+        return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
     }
 }
 
-?>
 ```

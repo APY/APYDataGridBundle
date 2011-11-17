@@ -160,7 +160,7 @@ class Document extends Source
 
         //execute and get results
         $result = new Rows();
-  
+
         $cursor = $this->query->getQuery()->execute();
         $this->count = $cursor->count();
 
@@ -240,12 +240,10 @@ class Document extends Source
                 case 'float':
                 case 'many':
                     $values['type'] = 'text';
-                break;
-                
+                    break;
                 case 'boolean':
                     $values['type'] = 'boolean';
-                break;
-
+                    break;
                 case 'date':
                     $values['type'] = 'date';
                 break;
@@ -256,11 +254,16 @@ class Document extends Source
 
         return $result;
     }
-    
+
+    public function getHash()
+    {
+        return $this->documentName;
+    }
+
     public function delete(array $ids)
     {
         $repository = $this->manager->getRepository($this->documentName);
-        
+
         foreach ($ids as $id) {
             $object = $repository->find($id);
 
@@ -268,9 +271,9 @@ class Document extends Source
                 throw new \Exception(sprintf('No %s found for id %s', $this->documentName, $id));
             }
 
-            $this->manager->remove($object);  
+            $this->manager->remove($object);
         }
-        
+
         $this->manager->flush();
     }
 }

@@ -12,6 +12,8 @@
 
 namespace Sorien\DataGridBundle\Grid;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 use Sorien\DataGridBundle\Grid\Columns;
 use Sorien\DataGridBundle\Grid\Rows;
 use Sorien\DataGridBundle\Grid\Action\MassActionInterface;
@@ -20,12 +22,9 @@ use Sorien\DataGridBundle\Grid\Column\Column;
 use Sorien\DataGridBundle\Grid\Column\MassActionColumn;
 use Sorien\DataGridBundle\Grid\Column\ActionsColumn;
 use Sorien\DataGridBundle\Grid\Source\Source;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Grid
 {
-    const UNLIMITED = 0;
-
     /**
      * @var \Symfony\Component\HttpFoundation\Session;
      */
@@ -77,12 +76,12 @@ class Grid
     private $limits;
 
     /**
-    * @var \Sorien\DataGridBundle\Grid\Column\Columns
+    * @var \Sorien\DataGridBundle\Grid\Columns
     */
     private $columns;
 
     /**
-    * @var \Sorien\DataGridBundle\Grid\DataSorien\DataGridBundle\Grid\Rows
+    * @var @var \Sorien\DataGridBundle\Grid\Rows
     */
     private $rows;
 
@@ -104,7 +103,7 @@ class Grid
      * @param \Symfony\Component\DependencyInjection\Container $container
      * @param string $id set if you are using more then one grid inside controller
      */
-    public function __construct($container, $source = null, $id = '')
+    public function __construct($container, $source = null)
     {
         if(!is_null($source) && !($source instanceof Source))
         {
@@ -117,7 +116,7 @@ class Grid
         $this->request = $container->get('request');
         $this->session = $this->request->getSession();
 
-        $this->setId($id);
+        $this->id = '';
 
         $this->setLimits(array(20 => '20', 50 => '50', 100 => '100'));
         $this->page = 0;
@@ -136,14 +135,14 @@ class Grid
             $this->setSource($source);
         }
     }
-    
+
     function addColumn($column, $position = 0)
     {
         $this->columns->addColumn($column, $position);
         
         return $this;
     }
-    
+
     function addMassAction(MassActionInterface $action)
     {
         if ($this->source instanceof Source)
@@ -151,14 +150,14 @@ class Grid
             throw new \RuntimeException('The actions have to be defined before the source.');
         }
         $this->massActions[] = $action;
-        
+
         return $this;
     }
-    
+
     function addRowAction(RowActionInterface $action)
     {
         $this->rowActions[$action->getColumn()][] = $action;
-        
+
         return $this;
     }
 
@@ -181,12 +180,15 @@ class Grid
         //get cols from source
         $this->source->getColumns($this->columns);
 
+        //generate hash
+        $this->createHash();
+
         //store column data
         $this->fetchAndSaveColumnData();
 
         //execute massActions
         $this->executeMassActions();
-        
+
         //store grid data
         $this->fetchAndSaveGridData();
 
@@ -261,7 +263,7 @@ class Grid
     private function fetchAndSaveGridData()
     {
         $storage = $this->session->get($this->getHash());
-        
+
         //set internal data
         if ($limit = $this->getData('_limit'))
         {
@@ -304,7 +306,7 @@ class Grid
     }
 
     public function executeMassActions()
-    {        
+    {
         $id = $this->getData('__action_id', true, false);
         $data = $this->getData('__action', true, false);
 
@@ -313,7 +315,6 @@ class Grid
             if (array_key_exists($id, $this->massActions))
             {
                 $action = $this->massActions[$id];
-                
                 if (is_callable($action->getCallback()))
                 {
                     call_user_func($action->getCallback(), array_keys($data), false, $this->session);
@@ -336,14 +337,14 @@ class Grid
      * @return Grid
      */
     public function prepare()
-    {        
+    {
         $this->rows = $this->source->execute($this->columns->getIterator(true), $this->page, $this->limit);
 
         if(!$this->rows instanceof Rows)
         {
             throw new \Exception('Source have to return Rows object.');
         }
-        
+
         //add row actions column
         if (count($this->rowActions) > 0)
         {
@@ -362,7 +363,7 @@ class Grid
         {
             $this->columns->addColumn(new MassActionColumn($this->getHash()), 1);
         }
-        
+
         $primaryColumnId = $this->columns->getPrimaryColumn()->getId();
 
         foreach ($this->rows as $row)
@@ -394,7 +395,7 @@ class Grid
         {
             throw new \Exception(sprintf('Source function getTotalCount need to return integer result, returned: %s', gettype($this->totalCount)));
         }
-        
+
         return $this;
     }
 
@@ -440,7 +441,7 @@ class Grid
     {
         return $this->routeParameters;
     }
-    
+
     public function getRouteUrl()
     {
         if ($this->routeUrl == '')
@@ -456,10 +457,15 @@ class Grid
         $data = $this->request->get($this->getHash());
         return !empty($data);
     }
-    
+
+    public function createHash()
+    {
+        $this->hash = 'grid_'.md5($this->request->get('_controller').$this->columns->getHash().$this->source->getHash().$this->getId());
+    }
+
     public function getHash()
     {
-        return 'grid_'.$this->hash;
+        return $this->hash;
     }
 
     /**
@@ -592,8 +598,7 @@ class Grid
     public function setId($id)
     {
         $this->id = $id;
-        $this->hash = md5($this->request->get('_controller').$id);
-        
+
         return $this;
     }
 
@@ -601,7 +606,7 @@ class Grid
     {
         return $this->id;
     }
-    
+
     public function deleteAction($ids)
     {
         $this->source->delete($ids);
@@ -613,5 +618,31 @@ class Grid
          * clone all objects
          */
         $this->columns = clone $this->columns;
+    }
+
+    /**
+     * Renders a view.
+     *
+     * @param array    $parameters An array of parameters to pass to the view
+     * @param string   $view The view name
+     * @param Response $response A response instance
+     *
+     * @return Response A Response instance
+     */
+    public function gridResponse(array $parameters = array(), $view = null,  Response $response = null)
+    {
+        if ($this->isReadyForRedirect())
+        {
+            return new RedirectResponse($this->getRouteUrl());
+        }
+        else
+        {
+            if (is_null($view)) {
+                return $parameters;
+            }
+            else {
+                return $this->container->get('templating')->renderResponse($view, $parameters, $response);
+            }
+        }
     }
 }

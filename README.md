@@ -116,8 +116,8 @@ class DefaultController extends Controller
 
 		if ($grid->isReadyForRedirect())
 		{
-			// Data are stored, do redirect
-			return new RedirectResponse($this->generateUrl($this->getRequest()->get('_route')));
+			// Data are stored, do redirect to prevent multiple post requests
+			return new RedirectResponse($grid->getRouteUrl());
 		}
 		else
 		{

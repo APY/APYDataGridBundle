@@ -11,8 +11,8 @@
 
 namespace Sorien\DataGridBundle\Grid\Action;
 
-class RowAction implements RowActionInterface {
-    
+class RowAction implements RowActionInterface
+{
     private $title;
     private $route;
     private $confirm;
@@ -37,7 +37,7 @@ class RowAction implements RowActionInterface {
         $this->confirmMessage = 'Do you want to '.strtolower($title).' this row?';
         $this->target = $target;
     }
-    
+
     /**
      * Set action title
      *
@@ -60,7 +60,7 @@ class RowAction implements RowActionInterface {
     {
         return $this->title;
     }
-    
+
     /**
      * Set action route
      *
@@ -73,7 +73,7 @@ class RowAction implements RowActionInterface {
 
         return $this;
     }
-    
+
     /**
      * get action route
      *
@@ -83,7 +83,7 @@ class RowAction implements RowActionInterface {
     {
         return $this->route;
     }
-    
+
     /**
      * Set action confirm
      *
@@ -96,7 +96,7 @@ class RowAction implements RowActionInterface {
 
         return $this;
     }
-    
+
     /**
      * get action confirm
      *
@@ -106,7 +106,7 @@ class RowAction implements RowActionInterface {
     {
         return $this->confirm;
     }
-    
+
     /**
      * Set action confirmMessage
      *
@@ -119,7 +119,7 @@ class RowAction implements RowActionInterface {
 
         return $this;
     }
-    
+
     /**
      * get action confirmMessage
      *
@@ -129,7 +129,7 @@ class RowAction implements RowActionInterface {
     {
         return $this->confirmMessage;
     }
-    
+
     /**
      * Set action target
      *
@@ -142,7 +142,7 @@ class RowAction implements RowActionInterface {
 
         return $this;
     }
-    
+
     /**
      * get action target
      *
@@ -152,7 +152,7 @@ class RowAction implements RowActionInterface {
     {
         return $this->target;
     }
-    
+
     /**
      * Set action column
      *
@@ -165,7 +165,7 @@ class RowAction implements RowActionInterface {
 
         return $this;
     }
-    
+
     /**
      * get action column
      *

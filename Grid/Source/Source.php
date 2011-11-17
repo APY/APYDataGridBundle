@@ -83,7 +83,7 @@ abstract class Source implements DriverInterface
      * @return void
      */
     abstract public function initialise($container);
-    
+
     /**
      * Set container
      *
@@ -92,15 +92,6 @@ abstract class Source implements DriverInterface
      * @return void
      */
     abstract public function getColumns($columns);
-    
-    /**
-     * Delete one or more objects
-     *
-     * @abstract
-     * @param array $ids
-     * @return void
-     */
-    abstract public function delete(array $ids);
 
     /**
      * @param $class
@@ -115,4 +106,19 @@ abstract class Source implements DriverInterface
     {
         return array();
     }
+
+    /**
+    * Return source hash string
+    * @abstract
+    */
+    abstract function getHash();
+
+    /**
+     * Delete one or more objects
+     *
+     * @abstract
+     * @param array $ids
+     * @return void
+     */
+    abstract public function delete(array $ids);
 }

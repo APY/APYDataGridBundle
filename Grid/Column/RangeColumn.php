@@ -78,7 +78,6 @@ class RangeColumn extends Column
         return $result;
     }
 
-
     public function isFiltered()
     {
         return $this->data['from'] != '' || $this->data['to'] != '';

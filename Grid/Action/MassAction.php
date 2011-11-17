@@ -11,8 +11,8 @@
 
 namespace Sorien\DataGridBundle\Grid\Action;
 
-class MassAction implements MassActionInterface {
-    
+class MassAction implements MassActionInterface
+{
     private $title;
     private $callback;
     private $confirm;
@@ -31,7 +31,7 @@ class MassAction implements MassActionInterface {
         $this->callback = $callback;
         $this->confirm = $confirm;
     }
-    
+
     /**
      * Set action title
      *
@@ -54,7 +54,7 @@ class MassAction implements MassActionInterface {
     {
         return $this->title;
     }
-    
+
     /**
      * Set action callback
      *
@@ -67,7 +67,7 @@ class MassAction implements MassActionInterface {
 
         return $this;
     }
-    
+
     /**
      * get action callback
      *
@@ -77,7 +77,7 @@ class MassAction implements MassActionInterface {
     {
         return $this->callback;
     }
-    
+
     /**
      * Set action confirm
      *
@@ -90,7 +90,7 @@ class MassAction implements MassActionInterface {
 
         return $this;
     }
-    
+
     /**
      * get action confirm
      *

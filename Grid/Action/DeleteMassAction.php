@@ -11,8 +11,8 @@
 
 namespace Sorien\DataGridBundle\Grid\Action;
 
-class DeleteMassAction extends MassAction {
-    
+class DeleteMassAction extends MassAction
+{
     /**
      * Default DeleteMassAction constructor
      *
@@ -20,7 +20,7 @@ class DeleteMassAction extends MassAction {
      * @return \Sorien\DataGridBundle\Grid\Action\MassAction
      */
     public function __construct($confirm = false)
-    {       
+    {
         parent::__construct('Delete', 'static::deleteAction', $confirm);
     }
 }

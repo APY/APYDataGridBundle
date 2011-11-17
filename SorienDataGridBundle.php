@@ -22,5 +22,5 @@ class SorienDataGridBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new GridExtensionPass());
-    }    
+    }
 }

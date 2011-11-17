@@ -11,8 +11,8 @@
 
 namespace Sorien\DataGridBundle\Grid\Action;
 
-interface RowActionInterface {
-
+interface RowActionInterface
+{
     /**
      * get action title
      *

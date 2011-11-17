@@ -81,7 +81,8 @@ The following documents are available:
 
 1. [Grid Configuration](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/grid_configuration.md)
 2. [Annotations](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/annotations.md)
-3. [Overriding Templates](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
+3. [Multiple grids](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/multiple_grids.md)
+4. [Overriding Templates](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
 
 ## Simple grid with ORM or ODM as source
 
@@ -116,8 +117,8 @@ class DefaultController extends Controller
 
 		if ($grid->isReadyForRedirect())
 		{
-			// Data are stored, do redirect
-			return new RedirectResponse($this->generateUrl($this->getRequest()->get('_route')));
+			// Data are stored, do redirect to prevent multiple post requests
+			return new RedirectResponse($grid->getRouteUrl());
 		}
 		else
 		{

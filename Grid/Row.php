@@ -68,5 +68,4 @@ class Row
     {
         return $this->fields[$this->primaryField];
     }
-
 }
