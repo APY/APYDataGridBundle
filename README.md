@@ -81,7 +81,8 @@ The following documents are available:
 
 1. [Grid Configuration](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/grid_configuration.md)
 2. [Annotations](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/annotations.md)
-3. [Overriding Templates](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
+3. [Multiple grids](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/multiple_grids.md)
+4. [Overriding Templates](https://github.com/SORIEN/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
 
 ## Simple grid with ORM or ODM as source
 
