@@ -22,7 +22,7 @@ if ($grid->isReadyForRedirect() || $grid2->isReadyForRedirect())
 }
 else
 {
-  return $this->render('App:Name:index.html.twig', array('data' => $grid->prepare(), 'data2' => $grid2->prepare()));
+  return $this->render('App:Name:index.html.twig', array('data' => $grid, 'data2' => $grid2));
 }
 ```
 
@@ -249,7 +249,7 @@ class DefaultController extends Controller
         }
         else
         {
-            // to obtain data for template you need to call prepare function
+            // to obtain data for template simply pass in the grid instance
             return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid));
         }
     }
