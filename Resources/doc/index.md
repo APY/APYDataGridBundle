@@ -121,8 +121,8 @@ class DefaultController extends Controller
 		}
 		else
 		{
-			// To obtain data for template you need to call prepare function
-			return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid->prepare()));
+			// To obtain data for template simply pass in the grid instance
+			return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid));
 		}
 	}
 }
