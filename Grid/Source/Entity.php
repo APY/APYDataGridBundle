@@ -84,6 +84,7 @@ class Entity extends Source
     
     /**
      * @param \Sorien\DataGridBundle\Grid\Column\Column $column
+     * @param boolean $withAlias
      * @return string
      */
     private function getFieldName($column, $withAlias = true)
