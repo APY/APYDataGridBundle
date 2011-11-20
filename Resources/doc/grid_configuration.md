@@ -152,6 +152,8 @@ $source->setCallback(Source::EVENT_PREPARE_ROW, function ($row) {
 $grid->setSource($source);
 ```
 
+## Grid Response
+
 A gridResponse method is also available which handle the redirection and the rendering
 
 ```php
