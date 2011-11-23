@@ -85,6 +85,9 @@ class Grid
     */
     private $rows;
 
+    /**
+     * @var \Sorien\DataGridBundle\Grid\Action\MassAction[]
+     */
     private $massActions;
     private $rowActions;
 
@@ -319,9 +322,13 @@ class Grid
                 {
                     call_user_func($action->getCallback(), array_keys($data), false, $this->session);
                 }
+                elseif (substr_count($action->getCallback(), ':') == 2)
+                {
+                    $this->container->get('http_kernel')->forward($action->getCallback(), array('primaryKeys' => array_keys($data), 'allPrimaryKeys' => false ));
+                }
                 else
                 {
-                    throw new \RuntimeException(sprintf('Callback %s is not callable.', $action->getCallback()));
+                    throw new \RuntimeException(sprintf('Callback %s is not callable or Controller action', $action->getCallback()));
                 }
             }
             else
@@ -629,7 +636,7 @@ class Grid
      *
      * @return Response A Response instance
      */
-    public function gridResponse(array $parameters = array(), $view = null,  Response $response = null)
+    public function gridResponse(array $parameters = array(), $view = null, Response $response = null)
     {
         if ($this->isReadyForRedirect())
         {
@@ -637,10 +644,12 @@ class Grid
         }
         else
         {
-            if (is_null($view)) {
+            if (is_null($view))
+            {
                 return $parameters;
             }
-            else {
+            else
+            {
                 return $this->container->get('templating')->renderResponse($view, $parameters, $response);
             }
         }
