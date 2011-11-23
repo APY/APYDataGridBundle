@@ -79,7 +79,7 @@ abstract class Column
     {
         $this->params = $params;
 
-        $this->setId($this->getParam('id', null));
+        $this->setId($this->getParam('id'));
         $this->setTitle($this->getParam('title', ''));
         $this->setSortable($this->getParam('sortable', true));
         $this->setVisible($this->getParam('visible', true));
@@ -87,12 +87,12 @@ abstract class Column
         $this->setFilterable($this->getParam('filterable', true));
         $this->setVisibleForSource($this->getParam('source', false));
         $this->setPrimary($this->getParam('primary', false));
-        $this->setAlign($this->getParam('align', $this::ALIGN_LEFT));
-        $this->setField($this->getParam('field', null));
-        $this->setRole($this->getParam('role', null));
+        $this->setAlign($this->getParam('align', self::ALIGN_LEFT));
+        $this->setField($this->getParam('field'));
+        $this->setRole($this->getParam('role'));
     }
 
-    protected function getParam($id, $default)
+    protected function getParam($id, $default = null)
     {
         return isset($this->params[$id]) ? $this->params[$id] : $default;
     }

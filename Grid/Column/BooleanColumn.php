@@ -15,7 +15,11 @@ class BooleanColumn extends SelectColumn
 {
     public function __initialize(array $params)
     {
-        $params['values'] = array('1'=>'true','0'=>'false');
+        if (!isset($params['values']))
+        {
+            $params['values'] = array(1 => 'true', 0 => 'false');
+        }
+
         parent::__initialize($params);
     }
 
