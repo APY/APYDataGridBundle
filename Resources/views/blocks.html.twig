@@ -91,15 +91,16 @@
 {# --------------------------------------------------- grid_actions ------------------------------------------------- #}
 {% block grid_actions %}
 <div class="mass-actions">
-    <a href="#" onclick="return {{grid.getHash}}_mark_visible(true);">{{ 'Select visible'|trans }}</a> |
-    <a href="#" onclick="return {{grid.getHash}}_mark_visible(false);">{{ 'Deselect visible'|trans }}</a> |
-    <a href="#" onclick="return {{grid.getHash}}_mark_all(true);">{{ 'Select all'|trans }}</a> |
-    <a href="#" onclick="return {{grid.getHash}}_mark_all(false);">{{ 'Deselect all'|trans }}</a>
+    <a href="#" onclick="return {{grid.hash}}_mark_visible(true);">{{ 'Select visible'|trans }}</a> |
+    <a href="#" onclick="return {{grid.hash}}_mark_visible(false);">{{ 'Deselect visible'|trans }}</a> |
+    <a href="#" onclick="return {{grid.hash}}_mark_all(true);">{{ 'Select all'|trans }}</a> |
+    <a href="#" onclick="return {{grid.hash}}_mark_all(false);">{{ 'Deselect all'|trans }}</a>
+    <span class="mass-actions-selected" id="{{grid.hash}}_mass_action_selected"></span>
     {% spaceless %}
     <div style="float:right">
         {{ 'Action'|trans }}
-        <input type="hidden" name="{{grid.getHash}}[__action_all]" value="0"/>
-        <select name="{{grid.getHash}}[__action_id]">
+        <input type="hidden" id="{{grid.hash}}_mass_action_all" name="{{grid.hash}}[{{ constant('Sorien\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED') }}]" value="0"/>
+        <select name="{{grid.hash}}[{{ constant('Sorien\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_MASS_ACTION') }}]">
             <option value="-1"></option>
             {% for key, value in grid.massActions %}
             <option value="{{key}}">{{ value.title|trans }}</option>
@@ -114,19 +115,47 @@
 {# --------------------------------------------------- grid_scripts ------------------------------------------------- #}
 {% block grid_scripts %}
 <script type="text/javascript">
-function {{ grid.hash }}_mark_visible($select)
+function {{ grid.hash }}_mark_visible(select)
+{
+    var form = document.getElementById('{{ grid.hash }}');
+    var counter = 0;
+
+    for (var i=0; i < form.elements.length; i++ ) {
+        if (form.elements[i].type == 'checkbox') {
+            form.elements[i].checked = select;
+
+            if (form.elements[i].checked){
+               counter++;
+            }
+        }
+    }
+
+    var selected = document.getElementById('{{ grid.hash }}_mass_action_selected');
+    selected.innerHTML = counter > 0 ? '{{ 'Selected _s_ rows'|trans }}'.replace('_s_', counter) : '';
+
+    document.getElementById('{{ grid.hash }}_mass_action_all').value = '0';
+    return false;
+}
+
+function {{ grid.hash }}_mark_all(select)
 {
     var form = document.getElementById('{{ grid.hash }}');
     for (var i=0; i < form.elements.length; i++ ) {
         if (form.elements[i].type == 'checkbox') {
-            form.elements[i].checked = $select;
+            form.elements[i].checked = select;
         }
     }
-    return false;
-}
 
-function {{ grid.hash }}_mark_all($select)
-{
+    var selected = document.getElementById('{{ grid.hash }}_mass_action_selected');
+
+    if (select) {
+        document.getElementById('{{ grid.hash }}_mass_action_all').value = '1';
+        selected.innerHTML = '{{ 'Selected _s_ rows'|trans }}'.replace('_s_', '{{ grid.totalCount }}');
+    } else {
+        document.getElementById('{{ grid.hash }}_mass_action_all').value = '0';
+        selected.innerHTML = '';
+    }
+
     return false;
 }
 </script>

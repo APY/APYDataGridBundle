@@ -25,6 +25,12 @@ use Sorien\DataGridBundle\Grid\Source\Source;
 
 class Grid
 {
+    const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
+    const REQUEST_QUERY_MASS_ACTION = '__action_id';
+    const REQUEST_QUERY_PAGE = '_page';
+    const REQUEST_QUERY_LIMIT = '_limit';
+    const REQUEST_QUERY_ORDER = '_order';
+
     /**
      * @var \Symfony\Component\HttpFoundation\Session;
      */
@@ -268,17 +274,17 @@ class Grid
         $storage = $this->session->get($this->getHash());
 
         //set internal data
-        if ($limit = $this->getData('_limit'))
+        if ($limit = $this->getData(self::REQUEST_QUERY_LIMIT))
         {
             $this->limit = $limit;
         }
 
-        if ($page = $this->getData('_page'))
+        if ($page = $this->getData(self::REQUEST_QUERY_PAGE))
         {
             $this->setPage($page);
         }
 
-        if (!is_null($order = $this->getData('_order')))
+        if (!is_null($order = $this->getData(self::REQUEST_QUERY_ORDER)))
         {
             list($columnId, $columnOrder) = explode('|', $order);
 
@@ -288,17 +294,17 @@ class Grid
                 $column->setOrder($columnOrder);
             }
 
-            $storage['_order'] = $order;
+            $storage[self::REQUEST_QUERY_ORDER] = $order;
         }
 
-        if ($this->getCurrentLimit() != $this->getData('_limit', false) && $this->getCurrentLimit() >= 0)
+        if ($this->getCurrentLimit() != $this->getData(self::REQUEST_QUERY_LIMIT, false) && $this->getCurrentLimit() >= 0)
         {
-            $storage['_limit'] = $this->getCurrentLimit();
+            $storage[self::REQUEST_QUERY_LIMIT] = $this->getCurrentLimit();
         }
 
         if ($this->getPage() >= 0)
         {
-            $storage['_page'] = $this->getPage();
+            $storage[self::REQUEST_QUERY_PAGE] = $this->getPage();
         }
 
         // save data to sessions if needed
@@ -310,21 +316,23 @@ class Grid
 
     public function executeMassActions()
     {
-        $id = $this->getData('__action_id', true, false);
-        $data = $this->getData('__action', true, false);
+        $actionId = $this->getData(Grid::REQUEST_QUERY_MASS_ACTION, true, false);
+        $actionAllKeys = (boolean)$this->getData(Grid::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED, true, false);
+        $actionKeys = $actionAllKeys == false ? $this->getData(MassActionColumn::ID, true, false) : array();
 
-        if ($id > -1 && is_array($data))
+        if ($actionId > -1 && is_array($actionKeys))
         {
-            if (array_key_exists($id, $this->massActions))
+            if (array_key_exists($actionId, $this->massActions))
             {
-                $action = $this->massActions[$id];
+                $action = $this->massActions[$actionId];
+
                 if (is_callable($action->getCallback()))
                 {
-                    call_user_func($action->getCallback(), array_keys($data), false, $this->session);
+                    call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session);
                 }
                 elseif (substr_count($action->getCallback(), ':') == 2)
                 {
-                    $this->container->get('http_kernel')->forward($action->getCallback(), array('primaryKeys' => array_keys($data), 'allPrimaryKeys' => false ));
+                    $this->container->get('http_kernel')->forward($action->getCallback(), array('primaryKeys' => array_keys($actionKeys), 'allPrimaryKeys' => $actionAllKeys));
                 }
                 else
                 {
@@ -333,7 +341,7 @@ class Grid
             }
             else
             {
-                throw new \OutOfBoundsException(sprintf('Action %s is not defined.', $id));
+                throw new \OutOfBoundsException(sprintf('Action %s is not defined.', $actionId));
             }
         }
     }

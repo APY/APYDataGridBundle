@@ -13,12 +13,14 @@ namespace Sorien\DataGridBundle\Grid\Column;
 
 class MassActionColumn extends Column
 {
+    const ID = '__action';
+
     private $gridHash;
 
     public function __construct($gridHash)
     {
         $this->gridHash = $gridHash;
-        parent::__construct(array('id' => '__action', 'title' => '', 'size' => 15, 'sortable' => false, 'source' => false, 'align' => 'center'));
+        parent::__construct(array('id' => self::ID, 'title' => '', 'size' => 15, 'sortable' => false, 'source' => false, 'align' => 'center'));
     }
 
     public function renderFilter($gridHash)
@@ -28,6 +30,6 @@ class MassActionColumn extends Column
 
     public function renderCell($value, $row, $router)
     {
-        return '<input type="checkbox" class="action" value="1" name="'.$this->gridHash.'[__action]['.$row->getPrimaryFieldValue().']"/>';
+        return '<input type="checkbox" class="action" value="1" name="'.$this->gridHash.'['.self::ID.']['.$row->getPrimaryFieldValue().']"/>';
     }
 }
