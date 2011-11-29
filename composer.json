@@ -1,0 +1,22 @@
+{
+    "name": "sorien/datagrid-bundle",
+    "type": "symfony-bundle",
+    "description": "datagrid bundle for symfony2",
+    "keywords": ["datagrid"],
+    "homepage": "https://github.com/S0RIEN/DataGridBundle",
+    "authors": [
+        {
+            "name": "Stanislav Turza",
+            "email": "stanislav.turza@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "2.*",
+        "ext-curl":"*"
+    },
+    "autoload": {
+        "psr-0": { "Sorien\\DataGridBundle": "" }
+    },
+    "target-dir": "Sorien/DataGridBundle"
+}
