@@ -24,14 +24,14 @@ The following documents are available:
 
 ## Simple grid with ORM or ODM as source
 
-// MyProject\MyBundle\DefaultController.php
-namespace MyProject\MyBundle\Controller;
+    // MyProject\MyBundle\DefaultController.php
+    namespace MyProject\MyBundle\Controller;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+    use Symfony\Component\HttpFoundation\RedirectResponse;
+    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use Sorien\DataGridBundle\Grid\Source\Entity;
-use Sorien\DataGridBundle\Grid\Source\Document;
+    use Sorien\DataGridBundle\Grid\Source\Entity;
+    use Sorien\DataGridBundle\Grid\Source\Document;
 
     class DefaultController extends Controller
     {
