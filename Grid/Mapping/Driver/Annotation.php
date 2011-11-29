@@ -83,6 +83,11 @@ class Annotation implements DriverInterface
                 $metadata['filterable'] = isset($this->filterable[$className]) ? $this->filterable[$className] : true;
             }
 
+            if (isset($metadata['id']) && $name !== null)
+            {
+                throw new \Exception(sprintf('Parameter `id` can\'t be used in annotations for property `%s`, please remove it from class %s', $name, $className));
+            }
+
             if (is_null($name))
             {
                 if (isset($metadata['id']))
@@ -91,13 +96,10 @@ class Annotation implements DriverInterface
                 }
                 else
                 {
-                    throw new \Exception(sprintf('Missing id for Column %s', $metadata['title']));
+                    throw new \Exception(sprintf('Missing parameter `id` in annotations for extra column of class %s', $className));
                 }
-
-                $name = $metadata['id'];
             }
-
-            if (!isset($metadata['id']))
+            else
             {
                 $metadata['id'] = $name;
             }
