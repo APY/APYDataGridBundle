@@ -20,6 +20,7 @@ The following documents are available:
 - touchdesign
 - Spea
 - nurikabe
+- print
 - and all bug reporters
 
 ## Simple grid with ORM or ODM as source
