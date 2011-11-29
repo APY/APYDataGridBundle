@@ -1,93 +1,29 @@
 Getting Started With DataGridBundle
 ===================================
 
-Datagrid for Symfony2 highly inspired by Zfdatagrid and Magento Grid but not compatible.
+Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid but not compatible.
 
-**Compatibility**: Symfony 2.0+ and will follow stable releases
-
-## Installation
-
-### Step 1: Download DataGridBundle
-
-Ultimately, the DataGridBundle files should be downloaded to the
-`vendor/bundles/Sorien/DataGridBundle` directory.
-
-This can be done in several ways, depending on your preference. The first
-method is the standard Symfony2 method.
-
-**Using the vendors script**
-
-Add the following lines in your `deps` file:
-
-```
-[DataGridBundle]
-    git=git://github.com/S0RIEN/DataGridBundle.git
-    target=bundles/Sorien/DataGridBundle
-```
-
-Now, run the vendors script to download the bundle:
-
-``` bash
-$ php bin/vendors install
-```
-
-**Using submodules**
-
-If you prefer instead to use git submodules, the run the following:
-
-``` bash
-$ git submodule add git://github.com/S0RIEN/DataGridBundle.git vendor/bundles/Sorien/DataGridBundle
-$ git submodule update --init
-```
-
-### Step 2: Configure the Autoloader
-
-Add the `Sorien` namespace to your autoloader:
-
-``` php
-<?php
-// app/autoload.php
-
-$loader->registerNamespaces(array(
-    // ...
-    'Sorien' => __DIR__.'/../vendor/bundles',
-));
-```
-
-### Step 3: Enable the bundle
-
-Finally, enable the bundle in the kernel:
-
-``` php
-<?php
-// app/AppKernel.php
-
-public function registerBundles()
-{
-    $bundles = array(
-        // ...
-		new Sorien\DataGridBundle\SorienDataGridBundle(),
-    );
-}
-```
-
-### Next Steps
-
-Now that you have completed the basic installation and configuration of the
-DataGridBundle, you are ready to learn about more advanced features and usages
-of the bundle.
+**Compatibility**: Symfony 2.x
 
 The following documents are available:
 
-1. [Grid Configuration](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/grid_configuration.md)
-2. [Annotations](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/annotations.md)
-3. [Multiple grids](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/multiple_grids.md)
-4. [Overriding Templates](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
+1. [Installation](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/installation.md)
+2. [Grid Configuration](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/grid_configuration.md)
+3. [Annotations](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/annotations.md)
+4. [Multiple grids](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/multiple_grids.md)
+5. [Overriding Templates](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
+
+## Special thanks to all contributors
+
+- Abhoryo
+- golovanov
+- touchdesign
+- Spea
+- nurikabe
+- and all bug reporters
 
 ## Simple grid with ORM or ODM as source
 
-```php
-<?php
 // MyProject\MyBundle\DefaultController.php
 namespace MyProject\MyBundle\Controller;
 
@@ -97,43 +33,42 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sorien\DataGridBundle\Grid\Source\Entity;
 use Sorien\DataGridBundle\Grid\Source\Document;
 
-class DefaultController extends Controller
-{
-	public function myGridAction()
-	{
-		// Creates simple grid based on your entity (ORM)
-		$source = new Entity('MyProjectMyBundle:MyEntity');
-		
-		// or use Document source class for ODM
-		$source = new Document('MyProjectMyBundle:MyDocument');
-		
-		$grid = $this->get('grid');
+    class DefaultController extends Controller
+    {
+        public function myGridAction()
+        {
+            // Creates simple grid based on your entity (ORM)
+            $source = new Entity('MyProjectMyBundle:MyEntity');
 
-		// Mass actions, query and row manipulations are defined here
-		
-		$grid->setSource($source);
-		
-		// Columns, row actions are defined here
+            // or use Document source class for ODM
+            $source = new Document('MyProjectMyBundle:MyDocument');
 
-		if ($grid->isReadyForRedirect())
-		{
-			// Data are stored, do redirect to prevent multiple post requests
-			return new RedirectResponse($grid->getRouteUrl());
-		}
-		else
-		{
-			// To obtain data for template simply pass in the grid instance
-			return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid));
-		}
-	}
-}
-?>
-```
+            $grid = $this->get('grid');
 
-```html
-<!-- MyProject\MyBundle\Resources\views\my_grid.html.twig -->
-{{ grid(data) }}
-```
+            // Mass actions, query and row manipulations are defined here
+
+            $grid->setSource($source);
+
+            // Columns, row actions are defined here
+
+            if ($grid->isReadyForRedirect())
+            {
+                // Data are stored, do redirect to prevent multiple post requests
+                return new RedirectResponse($grid->getRouteUrl());
+            }
+            else
+            {
+                // To obtain data for template simply pass in the grid instance
+                return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid));
+            }
+        }
+    }
+
+## Rendering inside twig
+
+    <!-- MyProject\MyBundle\Resources\views\my_grid.html.twig -->
+    {{ grid(data) }}
+
 
 Working preview with [assets](https://github.com/S0RIEN/DataGridBundle/wiki/Working-preview-assets)
 -----
