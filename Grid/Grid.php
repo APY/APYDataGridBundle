@@ -138,6 +138,7 @@ class Grid
         $this->routeParameters = $this->request->attributes->all();
         unset($this->routeParameters['_route']);
         unset($this->routeParameters['_controller']);
+        unset($this->routeParameters['_route_params']);
 
         if (!is_null($source))
         {
