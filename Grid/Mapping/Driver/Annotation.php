@@ -98,6 +98,7 @@ class Annotation implements DriverInterface
                 {
                     throw new \Exception(sprintf('Missing parameter `id` in annotations for extra column of class %s', $className));
                 }
+
             }
             else
             {
@@ -111,7 +112,7 @@ class Annotation implements DriverInterface
 
             foreach ($metadata as $key => $value)
             {
-                $this->fields[$className][$name][$key] = $value;
+                $this->fields[$className][$metadata['id']][$key] = $value;
             }
         }
     }
