@@ -169,7 +169,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $where->add($this->query->expr()->$operator(
-                            $this->getFieldName($column),
+                            $this->getFieldName($column, false),
                             $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -183,7 +183,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $sub->add($this->query->expr()->$operator(
-                              $this->getFieldName($column),
+                              $this->getFieldName($column, false),
                               $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -210,6 +210,8 @@ class Entity extends Source
 
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
+
+        var_dump($this->query->getDQL());
 
         $items = $this->query->getQuery()->getResult();
 
