@@ -211,8 +211,6 @@ class Entity extends Source
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
 
-        var_dump($this->query->getDQL());
-
         $items = $this->query->getQuery()->getResult();
 
         // hydrate result
