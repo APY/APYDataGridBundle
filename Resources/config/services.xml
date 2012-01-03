@@ -20,6 +20,7 @@
         <service id="grid.twig_extension" class="%grid.twig_extension.class%" public="false">
             <tag name="twig.extension" />
             <argument type="service" id="router" />
+            <argument type="service" id="service_container" />
         </service>
 
         <service id="grid" class="%grid.base.class%" scope="prototype">
