@@ -16,11 +16,22 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
 
-class SorienDataGridExtension extends Extension
-{
-    public function load(array $config, ContainerBuilder $container)
-    {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+class SorienDataGridExtension extends Extension {
+
+    public function load(array $configs, ContainerBuilder $container) {
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+
+        $config = array();
+        foreach ($configs as $subConfig) {
+            $config = array_merge($config, $subConfig);
+        }
+
+        if (!isset($config['jqueryui'])) {
+            $config['jqueryui'] = 0;
+        }
+
+        $container->setParameter('sorien_data_grid.jqueryui', $config['jqueryui']);
     }
+
 }
