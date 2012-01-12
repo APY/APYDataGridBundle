@@ -19,7 +19,8 @@ class RowAction implements RowActionInterface
     private $confirmMessage;
     private $target;
     private $column = '__actions';
-    
+    private $routeParameters = array();
+
     /**
      * Default MassAction constructor
      *
@@ -174,5 +175,15 @@ class RowAction implements RowActionInterface
     public function getColumn()
     {
         return $this->column;
+    }
+
+    public function setRouteParameters(array $routeParameters)
+    {
+        $this->routeParameters = $routeParameters;
+    }
+
+    public function getRouteParameters()
+    {
+        return $this->routeParameters;
     }
 }
