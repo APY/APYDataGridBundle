@@ -71,7 +71,6 @@ abstract class Column
     {
         $this->__initialize((array) $params);
         $this->isSorted = false;
-        $this->data = null;
         $this->order = '';
     }
 
@@ -90,6 +89,7 @@ abstract class Column
         $this->setAlign($this->getParam('align', self::ALIGN_LEFT));
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
+        $this->setData($this->getParam('defaults'));
     }
 
     protected function getParam($id, $default = null)
@@ -387,7 +387,7 @@ abstract class Column
     public function setIsVisibleForSource($value)
     {
         $this->visibleForSource = $value;
-        
+
         return $this;
     }
 

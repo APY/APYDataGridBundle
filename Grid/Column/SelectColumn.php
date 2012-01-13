@@ -17,12 +17,13 @@ class SelectColumn extends Column
 {
     const BLANK = '_default';
 
-    private $values;
+    private $values = array();
 
     public function __initialize(array $params)
     {
         parent::__initialize($params);
         $this->values = $this->getParam('values', array());
+        $this->setData($this->getParam('defaults'));
     }
 
     public function renderFilter($gridHash)
@@ -46,7 +47,7 @@ class SelectColumn extends Column
 
     public function setData($data)
     {
-        if ((is_string($data) || is_integer($data)) && $data != $this::BLANK && key_exists($data, $this->values))
+        if ((is_string($data) || is_integer($data)) && (key_exists($data, $this->values) || $data == self::BLANK))
         {
             $this->data = $data;
         }
@@ -57,6 +58,11 @@ class SelectColumn extends Column
     public function getFilters()
     {
         return array(new Filter(self::OPERATOR_EQ, '\''.$this->data.'\''));
+    }
+
+    public function isFiltered()
+    {
+        return in_array($this->data, $this->values);
     }
 
     public function getValues()
