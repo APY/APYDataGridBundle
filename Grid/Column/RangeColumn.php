@@ -15,11 +15,29 @@ use Sorien\DataGridBundle\Grid\Filter;
 
 class RangeColumn extends Column
 {
+    private $inputType = 'text';
+
+    public function __initialize(array $params)
+    {
+        parent::__initialize($params);
+        $this->setInputType($this->getParam('inputType', 'text'));
+    }
+
+    public function getInputType()
+    {
+        return $this->inputType;
+    }
+
+    public function setInputType($inputType)
+    {
+        $this->inputType = $inputType;
+    }
+
     public function renderFilter($gridHash)
     {
         $result = '<div class="range-column-filter">';
-        $result .= '<input class="first-filter" placeholder="From:" type="text" value="'.$this->data['from'].'" name="'.$gridHash.'['.$this->getId().'][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
-        $result .= '<input class="second-filter" placeholder="To:" type="text" value="'.$this->data['to'].'" name="'.$gridHash.'['.$this->getId().'][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
+        $result .= '<input class="first-filter" placeholder="From:" type="'.$this->inputType.'" value="'.$this->data['from'].'" name="'.$gridHash.'['.$this->getId().'][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
+        $result .= '<input class="second-filter" placeholder="To:" type="'.$this->inputType.'" value="'.$this->data['to'].'" name="'.$gridHash.'['.$this->getId().'][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
         $result .= '</div>';
         return $result;
     }
