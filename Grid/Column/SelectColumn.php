@@ -19,11 +19,16 @@ class SelectColumn extends Column
 
     private $values = array();
 
+    private $defaults = array();
+
+    private $multiple = false;
+
     public function __initialize(array $params)
     {
         parent::__initialize($params);
         $this->values = $this->getParam('values', array());
-        $this->setData($this->getParam('defaults'));
+        $this->defaults = $this->getParam('defaults', array());
+        $this->multiple = $this->getParam('multiple', false);
     }
 
     public function renderFilter($gridHash)
@@ -32,7 +37,7 @@ class SelectColumn extends Column
 
         foreach ($this->values as $key => $value)
         {
-            if (is_string($this->data) && $this->data == $key)
+            if (is_array($this->data) && in_array($key, $this->data))
             {
                 $result .= '<option value="'.$key.'" selected="selected">'.$value.'</option>';
             }
@@ -42,14 +47,26 @@ class SelectColumn extends Column
             }
         }
 
-        return '<select name="'.$gridHash.'['.$this->getId().']" onchange="this.form.submit();">'.$result.'</select>';
+        return '<select'.($this->multiple ? ' multiple="multiple"' : '').' name="'.$gridHash.'['.$this->getId().'][]" onchange="this.form.submit();">'.$result.'</select>';
     }
 
     public function setData($data)
     {
-        if ((is_string($data) || is_integer($data)) && (key_exists($data, $this->values) || $data == self::BLANK))
-        {
-            $this->data = $data;
+        $data = (array) $data;
+
+        if (in_array(self::BLANK, $data)) {
+            $this->data = array();
+            return $this;
+        }
+
+        foreach ($data as $key => $value) {
+            if (!in_array($value, $this->values)) {
+                unset($data[$key]);
+            }
+        }
+
+        if ($data) {
+            $this->data = array_merge((array)$this->data, $data);
         }
 
         return $this;
@@ -57,12 +74,25 @@ class SelectColumn extends Column
 
     public function getFilters()
     {
-        return array(new Filter(self::OPERATOR_EQ, '\''.$this->data.'\''));
+        $filters = array();
+
+        $values = $this->data ?: $this->defaults;
+
+        foreach ($values as $value) {
+            $filters[] = new Filter(self::OPERATOR_EQ, '\''.$value.'\'');
+        }
+
+        return $filters;
+    }
+
+    public function getFiltersConnection()
+    {
+        return self::DATA_DISJUNCTION;
     }
 
     public function isFiltered()
     {
-        return in_array($this->data, $this->values);
+        return !empty($this->data);
     }
 
     public function getValues()
