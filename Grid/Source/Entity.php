@@ -91,21 +91,30 @@ class Entity extends Source
     {
         $name = $column->getField();
 
-        if (($pos = strpos($name, '.')) !== false)
-        {
-            $parent = substr($name, 0, $pos);
-            $this->joins['_'.$parent] = self::TABLE_ALIAS.'.'.$parent;
-
-            if($withAlias) {
-                return '_'.$name.' as '.$column->getId();
-            }
-            
-            return '_'.$name;
-        }
-        else
-        {
+        if (strpos($name, '.') === false) {
             return self::TABLE_ALIAS.'.'.$name;
         }
+
+        $parent = self::TABLE_ALIAS;
+        $elements = explode('.', $name);
+
+        while ($element = array_shift($elements)) {
+            if (count($elements) > 0) {
+                $this->joins['_' . $element] = $parent . '.' . $element;
+                $parent = '_' . $element;
+                $name = $element;
+            } else {
+                $name .= '.'.$element;
+            }
+        }
+
+
+        if ($withAlias) {
+            return '_' . $name.' as '.$column->getId();
+        }
+
+
+        return '_'.$name;
     }
 
     /**
@@ -229,7 +238,7 @@ class Entity extends Source
             if (($modifiedRow = $this->prepareRow($row)) != null)
             {
                 $result->addRow($modifiedRow);
-            }            
+            }
         }
 
         return $result;
