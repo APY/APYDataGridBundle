@@ -17,10 +17,15 @@ class ActionsColumn extends Column
 {
     private $rowActions;
 
-    public function __construct($column, $title, array $rowActions = array())
+    public function __construct($column, $title, array $rowActions = array(), array $params = array())
     {
         $this->rowActions = $rowActions;
-        parent::__construct(array('id' => $column, 'title' => $title, 'sortable' => false, 'source' => false));
+        parent::__construct(
+            array_merge(
+                $params,
+                array('id' => $column, 'title' => $title, 'sortable' => false, 'source' => false)
+            )
+        );
     }
 
     public function renderCell($value, $row, $router)
@@ -42,6 +47,13 @@ class ActionsColumn extends Column
         }
 
         return $return;
+    }
+
+    public function renderFilter($gridHash)
+    {
+        if (!$this->getSubmitOnChange()) {
+            return '<input name="'.$gridHash.'[submit]" type="submit" value="Filter"/>';
+        }
     }
 
     public function setRowActions(array $rowActions) {

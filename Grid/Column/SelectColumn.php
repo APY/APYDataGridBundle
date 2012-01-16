@@ -47,7 +47,16 @@ class SelectColumn extends Column
             }
         }
 
-        return '<select'.($this->multiple ? ' multiple="multiple"' : '').' name="'.$gridHash.'['.$this->getId().'][]" onchange="this.form.submit();">'.$result.'</select>';
+        $markup = '<select'.($this->multiple ? ' multiple="multiple"' : '').' name="'.$gridHash.'['.$this->getId().'][]";';
+
+
+        if ($this->getSubmitOnChange()) {
+            $markup .= ' onchange="this.form.submit();"';
+        }
+
+        $markup .= '>'.$result.'</select>';
+
+        return $markup;
     }
 
     public function setData($data)

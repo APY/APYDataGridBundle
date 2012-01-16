@@ -17,7 +17,15 @@ class TextColumn extends Column
 {
     public function renderFilter($gridHash)
     {
-        return '<input type="text" value="'.$this->data.'" name="'.$gridHash.'['.$this->getId().']" onkeypress="if (event.which == 13){this.form.submit();}"/>';
+        $markup = '<input type="text" value="'.$this->data.'" name="'.$gridHash.'['.$this->getId().']"';
+
+        if ($this->getSubmitOnChange()) {
+            $markup .= ' onkeypress="if (event.which == 13){this.form.submit();}"';
+        }
+
+        $markup .= '/>';
+
+        return $markup;
     }
 
     public function getFilters()
@@ -34,7 +42,7 @@ class TextColumn extends Column
 
         return $this;
     }
-    
+
     public function getType()
     {
         return 'text';

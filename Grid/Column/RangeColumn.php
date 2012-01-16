@@ -36,8 +36,21 @@ class RangeColumn extends Column
     public function renderFilter($gridHash)
     {
         $result = '<div class="range-column-filter">';
-        $result .= '<input class="first-filter" placeholder="From:" type="'.$this->inputType.'" value="'.$this->data['from'].'" name="'.$gridHash.'['.$this->getId().'][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
-        $result .= '<input class="second-filter" placeholder="To:" type="'.$this->inputType.'" value="'.$this->data['to'].'" name="'.$gridHash.'['.$this->getId().'][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>';
+        $result .= '<input class="first-filter" placeholder="From:" type="'.$this->inputType.'" value="'.$this->data['from'].'" name="'.$gridHash.'['.$this->getId().'][from]';
+
+        $keypressHandler = 'onkeypress="if (event.which == 13){this.form.submit();}"';
+        if ($this->getSubmitOnChange()) {
+            $result .=  $keypressHandler;
+        }
+
+        $result .= '"/><br/>';
+        $result .= '<input class="second-filter" placeholder="To:" type="'.$this->inputType.'" value="'.$this->data['to'].'" name="'.$gridHash.'['.$this->getId().'][to]"';
+
+        if ($this->getSubmitOnChange()) {
+            $result .=  $keypressHandler;
+        }
+
+        $result .= '"/>';
         $result .= '</div>';
         return $result;
     }

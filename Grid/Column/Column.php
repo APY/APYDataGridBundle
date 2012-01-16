@@ -46,6 +46,7 @@ abstract class Column
     private $align;
     private $field;
     private $role;
+    private $submitOnChange = true;
 
     private $params;
     private $isSorted = false;
@@ -89,6 +90,7 @@ abstract class Column
         $this->setRole($this->getParam('role'));
         $this->setData($this->getParam('defaults'));
         $this->setOrder($this->getParam('order'));
+        $this->setSubmitOnChange($this->getParam('submitOnChange', true));
     }
 
     protected function getParam($id, $default = null)
@@ -467,6 +469,17 @@ abstract class Column
     public function getRole()
     {
         return $this->role;
+    }
+
+    public function setSubmitOnChange($flag)
+    {
+        $this->submitOnChange = $flag;
+        return $this;
+    }
+
+    public function getSubmitOnChange()
+    {
+        return $this->submitOnChange;
     }
 
     /**
