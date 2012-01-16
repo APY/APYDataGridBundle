@@ -49,9 +49,12 @@ class SelectColumn extends Column
 
         $markup = '<select'.($this->multiple ? ' multiple="multiple"' : '').' name="'.$gridHash.'['.$this->getId().'][]";';
 
-
         if ($this->getSubmitOnChange()) {
             $markup .= ' onchange="this.form.submit();"';
+        }
+
+        if ($this->getSize()) {
+            $result .= ' style="width:'.$this->getSize().'px"';
         }
 
         $markup .= '>'.$result.'</select>';

@@ -19,6 +19,10 @@ class TextColumn extends Column
     {
         $markup = '<input type="text" value="'.$this->data.'" name="'.$gridHash.'['.$this->getId().']"';
 
+        if ($this->getSize()) {
+            $markup .= ' style="width:'.$this->getSize().'px"';
+        }
+
         if ($this->getSubmitOnChange()) {
             $markup .= ' onkeypress="if (event.which == 13){this.form.submit();}"';
         }
