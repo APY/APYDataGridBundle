@@ -90,6 +90,7 @@ abstract class Column
         $this->setRole($this->getParam('role'));
         $this->setData($this->getParam('defaults'));
         $this->setOrder($this->getParam('order'));
+        $this->setCallback($this->getParam('callback'));
         $this->setSubmitOnChange($this->getParam('submitOnChange', true));
     }
 
