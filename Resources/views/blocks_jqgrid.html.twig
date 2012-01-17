@@ -1,0 +1,8 @@
+{# ------------------------------------------------------ qrid ------------------------------------------------------ #}
+{% block grid %}
+<table id="grid_{{ grid.hash }}"></table> 
+<div id="pager_{{ grid.hash }}"></div>
+{{ grid_js(grid) }}
+{% endblock %}
+
+
