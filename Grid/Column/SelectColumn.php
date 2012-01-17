@@ -25,9 +25,10 @@ class SelectColumn extends Column
 
     public function __initialize(array $params)
     {
+        $this->data = array();
         parent::__initialize($params);
         $this->values = $this->getParam('values', array());
-        $this->defaults = $this->getParam('defaults', array());
+        $this->defaults = (array)$this->getParam('defaults', array());
         $this->multiple = $this->getParam('multiple', false);
     }
 
@@ -35,9 +36,14 @@ class SelectColumn extends Column
     {
         $result = '<option value="'.$this::BLANK.'"></option>';
 
+        $data = array();
+        if ($this->data != self::BLANK) {
+            $data = $this->data ?: $this->defaults;
+        }
+
         foreach ($this->values as $key => $value)
         {
-            if (is_array($this->data) && in_array($key, $this->data))
+            if (is_array($data) && in_array($key, $data))
             {
                 $result .= '<option value="'.$key.'" selected="selected">'.$value.'</option>';
             }
@@ -67,19 +73,17 @@ class SelectColumn extends Column
         $data = (array) $data;
 
         if (in_array(self::BLANK, $data)) {
-            $this->data = array();
+            $this->data = self::BLANK;
             return $this;
         }
 
         foreach ($data as $key => $value) {
-            if (!in_array($value, $this->values)) {
+            if (!key_exists($value, $this->values)) {
                 unset($data[$key]);
             }
         }
 
-        if ($data) {
-            $this->data = array_merge((array)$this->data, $data);
-        }
+        $this->data = array_merge((array)$this->data, $data);
 
         return $this;
     }
@@ -88,7 +92,10 @@ class SelectColumn extends Column
     {
         $filters = array();
 
-        $values = $this->data ?: $this->defaults;
+        $values = array();
+        if ($this->data != self::BLANK) {
+            $values = $this->data ?: $this->defaults;
+        }
 
         foreach ($values as $value) {
             $filters[] = new Filter(self::OPERATOR_EQ, '\''.$value.'\'');
@@ -104,7 +111,7 @@ class SelectColumn extends Column
 
     public function isFiltered()
     {
-        return !empty($this->data);
+        return $this->data != self::BLANK && (!empty($this->data) || !empty($this->defaults));
     }
 
     public function getValues()
