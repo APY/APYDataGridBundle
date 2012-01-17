@@ -12,6 +12,7 @@
 
 namespace Sorien\DataGridBundle\Grid;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Sorien\DataGridBundle\Grid\Columns;
@@ -34,78 +35,78 @@ class Grid
     /**
      * @var \Symfony\Component\HttpFoundation\Session;
      */
-    private $session;
+    protected $session;
 
     /**
     * @var \Symfony\Component\HttpFoundation\Request
     */
-    private $request;
+    protected $request;
 
     /**
     * @var \Symfony\Component\Routing\Router
     */
-    private $router;
+    protected $router;
 
     /**
      * @var \Symfony\Component\DependencyInjection\Container
      */
-    private $container;
+    protected $container;
 
     /**
      * @var array
      */
-    private $routeParameters;
+    protected $routeParameters;
 
     /**
      * @var string
      */
-    private $routeUrl;
+    protected $routeUrl;
 
     /**
      * @var string
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      */
-    private $hash;
+    protected $hash;
 
     /**
     * @var \Sorien\DataGridBundle\Grid\Source\Source
     */
-    private $source;
+    protected $source;
 
-    private $totalCount;
-    private $page;
-    private $limit;
-    private $limits;
+    protected $totalCount;
+    protected $page;
+    protected $limit;
+    protected $limits;
 
     /**
     * @var \Sorien\DataGridBundle\Grid\Columns
     */
-    private $columns;
+    protected $columns;
 
     /**
     * @var @var \Sorien\DataGridBundle\Grid\Rows
     */
-    private $rows;
+    protected $rows;
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Action\MassAction[]
      */
-    private $massActions;
-    private $rowActions;
+    protected $massActions;
+    protected $rowActions;
 
     /**
      * @var boolean
      */
-    private $showFilters;
+    protected $showFilters;
 
     /**
      * @var boolean
      */
-    private $showTitles;
+    protected $showTitles;
 
     /**
      * @param \Source\Source $source Data Source
@@ -213,7 +214,7 @@ class Grid
      * @param bool $fromSession
      * @return null|string
      */
-    private function getData($column, $fromRequest = true, $fromSession = true)
+    protected function getData($column, $fromRequest = true, $fromSession = true)
     {
         $result = null;
 
@@ -241,7 +242,7 @@ class Grid
      *
      * @return void
      */
-    private function fetchAndSaveColumnData()
+    protected function fetchAndSaveColumnData()
     {
         $storage = $this->session->get($this->getHash());
 
@@ -270,7 +271,7 @@ class Grid
      *
      * @return void
      */
-    private function fetchAndSaveGridData()
+    protected function fetchAndSaveGridData()
     {
         $storage = $this->session->get($this->getHash());
 
