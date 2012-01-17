@@ -12,7 +12,9 @@
 
 namespace Sorien\DataGridBundle\Grid;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+
 use Sorien\DataGridBundle\Grid\Columns;
 use Sorien\DataGridBundle\Grid\Rows;
 use Sorien\DataGridBundle\Grid\Action\MassActionInterface;
@@ -21,7 +23,6 @@ use Sorien\DataGridBundle\Grid\Column\Column;
 use Sorien\DataGridBundle\Grid\Column\MassActionColumn;
 use Sorien\DataGridBundle\Grid\Column\ActionsColumn;
 use Sorien\DataGridBundle\Grid\Source\Source;
-use Symfony\Component\HttpFoundation\Response;
 
 class GridJq extends Grid {
 
@@ -287,9 +288,9 @@ jQuery("%s").jqGrid({
 	sortname: 'id', 
 	viewrecords: true, 
 	sortorder: "asc", 
-	caption:"JSON Example" 
+	caption:"Grid title" 
 }); 
-jQuery("%s").jqGrid('navGrid','%s',{edit:false,add:false,del:false});
+jQuery("%s").jqGrid('navGrid','%s',{search:false,edit:false,add:false,del:false});
 </script>
 EOF;
 

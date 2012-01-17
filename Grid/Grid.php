@@ -12,6 +12,7 @@
 
 namespace Sorien\DataGridBundle\Grid;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Sorien\DataGridBundle\Grid\Columns;

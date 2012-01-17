@@ -6,6 +6,7 @@
 
     <parameters>
         <parameter key="grid.twig_extension.class">Sorien\DataGridBundle\Twig\DataGridExtension</parameter>
+        <parameter key="grid.twig_extension.template">SorienDataGridBundle::blocks.html.twig</parameter>
         <parameter key="grid.base.class">Sorien\DataGridBundle\Grid\Grid</parameter>
         <parameter key="grid.manager.base.class">Sorien\DataGridBundle\Grid\GridManager</parameter>
         <parameter key="grid.column.text.class">Sorien\DataGridBundle\Grid\Column\TextColumn</parameter>
@@ -20,6 +21,7 @@
         <service id="grid.twig_extension" class="%grid.twig_extension.class%" public="false">
             <tag name="twig.extension" />
             <argument type="service" id="router" />
+             <argument>%grid.twig_extension.template%</argument>
         </service>
 
         <service id="grid" class="%grid.base.class%" scope="prototype">

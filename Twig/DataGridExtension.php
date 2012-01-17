@@ -15,7 +15,7 @@ use Sorien\DataGridBundle\Grid\Grid;
 
 class DataGridExtension extends \Twig_Extension
 {
-    const DEFAULT_TEMPLATE = 'SorienDataGridBundle::blocks.html.twig';
+    protected $defaultTemplate;
 
     /**
      * @var \Twig_Environment
@@ -42,9 +42,10 @@ class DataGridExtension extends \Twig_Extension
      */
     protected $names;
 
-    public function __construct($router)
+    public function __construct($router, $template)
     {
         $this->router = $router;
+        $this->defaultTemplate = $template;
     }
 
     public function initRuntime(\Twig_Environment $environment)
@@ -69,6 +70,8 @@ class DataGridExtension extends \Twig_Extension
             'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl'),
             'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter'),
             'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
+            'grid_js'           => new \Twig_Function_Method($this, 'getJS', array('is_safe' => array('html'))),
+            'gridjson'          => new \Twig_Function_Method($this, 'getGridJson', array('is_safe' => array('html'))),
         );
     }
 
@@ -250,7 +253,7 @@ class DataGridExtension extends \Twig_Extension
             if ($this->theme instanceof \Twig_Template)
             {
                 $this->templates[] = $this->theme;
-                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->environment->loadTemplate($this->defaultTemplate);
             }
             elseif (is_string($this->theme))
             {
@@ -265,7 +268,7 @@ class DataGridExtension extends \Twig_Extension
             }
             elseif (is_null($this->theme))
             {
-                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->environment->loadTemplate($this->defaultTemplate);
             }
             else
             {
@@ -279,5 +282,13 @@ class DataGridExtension extends \Twig_Extension
     public function getName()
     {
         return 'datagrid_twig_extension';
+    }
+    
+    public function getJS($grid) {
+        return $grid->getJS();
+    }
+
+    public function getGridJson($grid, $theme = null, $id = '') {
+        return $grid->toJson();
     }
 }
