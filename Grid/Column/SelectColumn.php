@@ -121,7 +121,7 @@ class SelectColumn extends Column
 
     public function renderCell($value, $row, $router)
     {
-        if (key_exists($value, $this->values))
+        if (key_exists((string)$value, $this->values))
         {
             $value = $this->values[$value];
         }

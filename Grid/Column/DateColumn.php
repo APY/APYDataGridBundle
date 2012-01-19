@@ -30,10 +30,19 @@ class DateColumn extends TextColumn
 
     public function renderCell($value, $row, $router)
     {
-        if ($value != '')
+        if ($value != null)
         {
-            $date = new \DateTime($value);
-            return parent::renderCell($date->format($this->format), $row, $router);
+            if (is_string($value))
+            {
+                $value = new \DateTime($value);
+            }
+
+            if ($value instanceof \DateTime)
+            {
+                return parent::renderCell($value->format($this->format), $row, $router);
+            }
+
+            throw \InvalidArgumentException('Date Column value have to be DataTime object');
         }
         else
         {
