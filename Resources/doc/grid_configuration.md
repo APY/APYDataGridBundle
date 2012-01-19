@@ -249,6 +249,10 @@ class DefaultController extends Controller
         );
         $grid->addColumn($MyColumn2);
 
+        // Add column that renders as an HTML5 <input type="number"/> range
+        $NumberRangeColumn = new Column(array('id'=> 'Column', 'title' => 'Numeric Range', 'inputType' => 'number'));
+        $grid->addColumn($NumberRangeColumn);
+
         // Add row actions in the default row actions column
         $myRowAction = new RowAction('Edit', 'route_to_edit');
         $grid->addRowAction($myRowAction);
