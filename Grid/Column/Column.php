@@ -90,6 +90,7 @@ abstract class Column
         $this->setAlign($this->getParam('align', self::ALIGN_LEFT));
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
+        $this->setCallback($this->getParam('callback'));
     }
 
     protected function getParam($id, $default = null)
