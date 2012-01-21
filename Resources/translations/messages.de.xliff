@@ -42,6 +42,14 @@
                 <source>Submit Action</source>
                 <target>Aktion ausführen</target>
             </trans-unit>
+            <trans-unit id="11">
+                <source>From:</source>
+                <target>Von:</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>To:</source>
+                <target>Bis:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

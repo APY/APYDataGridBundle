@@ -164,7 +164,12 @@ class DataGridExtension extends \Twig_Extension
         {
             return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
         }
-
+		
+        if ($this->hasBlock($block = 'grid_column_type_'.$column->getType().'_filter'))
+        {
+            return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
+        }
+		
         return $column->renderFilter($grid->getHash());
     }
 

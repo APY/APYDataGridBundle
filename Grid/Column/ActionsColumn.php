@@ -47,4 +47,9 @@ class ActionsColumn extends Column
     public function setRowActions(array $rowActions) {
         $this->rowActions = $rowActions;
     }
+	    
+    public function getType()
+    {
+        return 'actions';
+    }
 }
