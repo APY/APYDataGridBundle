@@ -60,7 +60,7 @@
     <tr{% if row.color != '' %} style="background-color:{{row.color}};"{% endif %} class="grid-row-cells">
     {% for column in grid.columns %}
         {% if (column.visible )%}
-            <td{% if column.align != 'left'%} class="align-{{column.align}}"{% endif %}>{{ grid_cell(column, row, grid)|raw }}</td>
+            <td class="grid-column-{{ column.id }}{% if column.align != 'left'%} align-{{column.align}}{% endif %}">{{ grid_cell(column, row, grid)|raw }}</td>
         {% endif %}
     {% endfor %}
     {% endspaceless %}
