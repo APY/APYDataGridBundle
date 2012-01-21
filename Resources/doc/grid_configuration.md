@@ -92,6 +92,8 @@ $myRowAction = new RowAction('Delete', 'route_to_delete', true, '_self');
 $grid->addRowAction($myRowAction);
 
 $myRowAction = new RowAction('Edit', 'route_to_edit');
+// Specify route parameters for the edit action
+$myRowAction->setRouteParameters(array('version' => 2));
 $grid->addRowAction($myRowAction);
 ```
 
