@@ -28,7 +28,11 @@ class ActionsColumn extends Column
         $return = '';
         /* @var $action RowAction */
         foreach ($this->rowActions as $action) {
-            $return .= "<a href='".$router->generate($action->getRoute(), array($row->getPrimaryField() => $row->getPrimaryFieldValue()), false);
+            $routeParameters = array_merge(
+                array($row->getPrimaryField() => $row->getPrimaryFieldValue()),
+                $action->getRouteParameters()
+            );
+            $return .= "<a href='".$router->generate($action->getRoute(), $routeParameters, false);
 
             if ($action->getConfirm())
                 $return .= "' onclick=\"return confirm('".$action->getConfirmMessage()."');\"";
@@ -39,7 +43,7 @@ class ActionsColumn extends Column
 
         return $return;
     }
-    
+
     public function setRowActions(array $rowActions) {
         $this->rowActions = $rowActions;
     }
