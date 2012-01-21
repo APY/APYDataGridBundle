@@ -32,4 +32,9 @@ class MassActionColumn extends Column
     {
         return '<input type="checkbox" class="action" value="1" name="'.$this->gridHash.'['.self::ID.']['.$row->getPrimaryFieldValue().']"/>';
     }
+	    
+    public function getType()
+    {
+        return 'massaction';
+    }
 }
