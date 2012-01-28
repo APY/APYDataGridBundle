@@ -58,6 +58,12 @@ when no grid id is present you can use `grid_column_%column_id%_cell`
 syntax is `grid_%grid_id%_column_%column_id%_filter`, 
 when no grid id is present you can use `grid_column_%column_id%_filter`
 
+
+## Override filter rendering
+you can override filter of a specific type by using the  `grid_column_type_%type%_filter`. 
+Note that custom filter rendering overrides type rendering. 
+ 
+
 ```html
 <!-- MyProjectMyBundle::my_grid_template.html.twig -->
 

@@ -29,14 +29,14 @@
         {% if (column.visible )%}
         <th class="{% if column.align != 'left'%} align-{{column.align}}{% endif %}"{% if(column.size > -1) %} style="width:{{column.size}}px"{% endif %}>
         {% if (column.sortable) %}
-            <a href="{{ grid_url('order', grid, column) }}" title="Order by {{ column.title }}">{{ column.title }}</a>
+            <a href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by '|trans }}{{ column.title|trans }}">{{ column.title|trans }}</a>
             {% if column.order == 'asc' %}
                 <div class="sort_up"></div>
             {% elseif column.order == 'desc' %}
                 <div class="sort_down"></div>
             {% endif %}
         {% else %}
-            {{ column.title }}
+            {{ column.title|trans }}
         {% endif %}
         </th>
         {% endif %}
@@ -159,4 +159,12 @@ function {{ grid.hash }}_mark_all(select)
     return false;
 }
 </script>
+{% endblock %}
+{# -------------------------------------------- grid_column_type_range_filter --------------------------------------- #}
+{% block grid_column_type_range_filter %}
+{% set data = column.getData() %} 
+	<div class="range-column-filter">
+    	<input class="first-filter" placeholder="{{ 'From:'|trans }}" type="text" value="{% if column.data['from'] is defined %}{{ data['from'] }}{% endif %}" name="{{hash}}[{{column.id}}][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>
+        <input class="second-filter" placeholder="{{ 'To:' |trans }}" type="text" value="{% if column.data['to'] is defined %}{{ data['to'] }}{% endif %}" name="{{hash}}[{{column.id}}][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>
+   	</div>
 {% endblock %}
