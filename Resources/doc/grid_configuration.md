@@ -191,7 +191,7 @@ return $gridManager->gridResponse(array('data' => $grid));
 
 ```
 
-Working Exemple
+Working Example
 ----------------
 
 ```php
@@ -203,7 +203,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Sorien\DataGridBundle\Grid\Source\Entity;
-use Sorien\DataGridBundle\Grid\Column\Column;
+use Sorien\DataGridBundle\Grid\Column\TextColumn;
 use Sorien\DataGridBundle\Grid\Column\ActionsColumn;
 use Sorien\DataGridBundle\Grid\Action\MassAction;
 use Sorien\DataGridBundle\Grid\Action\DeleteMassAction;
@@ -250,11 +250,11 @@ class DefaultController extends Controller
         $grid->setSource($source);
 
         // Add a column in the third position
-        $MyColumn = new Column(array('id' => 'My Column', 'title'=>'My Column', 'size' => '54', 'sortable' => true, 'filterable' => false, 'source' => false));
+        $MyColumn = new TextColumn(array('id' => 'My Column', 'title'=>'My Column', 'size' => '54', 'sortable' => true, 'filterable' => false, 'source' => false));
         $grid->addColumn($MyColumn, 3);
 
         // Add a column with a rendering callback
-        $MyColumn2 = new Column(array('id' => 'Another Column', 'callback' => function($value, $row, $router) {
+        $MyColumn2 = new TextColumn(array('id' => 'Another Column', 'callback' => function($value, $row, $router) {
             return $router->generateUrl('_my_route', array('param' => $row->getField('column')));}
         );
         $grid->addColumn($MyColumn2);
