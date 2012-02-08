@@ -130,11 +130,21 @@ Must be defined before the source.
 
 ```php
 <?php
-$source->setCallback(Source::EVENT_PREPARE_QUERY, function ($query) {
+$source->setCallback($source::EVENT_PREPARE_QUERY, function ($query) {
 	$query->setMaxResults(1);
 });
 
 $grid->setSource($source);
+```
+
+With context injection:
+
+```php
+<?php
+$tableAlias = $source::TABLE_ALIAS;
+$source->setCallback($source::EVENT_PREPARE_QUERY, function ($query) use ($tableAlias) {
+    $query->where($tableAlias . '.user = 1');
+});
 ```
 
 ## Manipulate rows
@@ -145,7 +155,7 @@ Must be defined before the source.
 
 ```php
 <?php
-$source->setCallback(Source::EVENT_PREPARE_ROW, function ($row) {
+$source->setCallback($source::EVENT_PREPARE_ROW, function ($row) {
 	if ($row->getField('enabled')=='1') {
 		$row->setColor('#00ff00');
 	}
