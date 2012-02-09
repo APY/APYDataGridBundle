@@ -113,6 +113,10 @@ class Grid
     private $data = null;
 
     /**
+     * @var string
+     */
+    private $prefixTitle = '';
+    /**
      * @param \Source\Source $source Data Source
      * @param \Symfony\Component\DependencyInjection\Container $container
      * @param string $id set if you are using more then one grid inside controller
@@ -803,5 +807,16 @@ class Grid
     private function getTotalCountFromData()
     {
         return count($this->data);
+    }
+
+    public function getPrefixTitle()
+    {
+        return $this->prefixTitle;
+    }
+
+    public function setPrefixTitle($prefixTitle)
+    {
+        $this->prefixTitle = $prefixTitle;
+        return $this;
     }
 }

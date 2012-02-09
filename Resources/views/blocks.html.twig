@@ -28,15 +28,16 @@
     {% for column in grid.columns %}
         {% if (column.visible )%}
         <th class="{% if column.align != 'left'%} align-{{column.align}}{% endif %}"{% if(column.size > -1) %} style="width:{{column.size}}px"{% endif %}>
+        {% set columnTitle = grid.prefixTitle ~ column.title %}
         {% if (column.sortable) %}
-            <a href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by '|trans }}{{ column.title|trans }}">{{ column.title|trans }}</a>
+            <a href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by '|trans }}{{ columnTitle|trans }}">{{ columnTitle|trans }}</a>
             {% if column.order == 'asc' %}
                 <div class="sort_up"></div>
             {% elseif column.order == 'desc' %}
                 <div class="sort_down"></div>
             {% endif %}
         {% else %}
-            {{ column.title|trans }}
+            {{ columnTitle|trans }}
         {% endif %}
         </th>
         {% endif %}
