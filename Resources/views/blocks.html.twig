@@ -112,6 +112,12 @@
     {{ block('grid_scripts') }}
 </div>
 {% endblock %}
+{# ------------------------------------------------ grid_action_columns --------------------------------------------- #}
+{% block grid_column___actions_cell %}
+    {% for action in column.rowActions %}
+        {% include action.template with {'action': action, 'row': row, 'column': column} %}
+    {% endfor %}
+{% endblock grid_column___actions_cell %}
 {# --------------------------------------------------- grid_scripts ------------------------------------------------- #}
 {% block grid_scripts %}
 <script type="text/javascript">
