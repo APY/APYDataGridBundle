@@ -42,6 +42,14 @@
                 <source>Submit Action</source>
                 <target>Odoslať</target>
             </trans-unit>
+            <trans-unit id="11">
+                <source>From:</source>
+                <target>Od:</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>To:</source>
+                <target>Do:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

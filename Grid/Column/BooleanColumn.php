@@ -27,4 +27,9 @@ class BooleanColumn extends SelectColumn
     {
         return 'boolean';
     }
+
+    public function getParentType()
+    {
+        return 'select';
+    }
 }

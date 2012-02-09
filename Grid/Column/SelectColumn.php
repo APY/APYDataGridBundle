@@ -25,25 +25,6 @@ class SelectColumn extends Column
         $this->values = $this->getParam('values', array());
     }
 
-    public function renderFilter($gridHash)
-    {
-        $result = '<option value="'.$this::BLANK.'"></option>';
-
-        foreach ($this->values as $key => $value)
-        {
-            if (is_string($this->data) && $this->data == $key)
-            {
-                $result .= '<option value="'.$key.'" selected="selected">'.$value.'</option>';
-            }
-            else
-            {
-                $result .= '<option value="'.$key.'">'.$value.'</option>';
-            }
-        }
-
-        return '<select name="'.$gridHash.'['.$this->getId().']" onchange="this.form.submit();">'.$result.'</select>';
-    }
-
     public function setData($data)
     {
         if ((is_string($data) || is_integer($data)) && $data != $this::BLANK && key_exists($data, $this->values))

@@ -175,3 +175,17 @@ function {{ grid.hash }}_mark_all(select)
         <input class="second-filter" placeholder="{{ 'To:' |trans }}" type="text" value="{% if column.data['to'] is defined %}{{ data['to'] }}{% endif %}" name="{{hash}}[{{column.id}}][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>
    	</div>
 {% endblock grid_column_type_range_filter %}
+{# -------------------------------------------- grid_column_type_text_filter --------------------------------------- #}
+{% block grid_column_type_text_filter %}
+    <input type="text" value="{{ column.getData() }}" name="{{hash}}[{{column.id}}]" onkeypress="if (event.which == 13){this.form.submit();}"/>
+{% endblock grid_column_type_text_filter %}
+{# -------------------------------------------- grid_column_type_select_filter --------------------------------------- #}
+{% block grid_column_type_select_filter %}
+{% set data = column.getData() %}
+    <select name="{{hash}}[{{column.id}}]" onchange="this.form.submit();">
+        <option value="_default">&nbsp;</option>
+        {% for key, value in column.getValues() %}
+            <option value="{{key}}"{% if not data is null and data == key %} selected="selected"{% endif %}>{{ value }}</option>
+        {% endfor %}
+    </select>
+{% endblock grid_column_type_select_filter %}

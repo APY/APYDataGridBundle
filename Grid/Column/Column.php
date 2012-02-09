@@ -468,6 +468,16 @@ abstract class Column
         return $this->role;
     }
 
+    public function getType()
+    {
+        return '';
+    }
+
+    public function getParentType()
+    {
+        return '';
+    }
+
     /**
      * Internal function
      *
