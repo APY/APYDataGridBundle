@@ -241,8 +241,8 @@ Bookmarks are related by the user, so you can retrieve it directly from the user
 public function displayBookmarksOfTheUserAction()
 {
     // Get the user from context
-	$user = $this->container->get('security.context')->getToken()->getUser();
-	if (!is_object($user) || !$user instanceof UserInterface) {
+    $user = $this->container->get('security.context')->getToken()->getUser();
+    if (!is_object($user) || !$user instanceof UserInterface) {
         throw new AccessDeniedException('This user does not have access to this section.');
 	}
 
@@ -252,9 +252,8 @@ public function displayBookmarksOfTheUserAction()
     // Define the source of the grid
 	$grid->setSource(new Entity('MyProjectMyBundle:Bookmark'));
     
-    // Get bookmarks related to the user
-	$userBookmarks = $user->getBookmarks();
-    $grid->setData($userBookmarks);
+    // Get bookmarks related to the user and set the grid data 
+    $grid->setData($user->getBookmarks());
 
 	if ($grid->isReadyForRedirect())
 	{
