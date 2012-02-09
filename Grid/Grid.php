@@ -691,6 +691,7 @@ class Grid
     public function setData($data)
     {
         $this->data = $data;
+        return $this;
     }
 
     /**
