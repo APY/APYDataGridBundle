@@ -108,6 +108,11 @@ class Grid
     private $showTitles;
 
     /**
+     * @var array|object
+     */
+    private $data = null;
+
+    /**
      * @param \Source\Source $source Data Source
      * @param \Symfony\Component\DependencyInjection\Container $container
      * @param string $id set if you are using more then one grid inside controller
@@ -149,7 +154,7 @@ class Grid
     function addColumn($column, $position = 0)
     {
         $this->columns->addColumn($column, $position);
-        
+
         return $this;
     }
 
@@ -213,7 +218,7 @@ class Grid
      * @param bool $fromSession
      * @return null|string
      */
-    private function getData($column, $fromRequest = true, $fromSession = true)
+    private function getDataFromContext($column, $fromRequest = true, $fromSession = true)
     {
         $result = null;
 
@@ -247,7 +252,7 @@ class Grid
 
         foreach ($this->columns as $column)
         {
-            $column->setData($this->getData($column->getId()));
+            $column->setData($this->getDataFromContext($column->getId()));
 
             if (($data = $column->getData()) !== null)
             {
@@ -275,17 +280,17 @@ class Grid
         $storage = $this->session->get($this->getHash());
 
         //set internal data
-        if ($limit = $this->getData(self::REQUEST_QUERY_LIMIT))
+        if ($limit = $this->getDataFromContext(self::REQUEST_QUERY_LIMIT))
         {
             $this->limit = $limit;
         }
 
-        if ($page = $this->getData(self::REQUEST_QUERY_PAGE))
+        if ($page = $this->getDataFromContext(self::REQUEST_QUERY_PAGE))
         {
             $this->setPage($page);
         }
 
-        if (!is_null($order = $this->getData(self::REQUEST_QUERY_ORDER)))
+        if (!is_null($order = $this->getDataFromContext(self::REQUEST_QUERY_ORDER)))
         {
             list($columnId, $columnOrder) = explode('|', $order);
 
@@ -298,7 +303,7 @@ class Grid
             $storage[self::REQUEST_QUERY_ORDER] = $order;
         }
 
-        if ($this->getCurrentLimit() != $this->getData(self::REQUEST_QUERY_LIMIT, false) && $this->getCurrentLimit() >= 0)
+        if ($this->getCurrentLimit() != $this->getDataFromContext(self::REQUEST_QUERY_LIMIT, false) && $this->getCurrentLimit() >= 0)
         {
             $storage[self::REQUEST_QUERY_LIMIT] = $this->getCurrentLimit();
         }
@@ -317,9 +322,9 @@ class Grid
 
     public function executeMassActions()
     {
-        $actionId = $this->getData(Grid::REQUEST_QUERY_MASS_ACTION, true, false);
-        $actionAllKeys = (boolean)$this->getData(Grid::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED, true, false);
-        $actionKeys = $actionAllKeys == false ? $this->getData(MassActionColumn::ID, true, false) : array();
+        $actionId = $this->getDataFromContext(Grid::REQUEST_QUERY_MASS_ACTION, true, false);
+        $actionAllKeys = (boolean)$this->getDataFromContext(Grid::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED, true, false);
+        $actionKeys = $actionAllKeys == false ? $this->getDataFromContext(MassActionColumn::ID, true, false) : array();
 
         if ($actionId > -1 && is_array($actionKeys))
         {
@@ -354,7 +359,12 @@ class Grid
      */
     public function prepare()
     {
-        $this->rows = $this->source->execute($this->columns->getIterator(true), $this->page, $this->limit);
+        if ($this->isDataLoaded()) {
+            $this->rows = $this->executeFromData($this->columns->getIterator(true), $this->page, $this->limit);
+        }
+        else {
+            $this->rows = $this->source->execute($this->columns->getIterator(true), $this->page, $this->limit);
+        }
 
         if(!$this->rows instanceof Rows)
         {
@@ -407,7 +417,14 @@ class Grid
         }
 
         //get size
-        if(!is_int($this->totalCount = $this->source->getTotalCount($this->columns)))
+        if ($this->isDataLoaded()) {
+            $this->totalCount = $this->getTotalCountFromData();
+        }
+        else {
+            $this->totalCount = $this->source->getTotalCount($this->columns);
+        }
+
+        if(!is_int($this->totalCount))
         {
             throw new \Exception(sprintf('Source function getTotalCount need to return integer result, returned: %s', gettype($this->totalCount)));
         }
@@ -442,7 +459,7 @@ class Grid
     {
         return $this->massActions;
     }
-    
+
     public function getRowActions()
     {
         return $this->rowActions;
@@ -662,5 +679,128 @@ class Grid
                 return $this->container->get('templating')->renderResponse($view, $parameters, $response);
             }
         }
+    }
+
+
+    /**
+     * Use data instead of fetching the source
+     *
+     * @param array|object $data
+     * @return void
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * Get the loaded data
+     *
+     * @return array|object
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * Check if data is loaded
+     *
+     * @return boolean
+     */
+    public function isDataLoaded()
+    {
+        return !is_null($this->data);
+    }
+
+    /**
+     * Find data from array|object
+     *
+     * @abstract
+     * @param \Sorien\DataGridBundle\Grid\Column\Column[] $columns
+     * @param int $page
+     * @param int $limit
+     * @return \Sorien\DataGridBundle\DataGrid\Rows
+     */
+    private function executeFromData($columns, $page = 0, $limit = 0)
+    {
+        // Populate from data
+        $items = array();
+        foreach ($this->data as $key => $item)
+        {
+            foreach ($columns as $column)
+            {
+                $fieldName = $column->getField();
+                $functionName = ucfirst($fieldName);
+                if (isset($item->$fieldName)) {
+                    $fieldValue = $item->$fieldName;
+                }
+                else if (is_callable(array($item, 'get'.$functionName))) {
+                    $fieldValue = call_user_func(array($item, 'get'.$functionName));
+                }
+                else if (is_callable(array($item, 'has'.$functionName))) {
+                    $fieldValue = call_user_func(array($item, 'has'.$functionName));
+                }
+                else if (is_callable(array($item, 'is'.$functionName))) {
+                    $fieldValue = call_user_func(array($item, 'is'.$functionName));
+                }
+                else {
+                    throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
+                }
+
+                $items[$key][$fieldName] = $fieldValue;
+            }
+        }
+
+        // Order
+        foreach ($columns as $column)
+        {
+            if ($column->isSorted())
+            {
+                $sortedItems = array();
+                foreach ($items as $key => $item)
+                {
+                    $sortedItems[$key] = $item[$column->getField()];
+                }
+
+                // Type ? (gettype function)
+                array_multisort($sortedItems, ($column->getOrder() == 'asc') ? SORT_ASC : SORT_DESC, SORT_STRING, $items);
+                break;
+            }
+        }
+
+        // Pager
+        if ($limit > 0)
+        {
+            $items = array_slice($items, $page * $limit, $limit);
+        }
+
+
+        $result = new Rows();
+        foreach ($items as $item)
+        {
+            $row = new Row();
+            foreach ($item as $fieldName => $fieldValue) {
+                $row->setField($fieldName, $fieldValue);
+
+                //call overridden prepareRow or associated closure
+                if (($modifiedRow = $this->source->prepareRow($row)) != null)
+                {
+                    $result->addRow($modifiedRow);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Total count of data items
+     *
+     * @return int
+     */
+    private function getTotalCountFromData()
+    {
+        return count($this->data);
     }
 }
