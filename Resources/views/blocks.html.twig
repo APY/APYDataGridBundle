@@ -171,8 +171,8 @@ function {{ grid.hash }}_mark_all(select)
 {% block grid_column_type_range_filter %}
 {% set data = column.getData() %}
 	<div class="range-column-filter">
-    	<input class="first-filter" placeholder="{{ 'From:'|trans }}" type="text" value="{% if column.data['from'] is defined %}{{ data['from'] }}{% endif %}" name="{{hash}}[{{column.id}}][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>
-        <input class="second-filter" placeholder="{{ 'To:' |trans }}" type="text" value="{% if column.data['to'] is defined %}{{ data['to'] }}{% endif %}" name="{{hash}}[{{column.id}}][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>
+    	<input class="first-filter" placeholder="{{ 'From:'|trans }}" type="{{ column.getInputType() }}" value="{% if column.data['from'] is defined %}{{ data['from'] }}{% endif %}" name="{{hash}}[{{column.id}}][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>
+        <input class="second-filter" placeholder="{{ 'To:' |trans }}" type="{{ column.getInputType() }}" value="{% if column.data['to'] is defined %}{{ data['to'] }}{% endif %}" name="{{hash}}[{{column.id}}][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>
    	</div>
 {% endblock grid_column_type_range_filter %}
 {# -------------------------------------------- grid_column_type_text_filter --------------------------------------- #}

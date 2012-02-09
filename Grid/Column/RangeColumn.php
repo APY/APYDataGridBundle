@@ -15,6 +15,24 @@ use Sorien\DataGridBundle\Grid\Filter;
 
 class RangeColumn extends Column
 {
+    private $inputType = 'text';
+
+    public function __initialize(array $params)
+    {
+        parent::__initialize($params);
+        $this->setInputType($this->getParam('inputType', 'text'));
+    }
+
+    public function getInputType()
+    {
+        return $this->inputType;
+    }
+
+    public function setInputType($inputType)
+    {
+        $this->inputType = $inputType;
+    }
+
     public function getFilters()
     {
         $result = array();
