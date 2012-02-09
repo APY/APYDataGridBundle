@@ -234,7 +234,7 @@ public function displayBookmarksOfTheUserAction()
 }
 ```
 
-Like a said, bookmarks are related by the user, so you can retrieve it directly from the user and use it for the grid:
+Bookmarks are related by the user, so you can retrieve it directly from the user and use it for the grid:
 
 ```php
 <?php
