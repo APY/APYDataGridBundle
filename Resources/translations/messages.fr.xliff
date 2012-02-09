@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>Page</source>
+                <target>Page</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>, Display</source>
+                <target>, Afficher</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>of %count%</source>
+                <target>sur %count%</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Items per page</source>
+                <target>Résultats par page</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Select visible</source>
+                <target>Sélectionner visible</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Select all</source>
+                <target>Sélectionner tout</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Deselect visible</source>
+                <target>Désélectionner visible</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Deselect all</source>
+                <target>Désélectionner tout</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>Action</source>
+                <target>Action</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Submit Action</source>
+                <target>Éxecuter</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>From:</source>
+                <target>De:</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>To:</source>
+                <target>À:</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
