@@ -191,6 +191,84 @@ return $gridManager->gridResponse(array('data' => $grid));
 
 ```
 
+## Set data
+
+You can use existing data to avoid unnecessary queries.
+
+Imagine a user with bookmarks represented by a type (youtube, twitter,...) and a link.
+
+Current behavior to display the bookmarks of a user:
+
+```php
+<?php
+public function displayBookmarksOfTheUserAction()
+{
+    // Get the user from context
+	$user = $this->container->get('security.context')->getToken()->getUser();
+	if (!is_object($user) || !$user instanceof UserInterface) {
+        throw new AccessDeniedException('This user does not have access to this section.');
+	}
+
+    // Instanciate the grid
+	$grid = $this->get('grid');
+
+    // Define the source of the grid
+	$source = new Entity('MyProjectMyBundle:Bookmark');
+
+    // Add a where condition to the query to get only bookmarks of the user
+	$tableAlias = $source::TABLE_ALIAS;
+	$source->setCallback($source::EVENT_PREPARE_QUERY, function ($query) use ($tableAlias, $user) {
+        $query->where($tableAlias . '.member = '.$user->getId());
+	});
+
+	$grid->setSource($source);
+
+	if ($grid->isReadyForRedirect())
+	{
+        return new RedirectResponse($grid->getRouteUrl());
+	}
+	else
+	{
+        return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid));
+	}
+}
+```
+
+Like a said, bookmarks are related by the user, so you can retrieve it directly from the user and use it for the grid:
+
+```php
+<?php
+public function displayBookmarksOfTheUserAction()
+{
+    // Get the user from context
+	$user = $this->container->get('security.context')->getToken()->getUser();
+	if (!is_object($user) || !$user instanceof UserInterface) {
+        throw new AccessDeniedException('This user does not have access to this section.');
+	}
+
+    // Instanciate the grid
+	$grid = $this->get('grid');
+
+    // Define the source of the grid
+	$grid->setSource(new Entity('MyProjectMyBundle:Bookmark'));
+    
+    // Get bookmarks related to the user
+	$userBookmarks = $user->getBookmarks();
+    $grid->setData($userBookmarks);
+
+	if ($grid->isReadyForRedirect())
+	{
+        return new RedirectResponse($grid->getRouteUrl());
+	}
+	else
+	{
+        return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid));
+	}
+}
+```
+
+With this new feature you avoid some unnecessary queries 
+
 Working Example
 ----------------
 
