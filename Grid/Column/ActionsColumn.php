@@ -23,31 +23,25 @@ class ActionsColumn extends Column
         parent::__construct(array('id' => $column, 'title' => $title, 'sortable' => false, 'source' => false));
     }
 
-    public function renderCell($value, $row, $router)
+    public function getRouteParameters($row, $action)
     {
-        $return = '';
-        /* @var $action RowAction */
-        foreach ($this->rowActions as $action) {
-            $routeParameters = array_merge(
+        $routeParameters = array_merge(
                 array($row->getPrimaryField() => $row->getPrimaryFieldValue()),
                 $action->getRouteParameters()
-            );
-            $return .= "<a href='".$router->generate($action->getRoute(), $routeParameters, false);
+        );
 
-            if ($action->getConfirm())
-                $return .= "' onclick=\"return confirm('".$action->getConfirmMessage()."');\"";
+        return $routeParameters;
+    }
 
-            $return .= "' target='".$action->getTarget()."'";
-            $return .=">".$action->getTitle()."</a> ";
-        }
-
-        return $return;
+    public function getRowActions()
+    {
+        return $this->rowActions;
     }
 
     public function setRowActions(array $rowActions) {
         $this->rowActions = $rowActions;
     }
-	    
+
     public function getType()
     {
         return 'actions';

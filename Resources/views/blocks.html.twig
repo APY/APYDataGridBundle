@@ -1,4 +1,4 @@
-{# ------------------------------------------------------ qrid ------------------------------------------------------ #}
+{# ------------------------------------------------------ grid ------------------------------------------------------ #}
 {% block grid %}
 <div class="grid">
     <form id="{{ grid.hash }}" action="{{ grid.routeUrl }}" method="post">
@@ -21,7 +21,7 @@
         {% endif %}
     </form>
 </div>
-{% endblock %}
+{% endblock grid %}
 {# --------------------------------------------------- grid_titles -------------------------------------------------- #}
 {% block grid_titles %}
     <tr class="grid-row-titles">
@@ -42,7 +42,7 @@
         {% endif %}
     {% endfor %}
     </tr>
-{% endblock %}
+{% endblock grid_titles %}
 {# -------------------------------------------------- grid_filters -------------------------------------------------- #}
 {% block grid_filters %}
     <tr class="grid-row-filters">
@@ -52,7 +52,7 @@
         {% endif %}
     {% endfor %}
     </tr>
-{% endblock %}
+{% endblock grid_filters %}
 {# ---------------------------------------------------- grid_rows --------------------------------------------------- #}
 {% block grid_rows %}
     {% for row in grid.rows %}
@@ -66,7 +66,7 @@
     {% endspaceless %}
     </tr>
     {% endfor %}
-{% endblock %}
+{% endblock grid_rows %}
 {# ---------------------------------------------------- grid_pager -------------------------------------------------- #}
 {% block grid_pager %}
 <div class="pager">
@@ -87,7 +87,7 @@
     {% endfor %}
     </select> {{ 'Items per page'|trans }}
 </div>
-{% endblock %}
+{% endblock grid_pager %}
 {# --------------------------------------------------- grid_actions ------------------------------------------------- #}
 {% block grid_actions %}
 <div class="mass-actions">
@@ -111,7 +111,14 @@
     {% endspaceless %}
     {{ block('grid_scripts') }}
 </div>
-{% endblock %}
+{% endblock grid_actions %}
+{# ------------------------------------------------ grid_action_columns --------------------------------------------- #}
+{% block grid_column___actions_cell %}
+    {% for action in column.rowActions %}
+        {% set confirm = action.confirm ? " onclick=\"return confirm('" ~ action.confirmMessage ~ "')\"" : '' %}
+        <a href="{{ url(action.route, column.routeParameters(row, action), false) }}"{{ confirm }} target="{{ action.target }}">{{ action.title|trans }}</a>
+    {% endfor %}
+{% endblock grid_column___actions_cell %}
 {# --------------------------------------------------- grid_scripts ------------------------------------------------- #}
 {% block grid_scripts %}
 <script type="text/javascript">
@@ -159,12 +166,12 @@ function {{ grid.hash }}_mark_all(select)
     return false;
 }
 </script>
-{% endblock %}
+{% endblock grid_scripts %}
 {# -------------------------------------------- grid_column_type_range_filter --------------------------------------- #}
 {% block grid_column_type_range_filter %}
-{% set data = column.getData() %} 
+{% set data = column.getData() %}
 	<div class="range-column-filter">
     	<input class="first-filter" placeholder="{{ 'From:'|trans }}" type="text" value="{% if column.data['from'] is defined %}{{ data['from'] }}{% endif %}" name="{{hash}}[{{column.id}}][from]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>
         <input class="second-filter" placeholder="{{ 'To:' |trans }}" type="text" value="{% if column.data['to'] is defined %}{{ data['to'] }}{% endif %}" name="{{hash}}[{{column.id}}][to]" onkeypress="if (event.which == 13){this.form.submit();}"/><br/>
    	</div>
-{% endblock %}
+{% endblock grid_column_type_range_filter %}
