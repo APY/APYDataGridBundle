@@ -39,7 +39,7 @@ abstract class Column
     private $filterable;
     private $visible;
     private $callback;
-    private $order;
+    private $order = '';
     private $size;
     private $visibleForSource;
     private $primary;
@@ -48,7 +48,7 @@ abstract class Column
     private $role;
 
     private $params;
-    private $isSorted;
+    private $isSorted = false;
     private $orderUrl;
 
     /**
@@ -70,9 +70,6 @@ abstract class Column
     public function __construct($params = null)
     {
         $this->__initialize((array) $params);
-        $this->isSorted = false;
-        $this->data = null;
-        $this->order = '';
     }
 
     public function __initialize(array $params)
@@ -90,7 +87,7 @@ abstract class Column
         $this->setAlign($this->getParam('align', self::ALIGN_LEFT));
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
-        $this->setCallback($this->getParam('callback'));
+        $this->setOrder($this->getParam('order'));
     }
 
     protected function getParam($id, $default = null)
@@ -282,6 +279,10 @@ abstract class Column
      */
     public function setOrder($order)
     {
+        if (!$order) {
+            return $this;
+        }
+
         $this->order = $order;
         $this->isSorted = true;
 
@@ -388,7 +389,7 @@ abstract class Column
     public function setIsVisibleForSource($value)
     {
         $this->visibleForSource = $value;
-        
+
         return $this;
     }
 
