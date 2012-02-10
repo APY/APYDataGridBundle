@@ -786,13 +786,13 @@ class Grid
         {
             $row = new Row();
             foreach ($item as $fieldName => $fieldValue) {
-                $row->setField($fieldName, $fieldValue);
-
-                //call overridden prepareRow or associated closure
-                if (($modifiedRow = $this->source->prepareRow($row)) != null)
-                {
-                    $result->addRow($modifiedRow);
-                }
+                $row->setField($fieldName, $fieldValue);   
+            }
+            
+            //call overridden prepareRow or associated closure
+            if (($modifiedRow = $this->source->prepareRow($row)) != null)
+            {
+                $result->addRow($modifiedRow);
             }
         }
 
