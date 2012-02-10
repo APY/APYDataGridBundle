@@ -15,13 +15,7 @@ The following documents are available:
 
 ## Special thanks to all contributors
 
-- Abhoryo
-- golovanov
-- touchdesign
-- Spea
-- nurikabe
-- print
-- and all bug reporters
+Abhoryo, golovanov, touchdesign, Spea, nurikabe, print, Gregory McLean, centove, lstrojny, Benedikt Wolters, Martin Parsiegla, evan and all bug reporters
 
 ## Simple grid with ORM or ODM as source
 
