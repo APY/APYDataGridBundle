@@ -132,6 +132,11 @@ class DataGridExtension extends \Twig_Extension
             {
                 return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
             }
+
+            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getType().'_cell'))
+            {
+                return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
+            }
         }
 
         if ($this->hasBlock($block = 'grid_column_'.$column->getId().'_cell'))
@@ -139,11 +144,11 @@ class DataGridExtension extends \Twig_Extension
             return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
         }
 
-	if ($this->hasBlock($block = 'grid_column_'.$column->getType().'_cell'))
-	{
-	    return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
-	}
-	
+        if ($this->hasBlock($block = 'grid_column_'.$column->getType().'_cell'))
+        {
+            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
+        }
+
         return $value;
     }
 
@@ -160,6 +165,16 @@ class DataGridExtension extends \Twig_Extension
         if (($id = $this->names[$grid->getHash()]) != '')
         {
             if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getId().'_filter'))
+            {
+                return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
+            }
+
+            if ($this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getType().'_filter'))
+            {
+                return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
+            }
+
+            if ($this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getParentType().'_filter'))
             {
                 return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
             }
