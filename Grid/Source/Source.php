@@ -54,6 +54,8 @@ abstract class Source implements DriverInterface
     public function setCallback($type, $callback)
     {
         $this->callbacks[$type] = $callback;
+
+        return $this;
     }
 
     /**
