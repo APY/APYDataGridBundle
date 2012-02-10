@@ -50,7 +50,7 @@ class Row
 
     public function setLegend($legend)
     {
-        $this->legend = $legend
+        $this->legend = $legend;
 
         return $this;
     }
