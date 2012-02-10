@@ -159,10 +159,20 @@ $source->setCallback($source::EVENT_PREPARE_ROW, function ($row) {
 	if ($row->getField('enabled')=='1') {
 		$row->setColor('#00ff00');
 	}
+	
+	// Don't show the row if the price is superior to 10
+	if ($row->getField('price')>10) {
+		return null;
+	}
+	
+	return $row;
 });
 
 $grid->setSource($source);
 ```
+
+**Note:** You can hide a row if your callback return `null`.
+
 
 ## Grid Response
 
