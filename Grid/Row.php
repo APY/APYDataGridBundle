@@ -27,6 +27,7 @@ class Row
     public function setField($rowId, $value)
     {
         $this->fields[$rowId] = $value;
+        return $this;
     }
 
     public function getField($rowId)
@@ -37,6 +38,7 @@ class Row
     public function setColor($color)
     {
         $this->color = $color;
+        return $this;
     }
 
     public function getColor()
@@ -47,6 +49,7 @@ class Row
     public function setLegend($legend)
     {
         $this->legend = $legend;
+        return $this;
     }
 
     public function getLegend()
@@ -57,6 +60,7 @@ class Row
     public function setPrimaryField($primaryField)
     {
         $this->primaryField = $primaryField;
+        return $this;
     }
 
     public function getPrimaryField()
