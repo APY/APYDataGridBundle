@@ -41,9 +41,12 @@ You can override blocks - `grid`, `grid_titles`, `grid_filters`, `grid_rows`, `g
 ```
 
 ## Custom cell rendering
+Custom cell rendering in the grid is handled by specific blocks in your template when defining the blocks the following parameters are passed to the block:
+ 'column' - The column currently being rendered.
+ 'value'  - The value of the column.
+ 'row'    - The row of the source.
 
-syntax is `grid_%grid_id%_column_%column_id%_cell`, 
-when no grid id is present you can use `grid_column_%column_id%_cell`
+To customize by grid and column id use the following block name 'grid_%gridID%_column_%columnID%_cell. To customize by just the column id, 'grid_column_%columnID%cell'. To customize by the column type use 'grid_column_%type%_cell'.
 
 ```html
 <!-- MyProjectMyBundle::my_grid_template.html.twig -->
