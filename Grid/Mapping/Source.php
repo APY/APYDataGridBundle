@@ -21,7 +21,7 @@ class Source
 
     public function __construct($metadata = array())
     {
-        $this->columns = isset($metadata['columns']) ? explode(',', $metadata['columns']) : array();
+        $this->columns = isset($metadata['columns']) ? array_map('trim', explode(',', $metadata['columns'])) : array();
         $this->filterable = !(isset($metadata['filterable']) && $metadata['filterable']);
     }
 
