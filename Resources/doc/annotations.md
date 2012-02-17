@@ -57,7 +57,10 @@ class Test
 
 ### Available types for '@GRID\Source' notation
 
- - columns [string] order of columns in grid (columns are separated by ",")
+ - columns [string] order of columns in grid 
+    - columns are separated by a comma (',')
+    - The primary key have to be defined in this list.
+    - Use the property name, not the column name.
  - filterable [bool] turns on or off visibility of all columns
 
 
