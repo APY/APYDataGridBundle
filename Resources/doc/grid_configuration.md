@@ -143,9 +143,10 @@ With context injection:
 <?php
 $tableAlias = $source::TABLE_ALIAS;
 $source->setCallback($source::EVENT_PREPARE_QUERY, function ($query) use ($tableAlias) {
-    $query->where($tableAlias . '.user = 1');
+    $query->andWhere($tableAlias . '.user = 1');
 });
 ```
+You must use "andWhere" instead of "Where" statement otherwise column filtering will not work properly.
 
 ## Manipulate rows
 
