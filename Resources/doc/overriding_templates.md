@@ -56,6 +56,17 @@ To customize by grid and column id use the following block name 'grid_%gridID%_c
 {% endblock %}
 ```
 
+### Custom action rendering
+To customize action columns you must override the grid_column___actions_cell block in this way:
+
+```html
+{% block grid_column___actions_cell %}
+    <a href="{{ path('client_edit', { 'id': row.getPrimaryFieldValue() }) }}">edit</a>
+{% endblock %}
+```
+in the previous example you must change the 'client_edit' route and the 'id' parameter with your values.
+
+
 ## Custom filter rendering
 
 syntax is `grid_%grid_id%_column_%column_id%_filter`, 
