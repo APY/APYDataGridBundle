@@ -246,21 +246,10 @@ class Entity extends Source
 
     public function getTotalCount($columns)
     {
-        $this->query->select($this->getFieldName($columns->getPrimaryColumn()));
         $this->query->setFirstResult(null);
         $this->query->setMaxResults(null);
-
-        $qb = $this->manager->createQueryBuilder();
-
-        $qb->select($qb->expr()->count(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField()));
-        $qb->from($this->entityName, self::COUNT_ALIAS);
-        $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField(), $this->query->getDQL()));
-
-        //copy existing parameters.
-        $qb->setParameters($this->query->getParameters());
-
-        $result = $qb->getQuery()->getSingleResult();
-
+        $this->query->resetDQLPart('orderBy')->select($this->query->expr()->count(self::TABLE_ALIAS.'.'.$columns->getPrimaryColumn()->getField()));
+        $result = $this->query->getQuery()->getSingleResult();
         return (int) $result[1];
     }
 
