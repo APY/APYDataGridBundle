@@ -21,12 +21,6 @@ use Sorien\DataGridBundle\Grid\Row;
  */
 class Vector extends Source 
 {
-
-    /**
-     * @var string e.g Vendor\Bundle\Entity\Page
-     */
-    private $class = 'Vector';
-
     /**
      * @var string e.g Cms:Page
      */
@@ -41,11 +35,6 @@ class Vector extends Source
      * @var array
      */
     private $ormMetadata;
-
-    /**
-     * @var array
-     */
-    private $joins = array();
 
     /**
      *
@@ -67,16 +56,11 @@ class Vector extends Source
      */
     public function __construct(array $array) 
     {
-        $this->data = $array;
+        $this->setData($array);
     }
 
     public function initialise($container) 
     {
-        if (is_object(reset($this->data))) {
-            foreach ($this->data as $key => $object) {
-                $this->data[$key] = (array) $object;
-            }
-        }
         $this->ormMetadata = array_keys(reset($this->data));
         $this->metadata = $this->getFieldsMetadata();
     }
@@ -186,5 +170,26 @@ class Vector extends Source
     public function setId($id)
     {
         $this->id = $id;
+    }
+    
+    /**
+     * Set a two-dimentional array
+     * @param array $data 
+     * @throws \InvalidArgumentException 
+     */
+    public function setData(array $data){
+        $this->data = $data;
+        if(!is_array($this->data) || empty($this->data)){
+            throw new \InvalidArgumentException('Data should be an array with content');
+        }
+        if (is_object(reset($this->data))) {
+            foreach ($this->data as $key => $object) {
+                $this->data[$key] = (array) $object;
+            }
+        }
+        $first_raw = reset($this->data);
+        if(!is_array($first_raw) || empty($first_raw)){
+            throw new \InvalidArgumentException('Data should be a two-dimentional array');
+        }
     }
 }
