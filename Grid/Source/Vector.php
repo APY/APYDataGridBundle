@@ -72,12 +72,12 @@ class Vector extends Source
 
     public function initialise($container) 
     {
-        if (is_object($this->data[0])) {
+        if (is_object(reset($this->data))) {
             foreach ($this->data as $key => $object) {
                 $this->data[$key] = (array) $object;
             }
         }
-        $this->ormMetadata = array_keys($this->data[0]);
+        $this->ormMetadata = array_keys(reset($this->data));
         $this->metadata = $this->getFieldsMetadata();
     }
 
