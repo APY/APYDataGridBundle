@@ -41,7 +41,18 @@ class Vector extends Source
      * @var array
      */
     private $data;
+    
+    /**
+     * List of column names to display
+     * @var array
+     */
+    private $whiteList = array();
 
+    /**
+     * List of column names to hide
+     * @var array
+     */
+    private $blackList = array();
     /**
      *
      * @var mixed
@@ -71,6 +82,17 @@ class Vector extends Source
      */
     public function getColumns($columns) 
     {
+        if(empty($this->whiteList)&&empty($this->blackList)){
+            $whiteList = $this->ormMetadata;
+        } elseif(empty($this->whiteList) && !empty ($this->blackList)) {
+            $whiteList = array_diff($this->ormMetadata, $this->blackList);
+        } elseif (!empty($this->whiteList) && empty ($this->blackList)) {
+            $whiteList = array_intersect($this->ormMetadata, $this->whiteList);
+        } else {
+            $whiteList = array_intersect($this->ormMetadata, $this->whiteList);
+            $whiteList = array_diff($whiteList, $this->blackList);
+        }
+        
         $token = empty($this->id);
         foreach ($this->ormMetadata as $column) {
             $columns->addColumn(new \Sorien\DataGridBundle\Grid\Column\TextColumn(array(
@@ -80,7 +102,7 @@ class Vector extends Source
                         'source' => true,
                         'filterable' => true,
                         'sortable' => true,
-                        'visible' => true,
+                        'visible' => in_array($column, $whiteList),
                         'field' => $column,
                     )));
             $token = false;
@@ -187,9 +209,25 @@ class Vector extends Source
                 $this->data[$key] = (array) $object;
             }
         }
-        $first_raw = reset($this->data);
-        if(!is_array($first_raw) || empty($first_raw)){
+        $firstRaw = reset($this->data);
+        if(!is_array($firstRaw) || empty($firstRaw)){
             throw new \InvalidArgumentException('Data should be a two-dimentional array');
         }
+    }
+    
+    /**
+     * Set a list of columns to display
+     * @param array $whitelist 
+     */
+    public function setWhiteList(array $whiteList){
+        $this->whiteList = $whiteList;
+    }
+    
+    /**
+     * Set a list of columns to hide
+     * @param array $whitelist 
+     */
+    public function setBlackList(array $blackList){
+        $this->blackList = $blackList;
     }
 }
