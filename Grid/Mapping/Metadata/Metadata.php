@@ -63,13 +63,14 @@ class Metadata
      * @return \SplObjectStorage
      * @throws \Exception
      */
-    public function getColumnsFromMapping($columnExtensions)
+    public function getColumnsFromMapping($columnExtensions, $class = null)
     {
         $columns = new \SplObjectStorage();
 
         foreach ($this->getFields() as $value)
         {
             $params = $this->getFieldMapping($value);
+            $params['class'] = $class;
             $type = $this->getFieldMappingType($value);
 
             /** todo move available extensions from columns */

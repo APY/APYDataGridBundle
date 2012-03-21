@@ -14,6 +14,7 @@
         <parameter key="grid.column.date.class">Sorien\DataGridBundle\Grid\Column\DateColumn</parameter>
         <parameter key="grid.column.blank.class">Sorien\DataGridBundle\Grid\Column\BlankColumn</parameter>
         <parameter key="grid.column.boolean.class">Sorien\DataGridBundle\Grid\Column\BooleanColumn</parameter>
+        <parameter key="grid.column.chosen.class">Sorien\DataGridBundle\Grid\Column\ChosenColumn</parameter>
     </parameters>
 
     <services>
@@ -52,6 +53,11 @@
 
         <service id="grid.column.boolean" class="%grid.column.boolean.class%" public="false">
             <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.chosen" class="%grid.column.chosen.class%" public="false">
+            <tag name="grid.column.extension" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
 
         <service id="form.type_guesser.grid" class="Sorien\DataGridBundle\Form\GridTypeGuesser">

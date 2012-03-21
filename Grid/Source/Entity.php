@@ -123,7 +123,7 @@ class Entity extends Source
      */
     public function getColumns($columns)
     {
-        foreach ($this->metadata->getColumnsFromMapping($columns) as $column)
+        foreach ($this->metadata->getColumnsFromMapping($columns, $this->class) as $column)
         {
             $columns->addColumn($column);
         }
