@@ -45,8 +45,18 @@ class ChosenColumn extends SelectColumn
         return $this->class;
     }
 
+    public function getCssClass()
+    {
+        return 'chzn-select';
+    }
+
     public function getType()
     {
         return 'chosen';
+    }
+
+    public function getParentType()
+    {
+        return 'select';
     }
 }

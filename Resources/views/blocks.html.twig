@@ -183,20 +183,10 @@ function {{ grid.hash }}_mark_all(select)
 {# -------------------------------------------- grid_column_type_select_filter --------------------------------------- #}
 {% block grid_column_type_select_filter %}
 {% set data = column.getData() %}
-    <select name="{{hash}}[{{column.id}}]" onchange="this.form.submit();">
+    <select name="{{hash}}[{{column.id}}]" onchange="this.form.submit();" class="{{column.cssClass}}">
         <option value="_default">&nbsp;</option>
         {% for key, value in column.getValues() %}
             <option value="{{key}}"{% if not data is null and data == key %} selected="selected"{% endif %}>{{ value }}</option>
         {% endfor %}
     </select>
 {% endblock grid_column_type_select_filter %}
-{# -------------------------------------------- grid_column_type_chosen_filter --------------------------------------- #}
-{% block grid_column_type_chosen_filter %}
-{% set data = column.getData() %}
-    <select name="{{hash}}[{{column.id}}]" onchange="this.form.submit();" class="chzn-select">
-        <option value="_default">&nbsp;</option>
-        {% for key, value in column.getValues() %}
-            <option value="{{key}}"{% if not data is null and data == key %} selected="selected"{% endif %}>{{ value }}</option>
-        {% endfor %}
-    </select>
-{% endblock grid_column_type_chosen_filter %}
