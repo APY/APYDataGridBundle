@@ -156,12 +156,12 @@ class Document extends Source
         }
 
         //call overridden prepareQuery or associated closure
-        $this->prepareQuery($this->query);
+        $query = $this->prepareQuery(clone $this->query);
 
         //execute and get results
         $result = new Rows();
 
-        $cursor = $this->query->getQuery()->execute();
+        $cursor = $query->getQuery()->execute();
         $this->count = $cursor->count();
 
         foreach($cursor as $resource)

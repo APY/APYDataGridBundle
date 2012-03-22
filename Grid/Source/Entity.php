@@ -218,9 +218,9 @@ class Entity extends Source
         }
 
         //call overridden prepareQuery or associated closure
-        $this->prepareQuery($this->query);
+        $query = $this->prepareQuery(clone $this->query);
 
-        $items = $this->query->getQuery()->getResult();
+        $items = $query->getQuery()->getResult();
 
         // hydrate result
         $result = new Rows();
@@ -246,18 +246,20 @@ class Entity extends Source
 
     public function getTotalCount($columns)
     {
-        $this->query->select($this->getFieldName($columns->getPrimaryColumn()));
-        $this->query->setFirstResult(null);
-        $this->query->setMaxResults(null);
+        $query = $this->prepareCountQuery(clone $this->query);
+
+        $query->select($this->getFieldName($columns->getPrimaryColumn()));
+        $query->setFirstResult(null);
+        $query->setMaxResults(null);
 
         $qb = $this->manager->createQueryBuilder();
 
         $qb->select($qb->expr()->count(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField()));
         $qb->from($this->entityName, self::COUNT_ALIAS);
-        $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField(), $this->query->getDQL()));
+        $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField(), $query->getDQL()));
 
         //copy existing parameters.
-        $qb->setParameters($this->query->getParameters());
+        $qb->setParameters($query->getParameters());
 
         $result = $qb->getQuery()->getSingleResult();
 

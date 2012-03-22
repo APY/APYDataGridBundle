@@ -18,19 +18,35 @@ abstract class Source implements DriverInterface
 {
     const EVENT_PREPARE = 0;
     const EVENT_PREPARE_QUERY = 1;
+    const EVENT_PREPARE_COUNT_QUERY = 3;
     const EVENT_PREPARE_ROW = 2;
 
     private $callbacks;
 
     /**
      * @param \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder
+     * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
     public function prepareQuery($queryBuilder)
     {
         if (isset($this->callbacks[$this::EVENT_PREPARE_QUERY]) && is_callable($this->callbacks[$this::EVENT_PREPARE_QUERY]))
         {
-            call_user_func($this->callbacks[$this::EVENT_PREPARE_QUERY], $queryBuilder);
+            return call_user_func($this->callbacks[$this::EVENT_PREPARE_QUERY], $queryBuilder);
         }
+        return $queryBuilder;
+    }
+
+    /**
+     * @param \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder
+     * @return \Doctrine\ODM\MongoDB\Query\Builder
+     */
+    public function prepareCountQuery($queryBuilder)
+    {
+        if (isset($this->callbacks[$this::EVENT_PREPARE_COUNT_QUERY]) && is_callable($this->callbacks[$this::EVENT_PREPARE_COUNT_QUERY]))
+        {
+            return call_user_func($this->callbacks[$this::EVENT_PREPARE_COUNT_QUERY], $queryBuilder);
+        }
+        return $queryBuilder;
     }
 
     /**
