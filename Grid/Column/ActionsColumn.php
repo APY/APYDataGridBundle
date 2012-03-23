@@ -37,12 +37,25 @@ class ActionsColumn extends Column
                 array($row->getPrimaryField() => $row->getPrimaryFieldValue()),
                 $action->getRouteParameters()
             );
-            $return .= "<a href='".$router->generate($action->getRoute(), $routeParameters, false);
+
+            $route = $action->getRoute();
+            if (is_callable($route)) {
+                $url = $route($router, $routeParameters, $row);
+            } else {
+                $url = $router->generate($route, $routeParameters);
+            }
+
+            $return .= "<a href='". $url;
 
             if ($action->getConfirm())
                 $return .= "' onclick=\"return confirm('".$action->getConfirmMessage()."');\"";
-
             $return .= "' target='".$action->getTarget()."'";
+
+
+            foreach ($action->getAttributes() as $key => $value) {
+                $return .= ' ' . $key . '="' . $value . '"';
+            }
+
             $return .=">".$action->getTitle()."</a> ";
         }
 
