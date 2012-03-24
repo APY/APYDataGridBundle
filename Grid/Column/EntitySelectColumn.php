@@ -4,7 +4,7 @@ namespace Sorien\DataGridBundle\Grid\Column;
 
 use Sorien\DataGridBundle\Grid\Filter;
 
-class ChosenColumn extends SelectColumn
+class EntitySelectColumn extends SelectColumn
 {
     private $class;
 
@@ -52,7 +52,7 @@ class ChosenColumn extends SelectColumn
 
     public function getType()
     {
-        return 'chosen';
+        return 'entityselect';
     }
 
     public function getParentType()
