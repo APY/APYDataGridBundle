@@ -6,8 +6,6 @@ use Sorien\DataGridBundle\Grid\Filter;
 
 class EntitySelectColumn extends SelectColumn
 {
-    private $class;
-
     private $em;
 
     public function __construct($em)
@@ -19,30 +17,22 @@ class EntitySelectColumn extends SelectColumn
     public function __initialize(array $params)
     {
         parent::__initialize($params);
-        if (isset($params['class'])) {
-            $this->setClass($params['class']);
-        }
 
         if ($this->getField()) {
-            $repository = $this->em->getRepository($this->getClass());
-            $query = $repository->createQueryBuilder('a')
-                ->select('DISTINCT a.'.$this->getField())
-                ->getQuery();
-            foreach ($query->getResult() as $result) {
+            $repository = $this->em->getRepository($this->getContainer());
+            // Check that the repository's entity is the same
+            if ($repository->getClassName() != $this->getContainer()) {
+                throw new \Exception('Repository not defined for ' . $this->getContainer());
+            }
+            if (! method_exists($repository, 'findDistinctByField')) {
+                throw new \Exception('findDistinctByField() not defined in ' . get_class($repository));
+            }
+            $results = $repository->findDistinctByField($this->getField());
+            foreach ($results as $result) {
                 $value = $result[$this->getField()];
                 $this->values[$value] = $value;
             }
         }
-    }
-
-    public function setClass($class)
-    {
-        $this->class = $class;
-    }
-
-    public function getClass()
-    {
-        return $this->class;
     }
 
     public function getCssClass()

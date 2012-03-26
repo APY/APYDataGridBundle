@@ -81,6 +81,7 @@ class Manager
             }
         }
 
+        $metadata->setContainer($className);
         $metadata->setFields($cols);
         $metadata->setFieldsMappings($mappings);
 

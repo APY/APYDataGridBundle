@@ -44,6 +44,7 @@ abstract class Column
     private $visibleForSource;
     private $primary;
     private $align;
+    private $container;
     private $field;
     private $role;
 
@@ -75,7 +76,6 @@ abstract class Column
     public function __initialize(array $params)
     {
         $this->params = $params;
-
         $this->setId($this->getParam('id'));
         $this->setTitle($this->getParam('title', ''));
         $this->setSortable($this->getParam('sortable', true));
@@ -85,6 +85,7 @@ abstract class Column
         $this->setVisibleForSource($this->getParam('source', false));
         $this->setPrimary($this->getParam('primary', false));
         $this->setAlign($this->getParam('align', self::ALIGN_LEFT));
+        $this->setContainer($this->getParam('container'));
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
         $this->setOrder($this->getParam('order'));
@@ -446,6 +447,16 @@ abstract class Column
     public function getAlign()
     {
         return $this->align;
+    }
+
+    public function setContainer($container)
+    {
+        $this->container = $container;
+    }
+
+    public function getContainer()
+    {
+        return $this->container;
     }
 
     public function setField($field)
