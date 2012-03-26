@@ -80,10 +80,11 @@ class DataGridExtension extends \Twig_Extension
      * @param string $id
      * @return string
      */
-    public function getGrid($grid, $theme = null, $id = '')
+    public function getGrid($grid, $theme = null, $id = '', $params = array())
     {
         $this->theme = $theme;
         $this->names[$grid->getHash()] = $id == '' ? $grid->getId() : $id;
+        $this->params = $params;
 
         return $this->renderBlock('grid', array('grid' => $grid->prepare()));
     }
@@ -184,7 +185,7 @@ class DataGridExtension extends \Twig_Extension
         {
             return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
         }
-		
+
         if ($this->hasBlock($block = 'grid_column_type_'.$column->getType().'_filter'))
         {
             return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
@@ -194,7 +195,7 @@ class DataGridExtension extends \Twig_Extension
         {
             return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
         }
-		
+
         return $column->renderFilter($grid->getHash());
     }
 
@@ -228,7 +229,7 @@ class DataGridExtension extends \Twig_Extension
     }
 
     /**
-     * Render block 
+     * Render block
      *
      * @param $name string
      * @param $parameters string
@@ -240,7 +241,7 @@ class DataGridExtension extends \Twig_Extension
         {
             if ($template->hasBlock($name))
             {
-                return $template->renderBlock($name, $parameters);
+                return $template->renderBlock($name, $parameters+$this->params);
             }
         }
 
