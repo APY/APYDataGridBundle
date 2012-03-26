@@ -42,6 +42,11 @@ class DataGridExtension extends \Twig_Extension
      */
     protected $names;
 
+    /**
+     * @var $params
+     */
+    protected $params;
+
     public function __construct($router)
     {
         $this->router = $router;
