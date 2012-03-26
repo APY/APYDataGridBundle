@@ -83,7 +83,11 @@ class SelectColumn extends Column
             }
         }
 
-        $this->data = array_merge((array)$this->data, $data);
+        if ($this->data === self::BLANK) {
+            $this->data = $data;
+        } else {
+            $this->data = array_merge((array)$this->data, $data);
+        }
 
         return $this;
     }
