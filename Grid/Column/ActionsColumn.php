@@ -31,7 +31,7 @@ class ActionsColumn extends Column
         );
 
         return $routeParameters;
-        }
+    }
 
     public function getRowActions()
     {
