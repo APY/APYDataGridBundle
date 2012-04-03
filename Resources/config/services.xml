@@ -14,7 +14,7 @@
         <parameter key="grid.column.date.class">Sorien\DataGridBundle\Grid\Column\DateColumn</parameter>
         <parameter key="grid.column.blank.class">Sorien\DataGridBundle\Grid\Column\BlankColumn</parameter>
         <parameter key="grid.column.boolean.class">Sorien\DataGridBundle\Grid\Column\BooleanColumn</parameter>
-        <parameter key="grid.column.entityselect.class">Sorien\DataGridBundle\Grid\Column\EntitySelectColumn</parameter>
+        <parameter key="grid.column.sourceselect.class">Sorien\DataGridBundle\Grid\Column\SourceSelectColumn</parameter>
     </parameters>
 
     <services>
@@ -55,7 +55,7 @@
             <tag name="grid.column.extension" />
         </service>
 
-        <service id="grid.column.entityselect" class="%grid.column.entityselect.class%" public="false">
+        <service id="grid.column.sourceselect" class="%grid.column.sourceselect.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
 

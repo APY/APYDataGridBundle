@@ -5,7 +5,7 @@ namespace Sorien\DataGridBundle\Grid\Column;
 use Sorien\DataGridBundle\Grid\Filter;
 use Sorien\DataGridBundle\Grid\Source\DistinctFieldRepositoryInterface;
 
-class EntitySelectColumn extends SelectColumn implements PopulatableColumnInterface
+class SourceSelectColumn extends SelectColumn implements PopulatableColumnInterface
 {
     /**
      * @param $source
@@ -16,7 +16,7 @@ class EntitySelectColumn extends SelectColumn implements PopulatableColumnInterf
         if ($this->getField()) {
             $repository = $source->getRepository();
             if (! $repository instanceof DistinctFieldRepositoryInterface) {
-                throw new \Exception(get_class($repository) . ' must implement DistinctFieldRepositoryInterface for EntitySelectColumn');
+                throw new \Exception(get_class($repository) . ' must implement DistinctFieldRepositoryInterface for SourceSelectColumn');
             }
             $results = $repository->findDistinctByField($this->getField());
             foreach ($results as $result) {
@@ -28,7 +28,7 @@ class EntitySelectColumn extends SelectColumn implements PopulatableColumnInterf
 
     public function getType()
     {
-        return 'entityselect';
+        return 'sourceselect';
     }
 
     public function getParentType()
