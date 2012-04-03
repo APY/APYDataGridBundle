@@ -3,29 +3,20 @@
 namespace Sorien\DataGridBundle\Grid\Column;
 
 use Sorien\DataGridBundle\Grid\Filter;
+use Sorien\DataGridBundle\Grid\Source\DistinctFieldRepositoryInterface;
 
-class EntitySelectColumn extends SelectColumn
+class EntitySelectColumn extends SelectColumn implements PopulatableColumnInterface
 {
-    private $em;
-
-    public function __construct($em)
+    /**
+     * @param $source
+     * @throws \Exception
+     */
+    public function populate($source)
     {
-        $this->em = $em;
-        parent::__construct();
-    }
-
-    public function __initialize(array $params)
-    {
-        parent::__initialize($params);
-
         if ($this->getField()) {
-            $repository = $this->em->getRepository($this->getContainer());
-            // Check that the repository's entity is the same
-            if ($repository->getClassName() != $this->getContainer()) {
-                throw new \Exception('Repository not defined for ' . $this->getContainer());
-            }
-            if (! method_exists($repository, 'findDistinctByField')) {
-                throw new \Exception('findDistinctByField() not defined in ' . get_class($repository));
+            $repository = $source->getRepository();
+            if (! $repository instanceof DistinctFieldRepositoryInterface) {
+                throw new \Exception(get_class($repository) . ' must implement DistinctFieldRepositoryInterface for EntitySelectColumn');
             }
             $results = $repository->findDistinctByField($this->getField());
             foreach ($results as $result) {
@@ -33,11 +24,6 @@ class EntitySelectColumn extends SelectColumn
                 $this->values[$value] = $value;
             }
         }
-    }
-
-    public function getCssClass()
-    {
-        return 'chzn-select';
     }
 
     public function getType()

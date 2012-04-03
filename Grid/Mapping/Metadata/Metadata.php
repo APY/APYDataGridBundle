@@ -14,19 +14,8 @@ namespace Sorien\DataGridBundle\Grid\Mapping\Metadata;
 class Metadata
 {
     private $name;
-    private $container;
     private $fields;
     private $fieldsMappings;
-
-    public function setContainer($container)
-    {
-        $this->container = $container;
-    }
-
-    public function getContainer()
-    {
-        return $this->container;
-    }
 
     public function setFields($fields)
     {
@@ -81,7 +70,6 @@ class Metadata
         foreach ($this->getFields() as $value)
         {
             $params = $this->getFieldMapping($value);
-            $params['container'] = $this->getContainer();
             $type = $this->getFieldMappingType($value);
 
             /** todo move available extensions from columns */

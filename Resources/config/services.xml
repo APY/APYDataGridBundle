@@ -57,7 +57,6 @@
 
         <service id="grid.column.entityselect" class="%grid.column.entityselect.class%" public="false">
             <tag name="grid.column.extension" />
-            <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
 
         <service id="form.type_guesser.grid" class="Sorien\DataGridBundle\Form\GridTypeGuesser">

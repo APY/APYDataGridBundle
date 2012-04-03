@@ -21,6 +21,7 @@ use Sorien\DataGridBundle\Grid\Action\RowActionInterface;
 use Sorien\DataGridBundle\Grid\Column\Column;
 use Sorien\DataGridBundle\Grid\Column\MassActionColumn;
 use Sorien\DataGridBundle\Grid\Column\ActionsColumn;
+use Sorien\DataGridBundle\Grid\Column\PopulatableColumnInterface;
 use Sorien\DataGridBundle\Grid\Source\Source;
 
 class Grid
@@ -198,6 +199,13 @@ class Grid
 
         //get cols from source
         $this->source->getColumns($this->columns);
+
+        //update populatable columns
+        foreach($this->columns as $column) {
+            if($column instanceof PopulatableColumnInterface) {
+                $column->populate($this->source);
+            }
+        }
 
         //generate hash
         $this->createHash();
