@@ -117,7 +117,7 @@
 {% block grid_column___actions_cell %}
     {% for action in column.rowActions %}
         {% set confirm = action.confirm ? " onclick=\"return confirm('" ~ action.confirmMessage ~ "')\"" : '' %}
-        <a href="{{ url(action.route, column.routeParameters(row, action), false) }}"{{ confirm }} target="{{ action.target }}">{{ action.title|trans }}</a>
+        <a href="{{ url(action.route, column.routeParameters(row, action), false) }}"{{ confirm|raw }} target="{{ action.target }}">{{ action.title|trans }}</a>
     {% endfor %}
 {% endblock grid_column___actions_cell %}
 {# --------------------------------------------------- grid_scripts ------------------------------------------------- #}
