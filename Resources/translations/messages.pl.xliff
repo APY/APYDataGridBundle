@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>Page</source>
+                <target>Strona</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>, Display</source>
+                <target>, Pokazuj</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>of %count%</source>
+                <target>z %count%</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Items per page</source>
+                <target>elementów na stronie</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Select visible</source>
+                <target>Zaznacz widoczne</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Select all</source>
+                <target>Zaznacz wszystkie</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Deselect visible</source>
+                <target>Cofnij zaznaczenie widocznych</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Deselect all</source>
+                <target>Cofnij zaznaczenie wszystkich</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>Action</source>
+                <target>Akcja</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Submit Action</source>
+                <target>Wykonaj Akcję</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>From:</source>
+                <target>Od:</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>To:</source>
+                <target>Do:</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
