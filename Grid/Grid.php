@@ -375,6 +375,11 @@ class Grid
             throw new \Exception('Source have to return Rows object.');
         }
 
+        if (count($this->rows) == 0 && $this->page > 0){
+            $this->page = 0;
+            $this->prepare();
+        }
+
         //add row actions column
         if (count($this->rowActions) > 0)
         {
