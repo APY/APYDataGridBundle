@@ -1,3 +1,7 @@
+`8 Apr 2012`
+
+ * as far as symfony 2.0 lacks of some important features and 2.1dev is heavily unstable with too many changes every day (which causes too many problems form my company) i've decided to stop using symfony2 for my future projects it basically means that i'll no longer support this bundle, Abhoryo and nurikabe have rights to merge any PR for this bundle  
+
 
 `20 Oct 2011`
 
