@@ -14,6 +14,7 @@
         <parameter key="grid.column.date.class">Sorien\DataGridBundle\Grid\Column\DateColumn</parameter>
         <parameter key="grid.column.blank.class">Sorien\DataGridBundle\Grid\Column\BlankColumn</parameter>
         <parameter key="grid.column.boolean.class">Sorien\DataGridBundle\Grid\Column\BooleanColumn</parameter>
+        <parameter key="grid.column.numeric.class">Sorien\DataGridBundle\Grid\Column\NumericColumn</parameter>
     </parameters>
 
     <services>
@@ -25,7 +26,7 @@
         <service id="grid" class="%grid.base.class%" scope="prototype">
             <argument type="service" id="service_container" />
         </service>
-        
+
         <service id="grid.manager" class="%grid.manager.base.class%">
             <argument type="service" id="service_container" />
         </service>
@@ -51,6 +52,10 @@
         </service>
 
         <service id="grid.column.boolean" class="%grid.column.boolean.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.numeric" class="%grid.column.numeric.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
 

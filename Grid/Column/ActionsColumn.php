@@ -20,7 +20,7 @@ class ActionsColumn extends Column
     public function __construct($column, $title, array $rowActions = array())
     {
         $this->rowActions = $rowActions;
-        parent::__construct(array('id' => $column, 'title' => $title, 'sortable' => false, 'source' => false));
+        parent::__construct(array('id' => $column, 'title' => $title, 'sortable' => false, 'source' => false, 'filterable' => false));
     }
 
     public function getRouteParameters($row, $action)
@@ -37,7 +37,7 @@ class ActionsColumn extends Column
     {
         return $this->rowActions;
     }
-
+    
     public function setRowActions(array $rowActions) {
         $this->rowActions = $rowActions;
     }

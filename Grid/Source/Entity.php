@@ -285,14 +285,16 @@ class Entity extends Source
 
             switch ($mapping['type'])
             {
+                case 'string':
+                case 'text':
+                    $values['type'] = 'text';
+                    break;
                 case 'integer':
                 case 'smallint':
                 case 'bigint':
-                case 'string':
-                case 'text':
                 case 'float':
                 case 'decimal':
-                    $values['type'] = 'text';
+                    $values['type'] = 'numeric';
                     break;
                 case 'boolean':
                     $values['type'] = 'boolean';

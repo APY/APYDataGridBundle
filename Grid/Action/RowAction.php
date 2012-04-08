@@ -20,6 +20,7 @@ class RowAction implements RowActionInterface
     private $target;
     private $column = '__actions';
     private $routeParameters = array();
+    private $attributes = array();
 
     /**
      * Default MassAction constructor
@@ -30,13 +31,14 @@ class RowAction implements RowActionInterface
      * @param string $target Set the target of this action (_slef,_blank,_parent,_top)
      * @return \Sorien\DataGridBundle\Grid\Action\MassAction
      */
-    public function __construct($title, $route = null, $confirm = false, $target = '_self')
+    public function __construct($title, $route = null, $confirm = false, $target = '_self', $attributes = array())
     {
         $this->title = $title;
         $this->route = $route;
         $this->confirm = $confirm;
         $this->confirmMessage = 'Do you want to '.strtolower($title).' this row?';
         $this->target = $target;
+        $this->attributes = $attributes;
     }
 
     /**
@@ -185,5 +187,29 @@ class RowAction implements RowActionInterface
     public function getRouteParameters()
     {
         return $this->routeParameters;
+    }
+
+    /**
+     * Set attributes
+     */
+    public function setAttributes(array $attributes)
+    {
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * Add attribute
+     */
+    public function addAttribute($attribute)
+    {
+        $this->attributes[] = $attribute;
+    }
+
+    /**
+     * Get attributes
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
     }
 }
