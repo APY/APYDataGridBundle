@@ -1,3 +1,7 @@
+`13 Apr 2012`
+
+ * japanese translations
+
 `12 Apr 2012`
 
  * applying filter now reloads grid to first page
