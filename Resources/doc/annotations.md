@@ -25,16 +25,15 @@ class Test
      * @GRID\Column(title="my own column name", size="120", type="text", visible=true, source=true, ... )
      */
     private $id;
-	
-	
-	/**
+
+    /**
      * @var integer $type
      *
      * @ORM\Column(type="string", length="32")
      * @GRID\Column(title="Type", size="120", type="select", visible=true, values={"type1"="Type 1","type2"="Type 2"})
      */
-	private $type;
-	
+    private $type;
+
 }
 ```
 
@@ -49,8 +48,8 @@ class Test
  - format [string] - format (only Date Column)
  - sortable [boolean]- turns on or off column sorting
  - filterable [boolean] - turns on or off visibility of column filter
- - source [boolean] - turns on or off column visibility for Source class
- - visible [boolean] -  turns on or off column visibility
+ - source [boolean] - turns on or off column visibility for Source class (column will *not* be read from data source)
+ - visible [boolean] -  turns on or off column visibility (column will be read from data source but not rendered)
  - primary [boolean] - sets column as primary - default is primary key form Entity/Document
  - align [string(left|right|center)] - default left
  - role [string] default null - security role for current column example: role="ROLE_USER"

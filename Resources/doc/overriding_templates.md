@@ -56,7 +56,7 @@ To customize by grid and column id use the following block name 'grid_%gridID%_c
 {% endblock %}
 ```
 
-### Custom action rendering
+## Custom action rendering
 To customize action columns you must override the grid_column___actions_cell block in this way:
 
 ```html
