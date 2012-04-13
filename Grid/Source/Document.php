@@ -262,7 +262,7 @@ class Document extends Source
 
     public function delete(array $ids)
     {
-        $repository = $this->manager->getRepository($this->documentName);
+        $repository = $this->getRepository();
 
         foreach ($ids as $id) {
             $object = $repository->find($id);
@@ -275,5 +275,10 @@ class Document extends Source
         }
 
         $this->manager->flush();
+    }
+
+    public function getRepository()
+    {
+        return$this->manager->getRepository($this->documentName);
     }
 }

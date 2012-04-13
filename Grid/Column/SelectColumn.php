@@ -17,7 +17,7 @@ class SelectColumn extends Column
 {
     const BLANK = '_default';
 
-    private $values;
+    protected $values;
 
     public function __initialize(array $params)
     {

@@ -75,7 +75,6 @@ abstract class Column
     public function __initialize(array $params)
     {
         $this->params = $params;
-
         $this->setId($this->getParam('id'));
         $this->setTitle($this->getParam('title', ''));
         $this->setSortable($this->getParam('sortable', true));
