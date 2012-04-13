@@ -43,7 +43,7 @@ class Columns implements \IteratorAggregate, \Countable
      * Add column, column object have to extend Column
      * @param Column $column
      * @param int $position
-     * @return Grid
+     * @return Columns
      */
     public function addColumn($column, $position = 0)
     {

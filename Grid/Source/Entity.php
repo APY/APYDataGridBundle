@@ -317,7 +317,7 @@ class Entity extends Source
 
     public function delete(array $ids)
     {
-        $repository = $this->manager->getRepository($this->entityName);
+        $repository = $this->getRepository();
 
         foreach ($ids as $id) {
             $object = $repository->find($id);
@@ -330,5 +330,10 @@ class Entity extends Source
         }
 
         $this->manager->flush();
+    }
+
+    public function getRepository()
+    {
+        return $this->manager->getRepository($this->entityName);
     }
 }
