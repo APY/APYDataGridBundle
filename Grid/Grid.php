@@ -149,7 +149,7 @@ class Grid
     function addColumn($column, $position = 0)
     {
         $this->columns->addColumn($column, $position);
-        
+
         return $this;
     }
 
@@ -442,7 +442,7 @@ class Grid
     {
         return $this->massActions;
     }
-    
+
     public function getRowActions()
     {
         return $this->rowActions;

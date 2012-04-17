@@ -50,6 +50,7 @@ abstract class Column
 
     private $params;
     private $isSorted = false;
+    private $isDefaultSort = false;
     private $orderUrl;
 
     /**
@@ -89,7 +90,7 @@ abstract class Column
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
         $this->setData($this->getParam('defaults'));
-        $this->setOrder($this->getParam('order'));
+        $this->setOrder($this->getParam('order'), true);
         $this->setCallback($this->getParam('callback'));
         $this->setSubmitOnChange($this->getParam('submitOnChange', true));
     }
@@ -225,6 +226,16 @@ abstract class Column
         return $this->isSorted;
     }
 
+    /**
+     * Return true if the column is sorted by default
+     *
+     * @return bool
+     */
+    public function isDefaultSort()
+    {
+        return $this->isDefaultSort;
+    }
+
     public function setSortable($sortable)
     {
         $this->sortable = $sortable;
@@ -281,7 +292,7 @@ abstract class Column
      * @param string $order asc|desc
      * @return \Sorien\DataGridBundle\Grid\Column\Column
      */
-    public function setOrder($order)
+    public function setOrder($order, $isDefaultSort = false)
     {
         if (!$order) {
             return $this;
@@ -289,6 +300,7 @@ abstract class Column
 
         $this->order = $order;
         $this->isSorted = true;
+        $this->isDefaultSort = $isDefaultSort;
 
         return $this;
     }

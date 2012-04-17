@@ -160,11 +160,17 @@ class Entity extends Source
 
         $where = $this->query->expr()->andx();
 
+        $sorted = false;
         foreach ($columns as $column)
         {
             $this->query->addSelect($this->getFieldName($column));
 
-            if ($column->isSorted())
+            if ($column->isSorted() && !$column->isDefaultSort())
+            {
+                $this->query->orderBy($this->getFieldName($column, false), $column->getOrder());
+                $sorted = true;
+            }
+            elseif (!$sorted && $column->isSorted() && $column->isDefaultSort())
             {
                 $this->query->orderBy($this->getFieldName($column, false), $column->getOrder());
             }
