@@ -424,7 +424,7 @@ class Grid
         }
 
         foreach ($this->rows as $row) {
-			$row->setPrimaryField($primaryKey);
+             $row->setPrimaryField($primaryKey);
         }
 
         //@todo refactor autohide titles when no title is set
@@ -451,7 +451,7 @@ class Grid
                 $columnNames[] = $column->getId();
             }
 
-            //Checking for a non existing column name (wrong input coming from setVisibleColumns)
+            //Checking for a non-existing column name (wrong input coming from setVisibleColumns)
             $diff = array_diff(array_merge($this->visibleColumns,$this->hiddenColumns),$columnNames);
             if(!empty($diff)) {
                 throw new \Exception(sprintf("Invalid column name(s) : %s",implode(',',$diff)), 1);
