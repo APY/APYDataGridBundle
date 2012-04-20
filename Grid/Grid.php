@@ -116,6 +116,17 @@ class Grid
      * @var string
      */
     private $prefixTitle = '';
+
+	/**
+     * @var array
+     */
+    private $hiddenColumns = array();
+
+    /**
+     * @var array
+     */
+    private $visibleColumns = array();
+
     /**
      * @param \Source\Source $source Data Source
      * @param \Symfony\Component\DependencyInjection\Container $container
@@ -289,7 +300,11 @@ class Grid
             $this->limit = $limit;
         }
 
-        if ($page = $this->getDataFromContext(self::REQUEST_QUERY_PAGE))
+        if ($this->getDataFromContext(self::REQUEST_QUERY_LIMIT, true, false) || $this->getDataFromContext(self::REQUEST_QUERY_ORDER, true, false))
+        {
+            unset($storage[self::REQUEST_QUERY_PAGE]);
+        }
+        elseif ($page = $this->getDataFromContext(self::REQUEST_QUERY_PAGE))
         {
             $this->setPage($page);
         }
@@ -375,7 +390,7 @@ class Grid
             throw new \Exception('Source have to return Rows object.');
         }
 
-        //add row actions column
+		//add row actions column
         if (count($this->rowActions) > 0)
         {
             foreach ($this->rowActions as $column => $rowActions) {
@@ -394,11 +409,22 @@ class Grid
             $this->columns->addColumn(new MassActionColumn($this->getHash()), 1);
         }
 
-        $primaryColumnId = $this->columns->getPrimaryColumn()->getId();
+        $primaryColumns = $this->columns->getPrimaryColumn();
 
-        foreach ($this->rows as $row)
-        {
-            $row->setPrimaryField($primaryColumnId);
+        //So you can have multiple columns as the key
+        //For actions that needs more than one ID
+        if(is_array($primaryColumns)) {
+            $primaryKey = array();
+            foreach ($primaryColumns as $column) {
+                $primaryKey[]= $column->getId();
+            }
+        } 
+        else {
+            $primaryKey = $primaryColumns->getId();
+        }
+
+        foreach ($this->rows as $row) {
+			$row->setPrimaryField($primaryKey);
         }
 
         //@todo refactor autohide titles when no title is set
@@ -417,6 +443,39 @@ class Grid
             }
         }
 
+
+        if(!empty($this->visibleColumns) || !empty($this->hiddenColumns))
+        {
+            $columnNames = array();
+            foreach ($this->columns as $column) {
+                $columnNames[] = $column->getId();
+            }
+
+            //Checking for a non existing column name (wrong input coming from setVisibleColumns)
+            $diff = array_diff(array_merge($this->visibleColumns,$this->hiddenColumns),$columnNames);
+            if(!empty($diff)) {
+                throw new \Exception(sprintf("Invalid column name(s) : %s",implode(',',$diff)), 1);
+            }
+
+            if(empty($this->visibleColumns) && !empty ($this->hiddenColumns)) {
+                $visibleColumns = array_diff($columnNames, $this->hiddenColumns);
+            } 
+            elseif (!empty($this->visibleColumns) && empty ($this->hiddenColumns)) {
+                $visibleColumns = array_intersect($columnNames, $this->visibleColumns);
+            } 
+            else {
+                $visibleColumns = array_intersect($columnNames, $this->visibleColumns);
+                $visibleColumns = array_diff($visibleColumns, $this->hiddenColumns);
+            }
+
+            if(!empty($visibleColumns)) {
+                $columnsToHide = array_diff($columnNames, $visibleColumns);
+                foreach ($columnsToHide as $columnId) {
+                    $this->columns->getColumnById($columnId)->setVisible(false);
+                }
+            }
+        }
+
         //get size
         if ($this->isDataLoaded()) {
             $this->totalCount = $this->getTotalCountFromData();
@@ -425,8 +484,7 @@ class Grid
             $this->totalCount = $this->source->getTotalCount($this->columns);
         }
 
-        if(!is_int($this->totalCount))
-        {
+        if(!is_int($this->totalCount)) {
             throw new \Exception(sprintf('Source function getTotalCount need to return integer result, returned: %s', gettype($this->totalCount)));
         }
 
@@ -783,9 +841,9 @@ class Grid
         {
             $row = new Row();
             foreach ($item as $fieldName => $fieldValue) {
-                $row->setField($fieldName, $fieldValue);   
+                $row->setField($fieldName, $fieldValue);
             }
-            
+
             //call overridden prepareRow or associated closure
             if (($modifiedRow = $this->source->prepareRow($row)) != null)
             {
@@ -815,5 +873,24 @@ class Grid
     {
         $this->prefixTitle = $prefixTitle;
         return $this;
+    }
+
+    /**
+    * sets a list of columns to hide when the grid is output
+    * @param array $hiddenColumns
+    */
+    public function setHiddenColumns(array $hiddenColumns)
+    {
+        $this->hiddenColumns = $hiddenColumns;
+    }
+
+    /**
+    * sets a list of columns to show when the grid is output
+    * it acts as a mask; Other columns will be set as hidden
+    * @param array $visibleColumns
+    */
+    public function setVisibleColumns(array $visibleColumns)
+    {
+        $this->visibleColumns = $visibleColumns;
     }
 }
