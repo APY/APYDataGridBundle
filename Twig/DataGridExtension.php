@@ -206,24 +206,25 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getGridUrl($section, $grid, $param = null)
     {
+        $separator = ( count($grid->getRouteParameters()) ? '&' : '?' );
         if ($section == 'order')
         {
             if ($param->isSorted())
             {
-                return $grid->getRouteUrl().'?'.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|'.($param->getOrder() == 'asc' ? 'desc' : 'asc');
+                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|'.($param->getOrder() == 'asc' ? 'desc' : 'asc');
             }
             else
             {
-                return $grid->getRouteUrl().'?'.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|asc';
+                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|asc';
             }
         }
         elseif ($section == 'page')
         {
-            return $grid->getRouteUrl().'?'.$grid->getHash().'['.Grid::REQUEST_QUERY_PAGE.']='.$param;
+            return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_PAGE.']='.$param;
         }
         elseif ($section == 'limit')
         {
-            return $grid->getRouteUrl().'?'.$grid->getHash().'['.Grid::REQUEST_QUERY_LIMIT.']=';
+            return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_LIMIT.']=';
         }
     }
 
