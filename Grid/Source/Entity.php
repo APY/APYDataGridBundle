@@ -41,10 +41,10 @@ class Entity extends Source
      */
     private $entityName;
 
-	/**
-	 * @var string e.g. mydatabase
-	 */
-	private $managerName;
+    /**
+      * @var string e.g. mydatabase
+      */
+    private $managerName;
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
@@ -71,7 +71,7 @@ class Entity extends Source
     public function __construct($entityName, $managerName=null)
     {
         $this->entityName = $entityName;
-		$this->managerName = $managerName;
+        $this->managerName = $managerName;
         $this->joins = array();
     }
 
