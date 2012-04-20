@@ -42,6 +42,11 @@ class Entity extends Source
     private $entityName;
 
     /**
+      * @var string e.g. mydatabase
+      */
+    private $managerName;
+
+    /**
      * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
      */
     private $metadata;
@@ -61,16 +66,18 @@ class Entity extends Source
 
     /**
      * @param string $entityName e.g Cms:Page
+     * @param string $managerName e.g. mydatabase
      */
-    public function __construct($entityName)
+    public function __construct($entityName, $managerName=null)
     {
         $this->entityName = $entityName;
+        $this->managerName = $managerName;
         $this->joins = array();
     }
 
     public function initialise($container)
     {
-        $this->manager = $container->get('doctrine')->getEntityManager();
+        $this->manager = $container->get('doctrine')->getEntityManager($this->managerName);
         $this->ormMetadata = $this->manager->getClassMetadata($this->entityName);
 
         $this->class = $this->ormMetadata->getReflectionClass()->name;
