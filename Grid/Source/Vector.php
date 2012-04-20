@@ -22,22 +22,11 @@ use Sorien\DataGridBundle\Grid\Row;
 class Vector extends Source 
 {
     /**
-     * @var string e.g Cms:Page
-     */
-    private $entityName = 'Vector';
-
-    /**
      * @var array
      */
-    private $metadata;
+    private $fieldNames;
 
     /**
-     * @var array
-     */
-    private $ormMetadata;
-
-    /**
-     *
      * @var array
      */
     private $data;
@@ -53,17 +42,17 @@ class Vector extends Source
      * @var array
      */
     private $blackList = array();
+    
     /**
-     *
+     * either a column name as a string
+     *  or an array of names of columns
      * @var mixed
      */
     private $id = null;
 
-    const TABLE_ALIAS = '_a';
-    const COUNT_ALIAS = '__count';
-
     /**
-     * @param array $array e.g Cms:Page
+     * Creates the Vector and sets its data
+     * @param array $array
      */
     public function __construct(array $array) 
     {
@@ -72,8 +61,7 @@ class Vector extends Source
 
     public function initialise($container) 
     {
-        $this->ormMetadata = array_keys(reset($this->data));
-        $this->metadata = $this->getFieldsMetadata();
+        $this->fieldNames = array_keys(reset($this->data));
     }
 
     /**
@@ -83,22 +71,22 @@ class Vector extends Source
     public function getColumns($columns) 
     {
         if(empty($this->whiteList)&&empty($this->blackList)){
-            $whiteList = $this->ormMetadata;
+            $whiteList = $this->fieldNames;
         } elseif(empty($this->whiteList) && !empty ($this->blackList)) {
-            $whiteList = array_diff($this->ormMetadata, $this->blackList);
+            $whiteList = array_diff($this->fieldNames, $this->blackList);
         } elseif (!empty($this->whiteList) && empty ($this->blackList)) {
-            $whiteList = array_intersect($this->ormMetadata, $this->whiteList);
+            $whiteList = array_intersect($this->fieldNames, $this->whiteList);
         } else {
-            $whiteList = array_intersect($this->ormMetadata, $this->whiteList);
+            $whiteList = array_intersect($this->fieldNames, $this->whiteList);
             $whiteList = array_diff($whiteList, $this->blackList);
         }
         
         $token = empty($this->id);
-        foreach ($this->ormMetadata as $column) {
+        foreach ($this->fieldNames as $column) {
             $columns->addColumn(new \Sorien\DataGridBundle\Grid\Column\TextColumn(array(
                         'id' => $column,
                         'title' => $column,
-                        'primary' => ($column == $this->id) || $token,
+                        'primary' => (is_array($this->id) && in_array($column, $this->id)) || $column == $this->id || $token,
                         'source' => true,
                         'filterable' => true,
                         'sortable' => true,
@@ -136,7 +124,7 @@ class Vector extends Source
 
                 $filter = trim(str_replace('%', '*', $filter), "'");
                 foreach ($items as $key => $item) {
-                    if (!preg_match($filter, $item[$column->getField()])) {
+                    if (is_string($item[$column->getField()]) && !preg_match($filter, $item[$column->getField()])) {
                         unset($items[$key]);
                     }
                 }
@@ -147,6 +135,7 @@ class Vector extends Source
         $rows = new \Sorien\DataGridBundle\Grid\Rows();
         foreach ($data as $item) {
             $row = new \Sorien\DataGridBundle\Grid\Row();
+            $row->setPrimaryField($this->id);
             foreach ($item as $key => $value) {
                 $row->setField($key, $value);
             }
@@ -160,35 +149,15 @@ class Vector extends Source
         return count($this->data);
     }
 
-    public function getFieldsMetadata($class = '') 
-    {
-        $result = array();
-        foreach ($this->ormMetadata as $name) {
-            $values = array(
-                'title' => $name,
-                'source' => true,
-                'field' => $name,
-                'id' => $name,
-                'type' => 'string',
-            );
-            $result[$name] = $values;
-        }
-
-        return $result;
-    }
-
     public function getHash() 
     {
-        return $this->entityName;
+        return __CLASS__;
     }
 
-    public function delete(array $ids) 
-    {
-        foreach ($ids as $id) {
-            unset($this->data[$id]);
-        }
-    }
-
+    /**
+     * sets the primary key
+     * @param mixed $id either a string or an array of strings
+     */
     public function setId($id)
     {
         $this->id = $id;
@@ -230,4 +199,6 @@ class Vector extends Source
     public function setBlackList(array $blackList){
         $this->blackList = $blackList;
     }
+    
+    public function delete(array $ids){}
 }
