@@ -300,11 +300,7 @@ class Grid
             $this->limit = $limit;
         }
 
-        if ($this->getDataFromContext(self::REQUEST_QUERY_LIMIT, true, false) || $this->getDataFromContext(self::REQUEST_QUERY_ORDER, true, false))
-        {
-            unset($storage[self::REQUEST_QUERY_PAGE]);
-        }
-        elseif ($page = $this->getDataFromContext(self::REQUEST_QUERY_PAGE))
+        if ($page = $this->getDataFromContext(self::REQUEST_QUERY_PAGE))
         {
             $this->setPage($page);
         }
@@ -424,7 +420,7 @@ class Grid
         }
 
         foreach ($this->rows as $row) {
-			$row->setPrimaryField($primaryKey);
+            $row->setPrimaryField($primaryKey);
         }
 
         //@todo refactor autohide titles when no title is set
