@@ -398,10 +398,7 @@ class Grid
 
         foreach ($this->rows as $row)
         {
-            foreach ($this->columns as $column)
-            {
-                $row->setPrimaryField($primaryColumnId);
-            }
+            $row->setPrimaryField($primaryColumnId);
         }
 
         //@todo refactor autohide titles when no title is set
