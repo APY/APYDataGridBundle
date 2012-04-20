@@ -19,7 +19,7 @@ use Sorien\DataGridBundle\Grid\Row;
  * Vector is really an Array
  * @author dellamowica
  */
-class Vector extends Source 
+class Vector extends Source
 {
     /**
      * @var array
@@ -30,19 +30,7 @@ class Vector extends Source
      * @var array
      */
     private $data;
-    
-    /**
-     * List of column names to display
-     * @var array
-     */
-    private $whiteList = array();
 
-    /**
-     * List of column names to hide
-     * @var array
-     */
-    private $blackList = array();
-    
     /**
      * either a column name as a string
      *  or an array of names of columns
@@ -54,12 +42,12 @@ class Vector extends Source
      * Creates the Vector and sets its data
      * @param array $array
      */
-    public function __construct(array $array) 
+    public function __construct(array $array)
     {
         $this->setData($array);
     }
 
-    public function initialise($container) 
+    public function initialise($container)
     {
         $this->fieldNames = array_keys(reset($this->data));
     }
@@ -68,20 +56,9 @@ class Vector extends Source
      * @param \Sorien\DataGridBundle\Grid\Columns $columns
      * @return null
      */
-    public function getColumns($columns) 
+    public function getColumns($columns)
     {
-        if(empty($this->whiteList)&&empty($this->blackList)){
-            $whiteList = $this->fieldNames;
-        } elseif(empty($this->whiteList) && !empty ($this->blackList)) {
-            $whiteList = array_diff($this->fieldNames, $this->blackList);
-        } elseif (!empty($this->whiteList) && empty ($this->blackList)) {
-            $whiteList = array_intersect($this->fieldNames, $this->whiteList);
-        } else {
-            $whiteList = array_intersect($this->fieldNames, $this->whiteList);
-            $whiteList = array_diff($whiteList, $this->blackList);
-        }
-        
-        $token = empty($this->id);
+        $token = empty($this->id); //makes the first column primary by default
         foreach ($this->fieldNames as $column) {
             $columns->addColumn(new \Sorien\DataGridBundle\Grid\Column\TextColumn(array(
                         'id' => $column,
@@ -90,7 +67,7 @@ class Vector extends Source
                         'source' => true,
                         'filterable' => true,
                         'sortable' => true,
-                        'visible' => in_array($column, $whiteList),
+                        'visible' => true,
                         'field' => $column,
                     )));
             $token = false;
@@ -103,7 +80,7 @@ class Vector extends Source
      * @param $limit int Rows Per Page
      * @return \Sorien\DataGridBundle\Grid\Rows
      */
-    public function execute($columns, $page = 0, $limit = 0) 
+    public function execute($columns, $page = 0, $limit = 0)
     {
         $items = $this->data;
         // Order
@@ -130,7 +107,10 @@ class Vector extends Source
                 }
             }
         }
+
         $this->data = $items;
+
+        //pageing
         $data = array_slice($items, $page * $limit, $limit);
         $rows = new \Sorien\DataGridBundle\Grid\Rows();
         foreach ($data as $item) {
@@ -144,12 +124,12 @@ class Vector extends Source
         return $rows;
     }
 
-    public function getTotalCount($columns) 
+    public function getTotalCount($columns)
     {
         return count($this->data);
     }
 
-    public function getHash() 
+    public function getHash()
     {
         return __CLASS__;
     }
@@ -162,11 +142,11 @@ class Vector extends Source
     {
         $this->id = $id;
     }
-    
+
     /**
      * Set a two-dimentional array
-     * @param array $data 
-     * @throws \InvalidArgumentException 
+     * @param array $data
+     * @throws \InvalidArgumentException
      */
     public function setData(array $data){
         $this->data = $data;
@@ -183,22 +163,6 @@ class Vector extends Source
             throw new \InvalidArgumentException('Data should be a two-dimentional array');
         }
     }
-    
-    /**
-     * Set a list of columns to display
-     * @param array $whitelist 
-     */
-    public function setWhiteList(array $whiteList){
-        $this->whiteList = $whiteList;
-    }
-    
-    /**
-     * Set a list of columns to hide
-     * @param array $whitelist 
-     */
-    public function setBlackList(array $blackList){
-        $this->blackList = $blackList;
-    }
-    
+
     public function delete(array $ids){}
 }
