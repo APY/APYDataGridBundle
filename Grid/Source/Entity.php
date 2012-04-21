@@ -40,12 +40,12 @@ class Entity extends Source
      * @var string e.g Cms:Page
      */
     private $entityName;
-    
+
     /**
      * @var string e.g mydatabase
      */
     private $managerName;
-    
+
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
@@ -92,10 +92,9 @@ class Entity extends Source
 
     /**
      * @param \Sorien\DataGridBundle\Grid\Column\Column $column
-     * @param boolean $withAlias
      * @return string
      */
-    private function getFieldName($column, $withAlias = true)
+    private function getFieldName($column)
     {
         $name = $column->getField();
 
@@ -115,12 +114,6 @@ class Entity extends Source
                 $name .= '.'.$element;
             }
         }
-
-
-        if ($withAlias) {
-            return '_' . $name.' as '.$column->getId();
-        }
-
 
         return '_'.$name;
     }
@@ -174,7 +167,7 @@ class Entity extends Source
 
             if ($column->isSorted())
             {
-                $this->query->orderBy($this->getFieldName($column, false), $column->getOrder());
+                $this->query->orderBy($this->getFieldName($column), $column->getOrder());
             }
 
             if ($column->isFiltered())
@@ -186,7 +179,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $where->add($this->query->expr()->$operator(
-                            $this->getFieldName($column, false),
+                            $this->getFieldName($column),
                             $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -200,7 +193,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $sub->add($this->query->expr()->$operator(
-                              $this->getFieldName($column, false),
+                              $this->getFieldName($column),
                               $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }

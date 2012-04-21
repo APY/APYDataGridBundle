@@ -102,7 +102,13 @@ class Annotation implements DriverInterface
             }
             else
             {
-                $metadata['id'] = $name;
+                if (isset($metadata['field']) && strpos($metadata['field'], '.')) {
+                    $fields = explode('.', $metadata['field']);
+                    $metadata['id'] = end($fields);
+                }
+                else {
+                    $metadata['id'] = $name;
+                }
             }
 
             if (isset($metadata['field']))
