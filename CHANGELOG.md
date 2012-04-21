@@ -1,3 +1,7 @@
+`21 Apr 2012`
+
+ * Improve configuration doc
+
 `20 Apr 2012`
 
  * add initFilters feature
