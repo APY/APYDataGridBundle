@@ -59,21 +59,46 @@ class Test
  - columns [string] order of columns in grid 
     - columns are separated by a comma (',')
     - The primary key have to be defined in this list.
-    - Use the property name, not the column name.
+    - Use the property name, not the column name. For related fields, use the field name (see example below in a One to Many association).
  - filterable [bool] turns on or off visibility of all columns
 
 
-### Many to One association support with `.` notation (just ORM)
+### ORM association support with `.` notation
+
+Example of a `Many to One` association
 
 ```php
 <?php
 ...
 /**
  * @ORM\ManyToOne(targetEntity="Vendors")
- * @ORM\JoinColumn(name="vendor", referencedColumnName="id")
+ * @ORM\JoinColumn(name="seller_id", referencedColumnName="id")
  *
- * @GRID\Column(id="vendor.name")
+ * @GRID\Column(field="vendor.name")
  */
 private $vendor;
 ...
 ```
+
+Example of a `One to Many` or `One to One` association with multi related fields on the same property + order of the related fields
+
+```php
+<?php
+/**
+ * @grid\Source(columns="id, translations.lang, translations.description, reference, translations.name")
+ */
+class Product {
+    /**
+     * @ORM\OneToMany(targetEntity="LangProduct", mappedBy="product")
+     * 
+     * @Grid\Column(field="translations.lang")
+     * @Grid\Column(field="translations.name")
+     * @Grid\Column(field="translations.description")
+     */
+    private $translations;    
+...
+}
+```
+
+**Note**: The default title of a related field is the name of the field.
+`@Grid\Column(field="translations.lang") => title = "translations.lang"`
