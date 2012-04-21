@@ -102,9 +102,15 @@ class Annotation implements DriverInterface
             }
             else
             {
+                // Relationship handle
                 if (isset($metadata['field']) && strpos($metadata['field'], '.')) {
                     $fields = explode('.', $metadata['field']);
                     $metadata['id'] = end($fields);
+
+                    // Title is not set by default like properties of the entity (see getFieldsMetadata method of a source)
+                    if (!isset($metadata['title'])) {
+                        $metadata['title'] = $metadata['id'];
+                    }
                 }
                 else {
                     $metadata['id'] = $name;
