@@ -1,3 +1,9 @@
+`20 Apr 2012`
+
+ * add initFilters feature
+ * fix custom actions column
+ * fix exception not found with setData on the grid
+
 `13 Apr 2012`
 
  * japanese translations
