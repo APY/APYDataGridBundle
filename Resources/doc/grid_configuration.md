@@ -122,6 +122,23 @@ $myRowAction->setColumn('info_column');
 $grid->addRowAction($myRowAction);
 ```
 
+## Init filters value
+
+You can set a default value for filters.
+
+Must be defined after the source.
+
+```
+<?php
+$grid->setSource($source);
+
+$grid->initFilters(array('your_column_to_filtered' => 'your_init_value'));
+...
+```
+
+**Note:** Keep in mind that filters are stored by default in a cookie session.
+To init filters with this method, you have to delete your cookie first or restart your web browser.
+
 ## Manipulate the query builder
 
 You can set a callback to manipulate the query builder.
