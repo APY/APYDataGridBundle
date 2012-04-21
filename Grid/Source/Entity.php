@@ -94,7 +94,7 @@ class Entity extends Source
      * @param \Sorien\DataGridBundle\Grid\Column\Column $column
      * @return string
      */
-    private function getFieldName($column)
+    private function getFieldName($column, $withAlias = false)
     {
         $name = $column->getField();
 
@@ -113,6 +113,10 @@ class Entity extends Source
             } else {
                 $name .= '.'.$element;
             }
+        }
+
+        if ($withAlias) {
+            return '_' . $name.' as '.$column->getId();
         }
 
         return '_'.$name;
@@ -163,7 +167,7 @@ class Entity extends Source
 
         foreach ($columns as $column)
         {
-            $this->query->addSelect($this->getFieldName($column));
+            $this->query->addSelect($this->getFieldName($column, true));
 
             if ($column->isSorted())
             {

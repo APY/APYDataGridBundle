@@ -21,8 +21,13 @@ class Source
 
     public function __construct($metadata = array())
     {
-        $this->columns = isset($metadata['columns']) ? array_map('trim', explode(',', $metadata['columns'])) : array();
+        $this->columns = isset($metadata['columns']) ? array_map(array($this, 'format'), explode(',', $metadata['columns'])) : array();
         $this->filterable = !(isset($metadata['filterable']) && $metadata['filterable']);
+    }
+
+    private function format($columName) {
+        $columName =  str_replace('.','__', $columName);
+        return trim($columName);
     }
 
     public function getColumns()
