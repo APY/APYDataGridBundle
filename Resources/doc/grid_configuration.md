@@ -1,6 +1,21 @@
 Grid configurations
 ===================
 
+# Summary
+
+ * Configure the pager
+ * Add columns to the grid
+ * Add a mass action
+ * Add a default delete mass action `Beta`
+ * Add row actions
+ * Add multiple columns of row actions
+ * Init filters value
+ * Manipulate the query builder
+ * Manipulate rows
+ * Set data to avoid calling the 
+ * Grid Response helper
+ * Working Example
+
 ## Configure the pager
 ```php
 <?php
@@ -128,7 +143,7 @@ You can set a default value for filters.
 
 Must be defined after the source.
 
-```
+```php
 <?php
 $grid->setSource($source);
 
@@ -190,34 +205,6 @@ $grid->setSource($source);
 ```
 
 **Note:** You can hide a row if your callback return `null`.
-
-
-## Grid Response
-
-A gridResponse method is also available which handle the redirection and the rendering
-
-```php
-<?php
-$source = new Entity('MyProjectMyBundle:MyEntity');
-
-$grid = $this->get('grid');
-
-// Mass actions, query and row manipulations are defined here
-
-$grid->setSource($source);
-
-return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
-
-```
-
-**Note:** Input arguments of gridResponse are reverse. If you use the @Template annotation, don't define a template view.
-
-```php
-<?php
-...
-return $gridManager->gridResponse(array('data' => $grid));
-
-```
 
 ## Set data
 
@@ -292,6 +279,33 @@ public function displayBookmarksOfTheUserAction()
         return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid));
 	}
 }
+```
+
+## Grid Response helper
+
+A gridResponse method is also available which handle the redirection and the rendering
+
+```php
+<?php
+$source = new Entity('MyProjectMyBundle:MyEntity');
+
+$grid = $this->get('grid');
+
+// Mass actions, query and row manipulations are defined here
+
+$grid->setSource($source);
+
+return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
+
+```
+
+**Note:** Input arguments of gridResponse are reverse. If you use the @Template annotation, don't define a template view.
+
+```php
+<?php
+...
+return $gridManager->gridResponse(array('data' => $grid));
+
 ```
 
 With this new feature you avoid some unnecessary queries 
