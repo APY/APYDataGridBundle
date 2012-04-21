@@ -9,7 +9,7 @@ The following documents are available:
 
 1. [Installation](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/installation.md)
 2. [Grid Configuration](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/grid_configuration.md)
-3. [Annotations](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/annotations.md)
+3. [Columns Configuration via annotations](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/columns_configuration.md)
 4. [Multiple grids](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/multiple_grids.md)
 5. [Overriding Templates](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
 
