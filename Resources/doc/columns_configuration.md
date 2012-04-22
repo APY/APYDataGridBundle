@@ -94,6 +94,7 @@ Example of a `One to Many` or `One to One` association with multi related fields
 ```php
 <?php
 /**
+ * Columns order (Optional)
  * @grid\Source(columns="id, translations.lang, translations.description, reference, translations.name")
  */
 class Product {
@@ -120,12 +121,14 @@ When you have some related fields, you can perform some aggregate DQL functions.
 
 Notation: `.<field_id>:<aggregate_function>`
 
-You have 5 basic aggregate functions: count, avg, min, max and sum.
-You can also use other DQL defined functions like the `group_concat` DQL function. [https://github.com/beberlei/DoctrineExtensions/blob/master/lib/DoctrineExtensions/Query/Mysql/GroupConcat.php](Source)
+You have 5 basic aggregate functions: `count`, `avg`, `min`, `max` and `sum`.
+
+You can also use other DQL defined functions like the `group_concat` DQL function. ([Source](https://github.com/beberlei/DoctrineExtensions/blob/master/lib/DoctrineExtensions/Query/Mysql/GroupConcat.php))
 
 ```php
 <?php
 /**
+ * Columns order (Optional)
  * @grid\Source(columns="id, sales.id:count, sales.price:avg, sales.price:min, sales.price:max, sales.price:sum")
  */
 class Article {
@@ -137,11 +140,11 @@ class Article {
      * @Grid\Column(field="sales.price:avg", title="Average price")
      * @Grid\Column(field="sales.price:min", title="Minimum price")
 	 * @Grid\Column(field="sales.price:max", title="Maximum price")
-	 * @Grid\Column(field="sales.price::sum", title="Profit")
+	 * @Grid\Column(field="sales.price:sum", title="Profit")
      */
     private $sales;    
 ...
 }
 ```
 
-**Note**: When a groupBy notation is detected, a groupBy is automatically perform with the primary field of the parent entity.
+**Note**: When a groupBy notation is detected, a groupBy is automatically performed on the primary field of the parent entity.
