@@ -355,7 +355,8 @@ class Grid
      */
     public function prepare()
     {
-        if ($this->isDataLoaded()) {
+        if ($this->isDataLoaded())
+        {
             $this->rows = $this->executeFromData($this->columns->getIterator(true), $this->page, $this->limit);
         }
         else {
@@ -375,8 +376,10 @@ class Grid
         //add row actions column
         if (count($this->rowActions) > 0)
         {
-            foreach ($this->rowActions as $column => $rowActions) {
-                if ($rowAction = $this->columns->hasColumnById($column, true)) {
+            foreach ($this->rowActions as $column => $rowActions)
+            {
+                if ($rowAction = $this->columns->hasColumnById($column, true))
+                {
                     $rowAction->setRowActions($rowActions);
                 }
                 else {
@@ -395,10 +398,7 @@ class Grid
 
         foreach ($this->rows as $row)
         {
-            foreach ($this->columns as $column)
-            {
-                $row->setPrimaryField($primaryColumnId);
-            }
+            $row->setPrimaryField($primaryColumnId);
         }
 
         //@todo refactor autohide titles when no title is set
@@ -418,7 +418,8 @@ class Grid
         }
 
         //get size
-        if ($this->isDataLoaded()) {
+        if ($this->isDataLoaded())
+        {
             $this->totalCount = $this->getTotalCountFromData();
         }
         else {

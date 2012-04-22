@@ -26,7 +26,7 @@ class Source
     }
 
     private function formatColumnName($columnName) {
-        $columnName =  str_replace('.','__', $columnName);
+        $columnName =  str_replace('.', '::', $columnName);
         return trim($columnName);
     }
 

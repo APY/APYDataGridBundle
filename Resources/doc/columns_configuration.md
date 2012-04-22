@@ -1,7 +1,15 @@
 Columns Configuration via annotations
 ===========
+# Summary
 
-## Usage - Document or Entity annotations
+ * [Document or Entity annotations](#usage)
+ * [Attributes for '@GRID\Column' notation](#column_attributes)
+ * [Attributes for '@GRID\Source' notation](#source_attributes)
+ * [ORM association mapping](#orm_associations)
+ * [ORM groupBy function](#orm_groupby)
+
+<a name="usage"/>
+## Document or Entity annotations
 
 Entity and Document sources use doctrine annotations for type guessing, for better customization you can use grid mapping annotations
 
@@ -36,8 +44,8 @@ class Test
 
 }
 ```
-
-### Available types for '@GRID\Column' notation
+<a name="column_attributes"/>
+### Attributes for '@GRID\Column' notation
 
  - id [string] - column id - property name, should by set only if column is defined inside class annotations
  - field [string] - table column /collection name
@@ -54,7 +62,8 @@ class Test
  - align [string(left|right|center)] - default left
  - role [string] default null - security role for current column example: role="ROLE_USER"
 
-### Available types for '@GRID\Source' notation
+<a name="source_attributes"/>
+### Attributes for '@GRID\Source' notation
 
  - columns [string] order of columns in grid 
     - columns are separated by a comma (',')
@@ -62,8 +71,8 @@ class Test
     - Use the property name, not the column name. For related fields, use the field name (see example below in a One to Many association).
  - filterable [bool] turns on or off visibility of all columns
 
-
-### ORM association support with `.` notation
+<a name="orm_associations"/>
+### ORM association mapping support with `.` notation
 
 Example of a `Many to One` association
 
@@ -88,6 +97,7 @@ Example of a `One to Many` or `One to One` association with multi related fields
  * @grid\Source(columns="id, translations.lang, translations.description, reference, translations.name")
  */
 class Product {
+...
     /**
      * @ORM\OneToMany(targetEntity="LangProduct", mappedBy="product")
      * 
@@ -102,3 +112,36 @@ class Product {
 
 **Note**: The default title of a related field is the name of the field.
 `@Grid\Column(field="translations.lang") => title = "translations.lang"`
+
+<a name="orm_groupby"/>
+### ORM groupBy notation with association mapping
+
+When you have some related fields, you can perform some aggregate DQL functions.
+
+Notation: `.<field_id>:<aggregate_function>`
+
+You have 5 basic aggregate functions: count, avg, min, max and sum.
+You can also use other DQL defined functions like the `group_concat` DQL function. [https://github.com/beberlei/DoctrineExtensions/blob/master/lib/DoctrineExtensions/Query/Mysql/GroupConcat.php](Source)
+
+```php
+<?php
+/**
+ * @grid\Source(columns="id, sales.id:count, sales.price:avg, sales.price:min, sales.price:max, sales.price:sum")
+ */
+class Article {
+...
+    /**
+     * @ORM\OneToMany(targetEntity="Sale", mappedBy="article")
+     * 
+     * @Grid\Column(field="sales.id:count", title="Number of sales")
+     * @Grid\Column(field="sales.price:avg", title="Average price")
+     * @Grid\Column(field="sales.price:min", title="Minimum price")
+	 * @Grid\Column(field="sales.price:max", title="Maximum price")
+	 * @Grid\Column(field="sales.price::sum", title="Profit")
+     */
+    private $sales;    
+...
+}
+```
+
+**Note**: When a groupBy notation is detected, a groupBy is automatically perform with the primary field of the parent entity.

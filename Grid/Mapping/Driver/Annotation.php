@@ -104,7 +104,7 @@ class Annotation implements DriverInterface
             {
                 // Relationship handle
                 if (isset($metadata['field']) && strpos($metadata['field'], '.')) {
-                    $metadata['id'] = str_replace('.','__', $metadata['field']);
+                    $metadata['id'] = str_replace('.', '::', $metadata['field']);
 
                     // Title is not set by default like properties of the entity (see getFieldsMetadata method of a source)
                     if (!isset($metadata['title'])) {

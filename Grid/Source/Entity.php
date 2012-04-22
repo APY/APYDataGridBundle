@@ -102,17 +102,26 @@ class Entity extends Source
             return self::TABLE_ALIAS.'.'.$name;
         }
 
-        $parent = self::TABLE_ALIAS;
+        $parent = $previousParent = self::TABLE_ALIAS;
+
         $elements = explode('.', $name);
 
         while ($element = array_shift($elements)) {
             if (count($elements) > 0) {
                 $this->joins['_' . $element] = $parent . '.' . $element;
+                $previousParent = $parent;
                 $parent = '_' . $element;
                 $name = $element;
             } else {
                 $name .= '.'.$element;
             }
+        }
+
+        if (preg_match('/.(?P<all>(?P<field>\w+):(?P<function>\w+))$/', $name, $matches)) {
+            // Group by the primary field of the previous entity
+            $this->query->addGroupBy($previousParent);
+
+            return $matches['function'].'('.$parent.'.'.$matches['field'].') as '.substr($parent, 1).'::'.$matches['all'];
         }
 
         if ($withAlias) {
