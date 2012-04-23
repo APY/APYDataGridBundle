@@ -1,7 +1,26 @@
 Grid configurations
 ===================
 
+# Summary
+
+ * [Configure the pager](#configure_pager)
+ * [Add columns to the grid](#add_column)
+ * [Add a mass action](#add_mass_action)
+ * [Add a default delete mass action `Beta`](#delete_mass_action)
+ * [Add row actions](#add_row_actions)
+ * [Add multiple columns of row actions](#custom_row_actions)
+ * [Init filters value](#init_filters)
+ * [Manipulate the query builder](#manipulate_query)
+ * [Manipulate rows](#manipulate_rows)
+ * [Set data to avoid calling the database](#set_data)
+ * [Grid Response helper](#grid_response)
+ * [Set visible columns] (#set_visible_columns) 
+ * [Set hidden columns] (#set_hidden_columns) 
+ * [Working Example](#working_example)
+
+<a name="configure_pager"/>
 ## Configure the pager
+
 ```php
 <?php
 // Set the selector of the number of items per page
@@ -12,7 +31,7 @@ $grid->setPage(2);
 
 $grid->setSource($source);
 ```
-
+<a name="add_column"/>
 ## Add columns to the grid
 
 A column must be defined after the source otherwise it will appear always before the columns of the source.
@@ -33,6 +52,7 @@ $grid->addColumn($MyColumn, 3);
 
 **Note**: To keep the correct position of each column, it's better to define them in ascending order of position.
 
+<a name="add_mass_action"/>
 ## Add a mass action
 
 A mass action calls a function with an array of the selected rows as first argument.
@@ -56,6 +76,7 @@ $grid->setSource($source);
 
 If you define mass actions, a selector appears and a new column of checkboxes is displayed on the left of the grid.
 
+<a name="delete_mass_action"/>
 ### Add a default delete mass action `Beta`
 
 ```php
@@ -71,6 +92,7 @@ This mass action calls the delete method of the source.
 `The primary field of the grid must be the same that the primary key of your source.
 Don't use this mass action with the 'one' Entity or Document of a one-to-many relation.`
 
+<a name="add_row_actions"/>
 ## Add row actions
 
 A row action is an action performed only on the current row. It's represented by a route to a controller with the identifier of the row.
@@ -97,6 +119,7 @@ $myRowAction->setRouteParameters(array('version' => 2));
 $grid->addRowAction($myRowAction);
 ```
 
+<a name="custom_row_actions"/>
 ### Add multiple columns of row actions
 
 You can create other columns of row actions and choose the position of these ones.
@@ -122,6 +145,25 @@ $myRowAction->setColumn('info_column');
 $grid->addRowAction($myRowAction);
 ```
 
+<a name="init_filters"/>
+## Init filters value
+
+You can set a default value for filters.
+
+Must be defined after the source.
+
+```php
+<?php
+$grid->setSource($source);
+
+$grid->initFilters(array('your_column_to_filtered' => 'your_init_value'));
+...
+```
+
+**Note:** Keep in mind that filters are stored by default in a cookie session.
+To init filters with this method, you have to delete your cookie first or restart your web browser.
+
+<a name="manipulate_query"/>
 ## Manipulate the query builder
 
 You can set a callback to manipulate the query builder.
@@ -148,6 +190,7 @@ $source->setCallback($source::EVENT_PREPARE_QUERY, function ($query) use ($table
 ```
 You must use "andWhere" instead of "Where" statement otherwise column filtering will not work properly.
 
+<a name="manipulate_rows"/>
 ## Manipulate rows
 
 You can set a callback to manipulate the row of the grid.
@@ -174,34 +217,7 @@ $grid->setSource($source);
 
 **Note:** You can hide a row if your callback return `null`.
 
-
-## Grid Response
-
-A gridResponse method is also available which handle the redirection and the rendering
-
-```php
-<?php
-$source = new Entity('MyProjectMyBundle:MyEntity');
-
-$grid = $this->get('grid');
-
-// Mass actions, query and row manipulations are defined here
-
-$grid->setSource($source);
-
-return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
-
-```
-
-**Note:** Input arguments of gridResponse are reverse. If you use the @Template annotation, don't define a template view.
-
-```php
-<?php
-...
-return $gridManager->gridResponse(array('data' => $grid));
-
-```
-
+<a name="set_data"/>
 ## Set data
 
 You can use existing data to avoid unnecessary queries.
@@ -277,8 +293,129 @@ public function displayBookmarksOfTheUserAction()
 }
 ```
 
+<a name="grid_response"/>
+## Grid Response helper
+
+A gridResponse method is also available which handle the redirection and the rendering
+
+```php
+<?php
+$source = new Entity('MyProjectMyBundle:MyEntity');
+
+$grid = $this->get('grid');
+
+// Mass actions, query and row manipulations are defined here
+
+$grid->setSource($source);
+
+return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
+
+```
+
+**Note:** Input arguments of gridResponse are reverse. If you use the @Template annotation, don't define a template view.
+
+```php
+<?php
+...
+return $gridManager->gridResponse(array('data' => $grid));
+
+```
+
 With this new feature you avoid some unnecessary queries 
 
+<a name="set_visible_columns"/>
+## Set visible columns
+
+sets a list of columns that the grid will display
+
+```php
+<?php 
+//MyEntity has A to E fields
+$source = new Entity('MyProjectMyBundle:MyEntity');
+
+$grid = $this->get('grid');
+
+$grid->setSource($source);
+
+//We want to display only A, C and E, setVisibleColumns sets B and D to hidden
+$grid->setVisibleColumns(array('A', 'C', 'E'));
+
+//The grid displays only A, C and E
+return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
+```
+
+This feature avoids crowding controllers with this kind of code:
+
+```php
+<?php 
+
+foreach($grid->getColumns() as $column) {
+    switch($column->getId()){
+        case 'B':
+        case 'D':
+        $column->setVisible(false);
+    }
+}
+
+```
+
+<a name="set_hidden_columns"/>
+## Set hidden columns
+
+sets a list of columns that the grid will hide
+
+```php
+<?php 
+//MyEntity has A to E fields
+$source = new Entity('MyProjectMyBundle:MyEntity');
+
+$grid = $this->get('grid');
+
+$grid->setSource($source);
+
+//We want to display only A, C and E, setHiddenColumns sets B and D to hidden
+$grid->setHiddenColumns(array('B', 'D'));
+
+//The grid displays only A, C and E
+return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
+```
+
+This feature avoids crowding controllers with this kind of code:
+
+```php
+<?php 
+
+foreach($grid->getColumns() as $column) {
+    switch($column->getId()){
+        case 'B':
+        case 'D':
+        $column->setVisible(false);
+    }
+}
+
+```
+
+This method can be used with setVisibleColumns, for instance:
+
+```php
+<?php 
+//MyEntity has A to E fields
+$source = new Entity('MyProjectMyBundle:MyEntity');
+$grid = $this->get('grid');
+$grid->setSource($source);
+
+//setVisibleColumns sets D and E to hidden
+$grid->setVisibleColumns(array('A', 'B', 'C'));
+
+//setHiddenColumns sets B and D to hidden
+$grid->setHiddenColumns(array('B', 'D'));
+
+
+//The grid displays A and C
+return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
+```
+
+<a name="working_example"/>
 Working Example
 ----------------
 
