@@ -1,3 +1,31 @@
+`21 Apr 2012`
+
+ * Improve configuration doc
+
+`20 Apr 2012`
+
+ * add initFilters feature
+ * fix custom actions column
+ * fix exception not found with setData on the grid
+
+`13 Apr 2012`
+
+ * japanese translations
+
+`12 Apr 2012`
+
+ * applying filter now reloads grid to first page
+ * new SourceSelect column type
+
+`9 Apr 2012`
+
+ * fix broken confirmation message
+ * polish translations
+
+`8 Apr 2012`
+
+ * as far as symfony 2.0 lacks of some important features and 2.1dev is heavily unstable with too many changes every day (which causes too many problems form my company) i've decided to stop using symfony2 for my future projects it basically means that i'll no longer support this bundle, Abhoryo and nurikabe have rights to merge any PR for this bundle  
+
 
 `20 Oct 2011`
 

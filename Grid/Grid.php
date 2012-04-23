@@ -13,6 +13,7 @@
 namespace Sorien\DataGridBundle\Grid;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Form\Exception\PropertyAccessDeniedException;
 
 use Sorien\DataGridBundle\Grid\Columns;
 use Sorien\DataGridBundle\Grid\Rows;
@@ -21,7 +22,9 @@ use Sorien\DataGridBundle\Grid\Action\RowActionInterface;
 use Sorien\DataGridBundle\Grid\Column\Column;
 use Sorien\DataGridBundle\Grid\Column\MassActionColumn;
 use Sorien\DataGridBundle\Grid\Column\ActionsColumn;
+use Sorien\DataGridBundle\Grid\Column\PopulatableColumnInterface;
 use Sorien\DataGridBundle\Grid\Source\Source;
+
 
 class Grid
 {
@@ -37,13 +40,13 @@ class Grid
     private $session;
 
     /**
-    * @var \Symfony\Component\HttpFoundation\Request
-    */
+     * @var \Symfony\Component\HttpFoundation\Request
+     */
     private $request;
 
     /**
-    * @var \Symfony\Component\Routing\Router
-    */
+     * @var \Symfony\Component\Routing\Router
+     */
     private $router;
 
     /**
@@ -72,8 +75,8 @@ class Grid
     private $hash;
 
     /**
-    * @var \Sorien\DataGridBundle\Grid\Source\Source
-    */
+     * @var \Sorien\DataGridBundle\Grid\Source\Source
+     */
     private $source;
 
     private $totalCount;
@@ -82,13 +85,13 @@ class Grid
     private $limits;
 
     /**
-    * @var \Sorien\DataGridBundle\Grid\Columns
-    */
+     * @var \Sorien\DataGridBundle\Grid\Columns|\Sorien\DataGridBundle\Grid\Column\Column[]
+     */
     private $columns;
 
     /**
-    * @var @var \Sorien\DataGridBundle\Grid\Rows
-    */
+     * @var @var \Sorien\DataGridBundle\Grid\Rows
+     */
     private $rows;
 
     /**
@@ -128,9 +131,8 @@ class Grid
     private $visibleColumns = array();
 
     /**
-     * @param \Source\Source $source Data Source
      * @param \Symfony\Component\DependencyInjection\Container $container
-     * @param string $id set if you are using more then one grid inside controller
+     * @param \Source\Source $source Data Source
      */
     public function __construct($container, $source = null)
     {
@@ -166,31 +168,13 @@ class Grid
         }
     }
 
-    function addColumn($column, $position = 0)
-    {
-        $this->columns->addColumn($column, $position);
-
-        return $this;
-    }
-
-    function addMassAction(MassActionInterface $action)
-    {
-        if ($this->source instanceof Source)
-        {
-            throw new \RuntimeException('The actions have to be defined before the source.');
-        }
-        $this->massActions[] = $action;
-
-        return $this;
-    }
-
-    function addRowAction(RowActionInterface $action)
-    {
-        $this->rowActions[$action->getColumn()][] = $action;
-
-        return $this;
-    }
-
+    /**
+     * Sets Source to the Grid
+     *
+     * @param $source
+     * @return Grid
+     * @throws \InvalidArgumentException
+     */
     public function setSource($source)
     {
         if(!is_null($this->source))
@@ -209,6 +193,13 @@ class Grid
 
         //get cols from source
         $this->source->getColumns($this->columns);
+
+        //update populatable columns
+        foreach($this->columns as $column) {
+            if($column instanceof PopulatableColumnInterface) {
+                $column->populate($this->source);
+            }
+        }
 
         //generate hash
         $this->createHash();
@@ -374,7 +365,8 @@ class Grid
      */
     public function prepare()
     {
-        if ($this->isDataLoaded()) {
+        if ($this->isDataLoaded())
+        {
             $this->rows = $this->executeFromData($this->columns->getIterator(true), $this->page, $this->limit);
         }
         else {
@@ -386,11 +378,18 @@ class Grid
             throw new \Exception('Source have to return Rows object.');
         }
 
-		//add row actions column
+        if (count($this->rows) == 0 && $this->page > 0){
+            $this->page = 0;
+            $this->prepare();
+        }
+
+        //add row actions column
         if (count($this->rowActions) > 0)
         {
-            foreach ($this->rowActions as $column => $rowActions) {
-                if ($rowAction = $this->columns->hasColumnById($column, true)) {
+            foreach ($this->rowActions as $column => $rowActions)
+            {
+                if ($rowAction = $this->columns->hasColumnById($column, true))
+                {
                     $rowAction->setRowActions($rowActions);
                 }
                 else {
@@ -473,7 +472,8 @@ class Grid
         }
 
         //get size
-        if ($this->isDataLoaded()) {
+        if ($this->isDataLoaded())
+        {
             $this->totalCount = $this->getTotalCountFromData();
         }
         else {
@@ -487,11 +487,37 @@ class Grid
         return $this;
     }
 
+    /**
+     * Adds custom column to the grid
+     *
+     * @param $column
+     * @param int $position
+     * @return Grid
+     */
+    function addColumn($column, $position = 0)
+    {
+        $this->columns->addColumn($column, $position);
+
+        return $this;
+    }
+
+    /**
+     * Returns Grid Columns
+     *
+     * @return Column\Column[]|Columns
+     */
     public function getColumns()
     {
         return $this->columns;
     }
 
+    /**
+     * Sets Array of Columns to the grid
+     *
+     * @param $columns
+     * @return Grid
+     * @throws \InvalidArgumentException
+     */
     public function setColumns($columns)
     {
         if(!$columns instanceof Columns)
@@ -505,31 +531,84 @@ class Grid
         return $this;
     }
 
-    public function getRows()
+    /**
+     * Adds Mass Action
+     *
+     * @param Action\MassActionInterface $action
+     * @return Grid
+     */
+    function addMassAction(MassActionInterface $action)
     {
-        return $this->rows;
+        if ($this->source instanceof Source)
+        {
+            throw new \RuntimeException('The actions have to be defined before the source.');
+        }
+        $this->massActions[] = $action;
+
+        return $this;
     }
 
+    /**
+     * Returns Mass Actions
+     *
+     * @return Action\MassAction[]
+     */
     public function getMassActions()
     {
         return $this->massActions;
     }
 
+    /**
+     * Adds Row Action
+     *
+     * @param Action\RowActionInterface $action
+     * @return Grid
+     */
+    function addRowAction(RowActionInterface $action)
+    {
+        $this->rowActions[$action->getColumn()][] = $action;
+
+        return $this;
+    }
+
+    /**
+     * Returns Row Actions
+     *
+     * @return Action\RowAction[]
+     */
     public function getRowActions()
     {
         return $this->rowActions;
     }
 
+    /**
+     * Sets Route Parameters
+     *
+     * @param string $parameter
+     * @param mixed $value
+     *
+     * @return Grid
+     */
     public function setRouteParameter($parameter, $value)
     {
         $this->routeParameters[$parameter] = $value;
     }
 
+    /**
+     * Returns Route Parameters
+     *
+     * @return array
+     */
     public function getRouteParameters()
     {
         return $this->routeParameters;
     }
 
+    /**
+     * Returns Route URL
+     *
+     * @return string
+     */
     public function getRouteUrl()
     {
         if ($this->routeUrl == '')
@@ -557,8 +636,49 @@ class Grid
     }
 
     /**
-     * @param mixed $limits
-     * @return \Sorien\DataGridBundle\Grid\Grid
+     * Init value for filters
+     *
+     * @param array Hash of columnName => initValue
+     * @return Grid
+     */
+    public function initFilters(array $filters) {
+        foreach ($filters as $columnName => $value) {
+            if (is_null($this->getDataFromContext($columnName, false, true))) {
+                $this->columns->getColumnById($columnName)->setData($value);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets unique filter identification
+     *
+     * @param $id
+     * @return Grid
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Returns unique filter identifier
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Sets Limits
+     *
+     * @param mixed $limits e.g. array(10 => '10', 1000 => '1000')
+     * @return Grid
      */
     public function setLimits($limits)
     {
@@ -580,16 +700,31 @@ class Grid
         return $this;
     }
 
+    /**
+     * Returns limits
+     *
+     * @return array
+     */
     public function getLimits()
     {
         return $this->limits;
     }
 
+    /**
+     * Returns selected Limit (Rows Per Page)
+     * @return mixed
+     */
     public function getCurrentLimit()
     {
         return $this->limit;
     }
 
+    /**
+     * Sets current Page
+     *
+     * @param $page
+     * @return Grid
+     */
     public function setPage($page)
     {
         if ((int)$page > 0)
@@ -603,30 +738,72 @@ class Grid
         return $this;
     }
 
+    /**
+     * Returns current page
+     *
+     * @return int
+     */
     public function getPage()
     {
         return $this->page;
     }
 
+
+    /**
+     * Returnd grid display data as rows - internal helper for templates
+     *
+     * @return mixed
+     */
+    public function getRows()
+    {
+        return $this->rows;
+    }
+
+    /**
+     * Return count of available pages
+     *
+     * @return float
+     */
     public function getPageCount()
     {
         return ceil($this->getTotalCount() / $this->getCurrentLimit());
     }
 
+    /**
+     * Returns count of filtred rows(items) from source
+     *
+     * @return mixed
+     */
     public function getTotalCount()
     {
         return $this->totalCount;
     }
 
     /**
+     * Return true if if title panel is visible in template - internal helper
+     *
      * @return bool
-     * @todo fix according as isFilterSectionVisible
      */
     public function isTitleSectionVisible()
     {
-        return $this->showTitles ;
+        if ($this->showTitles == true)
+        {
+            foreach ($this->columns as $column)
+            {
+                // Not tested yet
+                if ($column->getTitle() != '')
+                {
+                    return true;
+                }
+            }
+        }
     }
 
+    /**
+     * Return true if if filter panel is visible shown in template - internal helper
+     *
+     * @return bool
+     */
     public function isFilterSectionVisible()
     {
         if ($this->showFilters == true)
@@ -644,6 +821,8 @@ class Grid
     }
 
     /**
+     * Return true if if pager panel is visible in template - internal helper
+     *
      * @return bool return true if pager is visible
      */
     public function isPagerSectionVisible()
@@ -653,7 +832,9 @@ class Grid
     }
 
     /**
-     * Function will hide all column filters
+     * Hides Filters Panel
+     *
+     * @return Grid
      */
     public function hideFilters()
     {
@@ -661,7 +842,9 @@ class Grid
     }
 
     /**
-     * function will hide all column titles
+     * Hides Titles panel
+     *
+     * @return Grid
      */
     public function hideTitles()
     {
@@ -669,7 +852,9 @@ class Grid
     }
 
     /**
-     * @param \Sorien\DataGridBundle\Grid\Column\Column $extension
+     * Adds Column Extension - internal helper
+     *
+     * @param Column\Column $extension
      * @return void
      */
     public function addColumnExtension($extension)
@@ -678,23 +863,31 @@ class Grid
     }
 
     /**
-     * Sets unique filter identification
+     * Set a prefix title
      *
-     * @param $id
-     * @return Grid
+     * @param $prefixTitle string
      */
-    public function setId($id)
+    public function setPrefixTitle($prefixTitle)
     {
-        $this->id = $id;
-
+        $this->prefixTitle = $prefixTitle;
         return $this;
     }
 
-    public function getId()
+    /**
+     * Get the prefix title
+     *
+     * @return string
+     */
+    public function getPrefixTitle()
     {
-        return $this->id;
+        return $this->prefixTitle;
     }
 
+    /**
+     * Default delete action
+     *
+     * @param $ids
+     */
     public function deleteAction($ids)
     {
         $this->source->delete($ids);
@@ -709,10 +902,10 @@ class Grid
     }
 
     /**
-     * Renders a view.
+     * Redirects or Renders a view - helper function
      *
-     * @param array    $parameters An array of parameters to pass to the view
-     * @param string   $view The view name
+     * @param array $parameters An array of parameters to pass to the view
+     * @param string $view The view name
      * @param Response $response A response instance
      *
      * @return Response A Response instance
@@ -736,6 +929,7 @@ class Grid
         }
     }
 
+    /****** DATA SOURCE ******/
 
     /**
      * Use data instead of fetching the source
@@ -858,17 +1052,6 @@ class Grid
     private function getTotalCountFromData()
     {
         return count($this->data);
-    }
-
-    public function getPrefixTitle()
-    {
-        return $this->prefixTitle;
-    }
-
-    public function setPrefixTitle($prefixTitle)
-    {
-        $this->prefixTitle = $prefixTitle;
-        return $this;
     }
 
     /**

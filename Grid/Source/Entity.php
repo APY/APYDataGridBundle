@@ -42,6 +42,12 @@ class Entity extends Source
     private $entityName;
 
     /**
+     * @var string e.g mydatabase
+     */
+    private $managerName;
+
+
+    /**
      * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
      */
     private $metadata;
@@ -61,16 +67,18 @@ class Entity extends Source
 
     /**
      * @param string $entityName e.g Cms:Page
+     * @param string $managerName e.g. mydatabase
      */
-    public function __construct($entityName)
+    public function __construct($entityName, $managerName = null)
     {
         $this->entityName = $entityName;
+        $this->managerName = $managerName;
         $this->joins = array();
     }
 
     public function initialise($container)
     {
-        $this->manager = $container->get('doctrine')->getEntityManager();
+        $this->manager = $container->get('doctrine')->getEntityManager($this->managerName);
         $this->ormMetadata = $this->manager->getClassMetadata($this->entityName);
 
         $this->class = $this->ormMetadata->getReflectionClass()->name;
@@ -84,10 +92,9 @@ class Entity extends Source
 
     /**
      * @param \Sorien\DataGridBundle\Grid\Column\Column $column
-     * @param boolean $withAlias
      * @return string
      */
-    private function getFieldName($column, $withAlias = true)
+    private function getFieldName($column, $withAlias = false)
     {
         $name = $column->getField();
 
@@ -95,12 +102,14 @@ class Entity extends Source
             return self::TABLE_ALIAS.'.'.$name;
         }
 
-        $parent = self::TABLE_ALIAS;
+        $parent = $previousParent = self::TABLE_ALIAS;
+
         $elements = explode('.', $name);
 
         while ($element = array_shift($elements)) {
             if (count($elements) > 0) {
                 $this->joins['_' . $element] = $parent . '.' . $element;
+                $previousParent = $parent;
                 $parent = '_' . $element;
                 $name = $element;
             } else {
@@ -108,11 +117,16 @@ class Entity extends Source
             }
         }
 
+        if (preg_match('/.(?P<all>(?P<field>\w+):(?P<function>\w+))$/', $name, $matches)) {
+            // Group by the primary field of the previous entity
+            $this->query->addGroupBy($previousParent);
+
+            return $matches['function'].'('.$parent.'.'.$matches['field'].') as '.substr($parent, 1).'::'.$matches['all'];
+        }
 
         if ($withAlias) {
             return '_' . $name.' as '.$column->getId();
         }
-
 
         return '_'.$name;
     }
@@ -162,11 +176,11 @@ class Entity extends Source
 
         foreach ($columns as $column)
         {
-            $this->query->addSelect($this->getFieldName($column));
+            $this->query->addSelect($this->getFieldName($column, true));
 
             if ($column->isSorted())
             {
-                $this->query->orderBy($this->getFieldName($column, false), $column->getOrder());
+                $this->query->orderBy($this->getFieldName($column), $column->getOrder());
             }
 
             if ($column->isFiltered())
@@ -178,7 +192,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $where->add($this->query->expr()->$operator(
-                            $this->getFieldName($column, false),
+                            $this->getFieldName($column),
                             $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -192,7 +206,7 @@ class Entity extends Source
                         $operator = $this->normalizeOperator($filter->getOperator());
 
                         $sub->add($this->query->expr()->$operator(
-                              $this->getFieldName($column, false),
+                              $this->getFieldName($column),
                               $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
@@ -317,7 +331,7 @@ class Entity extends Source
 
     public function delete(array $ids)
     {
-        $repository = $this->manager->getRepository($this->entityName);
+        $repository = $this->getRepository();
 
         foreach ($ids as $id) {
             $object = $repository->find($id);
@@ -330,5 +344,10 @@ class Entity extends Source
         }
 
         $this->manager->flush();
+    }
+
+    public function getRepository()
+    {
+        return $this->manager->getRepository($this->entityName);
     }
 }

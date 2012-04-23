@@ -87,11 +87,8 @@ abstract class Source implements DriverInterface
     abstract public function initialise($container);
 
     /**
-     * Set container
-     *
      * @abstract
-     * @param  $container
-     * @return void
+     * @param $columns
      */
     abstract public function getColumns($columns);
 
