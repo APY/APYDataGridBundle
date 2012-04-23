@@ -55,11 +55,17 @@ class Document extends Source
     private $count;
 
     /**
+     * @var string
+     */
+    private $group;
+
+    /**
      * @param string $documentName e.g. "Cms:Page"
      */
-    public function __construct($documentName)
+    public function __construct($documentName, $group = 'default')
     {
         $this->documentName = $documentName;
+        $this->group = $group;
     }
 
     public function initialise($container)
@@ -70,7 +76,7 @@ class Document extends Source
 
         $mapping = $container->get('grid.mapping.manager');
         $mapping->addDriver($this, -1);
-        $this->metadata = $mapping->getMetadata($this->class);
+        $this->metadata = $mapping->getMetadata($this->class, $this->group);
     }
 
     /**

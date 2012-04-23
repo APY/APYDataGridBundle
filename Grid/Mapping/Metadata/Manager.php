@@ -48,7 +48,7 @@ class Manager
         return clone $this->drivers;
     }
 
-    public function getMetadata($className)
+    public function getMetadata($className, $group = 'default')
     {
         $metadata = new Metadata();
 
@@ -56,8 +56,8 @@ class Manager
 
         foreach ($this->getDrivers() as $driver)
         {
-            $columns = array_merge($columns, $driver->getClassColumns($className));
-            $fieldsMetadata[] = $driver->getFieldsMetadata($className);
+            $columns = array_merge($columns, $driver->getClassColumns($className, $group));
+            $fieldsMetadata[] = $driver->getFieldsMetadata($className, $group);
         }
 
         $mappings = $cols = array();
@@ -68,7 +68,8 @@ class Manager
 
             foreach($fieldsMetadata as $field)
             {
-                if (isset($field[$fieldName]))
+                if (isset($field[$fieldName])
+                    && (!isset($field[$fieldName]['groups']) || in_array($group, (array) $field[$fieldName]['groups'])))
                 {
                     $map = array_merge($map, $field[$fieldName]);
                 }

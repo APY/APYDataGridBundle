@@ -62,6 +62,11 @@ class Entity extends Source
      */
     private $joins;
 
+    /**
+     * @var string
+     */
+    private $group;
+
     const TABLE_ALIAS = '_a';
     const COUNT_ALIAS = '__count';
 
@@ -69,11 +74,12 @@ class Entity extends Source
      * @param string $entityName e.g Cms:Page
      * @param string $managerName e.g. mydatabase
      */
-    public function __construct($entityName, $managerName = null)
+    public function __construct($entityName, $group = 'default', $managerName = null)
     {
         $this->entityName = $entityName;
         $this->managerName = $managerName;
         $this->joins = array();
+        $this->group = $group;
     }
 
     public function initialise($container)
@@ -87,7 +93,7 @@ class Entity extends Source
 
         /** todo autoregister mapping drivers with tag */
         $mapping->addDriver($this, -1);
-        $this->metadata = $mapping->getMetadata($this->class);
+        $this->metadata = $mapping->getMetadata($this->class, $this->group);
     }
 
     /**
@@ -235,6 +241,7 @@ class Entity extends Source
         $this->prepareQuery($this->query);
 
         $items = $this->query->getQuery()->getResult();
+        error_log('#YPT_$this->query->getDQL():'.var_export($this->query->getDQL(),true));
 
         // hydrate result
         $result = new Rows();
