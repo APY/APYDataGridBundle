@@ -241,7 +241,6 @@ class Entity extends Source
         $this->prepareQuery($this->query);
 
         $items = $this->query->getQuery()->getResult();
-        error_log('#YPT_$this->query->getDQL():'.var_export($this->query->getDQL(),true));
 
         // hydrate result
         $result = new Rows();
