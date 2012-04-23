@@ -134,7 +134,6 @@ class Annotation implements DriverInterface
 
     protected function getMetadataFromClass($className, $class)
     {
-        error_log('#YPT_get_class($class):'.var_export(get_class($class),true));
         if ($class instanceof Source)
         {
             foreach ($class->getGroups() as $group) {
