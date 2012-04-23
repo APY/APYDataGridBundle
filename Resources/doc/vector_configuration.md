@@ -104,7 +104,7 @@ In our exemple we could want to map our actions on the author_id.
 If your route has multiple Ids you can map them to the vector so that the action columns use them.
 
 ```yml
-books:
+books_more:
     pattern: /{id}/{author_id}/moreinfo
 ```
 
@@ -112,4 +112,10 @@ books:
 <?php
     $source = new Vector($books);
     $source->setId(array('id','author_id'));
+
+    $grid = $this->get('grid');
+    $grid->setSource($source);
+
+    $myRowAction = new RowAction('More Info', 'books_more', false, '_self', array('class' => 'show'));
+    $grid->addRowAction($myRowAction);
 ```
