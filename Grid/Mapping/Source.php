@@ -18,11 +18,13 @@ class Source
 {
     private $columns;
     private $filterable;
+    private $groups;
 
     public function __construct($metadata = array())
     {
         $this->columns = isset($metadata['columns']) ? array_map(array($this, 'formatColumnName'), explode(',', $metadata['columns'])) : array();
         $this->filterable = !(isset($metadata['filterable']) && $metadata['filterable']);
+        $this->groups = isset($metadata['groups']) ? (array) $metadata['groups'] : array('default');
     }
 
     private function formatColumnName($columnName) {
@@ -43,5 +45,10 @@ class Source
     public function isFilterable()
     {
         return $this->filterable;
+    }
+
+    public function getGroups()
+    {
+        return $this->groups;
     }
 }

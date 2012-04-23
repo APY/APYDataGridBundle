@@ -29,32 +29,32 @@ class Annotation implements DriverInterface
         $this->columns = $this->fields = $this->loaded = array();
     }
 
-    public function getClassColumns($class)
+    public function getClassColumns($class, $group = 'default')
     {
-        $this->loadMetadataFromReader($class);
-        return $this->columns[$class];
+        $this->loadMetadataFromReader($class, $group);
+        return $this->columns[$class][$group];
     }
 
-    public function getFieldsMetadata($class)
+    public function getFieldsMetadata($class, $group = 'default')
     {
-        $this->loadMetadataFromReader($class);
-        return $this->fields[$class];
+        $this->loadMetadataFromReader($class, $group);
+        return $this->fields[$class][$group];
     }
 
-    private function loadMetadataFromReader($className)
+    private function loadMetadataFromReader($className, $group = 'default')
     {
-        if (isset($this->loaded[$className])) return;
+        if (isset($this->loaded[$className][$group])) return;
 
         $reflection = new \ReflectionClass($className);
         $properties = array();
 
         foreach ($reflection->getProperties() as $property)
         {
-            $this->fields[$className][$property->getName()] = array();
+            $this->fields[$className][$group][$property->getName()] = array();
 
             foreach ($this->reader->getPropertyAnnotations($property) as $class)
             {
-                $this->getMetadataFromClassProperty($className, $class, $property->getName());
+                $this->getMetadataFromClassProperty($className, $class, $property->getName(), $group);
                 $properties[] = $property->getName();
             }
         }
@@ -64,15 +64,15 @@ class Annotation implements DriverInterface
             $this->getMetadataFromClass($className, $class);
         }
 
-        if (empty($this->columns[$className]))
+        if (empty($this->columns[$className][$group]))
         {
-            $this->columns[$className] = array_keys($this->fields[$className]);
+            $this->columns[$className][$group] = array_keys($this->fields[$className][$group]);
         }
 
-        $this->loaded[$className] = true;
+        $this->loaded[$className][$group] = true;
     }
 
-    protected function getMetadataFromClassProperty($className, $class, $name = null)
+    protected function getMetadataFromClassProperty($className, $class, $name = null, $group = 'default')
     {
         if ($class instanceof Column)
         {
@@ -80,7 +80,7 @@ class Annotation implements DriverInterface
 
             if (!isset($metadata['filterable']))
             {
-                $metadata['filterable'] = isset($this->filterable[$className]) ? $this->filterable[$className] : true;
+                $metadata['filterable'] = isset($this->filterable[$className][$group]) ? $this->filterable[$className][$group] : true;
             }
 
             if (isset($metadata['id']) && $name !== null)
@@ -92,7 +92,7 @@ class Annotation implements DriverInterface
             {
                 if (isset($metadata['id']))
                 {
-                    $this->fields[$className][$metadata['id']]['source'] = false;
+                    $this->fields[$className][$group][$metadata['id']]['source'] = false;
                 }
                 else
                 {
@@ -116,6 +116,10 @@ class Annotation implements DriverInterface
                 }
             }
 
+            if (!isset($metadata['title'])) {
+                $metadata['title'] = $metadata['id'];
+            }
+
             if (isset($metadata['field']))
             {
                 $metadata['source'] = true;
@@ -123,7 +127,7 @@ class Annotation implements DriverInterface
 
             foreach ($metadata as $key => $value)
             {
-                $this->fields[$className][$metadata['id']][$key] = $value;
+                $this->fields[$className][$group][$metadata['id']][$key] = $value;
             }
         }
     }
@@ -132,12 +136,16 @@ class Annotation implements DriverInterface
     {
         if ($class instanceof Source)
         {
-            $this->columns[$className] = $class->getColumns();
-            $this->filterable[$className] = $class->isFilterable();
+            foreach ($class->getGroups() as $group) {
+                $this->columns[$className][$group] = $class->getColumns();
+                $this->filterable[$className][$group] = $class->isFilterable();
+            }
         }
-        else
+        elseif ($class instanceof Column)
         {
-            $this->getMetadataFromClassProperty($className, $class);
+            foreach ($class->getGroups() as $group) {
+                $this->getMetadataFromClassProperty($className, $class, null, $group);
+            }
         }
     }
 }

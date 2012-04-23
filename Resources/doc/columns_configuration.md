@@ -21,7 +21,8 @@ use Sorien\DataGridBundle\Grid\Mapping as GRID;
 /**
  * Annotation Test Class
  *
- * @GRID\Source(columns="id, ...")
+ * @GRID\Source(columns="id, attached1, type, ...")
+ * @GRID\Source(columns="id, type", groups={"admin", "backend"})
  * @GRID\Column(id="attached1", size="120", type="text") //add custom column to grid, id has to be specified
  */
 class Test
@@ -31,6 +32,8 @@ class Test
      *
      * @ORM\Column(name="id", type="integer")
      * @GRID\Column(title="my own column name", size="120", type="text", visible=true, source=true, ... )
+	 * @GRID\Column(title="other name", size="80", type="text", visible=true, source=true, ... , groups={"admin", "backend"})
+	 
      */
     private $id;
 
@@ -49,9 +52,9 @@ class Test
 
  - id [string] - column id - property name, should by set only if column is defined inside class annotations
  - field [string] - table column /collection name
- - title [string] - own column name
- - size [int] - column width in pixels, default -1, -1 means auto resize
- - type [string] - column type (Date, Range, Select, Text, Boolean)
+ - title [string] default column id - own column name
+ - size [int] default -1 - column width in pixels, -1 means auto resize
+ - type [string(Date|Range|Select|Text|Boolean)] - column type 
  - values [array] - options (only Select Column)
  - format [string] - format (only Date Column)
  - sortable [boolean]- turns on or off column sorting
@@ -61,6 +64,8 @@ class Test
  - primary [boolean] - sets column as primary - default is primary key form Entity/Document
  - align [string(left|right|center)] - default left
  - role [string] default null - security role for current column example: role="ROLE_USER"
+ - groups [string|array] default 'default' - use this attribute to define more than one configuration for an Entity/Document
+			`i.e. $source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');`
 
 <a name="source_attributes"/>
 ### Attributes for '@GRID\Source' notation
@@ -70,6 +75,8 @@ class Test
     - The primary key have to be defined in this list.
     - Use the property name, not the column name. For related fields, use the field name (see example below in a One to Many association).
  - filterable [bool] turns on or off visibility of all columns
+ - groups [string|array] default 'default' - use this attribute to define more than one configuration for an Entity/Document
+			`i.e. $source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');`
 
 <a name="orm_associations"/>
 ### ORM association mapping support with `.` notation

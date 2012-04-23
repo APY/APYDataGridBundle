@@ -17,14 +17,21 @@ namespace Sorien\DataGridBundle\Grid\Mapping;
 class Column
 {
     private $metadata;
+    private $groups;
 
     public function __construct($metadata)
     {
         $this->metadata = $metadata;
+        $this->groups = isset($metadata['groups']) ? (array) $metadata['groups'] : array('default');
     }
 
     public function getMetadata()
     {
         return $this->metadata;
+    }
+
+    public function getGroups()
+    {
+        return $this->groups;
     }
 }
