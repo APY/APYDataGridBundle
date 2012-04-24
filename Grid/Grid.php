@@ -1042,7 +1042,7 @@ class Grid
     {
         if(empty($this->source))
         {
-            throw new \InvalidArgumentException('setHiddenColumns needs the grid source set beforehand');
+            throw new \InvalidArgumentException('setVisibleColumns needs the grid source set beforehand');
         }
 
         $columnNames = array();
