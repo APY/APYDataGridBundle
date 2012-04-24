@@ -119,16 +119,6 @@ class Grid
      * @var string
      */
     private $prefixTitle = '';
-    
-    /**
-     * @var array
-     */
-    private $hiddenColumns = array();
-
-    /**
-     * @var array
-     */
-    private $visibleColumns = array();
 
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container
@@ -404,7 +394,7 @@ class Grid
             $this->columns->addColumn(new MassActionColumn($this->getHash()), 1);
         }
 
-        $primaryColumns = $this->columns->getPrimaryColumn()->getId();
+        $primaryColumns = $this->columns->getPrimaryColumn();
 
         //So you can have multiple columns as the key
         //For actions that needs more than one ID
@@ -413,7 +403,7 @@ class Grid
             foreach ($primaryColumns as $column) {
                 $primaryKey[]= $column->getId();
             }
-        } 
+        }
         else {
             $primaryKey = $primaryColumns->getId();
         }
@@ -434,38 +424,6 @@ class Grid
                 {
                     $this->showTitles = true;
                     break;
-                }
-            }
-        }
-        
-        if(!empty($this->visibleColumns) || !empty($this->hiddenColumns))
-        {
-            $columnNames = array();
-            foreach ($this->columns as $column) {
-                $columnNames[] = $column->getId();
-            }
-
-            //Checking for a non-existing column name (wrong input coming from setVisibleColumns)
-            $diff = array_diff(array_merge($this->visibleColumns,$this->hiddenColumns),$columnNames);
-            if(!empty($diff)) {
-                throw new \Exception(sprintf("Invalid column name(s) : %s",implode(',',$diff)), 1);
-            }
-
-            if(empty($this->visibleColumns) && !empty ($this->hiddenColumns)) {
-                $visibleColumns = array_diff($columnNames, $this->hiddenColumns);
-            } 
-            elseif (!empty($this->visibleColumns) && empty ($this->hiddenColumns)) {
-                $visibleColumns = array_intersect($columnNames, $this->visibleColumns);
-            } 
-            else {
-                $visibleColumns = array_intersect($columnNames, $this->visibleColumns);
-                $visibleColumns = array_diff($visibleColumns, $this->hiddenColumns);
-            }
-
-            if(!empty($visibleColumns)) {
-                $columnsToHide = array_diff($columnNames, $visibleColumns);
-                foreach ($columnsToHide as $columnId) {
-                    $this->columns->getColumnById($columnId)->setVisible(false);
                 }
             }
         }
@@ -1053,14 +1011,26 @@ class Grid
     {
         return count($this->data);
     }
-    
+
     /**
     * sets a list of columns to hide when the grid is output
     * @param array $hiddenColumns
     */
     public function setHiddenColumns(array $hiddenColumns)
     {
-        $this->hiddenColumns = $hiddenColumns;
+        if(empty($this->source))
+        {
+            throw new \InvalidArgumentException('setHiddenColumns needs the grid source set beforehand');
+        }
+
+        if(empty($hiddenColumns))
+        {
+            throw new \InvalidArgumentException('setHiddenColumns needs an array of column ids');
+        }
+
+        foreach ($hiddenColumns as $column_id) {
+            $this->columns->getColumnById($column_id)->setVisible(false);
+        }
     }
 
     /**
@@ -1070,6 +1040,16 @@ class Grid
     */
     public function setVisibleColumns(array $visibleColumns)
     {
-        $this->visibleColumns = $visibleColumns;
+        if(empty($this->source))
+        {
+            throw new \InvalidArgumentException('setHiddenColumns needs the grid source set beforehand');
+        }
+
+        $columnNames = array();
+        foreach ($this->columns as $column) {
+            $columnNames[] = $column->getId();
+        }
+
+        $this->setHiddenColumns(array_diff($columnNames, $visibleColumns));
     }
 }
