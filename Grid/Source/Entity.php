@@ -124,10 +124,14 @@ class Entity extends Source
         }
 
         if (preg_match('/.(?P<all>(?P<field>\w+):(?P<function>\w+))$/', $name, $matches)) {
-            // Group by the primary field of the previous entity
-            $this->query->addGroupBy($previousParent);
+            if ($withAlias) {
+                // Group by the primary field of the previous entity
+                $this->query->addGroupBy($previousParent);
 
-            return $matches['function'].'('.$parent.'.'.$matches['field'].') as '.substr($parent, 1).'::'.$matches['all'];
+                return $matches['function'].'('.$parent.'.'.$matches['field'].') as '.substr($parent, 1).'::'.$matches['all'];
+            }
+
+            return substr($parent, 1).'::'.$matches['all'];
         }
 
         if ($withAlias) {
@@ -272,6 +276,9 @@ class Entity extends Source
 
         $qb = $this->manager->createQueryBuilder();
 
+        // Remove useless part
+        $this->query->resetDQLPart('orderBy');
+        
         $qb->select($qb->expr()->count(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField()));
         $qb->from($this->entityName, self::COUNT_ALIAS);
         $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField(), $this->query->getDQL()));
