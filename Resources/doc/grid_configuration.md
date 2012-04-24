@@ -14,6 +14,8 @@ Grid configurations
  * [Manipulate rows](#manipulate_rows)
  * [Set data to avoid calling the database](#set_data)
  * [Grid Response helper](#grid_response)
+ * [Set visible columns] (#set_visible_columns) 
+ * [Set hidden columns] (#set_hidden_columns) 
  * [Working Example](#working_example)
 
 <a name="configure_pager"/>
@@ -320,6 +322,98 @@ return $gridManager->gridResponse(array('data' => $grid));
 ```
 
 With this new feature you avoid some unnecessary queries 
+
+<a name="set_visible_columns"/>
+## Set visible columns
+
+sets a list of columns that the grid will display
+
+```php
+<?php 
+//MyEntity has A to E fields
+$source = new Entity('MyProjectMyBundle:MyEntity');
+
+$grid = $this->get('grid');
+
+$grid->setSource($source);
+
+//We want to display only A, C and E, setVisibleColumns sets B and D to hidden
+$grid->setVisibleColumns(array('A', 'C', 'E'));
+
+//The grid displays only A, C and E
+return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
+```
+
+This feature avoids crowding controllers with this kind of code:
+
+```php
+<?php 
+
+foreach($grid->getColumns() as $column) {
+    switch($column->getId()){
+        case 'B':
+        case 'D':
+        $column->setVisible(false);
+    }
+}
+
+```
+
+<a name="set_hidden_columns"/>
+## Set hidden columns
+
+sets a list of columns that the grid will hide
+
+```php
+<?php 
+//MyEntity has A to E fields
+$source = new Entity('MyProjectMyBundle:MyEntity');
+
+$grid = $this->get('grid');
+
+$grid->setSource($source);
+
+//We want to display only A, C and E, setHiddenColumns sets B and D to hidden
+$grid->setHiddenColumns(array('B', 'D'));
+
+//The grid displays only A, C and E
+return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
+```
+
+This feature avoids crowding controllers with this kind of code:
+
+```php
+<?php 
+
+foreach($grid->getColumns() as $column) {
+    switch($column->getId()){
+        case 'B':
+        case 'D':
+        $column->setVisible(false);
+    }
+}
+
+```
+
+This method can be used with setVisibleColumns, for instance:
+
+```php
+<?php 
+//MyEntity has A to E fields
+$source = new Entity('MyProjectMyBundle:MyEntity');
+$grid = $this->get('grid');
+$grid->setSource($source);
+
+//setVisibleColumns sets D and E to hidden
+$grid->setVisibleColumns(array('A', 'B', 'C'));
+
+//setHiddenColumns sets B and D to hidden
+$grid->setHiddenColumns(array('B', 'D'));
+
+
+//The grid displays A and C
+return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
+```
 
 
 <a name="working_example"/>
