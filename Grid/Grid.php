@@ -394,22 +394,10 @@ class Grid
             $this->columns->addColumn(new MassActionColumn($this->getHash()), 1);
         }
 
-        $primaryColumns = $this->columns->getPrimaryColumn();
-
-        //So you can have multiple columns as the key
-        //For actions that needs more than one ID
-        if(is_array($primaryColumns)) {
-            $primaryKey = array();
-            foreach ($primaryColumns as $column) {
-                $primaryKey[]= $column->getId();
-            }
-        }
-        else {
-            $primaryKey = $primaryColumns->getId();
-        }
+        $primaryColumnId = $this->columns->getPrimaryColumn()->getId();
 
         foreach ($this->rows as $row) {
-            $row->setPrimaryField($primaryKey);
+            $row->setPrimaryField($primaryColumnId);
         }
 
         //@todo refactor autohide titles when no title is set
