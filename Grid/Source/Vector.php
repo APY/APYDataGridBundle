@@ -11,7 +11,7 @@
 
 namespace Sorien\DataGridBundle\Grid\Source;
 
-use Sorien\DataGridBundle\Grid\Column\Column;
+use Sorien\DataGridBundle\Grid\Column\TextColumn;
 use Sorien\DataGridBundle\Grid\Rows;
 use Sorien\DataGridBundle\Grid\Row;
 
@@ -60,7 +60,7 @@ class Vector extends Source
     {
         $token = empty($this->id); //makes the first column primary by default
         foreach ($this->fieldNames as $column) {
-            $columns->addColumn(new \Sorien\DataGridBundle\Grid\Column\TextColumn(array(
+            $columns->addColumn(new TextColumn(array(
                         'id' => $column,
                         'title' => $column,
                         'primary' => (is_array($this->id) && in_array($column, $this->id)) || $column == $this->id || $token,
@@ -112,9 +112,9 @@ class Vector extends Source
 
         //pageing
         $data = array_slice($items, $page * $limit, $limit);
-        $rows = new \Sorien\DataGridBundle\Grid\Rows();
+        $rows = new Rows();
         foreach ($data as $item) {
-            $row = new \Sorien\DataGridBundle\Grid\Row();
+            $row = new Row();
             $row->setPrimaryField($this->id);
             foreach ($item as $key => $value) {
                 $row->setField($key, $value);
@@ -131,7 +131,7 @@ class Vector extends Source
 
     public function getHash()
     {
-        return __CLASS__;
+        return __CLASS__.md5(implode('', $this->fieldNames));
     }
 
     /**
