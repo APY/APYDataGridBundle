@@ -25,9 +25,22 @@ class ActionsColumn extends Column
 
     public function getRouteParameters($row, $action)
     {
+        $actionParameters = $action->getRouteParameters();
+        if(!empty($actionParameters)){
+            $routeParameters = array();
+            foreach ($actionParameters as $name => $parameter) {
+                if(is_numeric($name)){
+                    $routeParameters[$parameter] = $row->getField($parameter);
+                } else {
+                    $routeParameters[$name] = $parameter;
+                }
+            }
+            return $routeParameters;
+        }
+
         $routeParameters = array_merge(
-                array($row->getPrimaryField() => $row->getPrimaryFieldValue()),
-                $action->getRouteParameters()
+            array($row->getPrimaryField() => $row->getPrimaryFieldValue()),
+            $action->getRouteParameters()
         );
 
         return $routeParameters;

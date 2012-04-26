@@ -396,8 +396,7 @@ class Grid
 
         $primaryColumnId = $this->columns->getPrimaryColumn()->getId();
 
-        foreach ($this->rows as $row)
-        {
+        foreach ($this->rows as $row) {
             $row->setPrimaryField($primaryColumnId);
         }
 
@@ -999,5 +998,46 @@ class Grid
     private function getTotalCountFromData()
     {
         return count($this->data);
+    }
+
+    /**
+    * sets a list of columns to hide when the grid is output
+    * @param array $hiddenColumns
+    */
+    public function setHiddenColumns(array $hiddenColumns)
+    {
+        if(empty($this->source))
+        {
+            throw new \InvalidArgumentException('setHiddenColumns needs the grid source set beforehand');
+        }
+
+        if(empty($hiddenColumns))
+        {
+            throw new \InvalidArgumentException('setHiddenColumns needs an array of column ids');
+        }
+
+        foreach ($hiddenColumns as $column_id) {
+            $this->columns->getColumnById($column_id)->setVisible(false);
+        }
+    }
+
+    /**
+    * sets a list of columns to show when the grid is output
+    * it acts as a mask; Other columns will be set as hidden
+    * @param array $visibleColumns
+    */
+    public function setVisibleColumns(array $visibleColumns)
+    {
+        if(empty($this->source))
+        {
+            throw new \InvalidArgumentException('setVisibleColumns needs the grid source set beforehand');
+        }
+
+        $columnNames = array();
+        foreach ($this->columns as $column) {
+            $columnNames[] = $column->getId();
+        }
+
+        $this->setHiddenColumns(array_diff($columnNames, $visibleColumns));
     }
 }
