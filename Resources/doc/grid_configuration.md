@@ -344,21 +344,6 @@ $grid->setVisibleColumns(array('A', 'C', 'E'));
 return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
 ```
 
-This feature avoids crowding controllers with this kind of code:
-
-```php
-<?php 
-
-foreach($grid->getColumns() as $column) {
-    switch($column->getId()){
-        case 'B':
-        case 'D':
-        $column->setVisible(false);
-    }
-}
-
-```
-
 <a name="set_hidden_columns"/>
 ## Set hidden columns
 
@@ -378,21 +363,6 @@ $grid->setHiddenColumns(array('B', 'D'));
 
 //The grid displays only A, C and E
 return $gridManager->gridResponse(array('data' => $grid), 'MyProjectMyBundle::my_grid.html.twig');
-```
-
-This feature avoids crowding controllers with this kind of code:
-
-```php
-<?php 
-
-foreach($grid->getColumns() as $column) {
-    switch($column->getId()){
-        case 'B':
-        case 'D':
-        $column->setVisible(false);
-    }
-}
-
 ```
 
 This method can be used with setVisibleColumns, for instance:
