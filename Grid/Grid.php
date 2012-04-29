@@ -201,7 +201,7 @@ class Grid
 
         // Persistence - kill previous session
         if (!$this->persistence && $this->request->headers->get('referer') != $this->request->getUriForPath($this->request->getPathInfo())) {
-            $this->session->set($this->getHash(), array());
+            $this->session->remove($this->getHash());
         }
 
         //store column data
