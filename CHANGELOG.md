@@ -2,11 +2,12 @@
 
  * Add array Column for Entity sources
  * Fix createHash when you define a id for the grid
+ * [BC BREAK] Don't use previous data if the client leave the page during the session. You can turn on the persistence if you want the opposite.
 
 `29 Apr 2012`
 
  * Add Vector source
- * Add visible columns Helper
+ * Add visible columns mask Helpers
  * Add support for additionnal route parameters  on row actions
 
 `23 Apr 2012`

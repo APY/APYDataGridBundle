@@ -121,6 +121,11 @@ class Grid
     private $prefixTitle = '';
 
     /**
+     * @var string
+     */
+    private $persistence = false;
+
+    /**
      * @param \Symfony\Component\DependencyInjection\Container $container
      * @param \Source\Source $source Data Source
      */
@@ -193,6 +198,11 @@ class Grid
 
         //generate hash
         $this->createHash();
+
+        // Persistence - kill previous session
+        if (!$this->persistence && $this->request->headers->get('referer') != $this->request->getUriForPath($this->request->getPathInfo())) {
+            $this->session->set($this->getHash(), array());
+        }
 
         //store column data
         $this->fetchAndSaveColumnData();
@@ -619,6 +629,31 @@ class Grid
     {
         return $this->id;
     }
+
+
+    /**
+     * Sets persistence
+     *
+     * @param $persistence
+     * @return Grid
+     */
+    public function setPersistence($persistence)
+    {
+        $this->persistence = $persistence;
+
+        return $this;
+    }
+
+    /**
+     * Returns persistence
+     *
+     * @return boolean
+     */
+    public function getPersistence()
+    {
+        return $this->persistence;
+    }
+
 
     /**
      * Sets Limits
