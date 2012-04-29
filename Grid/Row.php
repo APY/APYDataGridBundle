@@ -74,6 +74,17 @@ class Row
 
     public function getPrimaryFieldValue()
     {
+        if(is_array($this->primaryField)){
+            return array_intersect_key($this->fields, array_flip($this->primaryField));
+        }
         return $this->fields[$this->primaryField];
+    }
+    
+    public function getPrimaryKeyValue(){
+        $primaryField = $this->getPrimaryFieldValue();
+        if(is_array($primaryField)){
+            return $primaryField;
+        } 
+        return array('id'=>$primaryField);
     }
 }
