@@ -1,6 +1,24 @@
+`30 Apr 2012`
+
+ * Add array Column for Entity and Document sources
+ * Fix createHash when you define a id for the grid
+
+`29 Apr 2012`
+
+ * Add Vector source
+ * Add visible columns Helper
+ * Add support for additionnal route parameters  on row actions
+
+`23 Apr 2012`
+
+ * Add groups support in annotation + doc
+
 `21 Apr 2012`
 
  * Improve configuration doc
+ * Set the default title of an associated field
+ * Add support for multi columns on the same JoinColumn property + doc
+ * Add groupBy feature with aggregate dql functions support in mapping association + doc
 
 `20 Apr 2012`
 
