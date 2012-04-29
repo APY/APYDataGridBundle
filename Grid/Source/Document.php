@@ -177,7 +177,13 @@ class Document extends Source
 
             foreach ($columns as $column)
             {
-                $row->setField($column->getId(), $properties[$column->getId()]);
+                $value = $properties[$column->getId()];
+
+                if ($column->getType() === 'array') {
+                    $value = unserialize($value);
+                }
+
+                $row->setField($column->getId(), $value);
             }
 
             //call overridden prepareRow or associated closure

@@ -184,6 +184,8 @@ class Entity extends Source
 
         $where = $this->query->expr()->andx();
 
+        $serializeColumns = array();
+
         foreach ($columns as $column)
         {
             $this->query->addSelect($this->getFieldName($column, true));
@@ -220,9 +222,15 @@ class Entity extends Source
                               $this->normalizeValue($filter->getOperator(), $filter->getValue())
                         ));
                     }
+
                     $where->add($sub);
                 }
+
                 $this->query->where($where);
+            }
+
+            if ($column->getType() === 'array') {
+                $serializeColumns[] = $column->getId();
             }
         }
 
@@ -255,7 +263,12 @@ class Entity extends Source
 
             foreach ($item as $key => $value)
             {
-               $row->setField($key, $value);
+                if (in_array($key, $serializeColumns))
+                {
+                    $value = unserialize($value);
+                }
+
+                $row->setField($key, $value);
             }
 
             //call overridden prepareRow or associated closure
@@ -278,7 +291,7 @@ class Entity extends Source
 
         // Remove useless part
         $this->query->resetDQLPart('orderBy');
-        
+
         $qb->select($qb->expr()->count(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField()));
         $qb->from($this->entityName, self::COUNT_ALIAS);
         $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField(), $this->query->getDQL()));
@@ -328,7 +341,11 @@ class Entity extends Source
                 case 'datetime':
                 case 'time':
                     $values['type'] = 'date';
-                break;
+                    break;
+                case 'array':
+                case 'object':
+                    $values['type'] = 'array';
+                    break;
             }
 
             $result[$name] = $values;

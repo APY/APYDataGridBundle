@@ -189,3 +189,14 @@ function {{ grid.hash }}_mark_all(select)
         {% endfor %}
     </select>
 {% endblock grid_column_type_select_filter %}
+{# -------------------------------------------- grid_column_type_array_filter --------------------------------------- #}
+{% block grid_column_type_array_filter %}
+    <input type="text" value="{{ column.getData() }}" name="{{hash}}[{{column.id}}]" onkeypress="if (event.which == 13){this.form.submit();}"/>
+{% endblock grid_column_type_array_filter %}
+{# ------------------------------------------------ grid_array_columns --------------------------------------------- #}
+{% block grid_column_array_cell %}
+{% for index in value -%}
+        {{ index|raw }}{{ column.separator|raw }}
+{%- endfor %}
+{% endblock grid_column_array_cell %}
+

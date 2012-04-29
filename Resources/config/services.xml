@@ -15,6 +15,7 @@
         <parameter key="grid.column.blank.class">Sorien\DataGridBundle\Grid\Column\BlankColumn</parameter>
         <parameter key="grid.column.boolean.class">Sorien\DataGridBundle\Grid\Column\BooleanColumn</parameter>
         <parameter key="grid.column.sourceselect.class">Sorien\DataGridBundle\Grid\Column\SourceSelectColumn</parameter>
+        <parameter key="grid.column.array.class">Sorien\DataGridBundle\Grid\Column\ArrayColumn</parameter>
     </parameters>
 
     <services>
@@ -26,7 +27,7 @@
         <service id="grid" class="%grid.base.class%" scope="prototype">
             <argument type="service" id="service_container" />
         </service>
-        
+
         <service id="grid.manager" class="%grid.manager.base.class%">
             <argument type="service" id="service_container" />
         </service>
@@ -56,6 +57,10 @@
         </service>
 
         <service id="grid.column.sourceselect" class="%grid.column.sourceselect.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.array" class="%grid.column.array.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
 
