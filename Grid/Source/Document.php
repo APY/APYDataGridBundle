@@ -177,13 +177,7 @@ class Document extends Source
 
             foreach ($columns as $column)
             {
-                $value = $properties[$column->getId()];
-
-                if ($column->getType() === 'array') {
-                    $value = unserialize($value);
-                }
-
-                $row->setField($column->getId(), $value);
+                $row->setField($column->getId(), $properties[$column->getId()]);
             }
 
             //call overridden prepareRow or associated closure
@@ -258,7 +252,7 @@ class Document extends Source
                     break;
                 case 'date':
                     $values['type'] = 'date';
-                break;
+                    break;
             }
 
             $result[$name] = $values;

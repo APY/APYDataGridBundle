@@ -1,6 +1,6 @@
 `30 Apr 2012`
 
- * Add array Column for Entity and Document sources
+ * Add array Column for Entity sources
  * Fix createHash when you define a id for the grid
 
 `29 Apr 2012`
