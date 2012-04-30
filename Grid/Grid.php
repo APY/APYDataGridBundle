@@ -542,7 +542,6 @@ class Grid
      *
      * @param string $parameter
      * @param mixed $value
-     *
      * @return Grid
      */
     public function setRouteParameter($parameter, $value)
@@ -865,6 +864,73 @@ class Grid
     }
 
     /**
+     * Sets a list of columns to hide when the grid is output
+     * @param array $columnsIds
+     */
+    public function setHiddenColumns(array $columnsIds)
+    {
+        if(empty($this->source))
+        {
+            throw new \InvalidArgumentException('setHiddenColumns needs the grid source set beforehand');
+        }
+
+        if(empty($columnsIds))
+        {
+            throw new \InvalidArgumentException('setHiddenColumns needs an array of column ids');
+        }
+
+        foreach ($columnsIds as $columnId) {
+            $this->columns->getColumnById($columnId)->setVisible(false);
+        }
+    }
+
+    /**
+     * Sets a list of columns to show when the grid is output
+     * It acts as a mask; Other columns will be set as hidden
+     * @param array $columnsIds
+     */
+    public function setVisibleColumns(array $columnsIds)
+    {
+        if(empty($this->source))
+        {
+            throw new \InvalidArgumentException('setVisibleColumns needs the grid source set beforehand');
+        }
+
+        $columnNames = array();
+        foreach ($this->columns as $column) {
+            $columnNames[] = $column->getId();
+        }
+
+        $this->setHiddenColumns(array_diff($columnNames, $columnsIds));
+    }
+
+    /**
+     * Sets on the visiblilty of columns
+     * @param string|array $columnsIds
+     */
+    public function showColumns($columnsIds)
+    {
+        $columnsIds = (array) $columnsIds;
+
+        foreach ($columnsIds as $columnId) {
+            $this->columns->getColumnById($columnId)->setVisible(true);
+        }
+    }
+
+    /**
+     * Sets off the visiblilty of columns
+     * @param string|array $columnsIds
+     */
+    public function hideColumns($columnsIds)
+    {
+        $columnsIds = (array) $columnsIds;
+
+        foreach ($columnsIds as $columnId) {
+            $this->columns->getColumnById($columnId)->setVisible(false);
+        }
+    }
+
+    /**
      * Default delete action
      *
      * @param $ids
@@ -882,13 +948,14 @@ class Grid
         $this->columns = clone $this->columns;
     }
 
+    /****** HELPER ******/
+
     /**
      * Redirects or Renders a view - helper function
      *
      * @param array $parameters An array of parameters to pass to the view
      * @param string $view The view name
      * @param Response $response A response instance
-     *
      * @return Response A Response instance
      */
     public function gridResponse(array $parameters = array(), $view = null, Response $response = null)
@@ -947,7 +1014,6 @@ class Grid
     /**
      * Find data from array|object
      *
-     * @abstract
      * @param \Sorien\DataGridBundle\Grid\Column\Column[] $columns
      * @param int $page
      * @param int $limit
@@ -1033,46 +1099,5 @@ class Grid
     private function getTotalCountFromData()
     {
         return count($this->data);
-    }
-
-    /**
-    * sets a list of columns to hide when the grid is output
-    * @param array $hiddenColumns
-    */
-    public function setHiddenColumns(array $hiddenColumns)
-    {
-        if(empty($this->source))
-        {
-            throw new \InvalidArgumentException('setHiddenColumns needs the grid source set beforehand');
-        }
-
-        if(empty($hiddenColumns))
-        {
-            throw new \InvalidArgumentException('setHiddenColumns needs an array of column ids');
-        }
-
-        foreach ($hiddenColumns as $column_id) {
-            $this->columns->getColumnById($column_id)->setVisible(false);
-        }
-    }
-
-    /**
-    * sets a list of columns to show when the grid is output
-    * it acts as a mask; Other columns will be set as hidden
-    * @param array $visibleColumns
-    */
-    public function setVisibleColumns(array $visibleColumns)
-    {
-        if(empty($this->source))
-        {
-            throw new \InvalidArgumentException('setVisibleColumns needs the grid source set beforehand');
-        }
-
-        $columnNames = array();
-        foreach ($this->columns as $column) {
-            $columnNames[] = $column->getId();
-        }
-
-        $this->setHiddenColumns(array_diff($columnNames, $visibleColumns));
     }
 }
