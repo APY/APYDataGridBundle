@@ -123,6 +123,7 @@ class Entity extends Source
             }
         }
 
+        // Aggregate dql functions
         if (preg_match('/.(?P<all>(?P<field>\w+):(?P<function>\w+))$/', $name, $matches)) {
             if ($withAlias) {
                 // Group by the primary field of the previous entity
@@ -135,6 +136,11 @@ class Entity extends Source
         }
 
         if ($withAlias) {
+            // mapping field
+            if (strpos($name, '.')) {
+                return '_' . $name.' as '.str_replace('.', '::', $column->getId());
+            }
+
             return '_' . $name.' as '.$column->getId();
         }
 
@@ -263,6 +269,8 @@ class Entity extends Source
 
             foreach ($item as $key => $value)
             {
+                $key = str_replace('::', '.', $key);
+
                 if (in_array($key, $serializeColumns))
                 {
                     $value = unserialize($value);

@@ -128,7 +128,7 @@ class DataGridExtension extends \Twig_Extension
 
         if (($id = $this->names[$grid->getHash()]) != '')
         {
-            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getId().'_cell'))
+            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_cell'))
             {
                 return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
             }
@@ -139,7 +139,7 @@ class DataGridExtension extends \Twig_Extension
             }
         }
 
-        if ($this->hasBlock($block = 'grid_column_'.$column->getId().'_cell'))
+        if ($this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell'))
         {
             return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
         }
@@ -164,7 +164,7 @@ class DataGridExtension extends \Twig_Extension
     {
         if (($id = $this->names[$grid->getHash()]) != '')
         {
-            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getId().'_filter'))
+            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_filter'))
             {
                 return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
             }
@@ -180,11 +180,11 @@ class DataGridExtension extends \Twig_Extension
             }
         }
 
-        if ($this->hasBlock($block = 'grid_column_'.$column->getId().'_filter'))
+        if ($this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_filter'))
         {
             return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
         }
-		
+
         if ($this->hasBlock($block = 'grid_column_type_'.$column->getType().'_filter'))
         {
             return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
@@ -194,7 +194,7 @@ class DataGridExtension extends \Twig_Extension
         {
             return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
         }
-		
+
         return $column->renderFilter($grid->getHash());
     }
 
@@ -206,7 +206,8 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getGridUrl($section, $grid, $param = null)
     {
-        $separator = ( count($grid->getRouteParameters()) ? '&' : '?' );
+        $separator =  strpos($grid->getRouteUrl(), '?') ? '&' : '?';
+
         if ($section == 'order')
         {
             if ($param->isSorted())
@@ -229,7 +230,7 @@ class DataGridExtension extends \Twig_Extension
     }
 
     /**
-     * Render block 
+     * Render block
      *
      * @param $name string
      * @param $parameters string

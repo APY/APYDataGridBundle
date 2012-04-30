@@ -163,6 +163,17 @@ abstract class Column
     }
 
     /**
+     * get column render block identifier
+     *
+     * @return int|string
+     */
+    public function getRenderBlockId()
+    {
+        // For Mapping fields and aggregate dql functions
+        return str_replace(array('.', ':'), '_', $this->id);
+    }
+
+    /**
      * Set column title
      *
      * @param string $title
