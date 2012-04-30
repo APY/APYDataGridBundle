@@ -867,19 +867,19 @@ class Grid
      * Sets a list of columns to hide when the grid is output
      * @param array $columnsIds
      */
-    public function setHiddenColumns(array $columnsIds)
+    public function setHiddenColumns(array $columnIds)
     {
         if(empty($this->source))
         {
             throw new \InvalidArgumentException('setHiddenColumns needs the grid source set beforehand');
         }
 
-        if(empty($columnsIds))
+        if(empty($columnIds))
         {
             throw new \InvalidArgumentException('setHiddenColumns needs an array of column ids');
         }
 
-        foreach ($columnsIds as $columnId) {
+        foreach ($columnIds as $columnId) {
             $this->columns->getColumnById($columnId)->setVisible(false);
         }
     }
@@ -889,7 +889,7 @@ class Grid
      * It acts as a mask; Other columns will be set as hidden
      * @param array $columnsIds
      */
-    public function setVisibleColumns(array $columnsIds)
+    public function setVisibleColumns(array $columnIds)
     {
         if(empty($this->source))
         {
@@ -901,18 +901,18 @@ class Grid
             $columnNames[] = $column->getId();
         }
 
-        $this->setHiddenColumns(array_diff($columnNames, $columnsIds));
+        $this->setHiddenColumns(array_diff($columnNames, $columnIds));
     }
 
     /**
      * Sets on the visiblilty of columns
      * @param string|array $columnsIds
      */
-    public function showColumns($columnsIds)
+    public function showColumns($columnIds)
     {
-        $columnsIds = (array) $columnsIds;
+        $columnIds = (array) $columnIds;
 
-        foreach ($columnsIds as $columnId) {
+        foreach ($columnIds as $columnId) {
             $this->columns->getColumnById($columnId)->setVisible(true);
         }
     }
@@ -921,11 +921,11 @@ class Grid
      * Sets off the visiblilty of columns
      * @param string|array $columnsIds
      */
-    public function hideColumns($columnsIds)
+    public function hideColumns($columnIds)
     {
-        $columnsIds = (array) $columnsIds;
+        $columnIds = (array) $columnIds;
 
-        foreach ($columnsIds as $columnId) {
+        foreach ($columnIds as $columnId) {
             $this->columns->getColumnById($columnId)->setVisible(false);
         }
     }
