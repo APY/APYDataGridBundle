@@ -69,6 +69,7 @@ class DataGridExtension extends \Twig_Extension
             'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl'),
             'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter'),
             'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
+            'grid_no_data'      => new \Twig_Function_Method($this, 'getGridNoData', array('is_safe' => array('html'))),
         );
     }
 
@@ -227,6 +228,11 @@ class DataGridExtension extends \Twig_Extension
         {
             return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_LIMIT.']=';
         }
+    }
+
+    public function getGridNoData($grid)
+    {
+        return $this->renderBlock('grid_no_data', array('grid' => $grid));
     }
 
     /**

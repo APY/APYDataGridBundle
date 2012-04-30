@@ -1,9 +1,17 @@
+`1 May 2012`
+
+ * [BC Break] Show a message instead of an empty grid
+ 
 `30 Apr 2012`
 
  * Add array Column for Entity sources
  * Fix createHash when you define a id for the grid
  * [BC BREAK] Don't use previous data if the client leave the page during the session. You can turn on the persistence if you want the opposite.
-
+ * Fix initFilters method
+ * Add initOrder method
+ * Add show and hide columns methods
+ * Fix render bloc ids and manipulate row field ids with mapping fields.
+ 
 `29 Apr 2012`
 
  * Add Vector source

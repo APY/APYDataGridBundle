@@ -131,6 +131,11 @@ class Grid
     private $newSession = false;
 
     /**
+     * @var string
+     */
+    private $noDataMessage = 'no data';
+
+    /**
      * @param \Symfony\Component\DependencyInjection\Container $container
      * @param \Source\Source $source Data Source
      */
@@ -562,6 +567,8 @@ class Grid
     public function setRouteParameter($parameter, $value)
     {
         $this->routeParameters[$parameter] = $value;
+
+        return $this;
     }
 
     /**
@@ -592,6 +599,7 @@ class Grid
     public function isReadyForRedirect()
     {
         $data = $this->request->get($this->getHash());
+
         return !empty($data);
     }
 
@@ -756,6 +764,7 @@ class Grid
         {
             throw new \InvalidArgumentException('Page has to have a positive number');
         }
+
         return $this;
     }
 
@@ -849,6 +858,7 @@ class Grid
     public function isPagerSectionVisible()
     {
         $limits = sizeof($this->getLimits());
+
         return $limits > 1 || ($limits == 0 && $this->getCurrentLimit() < $this->totalCount);
     }
 
@@ -860,6 +870,8 @@ class Grid
     public function hideFilters()
     {
         $this->showFilters = false;
+
+        return $this;
     }
 
     /**
@@ -870,6 +882,8 @@ class Grid
     public function hideTitles()
     {
         $this->showTitles = false;
+
+        return $this;
     }
 
     /**
@@ -881,6 +895,8 @@ class Grid
     public function addColumnExtension($extension)
     {
         $this->columns->addExtension($extension);
+
+        return $this;
     }
 
     /**
@@ -891,6 +907,7 @@ class Grid
     public function setPrefixTitle($prefixTitle)
     {
         $this->prefixTitle = $prefixTitle;
+
         return $this;
     }
 
@@ -903,6 +920,30 @@ class Grid
     {
         return $this->prefixTitle;
     }
+
+    /**
+     * Set the no data message
+     *
+     * @param $noDataMessage string
+     */
+    public function setNoDataMessage($noDataMessage)
+    {
+        $this->noDataMessage = $noDataMessage;
+
+        return $this;
+    }
+
+    /**
+     * Get the no data message
+     *
+     * @return string
+     */
+    public function getNoDataMessage()
+    {
+        return $this->noDataMessage;
+    }
+
+
 
     /**
      * Sets a list of columns to hide when the grid is output
@@ -923,6 +964,8 @@ class Grid
         foreach ($columnIds as $columnId) {
             $this->columns->getColumnById($columnId)->setVisible(false);
         }
+
+        return $this;
     }
 
     /**
@@ -943,6 +986,8 @@ class Grid
         }
 
         $this->setHiddenColumns(array_diff($columnNames, $columnIds));
+
+        return $this;
     }
 
     /**
@@ -956,6 +1001,8 @@ class Grid
         foreach ($columnIds as $columnId) {
             $this->columns->getColumnById($columnId)->setVisible(true);
         }
+
+        return $this;
     }
 
     /**
@@ -969,6 +1016,8 @@ class Grid
         foreach ($columnIds as $columnId) {
             $this->columns->getColumnById($columnId)->setVisible(false);
         }
+
+        return $this;
     }
 
     /**
@@ -981,6 +1030,9 @@ class Grid
         $this->source->delete($ids);
     }
 
+    /**
+     * Get a clone of the grid
+     */
     function __clone()
     {
         /**
@@ -1029,6 +1081,7 @@ class Grid
     public function setData($data)
     {
         $this->data = $data;
+
         return $this;
     }
 
