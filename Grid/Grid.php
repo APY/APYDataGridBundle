@@ -121,9 +121,14 @@ class Grid
     private $prefixTitle = '';
 
     /**
-     * @var string
+     * @var boolean
      */
     private $persistence = false;
+
+    /**
+     * @var boolean
+     */
+    private $newSession = false;
 
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container
@@ -202,6 +207,10 @@ class Grid
         // Persistence - kill previous session
         if (!$this->persistence && $this->request->headers->get('referer') != $this->request->getUriForPath($this->request->getPathInfo())) {
             $this->session->remove($this->getHash());
+        }
+
+        if (is_null($this->session->get($this->getHash()))) {
+            $this->newSession = true;
         }
 
         //store column data
@@ -300,11 +309,7 @@ class Grid
         {
             list($columnId, $columnOrder) = explode('|', $order);
 
-            $column = $this->columns->getColumnById($columnId);
-            if (!is_null($column))
-            {
-                $column->setOrder($columnOrder);
-            }
+            $this->columns->getColumnById($columnId)->setOrder($columnOrder);
 
             $storage[self::REQUEST_QUERY_ORDER] = $order;
         }
@@ -458,6 +463,16 @@ class Grid
     }
 
     /**
+     * Get a column by its identifier
+     *
+     * @param $columnId
+     * @return Column
+     */
+    public function getColumn($columnId) {
+        return $this->columns->getColumnById($columnId);
+    }
+
+    /**
      * Returns Grid Columns
      *
      * @return Column\Column[]|Columns
@@ -597,10 +612,36 @@ class Grid
      * @return Grid
      */
     public function initFilters(array $filters) {
-        foreach ($filters as $columnName => $value) {
-            if (is_null($this->getDataFromContext($columnName, false, true))) {
+        if ($this->newSession) {
+            $storage = $this->session->get($this->getHash());
+
+            foreach ($filters as $columnId => $value) {
                 $this->columns->getColumnById($columnName)->setData($value);
+
+                $storage[$columnId] = $value;
             }
+
+            $this->session->set($this->getHash(), $storage);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Init grid order
+     *
+     * @param array Hash of columnName => initValue
+     * @return Grid
+     */
+    public function initOrder($columnId, $order) {
+        if ($this->newSession) {
+            $storage = $this->session->get($this->getHash());
+
+            $this->columns->getColumnById($columnId)->setOrder($order);
+
+            $storage[self::REQUEST_QUERY_ORDER] = "$columnId|$order";
+
+            $this->session->set($this->getHash(), $storage);
         }
 
         return $this;
@@ -865,7 +906,7 @@ class Grid
 
     /**
      * Sets a list of columns to hide when the grid is output
-     * @param array $columnsIds
+     * @param array $columnIds
      */
     public function setHiddenColumns(array $columnIds)
     {
@@ -887,7 +928,7 @@ class Grid
     /**
      * Sets a list of columns to show when the grid is output
      * It acts as a mask; Other columns will be set as hidden
-     * @param array $columnsIds
+     * @param array $columnIds
      */
     public function setVisibleColumns(array $columnIds)
     {
@@ -906,7 +947,7 @@ class Grid
 
     /**
      * Sets on the visiblilty of columns
-     * @param string|array $columnsIds
+     * @param string|array $columnIds
      */
     public function showColumns($columnIds)
     {
@@ -919,7 +960,7 @@ class Grid
 
     /**
      * Sets off the visiblilty of columns
-     * @param string|array $columnsIds
+     * @param string|array $columnIds
      */
     public function hideColumns($columnIds)
     {
