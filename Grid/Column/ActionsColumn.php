@@ -35,11 +35,12 @@ class ActionsColumn extends Column
                     $routeParameters[$name] = $parameter;
                 }
             }
+            return $routeParameters;
         }
 
         return array_merge(
             array($row->getPrimaryField() => $row->getPrimaryFieldValue()),
-            $routeParameters
+            $action->getRouteParameters()
         );
     }
 
