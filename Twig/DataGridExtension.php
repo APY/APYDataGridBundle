@@ -42,6 +42,11 @@ class DataGridExtension extends \Twig_Extension
      */
     protected $names;
 
+    /**
+     * @var array
+     */
+    protected $params;
+
     public function __construct($router)
     {
         $this->router = $router;
@@ -81,10 +86,11 @@ class DataGridExtension extends \Twig_Extension
      * @param string $id
      * @return string
      */
-    public function getGrid($grid, $theme = null, $id = '')
+    public function getGrid($grid, $theme = null, $id = '', array $params = array())
     {
         $this->theme = $theme;
         $this->names[$grid->getHash()] = $id == '' ? $grid->getId() : $id;
+        $this->params = $params;
 
         return $this->renderBlock('grid', array('grid' => $grid->prepare()));
     }
@@ -248,7 +254,7 @@ class DataGridExtension extends \Twig_Extension
         {
             if ($template->hasBlock($name))
             {
-                return $template->renderBlock($name, $parameters);
+                return $template->renderBlock($name, array_merge($parameters, $this->params));
             }
         }
 
