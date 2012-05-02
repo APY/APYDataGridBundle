@@ -624,7 +624,7 @@ class Grid
             $storage = $this->session->get($this->getHash());
 
             foreach ($filters as $columnId => $value) {
-                $this->columns->getColumnById($columnName)->setData($value);
+                $this->columns->getColumnById($columnId)->setData($value);
 
                 $storage[$columnId] = $value;
             }
