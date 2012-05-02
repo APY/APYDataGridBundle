@@ -1,6 +1,14 @@
+`2 May 2012`
+
+ * Don't throw no data message when the grid is filtered
+ * If noDataMessage = false, the grid is display empty with the noResultMessage
+ * Add a no result message when a filtered grid has no result
+ * Add last-column and last-row classes because the css :last-child isn't support by IE7
+
 `1 May 2012`
 
  * [BC Break] Show a message instead of an empty grid
+ * Add a way to pass twig variables to override blocks
  
 `30 Apr 2012`
 
