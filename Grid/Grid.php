@@ -133,7 +133,12 @@ class Grid
     /**
      * @var string
      */
-    private $noDataMessage = 'no data';
+    private $noDataMessage;
+
+    /**
+     * @var string
+     */
+    private $noResultMessage;
 
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container
@@ -810,6 +815,24 @@ class Grid
     }
 
     /**
+     * Return true if the grid is filtered
+     *
+     * @return boolean
+     */
+    public function isFiltered()
+    {
+        foreach ($this->columns as $column)
+        {
+            if ($column->isFiltered())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Return true if if title panel is visible in template - internal helper
      *
      * @return bool
@@ -943,7 +966,27 @@ class Grid
         return $this->noDataMessage;
     }
 
+    /**
+     * Set the no result message
+     *
+     * @param $noResultMessage string
+     */
+    public function setNoResultMessage($noResultMessage)
+    {
+        $this->noResultMessage = $noResultMessage;
 
+        return $this;
+    }
+
+    /**
+     * Get the no result message
+     *
+     * @return string
+     */
+    public function getNoResultMessage()
+    {
+        return $this->noResultMessage;
+    }
 
     /**
      * Sets a list of columns to hide when the grid is output

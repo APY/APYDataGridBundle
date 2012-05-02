@@ -222,7 +222,7 @@ abstract class Column
     }
 
     /**
-     * Return true is column is sorted
+     * Return true if column is sorted
      *
      * @return bool return true when column is sorted
      */
@@ -242,9 +242,9 @@ abstract class Column
     }
 
     /**
-     * Return true is column is sorted filtered
+     * Return true if column is filtered
      *
-     * @return boolean
+     * @return boolean return true when column is filtered
      */
     public function isFiltered()
     {
