@@ -305,16 +305,35 @@ class Grid
         $storage = $this->session->get($this->getHash());
 
         //set internal data
-        if ($limit = $this->getDataFromContext(self::REQUEST_QUERY_LIMIT))
+
+        // Detection filtering
+        $filtering = false;
+        foreach ($this->columns as $column)
         {
-            $this->limit = $limit;
+            if (!is_null($this->getDataFromContext($column->getId(), true, false)))
+            {
+                $filtering = true;
+                break;
+            }
         }
 
-        if ($page = $this->getDataFromContext(self::REQUEST_QUERY_PAGE))
+        // Page
+        // Set to the first page if this is a request of order, limit, mass action or filtering
+        if (!is_null($this->getDataFromContext(self::REQUEST_QUERY_ORDER, true, false))
+         || !is_null($this->getDataFromContext(self::REQUEST_QUERY_LIMIT, true, false))
+         || !is_null($this->getDataFromContext(Grid::REQUEST_QUERY_MASS_ACTION, true, false))
+         || $filtering)
+        {
+            $this->setPage(0);
+        }
+        elseif ($page = $this->getDataFromContext(self::REQUEST_QUERY_PAGE))
         {
             $this->setPage($page);
         }
 
+        $storage[self::REQUEST_QUERY_PAGE] = $this->getPage();
+
+        // Order
         if (!is_null($order = $this->getDataFromContext(self::REQUEST_QUERY_ORDER)))
         {
             list($columnId, $columnOrder) = explode('|', $order);
@@ -324,14 +343,12 @@ class Grid
             $storage[self::REQUEST_QUERY_ORDER] = $order;
         }
 
-        if ($this->getCurrentLimit() != $this->getDataFromContext(self::REQUEST_QUERY_LIMIT, false) && $this->getCurrentLimit() >= 0)
+        // Limit
+        if ($limit = $this->getDataFromContext(self::REQUEST_QUERY_LIMIT))
         {
-            $storage[self::REQUEST_QUERY_LIMIT] = $this->getCurrentLimit();
-        }
+            $this->limit = $limit;
 
-        if ($this->getPage() >= 0)
-        {
-            $storage[self::REQUEST_QUERY_PAGE] = $this->getPage();
+            $storage[self::REQUEST_QUERY_LIMIT] = $this->limit;
         }
 
         // save data to sessions if needed
@@ -761,13 +778,13 @@ class Grid
      */
     public function setPage($page)
     {
-        if ((int)$page > 0)
+        if ((int)$page >= 0)
         {
             $this->page = (int)$page;
         }
         else
         {
-            throw new \InvalidArgumentException('Page has to have a positive number');
+            throw new \InvalidArgumentException('Page must be a positive number');
         }
 
         return $this;
