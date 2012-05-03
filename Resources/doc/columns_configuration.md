@@ -3,8 +3,8 @@ Columns Configuration via annotations
 # Summary
 
  * [Document or Entity annotations](#usage)
- * [Attributes for '@GRID\Column' notation](#column_attributes)
- * [Attributes for '@GRID\Source' notation](#source_attributes)
+ * [Attributes for '@GRID\Column' notation](#column_annotation)
+ * [Attributes for '@GRID\Source' notation](#source_annotation)
  * [ORM association mapping](#orm_associations)
  * [ORM groupBy function](#orm_groupby)
 
@@ -53,27 +53,27 @@ class Test
 
 }
 ```
-<a name="column_attributes"/>
+<a name="column_annotation"/>
 ### Attributes for '@GRID\Column' notation
 
- - id [string] - column id - property name, should by set only if column is defined inside class annotations
- - field [string] - table column /collection name
- - title [string] default column id - own column name
- - size [int] default -1 - column width in pixels, -1 means auto resize
- - type [string(Date|Range|Select|Text|Boolean)] - column type 
- - values [array] - options (only Select Column)
- - format [string] - format (only Date Column)
- - sortable [boolean] default true - turns on or off column sorting
- - filterable [boolean] default true - turns on or off visibility of column filter
- - source [boolean] default true - turns on or off column visibility for Source class (if false column will *not* be read from data source)
- - visible [boolean] -  turns on or off column visibility (if false column will be read from data source but not rendered)
- - primary [boolean] - sets column as primary - default is primary key form Entity/Document
+ - id [string] - Set the column id of a virtual column (set this attribute only inside class annotations)
+ - field [string] (default: property name) - Define this attribute only with a mapping field
+ - title [string] (default: column id) - own column name
+ - size [int] (default: -1) - column width in pixels, -1 means auto resize
+ - type [string(Date|Range|Select|Text|Boolean)] (default: ORM type guesser) - column type 
+ - values [array] - set options for a Select Column
+ - format [string] - set date format for a Date Column)
+ - sortable [boolean] (default: true) - turns on or off column sorting
+ - filterable [boolean] (default: true) - turns on or off visibility of column filter
+ - source [boolean] (default: true) - turns on or off column visibility for Source class (if false, column will *not* be read from data source)
+ - visible [boolean] (default: true) - turns on or off column visibility (if false, column will be read from data source but not rendered)
+ - primary [boolean] (default: ORM primary key) - sets column as primary
  - align [string(left|right|center)] - default left
- - role [string] default null - security role for current column example: role="ROLE_USER"
- - groups [string|array] default 'default' - use this attribute to define more than one configuration for an Entity/Document
+ - role [string] (default: null) - security role for current column example: role="ROLE_USER"
+ - groups [string|array] (default: 'default') - use this attribute to define more than one configuration for an Entity/Document
 			`i.e. $source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');`
 
-<a name="source_attributes"/>
+<a name="source_annotation"/>
 ### Attributes for '@GRID\Source' notation
 
  - columns [string] order of columns in grid 
@@ -81,7 +81,7 @@ class Test
     - The primary key have to be defined in this list.
     - Use the property name, not the column name. For related fields, use the field name (see example below in a One to Many association).
  - filterable [bool] turns on or off visibility of all columns
- - groups [string|array] default 'default' - use this attribute to define more than one configuration for an Entity/Document
+ - groups [string|array] (default: 'default') - use this attribute to define more than one configuration for an Entity/Document
 			`i.e. $source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');`
  - groupBy [string|array] - use this attribute to add groupBy fields to the query
 
