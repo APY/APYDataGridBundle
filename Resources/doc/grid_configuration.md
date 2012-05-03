@@ -6,7 +6,7 @@ Grid configurations
  * [Configure the pager](#configure_pager)
  * [Add columns to the grid](#add_column)
  * [Add a mass action](#add_mass_action)
- * [Add a default delete mass action `Beta`](#delete_mass_action)
+ * [Add a default delete mass action](#delete_mass_action)
  * [Add row actions](#add_row_actions)
  * [Add multiple columns of row actions](#custom_row_actions)
  * [Init filters value](#init_filters)
@@ -79,7 +79,7 @@ $grid->setSource($source);
 If you define mass actions, a selector appears and a new column of checkboxes is displayed on the left of the grid.
 
 <a name="delete_mass_action"/>
-### Add a default delete mass action `Beta`
+### Add a default delete mass action
 
 ```php
 <?php
