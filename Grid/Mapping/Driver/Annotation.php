@@ -20,13 +20,14 @@ class Annotation implements DriverInterface
     private $filterable;
     private $fields;
     private $loaded;
+    private $groupBy;
 
     private $reader;
 
     public function __construct($reader)
     {
         $this->reader = $reader;
-        $this->columns = $this->fields = $this->loaded = array();
+        $this->columns = $this->fields = $this->loaded = $this->groupBy = array();
     }
 
     public function getClassColumns($class, $group = 'default')
@@ -39,6 +40,11 @@ class Annotation implements DriverInterface
     {
         $this->loadMetadataFromReader($class, $group);
         return $this->fields[$class][$group];
+    }
+
+    public function getGroupBy($class, $group = 'default')
+    {
+        return $this->groupBy[$class][$group];
     }
 
     private function loadMetadataFromReader($className, $group = 'default')
@@ -139,6 +145,7 @@ class Annotation implements DriverInterface
             foreach ($class->getGroups() as $group) {
                 $this->columns[$className][$group] = $class->getColumns();
                 $this->filterable[$className][$group] = $class->isFilterable();
+                $this->groupBy[$className][$group] = $class->getGroupBy();
             }
         }
         elseif ($class instanceof Column)

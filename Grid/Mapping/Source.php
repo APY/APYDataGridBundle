@@ -19,12 +19,14 @@ class Source
     private $columns;
     private $filterable;
     private $groups;
+    private $groupBy;
 
     public function __construct($metadata = array())
     {
-        $this->columns = isset($metadata['columns']) ? array_map('trim', explode(',', $metadata['columns'])) : array();
+        $this->columns = (isset($metadata['columns']) && $metadata['columns'] != '') ? array_map('trim', explode(',', $metadata['columns'])) : array();
         $this->filterable = !(isset($metadata['filterable']) && $metadata['filterable']);
-        $this->groups = isset($metadata['groups']) ? (array) $metadata['groups'] : array('default');
+        $this->groups = (isset($metadata['groups']) && $metadata['groups'] != '') ? (array) $metadata['groups'] : array('default');
+        $this->groupBy = (isset($metadata['groupBy']) && $metadata['groupBy'] != '') ? (array) $metadata['groupBy'] : array();
     }
 
     public function getColumns()
@@ -45,5 +47,10 @@ class Source
     public function getGroups()
     {
         return $this->groups;
+    }
+
+    public function getGroupBy()
+    {
+        return $this->groupBy;
     }
 }

@@ -52,12 +52,13 @@ class Manager
     {
         $metadata = new Metadata();
 
-        $columns = $fieldsMetadata = array();
+        $columns = $fieldsMetadata = $groupBy = array();
 
         foreach ($this->getDrivers() as $driver)
         {
             $columns = array_merge($columns, $driver->getClassColumns($className, $group));
             $fieldsMetadata[] = $driver->getFieldsMetadata($className, $group);
+            $groupBy = array_merge($groupBy, $driver->getGroupBy($className, $group));
         }
 
         $mappings = $cols = array();
@@ -84,6 +85,7 @@ class Manager
 
         $metadata->setFields($cols);
         $metadata->setFieldsMappings($mappings);
+        $metadata->setGroupBy($groupBy);
 
         return $metadata;
     }

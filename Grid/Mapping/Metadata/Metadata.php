@@ -16,6 +16,7 @@ class Metadata
     private $name;
     private $fields;
     private $fieldsMappings;
+    private $groupBy;
 
     public function setFields($fields)
     {
@@ -45,6 +46,16 @@ class Metadata
     public function getFieldMappingType($field)
     {
         return (isset($this->fieldsMappings[$field]['type'])) ? $this->fieldsMappings[$field]['type'] : 'text';
+    }
+
+    public function setGroupBy($groupBy)
+    {
+        $this->groupBy = $groupBy;
+    }
+
+    public function getGroupBy()
+    {
+        return $this->groupBy;
     }
 
     public function setName($name)

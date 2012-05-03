@@ -1,3 +1,7 @@
+`3 May 2012`
+
+ * Add groupBy support on Source annotation
+
 `2 May 2012`
 
  * Don't throw no data message when the grid is filtered

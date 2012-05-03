@@ -67,6 +67,11 @@ class Entity extends Source
      */
     private $group;
 
+    /**
+     * @var string
+     */
+    private $groupBy;
+
     const TABLE_ALIAS = '_a';
     const COUNT_ALIAS = '__count';
 
@@ -94,6 +99,8 @@ class Entity extends Source
         /** todo autoregister mapping drivers with tag */
         $mapping->addDriver($this, -1);
         $this->metadata = $mapping->getMetadata($this->class, $this->group);
+
+        $this->groupBy = $this->metadata->getGroupBy();
     }
 
     /**
@@ -136,15 +143,23 @@ class Entity extends Source
         }
 
         if ($withAlias) {
-            // mapping field
-            if (strpos($name, '.')) {
-                return '_' . $name.' as '.str_replace('.', '::', $column->getId());
-            }
-
-            return '_' . $name.' as '.$column->getId();
+            return '_' . $name.' as '.str_replace('.', '::', $column->getId());
         }
 
         return '_'.$name;
+    }
+
+    /**
+     * @param string $fieldName
+     * @return string
+     */
+    private function getGroupByFieldName($fieldName)
+    {
+        if (strpos($fieldName, '.') === false) {
+            return self::TABLE_ALIAS.'.'.$fieldName;
+        }
+
+        return '_'.$fieldName;
     }
 
     /**
@@ -253,6 +268,15 @@ class Entity extends Source
         if ($limit > 0)
         {
             $this->query->setMaxResults($limit);
+        }
+
+        if (!empty($this->groupBy)) {
+            $this->query->resetDQLPart('groupBy');
+
+            foreach ($this->groupBy as $field)
+            {
+                $this->query->addGroupBy($this->getGroupByFieldName($field));
+            }
         }
 
         //call overridden prepareQuery or associated closure

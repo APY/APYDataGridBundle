@@ -106,6 +106,11 @@ abstract class Source implements DriverInterface
         return array();
     }
 
+    public function getGroupBy($class)
+    {
+        return array();
+    }
+
     /**
     * Return source hash string
     * @abstract

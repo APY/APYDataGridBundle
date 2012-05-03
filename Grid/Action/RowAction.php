@@ -180,6 +180,8 @@ class RowAction implements RowActionInterface
     public function setRouteParameters(array $routeParameters)
     {
         $this->routeParameters = $routeParameters;
+
+        return $this;
     }
 
     public function getRouteParameters()

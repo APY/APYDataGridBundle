@@ -13,6 +13,7 @@ Columns Configuration via annotations
 
 Entity and Document sources use doctrine annotations for type guessing, for better customization you can use grid mapping annotations
 
+Exemple:
 ```php
 <?php
 ...
@@ -23,6 +24,7 @@ use Sorien\DataGridBundle\Grid\Mapping as GRID;
  *
  * @GRID\Source(columns="id, attached1, type, ...")
  * @GRID\Source(columns="id, type", groups={"admin", "backend"})
+ * @GRID\Source(columns="id, type, id:count", groups="total", groupBy={"type"})
  * @GRID\Column(id="attached1", size="120", type="text") //add custom column to grid, id has to be specified
  */
 class Test
@@ -31,9 +33,13 @@ class Test
      * @var integer $id
      *
      * @ORM\Column(name="id", type="integer")
-     * @GRID\Column(title="my own column name", size="120", type="text", visible=true, source=true, ... )
-	 * @GRID\Column(title="other name", size="80", type="text", visible=true, source=true, ... , groups={"admin", "backend"})
-	 
+	 *
+     * @GRID\Column(title="my own column name", size="120", type="text")
+	 *
+	 * @GRID\Column(title="other name", size="80", type="text", groups={"admin", "backend"})
+	 *
+	 * @GRID\Column(visible=false, groups="total")
+	 * @Grid\Column(field="id:count", title="Number of tests", groups="total")
      */
     private $id;
 
@@ -41,7 +47,7 @@ class Test
      * @var integer $type
      *
      * @ORM\Column(type="string", length="32")
-     * @GRID\Column(title="Type", size="120", type="select", visible=true, values={"type1"="Type 1","type2"="Type 2"})
+     * @GRID\Column(title="Type", size="120", type="select", filterable=false, values={"type1"="Type 1","type2"="Type 2"}, groups={"default", "admin", "backend", "total"})
      */
     private $type;
 
@@ -57,9 +63,9 @@ class Test
  - type [string(Date|Range|Select|Text|Boolean)] - column type 
  - values [array] - options (only Select Column)
  - format [string] - format (only Date Column)
- - sortable [boolean]- turns on or off column sorting
- - filterable [boolean] - turns on or off visibility of column filter
- - source [boolean] - turns on or off column visibility for Source class (if false column will *not* be read from data source)
+ - sortable [boolean] default true - turns on or off column sorting
+ - filterable [boolean] default true - turns on or off visibility of column filter
+ - source [boolean] default true - turns on or off column visibility for Source class (if false column will *not* be read from data source)
  - visible [boolean] -  turns on or off column visibility (if false column will be read from data source but not rendered)
  - primary [boolean] - sets column as primary - default is primary key form Entity/Document
  - align [string(left|right|center)] - default left
@@ -77,6 +83,7 @@ class Test
  - filterable [bool] turns on or off visibility of all columns
  - groups [string|array] default 'default' - use this attribute to define more than one configuration for an Entity/Document
 			`i.e. $source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');`
+ - groupBy [string|array] - use this attribute to add groupBy fields to the query
 
 <a name="orm_associations"/>
 ### ORM association mapping support with `.` notation
