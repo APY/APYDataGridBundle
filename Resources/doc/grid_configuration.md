@@ -63,11 +63,13 @@ A mass action must be defined before the source because the callback to the func
 <?php
 // First parameter : Title displayed in the selector
 // Second parameter : Callback function
+
+// Static class method call
 $yourMassAction = new MassAction('Action 1', 'MyProject\MyBundle\Controller\DefaultController::myStaticMethod');
-
-// OR 
-
 $yourMassAction = new MassAction('Action 2', array('MyProject\MyBundle\Controller\DefaultController','myMethod'));
+
+// Object method call
+$yourMassAction = new MassAction('Action 2', array($obj,'myMethod'));
         
 $grid->addMassAction($yourMassAction);
 
