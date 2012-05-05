@@ -1,3 +1,7 @@
+`5 May 2012`
+
+ * Allow extended Grid class
+
 `3 May 2012`
 
  * Add groupBy support on Source annotation

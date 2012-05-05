@@ -16,4 +16,6 @@ interface DriverInterface
     public function getClassColumns($class);
 
     public function getFieldsMetadata($class);
+
+    public function getGroupBy($class);
 }

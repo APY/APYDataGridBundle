@@ -15,8 +15,6 @@ namespace Sorien\DataGridBundle\Grid;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Form\Exception\PropertyAccessDeniedException;
 
-use Sorien\DataGridBundle\Grid\Columns;
-use Sorien\DataGridBundle\Grid\Rows;
 use Sorien\DataGridBundle\Grid\Action\MassActionInterface;
 use Sorien\DataGridBundle\Grid\Action\RowActionInterface;
 use Sorien\DataGridBundle\Grid\Column\Column;
@@ -90,7 +88,7 @@ class Grid
     private $columns;
 
     /**
-     * @var @var \Sorien\DataGridBundle\Grid\Rows
+     * @var \Sorien\DataGridBundle\Grid\Rows
      */
     private $rows;
 
@@ -98,6 +96,10 @@ class Grid
      * @var \Sorien\DataGridBundle\Grid\Action\MassAction[]
      */
     private $massActions;
+
+    /**
+     * @var \Sorien\DataGridBundle\Grid\Action\RowAction[]
+     */
     private $rowActions;
 
     /**
@@ -182,7 +184,9 @@ class Grid
      * Sets Source to the Grid
      *
      * @param $source
+     *
      * @return Grid
+     *
      * @throws \InvalidArgumentException
      */
     public function setSource($source)
@@ -241,9 +245,10 @@ class Grid
      * @param string $column
      * @param bool $fromRequest
      * @param bool $fromSession
+     *
      * @return null|string
      */
-    private function getDataFromContext($column, $fromRequest = true, $fromSession = true)
+    protected function getDataFromContext($column, $fromRequest = true, $fromSession = true)
     {
         $result = null;
 
@@ -271,7 +276,7 @@ class Grid
      *
      * @return void
      */
-    private function fetchAndSaveColumnData()
+    protected function fetchAndSaveColumnData()
     {
         $storage = $this->session->get($this->getHash());
 
@@ -300,7 +305,7 @@ class Grid
      *
      * @return void
      */
-    private function fetchAndSaveGridData()
+    protected function fetchAndSaveGridData()
     {
         $storage = $this->session->get($this->getHash());
 
@@ -482,7 +487,7 @@ class Grid
      * @param int $position
      * @return Grid
      */
-    function addColumn($column, $position = 0)
+    public function addColumn($column, $position = 0)
     {
         $this->columns->addColumn($column, $position);
 
@@ -535,7 +540,7 @@ class Grid
      * @param Action\MassActionInterface $action
      * @return Grid
      */
-    function addMassAction(MassActionInterface $action)
+    public function addMassAction(MassActionInterface $action)
     {
         if ($this->source instanceof Source)
         {
@@ -562,7 +567,7 @@ class Grid
      * @param Action\RowActionInterface $action
      * @return Grid
      */
-    function addRowAction(RowActionInterface $action)
+    public function addRowAction(RowActionInterface $action)
     {
         $this->rowActions[$action->getColumn()][] = $action;
 
@@ -1093,7 +1098,7 @@ class Grid
     /**
      * Get a clone of the grid
      */
-    function __clone()
+    public function __clone()
     {
         /**
          * clone all objects
@@ -1173,7 +1178,7 @@ class Grid
      * @param int $limit
      * @return \Sorien\DataGridBundle\DataGrid\Rows
      */
-    private function executeFromData($columns, $page = 0, $limit = 0)
+    protected function executeFromData($columns, $page = 0, $limit = 0)
     {
         // Populate from data
         $items = array();
@@ -1250,7 +1255,7 @@ class Grid
      *
      * @return int
      */
-    private function getTotalCountFromData()
+    protected function getTotalCountFromData()
     {
         return count($this->data);
     }
