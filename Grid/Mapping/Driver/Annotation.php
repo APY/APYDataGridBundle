@@ -44,7 +44,7 @@ class Annotation implements DriverInterface
 
     public function getGroupBy($class, $group = 'default')
     {
-        return $this->groupBy[$class][$group];
+        return isset($this->groupBy[$class][$group]) ? $this->groupBy[$class][$group] : array();
     }
 
     private function loadMetadataFromReader($className, $group = 'default')
