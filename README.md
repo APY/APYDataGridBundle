@@ -3,7 +3,7 @@ Getting Started With DataGridBundle
 
 Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid but not compatible.
 
-**Compatibility**: Symfony 2.x
+**Compatibility**: Symfony 2.0.x
 
 The following documents are available:
 
