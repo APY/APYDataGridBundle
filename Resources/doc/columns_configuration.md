@@ -70,7 +70,7 @@ class Test
  - primary [boolean] (default: ORM primary key) - sets column as primary
  - align [string(left|right|center)] - default left
  - role [string] (default: null) - security role for current column example: role="ROLE_USER"
- - groups [string|array] (default: 'default') - use this attribute to define more than one configuration for an Entity/Document
+ - groups [string|array] - use this attribute to define more than one configuration for an Entity/Document. If no groups is defined, the annotation is attributed for all groups.
 			`i.e. $source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');`
 
 <a name="source_annotation"/>
