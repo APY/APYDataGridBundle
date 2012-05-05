@@ -92,6 +92,7 @@ class DataGridExtension extends \Twig_Extension
         $this->theme = $theme;
         $this->names[$grid->getHash()] = $id == '' ? $grid->getId() : $id;
         $this->params = $params;
+        $this->templates = array();
 
         return $this->renderBlock('grid', array('grid' => $grid->prepare()));
     }
