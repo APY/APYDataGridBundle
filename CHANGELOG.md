@@ -6,6 +6,7 @@
  * Fix bug - Pager not visible when only one limit is defined
  * Fix bug - Set false to the filterable attribute of an ActionColumn
  * Add a way to pass attributes to RowActions
+ * Add odd/even css class in tr tags
 
 `5 May 2012`
 
