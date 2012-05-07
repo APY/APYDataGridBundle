@@ -15,6 +15,8 @@ namespace Sorien\DataGridBundle\Grid;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Form\Exception\PropertyAccessDeniedException;
 
+use Sorien\DataGridBundle\Grid\Columns;
+use Sorien\DataGridBundle\Grid\Rows;
 use Sorien\DataGridBundle\Grid\Action\MassActionInterface;
 use Sorien\DataGridBundle\Grid\Action\RowActionInterface;
 use Sorien\DataGridBundle\Grid\Column\Column;
@@ -904,7 +906,7 @@ class Grid
     {
         $limits = sizeof($this->getLimits());
 
-        return $limits > 1 || ($limits == 0 && $this->getCurrentLimit() < $this->totalCount);
+        return $limits > 1 || ($limits <= 1 && $this->getCurrentLimit() < $this->totalCount);
     }
 
     /**
