@@ -5,6 +5,7 @@
  * Fix bug - params not initialised to an empty array in twig extension
  * Fix bug - Pager not visible when only one limit is defined
  * Fix bug - Set false to the filterable attribute of an ActionColumn
+ * Add a way to pass attributes to RowActions
 
 `5 May 2012`
 

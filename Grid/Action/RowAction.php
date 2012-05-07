@@ -20,29 +20,34 @@ class RowAction implements RowActionInterface
     private $target;
     private $column = '__actions';
     private $routeParameters = array();
+    private $attributes = array();
 
     /**
-     * Default MassAction constructor
+     * Default RowAction constructor
      *
      * @param string $title Title of the mass action
      * @param string $route Route to the row action
      * @param boolean $confirm Show confirm message if true
      * @param string $target Set the target of this action (_slef,_blank,_parent,_top)
-     * @return \Sorien\DataGridBundle\Grid\Action\MassAction
+     * @param array $attributes Attributes of the anchor tag
+     *
+     * @return \Sorien\DataGridBundle\Grid\Action\RowAction
      */
-    public function __construct($title, $route = null, $confirm = false, $target = '_self')
+    public function __construct($title, $route = null, $confirm = false, $target = '_self', $attributes = array())
     {
         $this->title = $title;
         $this->route = $route;
         $this->confirm = $confirm;
         $this->confirmMessage = 'Do you want to '.strtolower($title).' this row?';
         $this->target = $target;
+        $this->attributes = $attributes;
     }
 
     /**
      * Set action title
      *
-     * @param $title
+     * @param string $title
+     *
      * @return \Sorien\DataGridBundle\Grid\Action\MassAction
      */
     public function setTitle($title)
@@ -65,8 +70,9 @@ class RowAction implements RowActionInterface
     /**
      * Set action route
      *
-     * @param  $route
-     * @return \Sorien\DataGridBundle\Grid\Action\RowAction
+     * @param  string $route
+     *
+     * @return self
      */
     public function setRoute($route)
     {
@@ -89,7 +95,7 @@ class RowAction implements RowActionInterface
      * Set action confirm
      *
      * @param  $confirm
-     * @return \Sorien\DataGridBundle\Grid\Action\MassAction
+     * @return self
      */
     public function setConfirm($confirm)
     {
@@ -111,8 +117,9 @@ class RowAction implements RowActionInterface
     /**
      * Set action confirmMessage
      *
-     * @param  $confirmMessage
-     * @return \Sorien\DataGridBundle\Grid\Action\MassAction
+     * @param string $confirmMessage
+     *
+     * @return self
      */
     public function setConfirmMessage($confirmMessage)
     {
@@ -124,7 +131,7 @@ class RowAction implements RowActionInterface
     /**
      * get action confirmMessage
      *
-     * @return boolean
+     * @return string
      */
     public function getConfirmMessage()
     {
@@ -134,8 +141,9 @@ class RowAction implements RowActionInterface
     /**
      * Set action target
      *
-     * @param  $target
-     * @return \Sorien\DataGridBundle\Grid\Action\MassAction
+     * @param string $target
+     *
+     * @return self
      */
     public function setTarget($target)
     {
@@ -147,7 +155,7 @@ class RowAction implements RowActionInterface
     /**
      * get action target
      *
-     * @return boolean
+     * @return string
      */
     public function getTarget()
     {
@@ -157,8 +165,9 @@ class RowAction implements RowActionInterface
     /**
      * Set action column
      *
-     * @param  $column
-     * @return \Sorien\DataGridBundle\Grid\Action\MassAction
+     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
+     *
+     * @return self
      */
     public function setColumn($column)
     {
@@ -170,13 +179,20 @@ class RowAction implements RowActionInterface
     /**
      * get action column
      *
-     * @return boolean
+     * @return \Sorien\DataGridBundle\Grid\Column\Column
      */
     public function getColumn()
     {
         return $this->column;
     }
 
+    /**
+     * Set route parameters
+     *
+     * @param array $routeParameters
+     *
+     * @return self
+     */
     public function setRouteParameters(array $routeParameters)
     {
         $this->routeParameters = $routeParameters;
@@ -184,8 +200,51 @@ class RowAction implements RowActionInterface
         return $this;
     }
 
+    /**
+     * get route parameters
+     *
+     * @return array
+     */
     public function getRouteParameters()
     {
         return $this->routeParameters;
+    }
+
+    /**
+     * Set attributes
+     *
+     * @param array $attributes
+     *
+     * @return self
+     */
+    public function setAttributes(array $attributes)
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * Add attribute
+     *
+     * @param array $attribute
+     *
+     * @return self
+     */
+    public function addAttribute($attribute)
+    {
+        $this->attributes[] = $attribute;
+
+        return $this;
+    }
+
+    /**
+     * Get attributes
+     *
+     * @return array
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
     }
 }
