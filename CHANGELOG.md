@@ -1,3 +1,9 @@
+`7 May 2012`
+
+ * Fix bug - Templates are not reset for each grid displayed
+ * Fix bug - Count of selected visible rows when filters are displayed
+ * Fix bug - params not initialised to an empty array in twig extension
+
 `5 May 2012`
 
  * Allow extended Grid class
@@ -34,7 +40,7 @@
 
  * Add Vector source
  * Add visible columns mask Helpers
- * Add support for additionnal route parameters  on row actions
+ * Add support for additionnal route parameters on row actions
 
 `23 Apr 2012`
 

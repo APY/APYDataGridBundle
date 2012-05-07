@@ -45,7 +45,7 @@ class DataGridExtension extends \Twig_Extension
     /**
      * @var array
      */
-    protected $params;
+    protected $params = array();
 
     public function __construct($router)
     {
