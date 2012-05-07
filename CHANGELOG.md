@@ -3,7 +3,8 @@
  * Fix bug - Templates are not reset for each grid displayed
  * Fix bug - Count of selected visible rows when filters are displayed
  * Fix bug - params not initialised to an empty array in twig extension
- * Fix bug - Pager not visible when only one limit is defined 
+ * Fix bug - Pager not visible when only one limit is defined
+ * Fix bug - Set false to the filterable attribute of an ActionColumn
 
 `5 May 2012`
 
