@@ -13,10 +13,10 @@ namespace Sorien\DataGridBundle\Grid\Mapping\Metadata;
 
 class Metadata
 {
-    private $name;
-    private $fields;
-    private $fieldsMappings;
-    private $groupBy;
+    protected $name;
+    protected $fields;
+    protected $fieldsMappings;
+    protected $groupBy;
 
     public function setFields($fields)
     {
