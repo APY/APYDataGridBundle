@@ -12,9 +12,9 @@ namespace Sorien\DataGridBundle\Grid;
 
 class Filter
 {
-    private $value;
-    private $operator;
-    private $id;
+    protected $value;
+    protected $operator;
+    protected $id;
 
     public function __construct($operator, $value, $id = null)
     {

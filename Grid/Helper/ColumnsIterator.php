@@ -13,7 +13,7 @@ namespace Sorien\DataGridBundle\Grid\Helper;
 
 class ColumnsIterator extends \FilterIterator
 {
-    private $showOnlySourceColumns;
+    protected $showOnlySourceColumns;
 
     public function __construct(\Iterator $iterator, $showOnlySourceColumns)
     {

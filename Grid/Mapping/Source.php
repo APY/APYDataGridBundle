@@ -16,10 +16,10 @@ namespace Sorien\DataGridBundle\Grid\Mapping;
  */
 class Source
 {
-    private $columns;
-    private $filterable;
-    private $groups;
-    private $groupBy;
+    protected $columns;
+    protected $filterable;
+    protected $groups;
+    protected $groupBy;
 
     public function __construct($metadata = array())
     {

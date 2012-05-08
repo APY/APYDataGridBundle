@@ -20,13 +20,13 @@ class Columns implements \IteratorAggregate, \Countable
     /**
      * @var \Sorien\DataGridBundle\Grid\Column\Column[]
      */
-    private $columns;
-    private $extensions;
+    protected $columns;
+    protected $extensions;
 
     /**
      * @var \Symfony\Component\Security\Core\SecurityContextInterface
      */
-    private $securityContext;
+    protected $securityContext;
 
     public function __construct(SecurityContextInterface $securityContext)
     {
@@ -72,14 +72,14 @@ class Columns implements \IteratorAggregate, \Countable
     public function getColumnById($columnId)
     {
         $column = $this->hasColumnById($columnId, true);
-        
+
         if ($column === false) {
             throw new \InvalidArgumentException(sprintf('Column with id "%s" doesn\'t exists', $columnId));
         }
 
         return $column;
     }
-    
+
     public function hasColumnById($columnId, $returnColumn = false)
     {
         foreach ($this->columns as $column)

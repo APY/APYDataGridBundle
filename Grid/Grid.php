@@ -37,112 +37,112 @@ class Grid
     /**
      * @var \Symfony\Component\HttpFoundation\Session;
      */
-    private $session;
+    protected $session;
 
     /**
      * @var \Symfony\Component\HttpFoundation\Request
      */
-    private $request;
+    protected $request;
 
     /**
      * @var \Symfony\Component\Routing\Router
      */
-    private $router;
+    protected $router;
 
     /**
      * @var \Symfony\Component\DependencyInjection\Container
      */
-    private $container;
+    protected $container;
 
     /**
      * @var array
      */
-    private $routeParameters;
+    protected $routeParameters;
 
     /**
      * @var string
      */
-    private $routeUrl;
+    protected $routeUrl;
 
     /**
      * @var string
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      */
-    private $hash;
+    protected $hash;
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Source\Source
      */
-    private $source;
+    protected $source;
 
-    private $totalCount;
-    private $page;
-    private $limit;
-    private $limits;
+    protected $totalCount;
+    protected $page;
+    protected $limit;
+    protected $limits;
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Columns|\Sorien\DataGridBundle\Grid\Column\Column[]
      */
-    private $columns;
+    protected $columns;
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Rows
      */
-    private $rows;
+    protected $rows;
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Action\MassAction[]
      */
-    private $massActions;
+    protected $massActions;
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Action\RowAction[]
      */
-    private $rowActions;
+    protected $rowActions;
 
     /**
      * @var boolean
      */
-    private $showFilters;
+    protected $showFilters;
 
     /**
      * @var boolean
      */
-    private $showTitles;
+    protected $showTitles;
 
     /**
      * @var array|object
      */
-    private $data = null;
+    protected $data = null;
 
     /**
      * @var string
      */
-    private $prefixTitle = '';
+    protected $prefixTitle = '';
 
     /**
      * @var boolean
      */
-    private $persistence = false;
+    protected $persistence = false;
 
     /**
      * @var boolean
      */
-    private $newSession = false;
+    protected $newSession = false;
 
     /**
      * @var string
      */
-    private $noDataMessage;
+    protected $noDataMessage;
 
     /**
      * @var string
      */
-    private $noResultMessage;
+    protected $noResultMessage;
 
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container

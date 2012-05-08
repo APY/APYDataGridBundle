@@ -29,48 +29,48 @@ class Entity extends Source
     /**
      * @var \Doctrine\ORM\QueryBuilder
      */
-    private $query;
+    protected $query;
 
     /**
      * @var string e.g Vendor\Bundle\Entity\Page
      */
-    private $class;
+    protected $class;
 
     /**
      * @var string e.g Cms:Page
      */
-    private $entityName;
+    protected $entityName;
 
     /**
      * @var string e.g mydatabase
      */
-    private $managerName;
+    protected $managerName;
 
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
      */
-    private $metadata;
+    protected $metadata;
 
     /**
      * @var \Doctrine\ORM\Mapping\ClassMetadata
      */
-    private $ormMetadata;
+    protected $ormMetadata;
 
     /**
      * @var array
      */
-    private $joins;
+    protected $joins;
 
     /**
      * @var string
      */
-    private $group;
+    protected $group;
 
     /**
      * @var string
      */
-    private $groupBy;
+    protected $groupBy;
 
     const TABLE_ALIAS = '_a';
     const COUNT_ALIAS = '__count';
@@ -107,7 +107,7 @@ class Entity extends Source
      * @param \Sorien\DataGridBundle\Grid\Column\Column $column
      * @return string
      */
-    private function getFieldName($column, $withAlias = false)
+    protected function getFieldName($column, $withAlias = false)
     {
         $name = $column->getField();
 
@@ -153,7 +153,7 @@ class Entity extends Source
      * @param string $fieldName
      * @return string
      */
-    private function getGroupByFieldName($fieldName)
+    protected function getGroupByFieldName($fieldName)
     {
         if (strpos($fieldName, '.') === false) {
             return self::TABLE_ALIAS.'.'.$fieldName;
@@ -174,12 +174,12 @@ class Entity extends Source
         }
     }
 
-    private function normalizeOperator($operator)
+    protected function normalizeOperator($operator)
     {
         return ($operator == COLUMN::OPERATOR_REGEXP ? 'like' : $operator);
     }
 
-    private function normalizeValue($operator, $value)
+    protected function normalizeValue($operator, $value)
     {
         if ($operator == COLUMN::OPERATOR_REGEXP)
         {

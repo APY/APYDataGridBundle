@@ -255,7 +255,7 @@ class DataGridExtension extends \Twig_Extension
      * @param $parameters string
      * @return string
      */
-    private function renderBlock($name, $parameters)
+    protected function renderBlock($name, $parameters)
     {
         foreach ($this->getTemplates() as $template)
         {
@@ -274,7 +274,7 @@ class DataGridExtension extends \Twig_Extension
      * @param $name string
      * @return boolean
      */
-    private function hasBlock($name)
+    protected function hasBlock($name)
     {
         foreach ($this->getTemplates() as $template)
         {
@@ -293,7 +293,7 @@ class DataGridExtension extends \Twig_Extension
      * @return \Twig_TemplateInterface[]
      * @throws \Exception
      */
-    private function getTemplates()
+    protected function getTemplates()
     {
         if (empty($this->templates))
         {

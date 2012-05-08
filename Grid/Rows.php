@@ -16,7 +16,7 @@ class Rows implements \IteratorAggregate, \Countable
     /**
      * @var Rows[]
      */
-    private $rows;
+    protected $rows;
 
     public function __construct($array = array())
     {
@@ -45,7 +45,7 @@ class Rows implements \IteratorAggregate, \Countable
         {
             throw new \InvalidArgumentException('Your column needs to extend class Column.');
         }
-        
+
         $this->rows->attach($row);
 
         return $this;

@@ -33,32 +33,29 @@ abstract class Column
     /**
      * Internal parameters
      */
-    private $id;
-    private $title;
-    private $sortable;
-    private $filterable;
-    private $visible;
-    private $callback;
-    private $order = '';
-    private $size;
-    private $visibleForSource;
-    private $primary;
-    private $align;
-    private $field;
-    private $role;
+    protected $id;
+    protected $title;
+    protected $sortable;
+    protected $filterable;
+    protected $visible;
+    protected $callback;
+    protected $order = '';
+    protected $size;
+    protected $visibleForSource;
+    protected $primary;
+    protected $align;
+    protected $field;
+    protected $role;
 
-    private $params;
-    private $isSorted = false;
-    private $orderUrl;
+    protected $params;
+    protected $isSorted = false;
+    protected $orderUrl;
 
     /**
      * @var \Symfony\Component\Security\Core\SecurityContextInterface
      */
-    private $securityContext;
+    protected $securityContext;
 
-    /**
-     * @todo make private
-     */
     protected $data;
 
     /**

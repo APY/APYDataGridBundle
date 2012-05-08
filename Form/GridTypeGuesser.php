@@ -21,12 +21,12 @@ class GridTypeGuesser implements FormTypeGuesserInterface
    /**
     * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Manager;
     */
-   private $manager;
+   protected $manager;
 
    /**
     * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
     */
-   private $metadata;
+   protected $metadata;
 
    /**
     * @param $manager

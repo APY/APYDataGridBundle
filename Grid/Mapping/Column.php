@@ -16,8 +16,8 @@ namespace Sorien\DataGridBundle\Grid\Mapping;
  */
 class Column
 {
-    private $metadata;
-    private $groups;
+    protected $metadata;
+    protected $groups;
 
     public function __construct($metadata)
     {

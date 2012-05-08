@@ -24,19 +24,19 @@ class Vector extends Source
     /**
      * @var array
      */
-    private $fieldNames;
+    protected $fieldNames;
 
     /**
      * @var array
      */
-    private $data;
+    protected $data;
 
     /**
      * either a column name as a string
      *  or an array of names of columns
      * @var mixed
      */
-    private $id = null;
+    protected $id = null;
 
     /**
      * Creates the Vector and sets its data

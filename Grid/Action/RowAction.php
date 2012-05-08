@@ -13,14 +13,14 @@ namespace Sorien\DataGridBundle\Grid\Action;
 
 class RowAction implements RowActionInterface
 {
-    private $title;
-    private $route;
-    private $confirm;
-    private $confirmMessage;
-    private $target;
-    private $column = '__actions';
-    private $routeParameters = array();
-    private $attributes = array();
+    protected $title;
+    protected $route;
+    protected $confirm;
+    protected $confirmMessage;
+    protected $target;
+    protected $column = '__actions';
+    protected $routeParameters = array();
+    protected $attributes = array();
 
     /**
      * Default RowAction constructor

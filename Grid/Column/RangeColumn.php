@@ -15,7 +15,7 @@ use Sorien\DataGridBundle\Grid\Filter;
 
 class RangeColumn extends Column
 {
-    private $inputType;
+    protected $inputType;
 
     public function __initialize(array $params)
     {

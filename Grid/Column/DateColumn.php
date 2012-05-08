@@ -15,7 +15,7 @@ use Sorien\DataGridBundle\Grid\Filter;
 
 class DateColumn extends TextColumn
 {
-    private $format;
+    protected $format;
 
     public function __initialize(array $params)
     {
@@ -49,7 +49,7 @@ class DateColumn extends TextColumn
             return '';
         }
     }
-    
+
     public function getType()
     {
         return 'date';

@@ -13,10 +13,10 @@ namespace Sorien\DataGridBundle\Grid\Action;
 
 class MassAction implements MassActionInterface
 {
-    private $title;
-    private $callback;
-    private $confirm;
-    
+    protected $title;
+    protected $callback;
+    protected $confirm;
+
     /**
      * Default MassAction constructor
      *

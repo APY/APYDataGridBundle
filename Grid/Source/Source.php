@@ -20,7 +20,7 @@ abstract class Source implements DriverInterface
     const EVENT_PREPARE_QUERY = 1;
     const EVENT_PREPARE_ROW = 2;
 
-    private $callbacks;
+    protected $callbacks;
 
     /**
      * @param \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder
@@ -75,7 +75,7 @@ abstract class Source implements DriverInterface
      * @param \Sorien\DataGridBundle\Grid\Column\Columns $columns
      * @return int
      */
-    abstract function getTotalCount($columns);
+    abstract public function getTotalCount($columns);
 
     /**
      * Set container
@@ -115,7 +115,7 @@ abstract class Source implements DriverInterface
     * Return source hash string
     * @abstract
     */
-    abstract function getHash();
+    abstract public function getHash();
 
     /**
      * Delete one or more objects

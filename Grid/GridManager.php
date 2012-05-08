@@ -15,14 +15,14 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class GridManager implements \IteratorAggregate, \Countable
 {
-    private $container;
+    protected $container;
 
     /**
      * @var Grids[]
      */
-    private $grids;
+    protected $grids;
 
-    private $routeUrl = null;
+    protected $routeUrl = null;
 
     public function __construct($container)
     {

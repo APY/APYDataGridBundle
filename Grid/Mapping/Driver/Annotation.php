@@ -16,13 +16,13 @@ use Sorien\DataGridBundle\Grid\Mapping\Source as Source;
 
 class Annotation implements DriverInterface
 {
-    private $columns;
-    private $filterable;
-    private $fields;
-    private $loaded;
-    private $groupBy;
+    protected $columns;
+    protected $filterable;
+    protected $fields;
+    protected $loaded;
+    protected $groupBy;
 
-    private $reader;
+    protected $reader;
 
     public function __construct($reader)
     {
@@ -47,7 +47,7 @@ class Annotation implements DriverInterface
         return isset($this->groupBy[$class][$group]) ? $this->groupBy[$class][$group] : array();
     }
 
-    private function loadMetadataFromReader($className, $group = 'default')
+    protected function loadMetadataFromReader($className, $group = 'default')
     {
         if (isset($this->loaded[$className][$group])) return;
 

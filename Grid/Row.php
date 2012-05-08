@@ -13,10 +13,10 @@ namespace Sorien\DataGridBundle\Grid;
 
 class Row
 {
-    private $fields;
-    private $color;
-    private $legend;
-    private $primaryField;
+    protected $fields;
+    protected $color;
+    protected $legend;
+    protected $primaryField;
 
     public function __construct()
     {
@@ -79,12 +79,12 @@ class Row
         }
         return $this->fields[$this->primaryField];
     }
-    
+
     public function getPrimaryKeyValue(){
         $primaryField = $this->getPrimaryFieldValue();
         if(is_array($primaryField)){
             return $primaryField;
-        } 
+        }
         return array('id'=>$primaryField);
     }
 }

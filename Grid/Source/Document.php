@@ -22,7 +22,7 @@ class Document extends Source
     /**
      * @var \Doctrine\ODM\MongoDB\Query\Builder;
      */
-    private $query;
+    protected $query;
 
     /**
      * @var \Doctrine\ODM\MongoDB\DocumentManager
@@ -32,32 +32,32 @@ class Document extends Source
     /**
      * e.g. Base\Cms\Document\Page
      */
-    private $class;
+    protected $class;
 
     /**
      * @var \Doctrine\ODM\MongoDB\Mapping\ClassMetadata
      */
-    private $odmMetadata;
+    protected $odmMetadata;
 
     /**
      * e.g. Cms:Page
      */
-    private $documentName;
+    protected $documentName;
 
     /**
      * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
      */
-    private $metadata;
+    protected $metadata;
 
     /**
      * @var int Items count
      */
-    private $count;
+    protected $count;
 
     /**
      * @var string
      */
-    private $group;
+    protected $group;
 
     /**
      * @param string $documentName e.g. "Cms:Page"
@@ -91,12 +91,12 @@ class Document extends Source
         }
     }
 
-    private function normalizeOperator($operator)
+    protected function normalizeOperator($operator)
     {
         return ($operator == COLUMN::OPERATOR_REGEXP ? 'equals' : $operator);
     }
 
-    private function normalizeValue($operator, $value)
+    protected function normalizeValue($operator, $value)
     {
         return ($operator == COLUMN::OPERATOR_REGEXP ? new \MongoRegex($value) : $value);
     }
@@ -195,7 +195,7 @@ class Document extends Source
         return $this->count;
     }
 
-    private function getClassProperties($obj)
+    protected function getClassProperties($obj)
     {
         $reflect = new \ReflectionClass($obj);
         $props   = $reflect->getProperties();

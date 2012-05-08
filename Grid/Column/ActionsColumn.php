@@ -15,7 +15,7 @@ use Sorien\DataGridBundle\Grid\Action\RowAction;
 
 class ActionsColumn extends Column
 {
-    private $rowActions;
+    protected $rowActions;
 
     public function __construct($column, $title, array $rowActions = array())
     {

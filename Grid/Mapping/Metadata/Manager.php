@@ -27,7 +27,7 @@ class Manager
     /**
      * @var \Sorien\DataGridBundle\Grid\Mapping\Driver\DriverInterface[]
      */
-    private $drivers;
+    protected $drivers;
 
     public function __construct()
     {
