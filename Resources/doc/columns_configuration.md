@@ -57,19 +57,19 @@ class Test
 ### Attributes for '@GRID\Column' notation
 
  - id [string] - Set the column id of a virtual column (set this attribute only inside class annotations)
- - field [string] (default: property name) - Define this attribute only with a mapping field
- - title [string] (default: column id) - own column name
- - size [int] (default: -1) - column width in pixels, -1 means auto resize
- - type [string(Date|Range|Select|Text|Boolean)] (default: ORM type guesser) - column type 
+ - field [string] default: property name - Define this attribute only with a mapping field
+ - title [string] default: column id - own column name
+ - size [int] default: -1 - column width in pixels, -1 means auto resize
+ - type [string] - Date|Range|Select|Text|Boolean - default: ORM type guesser - column type 
  - values [array] - set options for a Select Column
  - format [string] - set date format for a Date Column)
- - sortable [boolean] (default: true) - turns on or off column sorting
- - filterable [boolean] (default: true) - turns on or off visibility of column filter
- - source [boolean] (default: true) - turns on or off column visibility for Source class (if false, column will *not* be read from data source)
- - visible [boolean] (default: true) - turns on or off column visibility (if false, column will be read from data source but not rendered)
- - primary [boolean] (default: ORM primary key) - sets column as primary
- - align [string(left|right|center)] - default left
- - role [string] (default: null) - security role for current column example: role="ROLE_USER"
+ - sortable [boolean] default: true - turns on or off column sorting
+ - filterable [boolean] default: true - turns on or off visibility of column filter
+ - source [boolean] default: true - turns on or off column visibility for Source class (if false, column will *not* be read from data source)
+ - visible [boolean] default: true - turns on or off column visibility (if false, column will be read from data source but not rendered)
+ - primary [boolean] default: ORM primary key - sets column as primary
+ - align [string] - left|right|center - default: left
+ - role [string] default: null - security role for current column example: role="ROLE_USER"
  - groups [string|array] - use this attribute to define more than one configuration for an Entity/Document. If no groups is defined, the annotation is attributed for all groups.
 			`i.e. $source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');`
 
@@ -81,7 +81,7 @@ class Test
     - The primary key have to be defined in this list.
     - Use the property name, not the column name. For related fields, use the field name (see example below in a One to Many association).
  - filterable [bool] turns on or off visibility of all columns
- - groups [string|array] (default: 'default') - use this attribute to define more than one configuration for an Entity/Document
+ - groups [string|array] default: 'default' - use this attribute to define more than one configuration for an Entity/Document
 			`i.e. $source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');`
  - groupBy [string|array] - use this attribute to add groupBy fields to the query
 
