@@ -1,6 +1,7 @@
 `13 May 2012`
 
  * Add DateTimeRange and DateRange column
+ * Add DateTime and Date column
  * Add parentType search for cell render
 
 `8 May 2012`

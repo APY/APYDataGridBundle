@@ -12,42 +12,25 @@
 namespace Sorien\DataGridBundle\Grid\Column;
 
 use Sorien\DataGridBundle\Grid\Filter;
+use Symfony\Component\HttpFoundation\Request;
 
-class DateColumn extends TextColumn
+class DateColumn extends DateTimeColumn
 {
-    protected $format;
+    protected $timetype = \IntlDateFormatter::NONE;
 
-    public function __initialize(array $params)
+    public function getFilters()
     {
-        parent::__initialize($params);
-        $this->format = $this->getParam('format', 'Y-m-d H:i:s');
-    }
+        $result = array();
 
-    public function renderFilter($gridHash)
-    {
-        return '';
-    }
+        $dateFrom = new \DateTime($this->data);
+        $dateFrom->setTime(0, 0, 0);
+        $result[] =  new Filter(self::OPERATOR_GTE, $dateFrom);
 
-    public function renderCell($value, $row, $router)
-    {
-        if ($value != null)
-        {
-            if (is_string($value))
-            {
-                $value = new \DateTime($value);
-            }
+        $dateTo = new \DateTime($this->data);
+        $dateTo->setTime(23, 59, 59);
+        $result[] =  new Filter(self::OPERATOR_LTE, $dateTo);
 
-            if ($value instanceof \DateTime)
-            {
-                return parent::renderCell($value->format($this->format), $row, $router);
-            }
-
-            throw \InvalidArgumentException('Date Column value have to be DataTime object');
-        }
-        else
-        {
-            return '';
-        }
+        return $result;
     }
 
     public function getType()

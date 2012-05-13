@@ -14,7 +14,7 @@ namespace Sorien\DataGridBundle\Grid\Column;
 use Sorien\DataGridBundle\Grid\Filter;
 use Symfony\Component\HttpFoundation\Request;
 
-class DateTimeRangeColumn extends RangeColumn
+class DateTimeColumn extends TextColumn
 {
     protected $locale;
 
@@ -42,19 +42,7 @@ class DateTimeRangeColumn extends RangeColumn
 
     public function getFilters()
     {
-        $result = array();
-
-        if ($this->data['from'] != '')
-        {
-           $result[] =  new Filter(self::OPERATOR_GTE, new \DateTime($this->data['from']));
-        }
-
-        if ($this->data['to'] != '')
-        {
-           $result[] =  new Filter(self::OPERATOR_LTE, new \DateTime($this->data['to']));
-        }
-
-        return $result;
+        return array(new Filter(self::OPERATOR_EQ, new \DateTime($this->data)));
     }
 
     public function renderCell($value, $row, $router)
@@ -119,11 +107,11 @@ class DateTimeRangeColumn extends RangeColumn
 
     public function getParentType()
     {
-        return 'range';
+        return 'text';
     }
 
     public function getType()
     {
-        return 'datetimerange';
+        return 'datetime';
     }
 }
