@@ -146,6 +146,11 @@ class DataGridExtension extends \Twig_Extension
             {
                 return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
             }
+
+            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell'))
+            {
+                return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
+            }
         }
 
         if ($this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell'))
@@ -154,6 +159,11 @@ class DataGridExtension extends \Twig_Extension
         }
 
         if ($this->hasBlock($block = 'grid_column_'.$column->getType().'_cell'))
+        {
+            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
+        }
+
+        if ($this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
         {
             return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
         }

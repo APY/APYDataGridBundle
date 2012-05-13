@@ -207,6 +207,7 @@ class Entity extends Source
 
         $serializeColumns = array();
 
+        $bindIndex = 0;
         foreach ($columns as $column)
         {
             $this->query->addSelect($this->getFieldName($column, true));
@@ -226,8 +227,10 @@ class Entity extends Source
 
                         $where->add($this->query->expr()->$operator(
                             $this->getFieldName($column),
-                            $this->normalizeValue($filter->getOperator(), $filter->getValue())
+                            $this->normalizeValue($filter->getOperator(), "?$bindIndex")
                         ));
+
+                        $this->query->setParameter($bindIndex++, $filter->getValue());
                     }
                 }
                 elseif($column->getFiltersConnection() == column::DATA_DISJUNCTION)
@@ -240,8 +243,10 @@ class Entity extends Source
 
                         $sub->add($this->query->expr()->$operator(
                               $this->getFieldName($column),
-                              $this->normalizeValue($filter->getOperator(), $filter->getValue())
+                              $this->normalizeValue($filter->getOperator(), "?$bindIndex")
                         ));
+
+                        $this->query->setParameter($bindIndex++, $filter->getValue());
                     }
 
                     $where->add($sub);

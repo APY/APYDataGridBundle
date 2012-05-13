@@ -111,6 +111,7 @@ class Document extends Source
     {
         $this->query = $this->manager->createQueryBuilder($this->documentName);
 
+        $bindIndex = 0;
         foreach ($columns as $column)
         {
             $this->query->select($column->getField());
@@ -128,9 +129,11 @@ class Document extends Source
                     {
                         //normalize values
                         $operator = $this->normalizeOperator($filter->getOperator());
-                        $value = $this->normalizeValue($filter->getOperator(), $filter->getValue());
+                        $value = $this->normalizeValue($filter->getOperator(), "?$bindIndex");
 
                         $this->query->field($column->getField())->$operator($value);
+
+                        $this->query->setParameter($bindIndex++, $filter->getValue());
                     }
                 }
                 elseif($column->getFiltersConnection() == column::DATA_DISJUNCTION)
@@ -139,7 +142,8 @@ class Document extends Source
 
                     foreach ($column->getFilters() as $filter)
                     {
-                        $values[] = $filter->getValue();
+                        $values[] = "?$bindIndex";
+                        $this->query->setParameter($bindIndex++, $filter->getValue());
                     }
 
                     if (!empty($values))
