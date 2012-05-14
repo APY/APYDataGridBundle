@@ -18,6 +18,8 @@ class DateColumn extends DateTimeColumn
 {
     protected $timetype = \IntlDateFormatter::NONE;
 
+    protected $fallbackFormat = 'Y-m-d';
+
     public function getFilters()
     {
         $result = array();

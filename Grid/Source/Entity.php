@@ -375,9 +375,11 @@ class Entity extends Source
                     $values['type'] = 'boolean';
                     break;
                 case 'date':
+                    $values['type'] = 'date';
+                    break;
                 case 'datetime':
                 case 'time':
-                    $values['type'] = 'date';
+                    $values['type'] = 'datetime';
                     break;
                 case 'array':
                 case 'object':

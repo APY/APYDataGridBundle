@@ -60,7 +60,7 @@ class Test
  - field [string] default: property name - Define this attribute only with a mapping field
  - title [string] default: column id - own column name
  - size [int] default: -1 - column width in pixels, -1 means auto resize
- - type [string] - Date|Range|Select|Text|Boolean - default: ORM type guesser - column type 
+ - type [string] - Text|Boolean|Range|Select|SelectSource|Date|DateTime|DateRange|DateTimeRange - default: ORM type guesser - column type 
  - values [array] - set options for a Select Column
  - format [string] - set date format for a Date Column)
  - sortable [boolean] default: true - turns on or off column sorting
