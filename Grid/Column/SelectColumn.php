@@ -37,7 +37,7 @@ class SelectColumn extends Column
 
     public function getFilters()
     {
-        return array(new Filter(self::OPERATOR_EQ, '\''.$this->data.'\''));
+        return array(new Filter(self::OPERATOR_EQ, $this->data));
     }
 
     public function getValues()
