@@ -184,7 +184,7 @@ class Entity extends Source
         if ($operator == COLUMN::OPERATOR_REGEXP)
         {
             preg_match('/\/\.\*([^\/]+)\.\*\//s', $value, $matches);
-            return '\'%'.$matches[1].'%\'';
+            return '%'.$matches[1].'%';
         }
         else
         {
@@ -227,10 +227,13 @@ class Entity extends Source
 
                         $where->add($this->query->expr()->$operator(
                             $this->getFieldName($column),
-                            $this->normalizeValue($filter->getOperator(), "?$bindIndex")
+                            "?$bindIndex"
                         ));
 
-                        $this->query->setParameter($bindIndex++, $filter->getValue());
+                        $this->query->setParameter(
+                            $bindIndex++,
+                            $this->normalizeValue($filter->getOperator(), $filter->getValue())
+                        );
                     }
                 }
                 elseif($column->getFiltersConnection() == column::DATA_DISJUNCTION)
@@ -243,10 +246,13 @@ class Entity extends Source
 
                         $sub->add($this->query->expr()->$operator(
                               $this->getFieldName($column),
-                              $this->normalizeValue($filter->getOperator(), "?$bindIndex")
+                              "?$bindIndex"
                         ));
 
-                        $this->query->setParameter($bindIndex++, $filter->getValue());
+                        $this->query->setParameter(
+                            $bindIndex++,
+                            $this->normalizeValue($filter->getOperator(), $filter->getValue())
+                        );
                     }
 
                     $where->add($sub);
