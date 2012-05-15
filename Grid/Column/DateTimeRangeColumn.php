@@ -63,6 +63,25 @@ class DateTimeRangeColumn extends RangeColumn
         return $this->format;
     }
 
+    public function isFiltered()
+    {
+        $result = false;
+
+        if ($this->data['from'] != '' && strtotime($this->data['from']) !== false) {
+            $result = true;
+        } else {
+            $this->data['from'] = '';
+        }
+
+        if ($this->data['to'] != '' && strtotime($this->data['to']) !== false) {
+            $result = true;
+        } else {
+            $this->data['to'] = '';
+        }
+
+        return $result;
+    }
+
     public function getFilters()
     {
         $result = array();

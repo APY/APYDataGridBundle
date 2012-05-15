@@ -63,6 +63,17 @@ class DateTimeColumn extends TextColumn
         return $this->format;
     }
 
+    public function isFiltered()
+    {
+        if (isset($this->data) && strtotime($this->data) !== false) {
+            return true;
+        }
+
+        $this->data = null;
+
+        return false;
+    }
+
     public function getFilters()
     {
         return array(new Filter(self::OPERATOR_EQ, new \DateTime($this->data)));
