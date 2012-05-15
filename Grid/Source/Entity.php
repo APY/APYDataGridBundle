@@ -18,6 +18,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr\Comparison;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 class Entity extends Source
 {
@@ -330,21 +331,19 @@ class Entity extends Source
         $this->query->setFirstResult(null);
         $this->query->setMaxResults(null);
 
-        $qb = $this->manager->createQueryBuilder();
-
         // Remove useless part
         $this->query->resetDQLPart('orderBy');
 
-        $qb->select($qb->expr()->count(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField()));
-        $qb->from($this->entityName, self::COUNT_ALIAS);
-        $qb->where($qb->expr()->in(self::COUNT_ALIAS. '.' . $columns->getPrimaryColumn()->getField(), $this->query->getDQL()));
+        $sql = 'SELECT COUNT(*) as total FROM (' . $this->query->getQuery()->getSQL() . ') as '.self::COUNT_ALIAS;
 
-        //copy existing parameters.
-        $qb->setParameters($this->query->getParameters());
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('total', 'total');
 
-        $result = $qb->getQuery()->getSingleResult();
+        $q = $this->manager->createNativeQuery($sql, $rsm);
 
-        return (int) $result[1];
+        $q->setParameters($this->query->getParameters());
+
+        return (int) $q->getSingleScalarResult();
     }
 
     public function getFieldsMetadata($class)
