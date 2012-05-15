@@ -1,3 +1,8 @@
+`15 May 2012`
+
+ * Allow using controllers as services in mass actions (lstrojny)
+ * Optimize total count query on entity source
+
 `13 May 2012`
 
  * Add DateTimeRange and DateRange column

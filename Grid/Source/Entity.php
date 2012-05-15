@@ -208,7 +208,7 @@ class Entity extends Source
 
         $serializeColumns = array();
 
-        $bindIndex = 0;
+        $bindIndex = 1;
         foreach ($columns as $column)
         {
             $this->query->addSelect($this->getFieldName($column, true));
