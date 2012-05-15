@@ -331,7 +331,7 @@ class Grid
                 {
                     call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session);
                 }
-                elseif (substr_count($action->getCallback(), ':') == 2)
+                elseif (substr_count($action->getCallback(), ':') > 0)
                 {
                     $this->container->get('http_kernel')->forward($action->getCallback(), array('primaryKeys' => array_keys($actionKeys), 'allPrimaryKeys' => $actionAllKeys));
                 }
