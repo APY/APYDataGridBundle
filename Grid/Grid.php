@@ -1189,18 +1189,26 @@ class Grid
             foreach ($columns as $column)
             {
                 $fieldName = $column->getField();
-                $functionName = ucfirst($fieldName);
-                if (isset($item->$fieldName)) {
+
+                if (strpos($fieldName, '.') === false) {
+                    $functionName = ucfirst($fieldName);
+                    $itemEntity = $item;
+                } else {
+                    list($entityName, $functionName) = explode('.', $fieldName);
+                    $itemEntity = call_user_func(array($item, 'get'.$entityName));
+                }
+
+                if (isset($itemEntity->$fieldName)) {
                     $fieldValue = $item->$fieldName;
                 }
-                else if (is_callable(array($item, 'get'.$functionName))) {
-                    $fieldValue = call_user_func(array($item, 'get'.$functionName));
+                else if (is_callable(array($itemEntity, 'get'.$functionName))) {
+                    $fieldValue = call_user_func(array($itemEntity, 'get'.$functionName));
                 }
-                else if (is_callable(array($item, 'has'.$functionName))) {
-                    $fieldValue = call_user_func(array($item, 'has'.$functionName));
+                else if (is_callable(array($itemEntity, 'has'.$functionName))) {
+                    $fieldValue = call_user_func(array($itemEntity, 'has'.$functionName));
                 }
-                else if (is_callable(array($item, 'is'.$functionName))) {
-                    $fieldValue = call_user_func(array($item, 'is'.$functionName));
+                else if (is_callable(array($itemEntity, 'is'.$functionName))) {
+                    $fieldValue = call_user_func(array($itemEntity, 'is'.$functionName));
                 }
                 else {
                     throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
