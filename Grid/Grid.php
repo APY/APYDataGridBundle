@@ -1190,12 +1190,20 @@ class Grid
             {
                 $fieldName = $column->getField();
 
+                $itemEntity = $item;
                 if (strpos($fieldName, '.') === false) {
                     $functionName = ucfirst($fieldName);
-                    $itemEntity = $item;
                 } else {
-                    list($entityName, $functionName) = explode('.', $fieldName);
-                    $itemEntity = call_user_func(array($item, 'get'.$entityName));
+                    // loop through all elements until we find the final entity and the name of the value for which
+                    // we are looking
+                    $elements = explode('.', $fieldName);
+                    while ($element = array_shift($elements)) {
+                        if (count($elements) > 0) {
+                            $itemEntity = call_user_func(array($itemEntity, 'get'.$element));
+                        } else {
+                            $functionName = ucfirst($element);
+                        }
+                    }
                 }
 
                 if (isset($itemEntity->$fieldName)) {
