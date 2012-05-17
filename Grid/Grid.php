@@ -329,11 +329,11 @@ class Grid
 
                 if (is_callable($action->getCallback()))
                 {
-                    call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session);
+                    call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session, $action->getParameters());
                 }
                 elseif (substr_count($action->getCallback(), ':') > 0)
                 {
-                    $this->container->get('http_kernel')->forward($action->getCallback(), array('primaryKeys' => array_keys($actionKeys), 'allPrimaryKeys' => $actionAllKeys));
+                    $this->container->get('http_kernel')->forward($action->getCallback(), array_merge(array('primaryKeys' => array_keys($actionKeys), 'allPrimaryKeys' => $actionAllKeys), $action->getParameters()));
                 }
                 else
                 {
