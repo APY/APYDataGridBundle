@@ -103,6 +103,18 @@
         <select name="{{grid.hash}}[{{ constant('Sorien\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_MASS_ACTION') }}]">
             <option value="-1"></option>
             {% for key, value in grid.massActions %}
+            {% debug value %}
+            {% if value.group %}
+                {% if value.group != group %}
+                    {% set group = value.group %}
+                    <optgroup label="{{ value.group }}">
+                {% endif %}
+            {% else %}
+                {% if group %}
+                    {% set group = 0 %}
+                    </optgroup>
+                {% endif %}
+            {% endif %}
             <option value="{{key}}">{{ value.title|trans }}</option>
             {% endfor %}
         </select>

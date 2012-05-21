@@ -17,6 +17,7 @@ class MassAction implements MassActionInterface
     private $callback;
     private $confirm;
     private $parameters = array();
+    private $group;
     
     /**
      * Default MassAction constructor
@@ -26,12 +27,13 @@ class MassAction implements MassActionInterface
      * @param boolean $confirm Show confirm message if true
      * @return \Sorien\DataGridBundle\Grid\Action\MassAction
      */
-    public function __construct($title, $callback = null, $confirm = false, array $parameters = array())
+    public function __construct($title, $callback = null, $confirm = false, array $parameters = array(), $group = null)
     {
         $this->title = $title;
         $this->callback = $callback;
         $this->confirm = $confirm;
         $this->parameters = $parameters;
+        $this->group = $group;
     }
 
     /**
@@ -121,5 +123,15 @@ class MassAction implements MassActionInterface
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
+
+    public function getGroup()
+    {
+        return $this->group;
     }
 }
