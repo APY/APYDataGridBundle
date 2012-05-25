@@ -60,7 +60,7 @@ class SelectColumn extends Column
         }
 
         if ($this->getSize()) {
-            $result .= ' style="width:'.$this->getSize().'px"';
+            $markup .= ' style="width:'.$this->getSize().'px"';
         }
 
         $markup .= '>'.$result.'</select>';
