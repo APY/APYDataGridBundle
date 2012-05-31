@@ -221,7 +221,7 @@ class Grid
         $this->createHash();
 
         // Persistence - kill previous session
-        if (!$this->persistence && $this->request->headers->get('referer') != $this->request->getUriForPath($this->request->getPathInfo())) {
+        if (!$this->request->isXmlHttpRequest() && !$this->persistence && $this->request->headers->get('referer') != $this->request->getUriForPath($this->request->getPathInfo())) {
             $this->session->remove($this->getHash());
         }
 
