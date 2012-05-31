@@ -39,6 +39,13 @@ class SelectColumn extends Column
     {
         return array(new Filter(self::OPERATOR_EQ, $this->data));
     }
+    
+    public function setValues(array $values)
+    {
+        $this->values = $values;
+        
+        return $this;
+    }
 
     public function getValues()
     {
