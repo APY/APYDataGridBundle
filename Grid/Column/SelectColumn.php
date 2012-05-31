@@ -27,7 +27,7 @@ class SelectColumn extends Column
 
     public function setData($data)
     {
-        if ((is_string($data) || is_integer($data)) && $data != $this::BLANK && key_exists($data, $this->values))
+        if ((is_string($data) || is_integer($data)) && $data != $this::BLANK)
         {
             $this->data = $data;
         }
