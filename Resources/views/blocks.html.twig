@@ -72,9 +72,9 @@
 <div class="pager">
     {{ 'Page'|trans }}
     {% spaceless %}
-    <input type="button" class="prev" {% if grid.page <= 0 %}disabled="disabled"{% endif %} value="<" onclick="window.location.href='{{grid_url('page', grid, grid.page-1)}}'"/>
+    <input type="button" class="prev" {% if grid.page <= 0 %}disabled="disabled"{% endif %} value="<" onclick="window.location.href='{{grid_url('page', grid, grid.page-1)}}';return false;"/>
     <input type="text" value="{{grid.page+1}}" size="2" onkeypress="if (event.which == 13){window.location.href='{{grid_url('page', grid)}}'+(parseInt(this.value)-1);return false}"/>
-    <input type="button" value=">" class="next" {% if grid.page >= grid.pagecount-1 %}disabled="disabled"{% endif %} onclick="window.location.href='{{grid_url('page', grid, grid.page+1)}}'"/> {{ 'of %count%'|trans({'%count%': grid.pagecount}) }}
+    <input type="button" value=">" class="next" {% if grid.page >= grid.pagecount-1 %}disabled="disabled"{% endif %} onclick="window.location.href='{{grid_url('page', grid, grid.page+1)}}';return false;"/> {{ 'of %count%'|trans({'%count%': grid.pagecount}) }}
     {% endspaceless %}
     {{ ', Display'|trans }}
     <select onchange="window.location.href='{{grid_url('limit', grid)}}'+this.value">
