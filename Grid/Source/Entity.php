@@ -132,12 +132,17 @@ class Entity extends Source
         }
 
         // Aggregate dql functions
-        if (preg_match('/.(?P<all>(?P<field>\w+):(?P<function>\w+))$/', $name, $matches)) {
+        if (preg_match('/.(?P<all>(?P<field>\w+):(?P<function>\w+)(:)?(?P<parameters>\w*))$/', $name, $matches)) {
             if ($withAlias) {
                 // Group by the primary field of the previous entity
                 $this->query->addGroupBy($previousParent);
 
-                return $matches['function'].'('.$parent.'.'.$matches['field'].') as '.substr($parent, 1).'::'.$matches['all'];
+                $parameter = '';
+                if ($matches['parameters'] !== '') {
+                    $parameter = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'".$matches['parameters']."'");
+                }
+
+                return $matches['function'].'('.$parent.'.'.$matches['field'].$parameter.') as '.substr($parent, 1).'::'.$matches['all'];
             }
 
             return substr($parent, 1).'::'.$matches['all'];
