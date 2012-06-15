@@ -4,7 +4,7 @@ This bundle was initiated by Stanislav Turza (Sorien).
 **Version**: 2.0
 **Compatibility**: Symfony 2.0.x
 
-See [https://github.com/APY/DataGridBundle/blob/master/Resources/doc/CHANGELOG.md](CHANGELOG) and [https://github.com/APY/DataGridBundle/blob/master/Resources/doc/UPGRADE-2.0.md](UPGRADE 2.0)
+See [CHANGELOG](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/UPGRADE-2.0.md)
 
 ## Features
 
@@ -30,25 +30,25 @@ See [https://github.com/APY/DataGridBundle/blob/master/Resources/doc/CHANGELOG.m
 
 ## Documentation
 
-See the [summary](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/summary.md).
+See the [summary](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/summary.md).
 
 ## Screenshot
 
 Full example:
 
-![test](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/images/screenshot_full.png)
+![test](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/images/screenshot_full.png)
 
 Simple example with the external filter box in english
 
-![test](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/images/screenshot_en.png)
+![test](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/images/screenshot_en.png)
 
 Simple example with the external filter box in french
 
-![test](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/images/screenshot_fr.png)
+![test](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/images/screenshot_fr.png)
 
 Data used in these screenshots (this is a phpmyadmin screenshot):
 
-![test](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/images/screenshot_database.png)
+![test](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/images/screenshot_database.png)
 
 ## Simple grid with an ORM source
 
