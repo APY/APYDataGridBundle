@@ -4,7 +4,7 @@ This bundle was initiated by Stanislav Turza (Sorien).
 **Version**: 2.0
 **Compatibility**: Symfony 2.0.x
 
-See [CHANGELOG](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/UPGRADE-2.0.md)
+See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/Abhoryo/APYDataGridBundle/blob/master/UPGRADE-2.0.md)
 
 ## Features
 
@@ -30,25 +30,25 @@ See [CHANGELOG](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/
 
 ## Documentation
 
-See the [summary](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/summary.md).
+See the [summary](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/summary.md).
 
 ## Screenshot
 
 Full example:
 
-![test](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/images/screenshot_full.png)
+![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_full.png?raw=true)
 
 Simple example with the external filter box in english
 
-![test](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/images/screenshot_en.png)
+![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_en.png?raw=true)
 
 Simple example with the external filter box in french
 
-![test](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/images/screenshot_fr.png)
+![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_fr.png?raw=true)
 
 Data used in these screenshots (this is a phpmyadmin screenshot):
 
-![test](https://github.com/Abhoryo/DataGridBundle/blob/master/Resources/doc/images/screenshot_database.png)
+![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_database.png?raw=true)
 
 ## Simple grid with an ORM source
 
@@ -120,4 +120,4 @@ Abhoryo, golovanov, touchdesign, Spea, nurikabe, print, Gregory McLean, centove,
 
 ## Todo list
 
-See this [Pull Request](https://github.com/APY/DataGridBundle/issues/121)
+See this [Pull Request](https://github.com/Abhoryo/APYDataGridBundle/issues/121)
