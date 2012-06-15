@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Mapping;
+namespace APY\DataGridBundle\Grid\Mapping;
 
 /**
  * @Annotation

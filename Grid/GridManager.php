@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid;
+namespace APY\DataGridBundle\Grid;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -17,12 +18,11 @@ class GridManager implements \IteratorAggregate, \Countable
 {
     protected $container;
 
-    /**
-     * @var Grids[]
-     */
     protected $grids;
 
     protected $routeUrl = null;
+
+    private $exportGrid = null;
 
     public function __construct($container)
     {
@@ -44,7 +44,7 @@ class GridManager implements \IteratorAggregate, \Countable
     {
         $grid = $this->container->get('grid');
 
-        // route url is the same for all grids
+        // Route url is the same for all grids
         if (is_null($this->routeUrl)) {
             $this->routeUrl = $grid->getRouteUrl();
         }
@@ -56,7 +56,7 @@ class GridManager implements \IteratorAggregate, \Countable
 
     public function isReadyForRedirect()
     {
-        if ($this->grids->count()==0) {
+        if ($this->grids->count() == 0) {
             throw new \RuntimeException('No grid has been added to the manager.');
         }
 
@@ -64,18 +64,45 @@ class GridManager implements \IteratorAggregate, \Countable
 
         $this->grids->rewind();
         while($this->grids->valid()) {
-            /* @var $grid Sorien\DataGridBundle\Grid\Grid */
             $grid = $this->grids->current();
 
-            if (in_array($grid->getHash(), $checkHash))
-            {
+            if (in_array($grid->getHash(), $checkHash)) {
                 throw new \RuntimeException('Some grids seem similar. Please set an Indentifier for your grids.');
             }
-            else {
-                $checkHash[] = $grid->getHash();
+
+            $checkHash[] = $grid->getHash();
+
+            if ($grid->isReadyForRedirect()) {
+                return true;
             }
 
-            if ($grid->isReadyForRedirect()){
+            $this->grids->next();
+        }
+
+        return false;
+    }
+
+    public function isReadyForExport()
+    {
+        if ($this->grids->count() == 0) {
+            throw new \RuntimeException('No grid has been added to the manager.');
+        }
+
+        $checkHash = array();
+
+        $this->grids->rewind();
+        while($this->grids->valid()) {
+            $grid = $this->grids->current();
+
+            if (in_array($grid->getHash(), $checkHash)) {
+                throw new \RuntimeException('Some grids seem similar. Please set an Indentifier for your grids.');
+            }
+
+            $checkHash[] = $grid->getHash();
+
+            if ($grid->isReadyForExport()) {
+                $this->exportGrid = $grid;
+
                 return true;
             }
 
@@ -88,26 +115,43 @@ class GridManager implements \IteratorAggregate, \Countable
     /**
      * Renders a view.
      *
-     * @param array    $parameters An array of parameters to pass to the view
-     * @param string   $view The view name
+     * @param string|array $param1 The view name or an array of parameters to pass to the view
+     * @param string|array $param1 The view name or an array of parameters to pass to the view
      * @param Response $response A response instance
      *
      * @return Response A Response instance
      */
-    public function gridManagerResponse(array $parameters = array(), $view = null,  Response $response = null)
+    public function getGridManagerResponse($param1 = null, $param2 = null,  Response $response = null)
     {
-        if ($this->isReadyForRedirect())
-        {
+        if ($this->isReadyForRedirect()) {
+            if ($this->isReadyForExport()) {
+                return $this->exportGrid->getExportResponse();
+            }
+
             return new RedirectResponse($this->getRouteUrl());
-        }
-        else
-        {
+        } else {
+            if (is_array($param1) || $param1 === null) {
+                $parameters = (array) $param1;
+                $view = $param2;
+            } else {
+                $parameters = (array) $param2;
+                $view = $param1;
+            }
+
+            $i = 1;
+            $this->grids->rewind();
+            while($this->grids->valid()) {
+                $parameters = array_merge(array('grid'.$i => $this->grids->current()), $parameters);
+                $this->grids->next();
+                $i++;
+            }
+
             if (is_null($view)) {
                 return $parameters;
             }
-            else {
-                return $this->container->get('templating')->renderResponse($view, $parameters, $response);
-            }
+
+            return $this->container->get('templating')->renderResponse($view, $parameters, $response);
+
         }
     }
 

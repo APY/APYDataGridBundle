@@ -1,3 +1,68 @@
+`16 Jun 2012`
+
+ * [Bundle] Push the actuel master branch into the new 1.0 branch. The master branch is now the version 2.0 of this bundle.
+
+**New in 2.0:** See [UPGRADE-2.0.md](UPGRADE-2.0) documentation.
+
+ * [BC Break][Bundle] Change the namespace of the bundle
+ * [BC Break][Filters] Add operator selector feature with a default operator
+ * [Filters] Add operators Equals, Not equal to, Lower than, Lower than or equal to, Greater than, Greater than or equal to, Between exclusive, Between inclusive, Contains, Not contains, Starts with, Ends with, Is not defined, Is defined,
+ * [Filters] Add annotation and php support for the operator selector feature and for the default operator
+ * [BC Break][Columns] Remove range, select and sourceselect columns (Include now in all columns with the filter attribute)
+ * [Annotations][Filters] Add an attribute to define the type of the filter (input, select)
+ * [Select filter] Populate select filters from the query result or the source
+ * [Annotations][Select filter] Add an attribute to define the source values of the select filter (From values, the source or the query)
+ * [Annotations][Filters] Add range feature implemented in input and select filter type with the operators between.
+ * [BC Break][Grid::initFilter] Grid::initFilter rename to setDefaultFilters
+ * [BC Break][Grid::initOrder] Grid::initOrder rename to setDefaultOrder
+ * [Columns] Add a way to change the data junction of the filters of a column
+ * [Mass action] Add templates for massaction filter and cell
+ * [Mass action] Add additional parameters passed to the callback
+ * [Columns] Add number column (decimal, money, percent, duration, scientific, spell out)
+ * [Export] Add export feature
+ * [Export] Add DSV, CSV, SCSV, TSV, XML, Excel (with PHPExcel library) and html (with PHPExcel library) exports.
+ * [Grid::setLimits] Add support for a simple array to define limits (e.g. $grid->setLimits(5, 10);)
+ * [BC Break][Sources] Source::setCallBack rename to manipulateRow and manipulateQuery and the first argument is removed
+ * [BC Break][Columns] Column::setCallBack rename to manipulateRenderCell
+ * [Row action] Add addRouteParameters method on rowAction class
+ * [Row action] rowAction::setRouteParameters allows string
+ * [BC Break][Grid::gridResponse] Grid::gridResponse rename to Grid::getGridResponse
+ * [BC Break][Grid::gridManagerResponse] GridManager::gridManagerResponse rename to GridManager::getGridManagerResponse
+ * [Grid::getGridResponse] The view parameters and the view name in Grid::getGridResponse can be set in reverse order to match the Template::render function.
+ * [Grid::getGridResponse] Add array('grid' => $grid) automatically in view parameters with Grid::getGridResponse
+ * [Grid::getGridManagerResponse] GridManager::getGridManagerResponse can be set in reverse order to match the Template::render function.
+ * [Grid::getGridManagerResponse] Add array('grid1' => $grid1, 'grid2' => $grid2, ...) automatically in view parameters with GridManager::getGridManagerResponse
+ * [DQL Functions] Manage a simple parameter for dql aggregate functions (e.g. vars.var:CountIf:3)
+ * [Entity source] Implement setMaxResults feature
+ * [Document source] Implement setMaxResults feature
+ * [Document source] Add all filters with operators
+ * [Document source] Add populate select filters feature
+ * [Vector source] Implement setMaxResults feature
+ * [Vector source] Add guess typing
+ * [Vector source] Add all filters with operators
+ * [Vector source] Add guess type sorting
+ * [Vector source] Add populate select filters feature
+ * [Grid::setData] Implement setMaxResults feature
+ * [Grid::setData] Add all filters with operators
+ * [Grid::setData] Add guess type sorting
+ * [Grid::setData] Add populate select filters feature
+ * [Template] Add some css classes
+ * [Template] Show 'false' in the grid if value === false in boolean column because a false value isn't show in twig)
+ * [Template] Add width attribute on filter th tag too.
+ * [ActionsColumn] Add the method Grid::setActionsColumnSize to set the size of the actions column
+ * [ActionsColumn] Add the method Grid::setActionsColumnSeparator to set the separator of the actions column
+ * [Filter] Disallow url filtering if the column is not filterable
+ * [Sort] Disallow url sorting if the column is not sortable
+ * [Limit] Disallow url limit if the value is not in the limits selector
+ * [Bundle] Update composer
+ * [Bundle] Clean and optimize code
+ * [Bundle] Follow Code Standard of Symfony2
+ * [Docs] Rework the whole documentation with the new features.
+
+`25 May 2012`
+
+ * XMLHttpRequest force the persistence mode
+
 `15 May 2012`
 
  * Allow using controllers as services in mass actions (lstrojny)
@@ -44,7 +109,7 @@
 
  * [BC Break] Show a message instead of an empty grid
  * Add a way to pass twig variables to override blocks
- 
+
 `30 Apr 2012`
 
  * Add array Column for Entity sources
@@ -54,7 +119,7 @@
  * Add initOrder method
  * Add show and hide columns methods
  * Fix render bloc ids and manipulate row field ids with mapping fields.
- 
+
 `29 Apr 2012`
 
  * Add Vector source
@@ -94,8 +159,7 @@
 
 `8 Apr 2012`
 
- * as far as symfony 2.0 lacks of some important features and 2.1dev is heavily unstable with too many changes every day (which causes too many problems form my company) i've decided to stop using symfony2 for my future projects it basically means that i'll no longer support this bundle, Abhoryo and nurikabe have rights to merge any PR for this bundle  
-
+ * as far as symfony 2.0 lacks of some important features and 2.1dev is heavily unstable with too many changes every day (which causes too many problems form my company) i've decided to stop using symfony2 for my future projects it basically means that i'll no longer support this bundle, Abhoryo and nurikabe have rights to merge any PR for this bundle
 
 `20 Oct 2011`
 

@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Action;
+namespace APY\DataGridBundle\Grid\Action;
 
 interface MassActionInterface
 {
@@ -33,4 +34,18 @@ interface MassActionInterface
      * @return boolean
      */
     public function getConfirm();
+
+    /**
+     * get action confirmMessage
+     *
+     * @return boolean
+     */
+    public function getConfirmMessage();
+
+    /**
+     * get additional parameters
+     *
+     * @return array
+     */
+    public function getParameters();
 }

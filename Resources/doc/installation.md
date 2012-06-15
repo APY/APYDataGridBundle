@@ -1,10 +1,10 @@
 Installation
-===================================
+============
 
 ### Step 1: Download DataGridBundle
 
 Ultimately, the DataGridBundle files should be downloaded to the
-`vendor/bundles/Sorien/DataGridBundle` directory.
+`vendor/bundles/APY/DataGridBundle` directory.
 
 This can be done in several ways, depending on your preference. The first
 method is the standard Symfony2 method.
@@ -15,8 +15,8 @@ Add the following lines in your `deps` file:
 
 ```
 [DataGridBundle]
-    git=git://github.com/S0RIEN/DataGridBundle.git
-    target=bundles/Sorien/DataGridBundle
+    git=git://github.com/APY/DataGridBundle.git
+    target=bundles/APY/DataGridBundle
 ```
 
 Now, run the vendors script to download the bundle:
@@ -30,13 +30,13 @@ $ php bin/vendors install
 If you prefer instead to use git submodules, the run the following:
 
 ``` bash
-$ git submodule add git://github.com/S0RIEN/DataGridBundle.git vendor/bundles/Sorien/DataGridBundle
+$ git submodule add git://github.com/APY/DataGridBundle.git vendor/bundles/APY/DataGridBundle
 $ git submodule update --init
 ```
 
 ### Step 2: Configure the Autoloader
 
-Add the `Sorien` namespace to your autoloader:
+Add the `APY` namespace to your autoloader:
 
 ``` php
 <?php
@@ -44,7 +44,7 @@ Add the `Sorien` namespace to your autoloader:
 
 $loader->registerNamespaces(array(
     // ...
-    'Sorien' => __DIR__.'/../vendor/bundles',
+    'APY' => __DIR__.'/../vendor/bundles',
 ));
 ```
 
@@ -60,7 +60,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-		new Sorien\DataGridBundle\SorienDataGridBundle(),
+        new APY\DataGridBundle\APYDataGridBundle(),
     );
 }
 ```

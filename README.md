@@ -1,70 +1,123 @@
-Getting Started With DataGridBundle
-===================================
+Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid.  
+This bundle was initiated by Stanislav Turza (Sorien).
 
-Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid but not compatible.
-
+**Version**: 2.0
 **Compatibility**: Symfony 2.0.x
 
-The following documents are available:
+See [https://github.com/APY/DataGridBundle/blob/master/Resources/doc/CHANGELOG.md](CHANGELOG) and [https://github.com/APY/DataGridBundle/blob/master/Resources/doc/UPGRADE-2.0.md](UPGRADE 2.0)
 
-1. [Installation](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/installation.md)
-2. [Grid Configuration](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/grid_configuration.md)
-3. [Columns Configuration via annotations](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/columns_configuration.md)
-4. [Multiple grids](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/multiple_grids.md)
-5. [Overriding Templates](https://github.com/S0RIEN/DataGridBundle/blob/master/Resources/doc/overriding_templates.md)
+## Features
+
+- Supports Entity (ORM), Document (ODM) and Vector (Array) sources
+- Sortable and Filterable with operators (Comparison operators, range, starts/ends with, (not) contains, is (not) defined, regex)
+- Auto-typing columns (Text, Number, Boolean, Array, DateTime, Date, ...)
+- Locale support for DateTime, Date and Number columns (Decimal, Currency, Percent, Duration, Scientific, Spell out)
+- Input and Select filters filled with the data of the grid or an array of values
+- Export (CSV, Excel, _PDF_, XML, JSON, HTML, ...)
+- Mass actions
+- Row actions
+- Supports mapped fields with Entity source
+- Annotations and PHP configuration
+- External filters box
+- Pagination
+- Column width and column align
+- Prefix tranlated titles
+- Grid manager for multi-grid on the same page
+- Groups configuration for ORM and ODM sources
+- Easy templates overriding (twig)
+- Custom columns and filters creation
+- ...
+
+## Documentation
+
+See the [summary](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/summary.md).
+
+## Screenshot
+
+Full example:
+
+![test](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/images/screenshot_full.png)
+
+Simple example with the external filter box in english
+
+![test](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/images/screenshot_en.png)
+
+Simple example with the external filter box in french
+
+![test](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/images/screenshot_fr.png)
+
+Data used in these screenshots (this is a phpmyadmin screenshot):
+
+![test](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/images/screenshot_database.png)
+
+## Simple grid with an ORM source
+
+```php
+<?php
+namespace MyProject\MyBundle\Controller;
+
+use APY\DataGridBundle\Grid\Source\Entity;
+
+class DefaultController extends Controller
+{
+	public function myGridAction()
+	{
+		// Creates a simple grid based on your entity (ORM)
+		$source = new Entity('MyProjectMyBundle:MyEntity');
+
+		// Get a Grid instance
+		$grid = $this->get('grid');
+
+		// Attach the source to the grid
+		$grid->setSource($source);
+
+		// Return the response of the grid to the template
+		return $grid->getGridResponse('MyProjectMyBundle::myGrid.html.twig');
+	}
+}
+```
+
+#### Simple configuration of the grid in the entity
+
+```php
+<?php
+namespace MyProject\MyBundle\Entity
+
+use Doctrine\ORM\Mapping as ORM;
+use APY\DataGridBundle\Grid\Mapping as GRID;
+
+/**
+ * @GRID\Source(columns="id, my_datetime")
+ */
+class MyEntity
+{
+	/*
+	 * @ORM\Column(type="integer")
+	 */
+	protected $id;
+
+	/*
+	 * @ORM\Column(type="datetime")
+	 */
+	protected $my_datetime;
+}
+```
+
+#### Display the grid in a twig template
+
+```php
+<?php
+<!-- MyProject\MyBundle\Resources\views\myGrid.html.twig -->
+
+{{ grid(grid) }}
+```
+
+And clear your cache.
 
 ## Special thanks to all contributors
 
 Abhoryo, golovanov, touchdesign, Spea, nurikabe, print, Gregory McLean, centove, lstrojny, Benedikt Wolters, Martin Parsiegla, evan and all bug reporters
 
-## Simple grid with ORM or ODM as source
+## Todo list
 
-    // MyProject\MyBundle\DefaultController.php
-    namespace MyProject\MyBundle\Controller;
-
-    use Symfony\Component\HttpFoundation\RedirectResponse;
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-    use Sorien\DataGridBundle\Grid\Source\Entity;
-    use Sorien\DataGridBundle\Grid\Source\Document;
-
-    class DefaultController extends Controller
-    {
-        public function myGridAction()
-        {
-            // Creates simple grid based on your entity (ORM)
-            $source = new Entity('MyProjectMyBundle:MyEntity');
-
-            // or use Document source class for ODM
-            $source = new Document('MyProjectMyBundle:MyDocument');
-
-            $grid = $this->get('grid');
-
-            // Mass actions, query and row manipulations are defined here
-
-            $grid->setSource($source);
-
-            // Columns, row actions are defined here
-
-            if ($grid->isReadyForRedirect())
-            {
-                // Data are stored, do redirect to prevent multiple post requests
-                return new RedirectResponse($grid->getRouteUrl());
-            }
-            else
-            {
-                // To obtain data for template simply pass in the grid instance
-                return $this->render('MyProjectMyBundle::my_grid.html.twig', array('data' => $grid));
-            }
-        }
-    }
-
-## Rendering inside twig
-
-    <!-- MyProject\MyBundle\Resources\views\my_grid.html.twig -->
-    {{ grid(data) }}
-
-
-Working preview with [assets](https://github.com/S0RIEN/DataGridBundle/wiki/Working-preview-assets)
------
-<img src="http://vortex-portal.com/datagrid/grid2.png" alt="Screenshot" />
+See this [Pull Request](https://github.com/APY/DataGridBundle/issues/121)

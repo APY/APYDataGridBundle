@@ -1,13 +1,17 @@
 {
-    "name": "sorien/datagrid-bundle",
+    "name": "apy/datagrid-bundle",
     "type": "symfony-bundle",
-    "description": "datagrid bundle for symfony2",
+    "description": "Symfony2 Datagrid Bundle",
     "keywords": ["datagrid"],
-    "homepage": "https://github.com/S0RIEN/DataGridBundle",
+    "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
     "authors": [
         {
             "name": "Stanislav Turza",
             "email": "stanislav.turza@gmail.com"
+        },
+        {
+            "name": "Yoann Petit",
+            "email": "abhoryo@free.fr"
         },
         {
             "name": "Evan Owens",
@@ -16,11 +20,15 @@
     ],
     "require": {
         "php": ">=5.3.2",
-        "symfony/framework-bundle": "2.*",
-        "ext-curl":"*"
+        "symfony/framework-bundle": "2.0.*"
+    },
+    "suggest": {
+        "ext-intl": "*",
+        "ext-mbstring": "*",
+        "PHPExcel": "*"
     },
     "autoload": {
-        "psr-0": { "Sorien\\DataGridBundle": "" }
+        "psr-0": { "APY\\DataGridBundle": "" }
     },
-    "target-dir": "Sorien/DataGridBundle"
+    "target-dir": "APY/DataGridBundle"
 }

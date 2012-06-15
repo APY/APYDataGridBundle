@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid;
+namespace APY\DataGridBundle\Grid;
 
 class Row
 {
@@ -74,17 +75,21 @@ class Row
 
     public function getPrimaryFieldValue()
     {
-        if(is_array($this->primaryField)){
+        if(is_array($this->primaryField)) {
             return array_intersect_key($this->fields, array_flip($this->primaryField));
         }
+
         return $this->fields[$this->primaryField];
     }
 
-    public function getPrimaryKeyValue(){
+    public function getPrimaryKeyValue()
+    {
         $primaryField = $this->getPrimaryFieldValue();
-        if(is_array($primaryField)){
+
+        if(is_array($primaryField)) {
             return $primaryField;
         }
-        return array('id'=>$primaryField);
+
+        return array('id' => $primaryField);
     }
 }

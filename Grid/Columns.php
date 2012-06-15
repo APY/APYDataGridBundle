@@ -3,25 +3,23 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid;
+namespace APY\DataGridBundle\Grid;
 
-use Sorien\DataGridBundle\Grid\Column\Column;
-use Sorien\DataGridBundle\Grid\Helper\ColumnsIterator;
+use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class Columns implements \IteratorAggregate, \Countable
 {
-    /**
-     * @var \Sorien\DataGridBundle\Grid\Column\Column[]
-     */
-    protected $columns;
-    protected $extensions;
+    protected $columns = array();
+    protected $extensions = array();
 
     /**
      * @var \Symfony\Component\Security\Core\SecurityContextInterface
@@ -30,7 +28,6 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function __construct(SecurityContextInterface $securityContext)
     {
-        $this->columns = array();
         $this->securityContext = $securityContext;
     }
 
@@ -40,29 +37,21 @@ class Columns implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Add column, column object have to extend Column
+     * Add column
      * @param Column $column
      * @param int $position
      * @return Columns
      */
-    public function addColumn($column, $position = 0)
+    public function addColumn(Column $column, $position = 0)
     {
-        if (!$column instanceof Column)
-        {
-            throw new \InvalidArgumentException('Your column needs to extend class Column.');
-        }
-
         $column->setSecurityContext($this->securityContext);
 
-        if ($position > 0)
-        {
+        if ($position > 0) {
             $position--;
             $head = array_slice($this->columns, 0, $position);
             $tail = array_slice($this->columns, $position);
             $this->columns = array_merge($head, array($column), $tail);
-        }
-        else
-        {
+        } else {
             $this->columns[] = $column;
         }
 
@@ -71,9 +60,7 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function getColumnById($columnId)
     {
-        $column = $this->hasColumnById($columnId, true);
-
-        if ($column === false) {
+        if (($column = $this->hasColumnById($columnId, true)) === false) {
             throw new \InvalidArgumentException(sprintf('Column with id "%s" doesn\'t exists', $columnId));
         }
 
@@ -82,10 +69,8 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function hasColumnById($columnId, $returnColumn = false)
     {
-        foreach ($this->columns as $column)
-        {
-            if ($column->getId() == $columnId)
-            {
+        foreach ($this->columns as $column) {
+            if ($column->getId() == $columnId) {
                 return $returnColumn ? $column : true;
             }
         }
@@ -95,10 +80,8 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function getPrimaryColumn()
     {
-        foreach ($this->columns as $column)
-        {
-            if ($column->isPrimary())
-            {
+        foreach ($this->columns as $column) {
+            if ($column->isPrimary()) {
                 return $column;
             }
         }
@@ -108,12 +91,14 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function count()
     {
-       return count($this->columns);
+        return count($this->columns);
     }
 
     public function addExtension($extension)
     {
         $this->extensions[strtolower($extension->getType())] = $extension;
+
+        return $this;
     }
 
     public function hasExtensionForColumnType($type)
@@ -126,17 +111,13 @@ class Columns implements \IteratorAggregate, \Countable
         return $this->extensions[$type];
     }
 
-    /**
-     * Internal function
-     * @return string
-     */
     public function getHash()
     {
         $hash = '';
-        foreach ($this->columns as $column)
-        {
+        foreach ($this->columns as $column) {
             $hash .= $column->getId();
         }
+
         return $hash;
     }
 }

@@ -3,12 +3,13 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Sorien\DataGridBundle\Grid;
+namespace APY\DataGridBundle\Grid;
 
 class Filter
 {
@@ -16,7 +17,7 @@ class Filter
     protected $operator;
     protected $id;
 
-    public function __construct($operator, $value, $id = null)
+    public function __construct($operator, $value = null, $id = null)
     {
         $this->value = $value;
         $this->operator = $operator;
@@ -26,6 +27,8 @@ class Filter
     public function setOperator($operator)
     {
         $this->operator = $operator;
+
+        return $this;
     }
 
     public function getOperator()
@@ -36,6 +39,8 @@ class Filter
     public function setValue($value)
     {
         $this->value = $value;
+
+        return $this;
     }
 
     public function getValue()
@@ -51,6 +56,8 @@ class Filter
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
     }
 
     public function getId()

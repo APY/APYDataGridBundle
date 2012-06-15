@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Action;
+namespace APY\DataGridBundle\Grid\Action;
 
 interface RowActionInterface
 {
@@ -39,7 +40,7 @@ interface RowActionInterface
      *
      * @return boolean
      */
-    public function getConfirmMessage();    
+    public function getConfirmMessage();
 
     /**
      * get action target
@@ -49,9 +50,23 @@ interface RowActionInterface
     public function getTarget();
 
     /**
-     * get action column
+     * get the action column id
      *
      * @return boolean
      */
     public function getColumn();
+
+    /**
+     * get route parameters
+     *
+     * @return array
+     */
+    public function getRouteParameters();
+
+    /**
+     * get attributes of the link
+     *
+     * @return array
+     */
+    public function getAttributes();
 }

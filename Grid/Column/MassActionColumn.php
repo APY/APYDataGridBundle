@@ -3,34 +3,44 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Column;
+namespace APY\DataGridBundle\Grid\Column;
 
 class MassActionColumn extends Column
 {
     const ID = '__action';
 
-    protected $gridHash;
-
-    public function __construct($gridHash)
+    public function __construct()
     {
-        $this->gridHash = $gridHash;
-        parent::__construct(array('id' => self::ID, 'title' => '', 'size' => 15, 'sortable' => false, 'source' => false, 'align' => 'center'));
+        parent::__construct(array(
+            'id'         => self::ID,
+            'title'      => '',
+            'size'       => 15,
+            'filterable' => true,
+            'sortable'   => false,
+            'source'     => false,
+            'align'      => 'center'
+        ));
     }
 
-    public function renderFilter($gridHash)
+    public function isVisible($isExported = false)
     {
-        return '<input type="checkbox" class="grid-mass-selector" onclick="'.$gridHash.'_mark_visible(this.checked); return true;"/>';
+        if ($isExported) {
+            return false;
+        }
+
+        return parent::isVisible();
     }
 
-    public function renderCell($value, $row, $router)
+    public function getFilterType()
     {
-        return '<input type="checkbox" class="action" value="1" name="'.$this->gridHash.'['.self::ID.']['.$row->getPrimaryFieldValue().']"/>';
+        return $this->getType();
     }
 
     public function getType()

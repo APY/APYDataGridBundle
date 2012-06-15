@@ -3,38 +3,49 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Column;
-
-use Sorien\DataGridBundle\Grid\Action\RowAction;
+namespace APY\DataGridBundle\Grid\Column;
 
 class ActionsColumn extends Column
 {
     protected $rowActions;
+    protected $separator;
 
-    public function __construct($column, $title, array $rowActions = array())
+    public function __construct($column, $title, array $rowActions = array(), $separator = ' ')
     {
         $this->rowActions = $rowActions;
-        parent::__construct(array('id' => $column, 'title' => $title, 'sortable' => false, 'source' => false, 'filterable' => false));
+        $this->separator = $separator;
+
+        parent::__construct(array(
+            'id'         => $column,
+            'title'      => $title,
+            'sortable'   => false,
+            'source'     => false,
+            'filterable' => false
+        ));
     }
 
     public function getRouteParameters($row, $action)
     {
         $actionParameters = $action->getRouteParameters();
-        if(!empty($actionParameters)){
+
+        if(!empty($actionParameters)) {
             $routeParameters = array();
+
             foreach ($actionParameters as $name => $parameter) {
-                if(is_numeric($name)){
+                if(is_int($name)) {
                     $routeParameters[$parameter] = $row->getField($parameter);
                 } else {
                     $routeParameters[$name] = $parameter;
                 }
             }
+
             return $routeParameters;
         }
 
@@ -49,8 +60,32 @@ class ActionsColumn extends Column
         return $this->rowActions;
     }
 
-    public function setRowActions(array $rowActions) {
+    public function setRowActions(array $rowActions)
+    {
         $this->rowActions = $rowActions;
+
+        return $this;
+    }
+
+    public function isVisible($isExported = false)
+    {
+        if ($isExported) {
+            return false;
+        }
+
+        return parent::isVisible();
+    }
+
+    public function setSeparator($separator)
+    {
+        $this->separator = $separator;
+
+        return $this;
+    }
+
+    public function getSeparator()
+    {
+        return $this->separator;
     }
 
     public function getType()

@@ -3,36 +3,63 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Column;
+namespace APY\DataGridBundle\Grid\Column;
 
-use Sorien\DataGridBundle\Grid\Filter;
-use Symfony\Component\HttpFoundation\Request;
+use APY\DataGridBundle\Grid\Filter;
 
 class DateColumn extends DateTimeColumn
 {
-    protected $timetype = \IntlDateFormatter::NONE;
+    protected $timeFormat = \IntlDateFormatter::NONE;
 
     protected $fallbackFormat = 'Y-m-d';
 
-    public function getFilters()
+    public function getFilters($source)
     {
-        $result = array();
+        $parentFilters = parent::getFilters($source);
 
-        $dateFrom = new \DateTime($this->data);
-        $dateFrom->setTime(0, 0, 0);
-        $result[] =  new Filter(self::OPERATOR_GTE, $dateFrom);
+        $filters = array();
+        foreach($parentFilters as $filter) {
+            if ($filter->getValue() !== null) {
+                $dateFrom = $filter->getValue();
+                $dateFrom->setTime(0, 0, 0);
 
-        $dateTo = new \DateTime($this->data);
-        $dateTo->setTime(23, 59, 59);
-        $result[] =  new Filter(self::OPERATOR_LTE, $dateTo);
+                $dateTo = clone $dateFrom;
+                $dateTo->setTime(23, 59, 59);
 
-        return $result;
+                switch ($filter->getOperator()) {
+                    case self::OPERATOR_EQ:
+                        $filters[] =  new Filter(self::OPERATOR_GTE, $dateFrom);
+                        $filters[] =  new Filter(self::OPERATOR_LTE, $dateTo);
+                        break;
+                    case self::OPERATOR_NEQ:
+                        $filters[] =  new Filter(self::OPERATOR_LT, $dateFrom);
+                        $filters[] =  new Filter(self::OPERATOR_GT, $dateTo);
+                        $this->setDataJunction(self::DATA_DISJUNCTION);
+                        break;
+                    case self::OPERATOR_LT:
+                    case self::OPERATOR_GTE:
+                        $filters[] =  new Filter($filter->getOperator(), $dateFrom);
+                        break;
+                    case self::OPERATOR_GT:
+                    case self::OPERATOR_LTE:
+                        $filters[] =  new Filter($filter->getOperator(), $dateTo);
+                        break;
+                    default:
+                        $filters[] = $filter;
+                }
+            }else {
+                $filters[] = $filter;
+            }
+        }
+
+        return $filters;
     }
 
     public function getType()

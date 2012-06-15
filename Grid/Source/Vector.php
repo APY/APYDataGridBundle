@@ -3,17 +3,16 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Source;
+namespace APY\DataGridBundle\Grid\Source;
 
-use Sorien\DataGridBundle\Grid\Column\TextColumn;
-use Sorien\DataGridBundle\Grid\Rows;
-use Sorien\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Grid\Column;
 
 /**
  * Vector is really an Array
@@ -29,6 +28,11 @@ class Vector extends Source
     /**
      * @var array
      */
+    protected $fieldType;
+
+    /**
+     * @var array
+     */
     protected $data;
 
     /**
@@ -37,6 +41,8 @@ class Vector extends Source
      * @var mixed
      */
     protected $id = null;
+
+    protected $items = array();
 
     /**
      * Creates the Vector and sets its data
@@ -50,83 +56,124 @@ class Vector extends Source
     public function initialise($container)
     {
         $this->fieldNames = array_keys(reset($this->data));
+        $this->guessColumnsType();
+    }
+
+    protected function guessColumnsType()
+    {
+        // Guess on the first 10 rows only
+        $iteration = min(10, count($this->data));
+
+        foreach ($this->fieldNames as $fieldName) {
+            $i = 0;
+            $fieldTypes = array();
+
+            foreach ($this->data as $row) {
+                $fieldValue = $row[$fieldName];
+
+                if ($fieldValue !== '' && $fieldValue !== null) {
+                    if (is_array($fieldValue)) {
+                        $fieldTypes['array'] = 1;
+                    } elseif (strtotime($fieldValue) !== false) {
+                        $dt = new \DateTime($fieldValue);
+                        if ($dt->format('His') === '000000') {
+                            $fieldTypes['date'] = 1;
+                        } else {
+                            $fieldTypes['datetime'] = 1;
+                        }
+                    } elseif ($fieldValue === true || $fieldValue === false || $fieldValue == 1 || $fieldValue == 0) {
+                        $fieldTypes['boolean'] = 1;
+                    } elseif (is_numeric($fieldValue)) {
+                        $fieldTypes['number'] = 1;
+                    } else {
+                        $fieldTypes['text'] = 1;
+                    }
+                }
+
+                if (++$i >= $iteration) {
+                    break;
+                }
+            }
+
+            if(count($fieldTypes) == 1) {
+                $this->fieldType[$fieldName] = key($fieldTypes);
+            } elseif (count($fieldTypes) == 2) {
+                if (isset($fieldTypes['boolean']) && isset($fieldTypes['number'])) {
+                    $this->fieldType[$fieldName] = 'number';
+                } elseif (isset($fieldTypes['date']) && isset($fieldTypes['datetime'])) {
+                    $this->fieldType[$fieldName] = 'datetime';
+                }
+            } else {
+                $this->fieldType[$fieldName] = 'text';
+            }
+        }
     }
 
     /**
-     * @param \Sorien\DataGridBundle\Grid\Columns $columns
+     * @param \APY\DataGridBundle\Grid\Columns $columns
      * @return null
      */
     public function getColumns($columns)
     {
         $token = empty($this->id); //makes the first column primary by default
-        foreach ($this->fieldNames as $column) {
-            $columns->addColumn(new TextColumn(array(
-                        'id' => $column,
-                        'title' => $column,
-                        'primary' => (is_array($this->id) && in_array($column, $this->id)) || $column == $this->id || $token,
-                        'source' => true,
-                        'filterable' => true,
-                        'sortable' => true,
-                        'visible' => true,
-                        'field' => $column,
-                    )));
+        foreach ($this->fieldNames as $fieldName) {
+            $params = array(
+                'id' => $fieldName,
+                'title' => $fieldName,
+                'primary' => (is_array($this->id) && in_array($fieldName, $this->id)) || $fieldName == $this->id || $token,
+                'source' => true,
+                'filterable' => true,
+                'sortable' => true,
+                'visible' => true,
+                'field' => $fieldName,
+            );
+
+            switch ($this->fieldType[$fieldName]) {
+                case 'text':
+                    $column = new Column\TextColumn($params);
+                    break;
+                case 'date':
+                    $column = new Column\DateColumn($params);
+                    break;
+                case 'datetime':
+                    $column = new Column\DateTimeColumn($params);
+                    break;
+                case 'boolean':
+                    $column = new Column\BooleanColumn($params);
+                    break;
+                case 'number':
+                    $column = new Column\NumberColumn($params);
+                    break;
+                case 'array':
+                    $column = new Column\ArrayColumn($params);
+                    break;
+            }
+
+            $columns->addColumn($column);
+
             $token = false;
         }
     }
 
     /**
-     * @param $columns \Sorien\DataGridBundle\Grid\Column\Column[]
+     * @param $columns \APY\DataGridBundle\Grid\Column\Column[]
      * @param $page int Page Number
      * @param $limit int Rows Per Page
-     * @return \Sorien\DataGridBundle\Grid\Rows
+     * @return \APY\DataGridBundle\Grid\Rows
      */
-    public function execute($columns, $page = 0, $limit = 0)
+    public function execute($columns, $page = 0, $limit = 0, $maxResults = null)
     {
-        $items = $this->data;
-        // Order
-        foreach ($columns as $column) {
-            if ($column->isSorted()) {
-                $sortedItems = array();
-                foreach ($items as $key => $item) {
-                    $sortedItems[$key] = $item[$column->getField()];
-                }
-                // Type ? (gettype function)
-                array_multisort($sortedItems, ($column->getOrder() == 'asc') ? SORT_ASC : SORT_DESC, SORT_STRING, $items);
-            }
-            if ($column->isFiltered()) {
-                $filter = $column->getFilters();
-
-                $filter = $filter[0];
-                $filter = $filter->getValue();
-
-                $filter = trim(str_replace('%', '*', $filter), "'");
-                foreach ($items as $key => $item) {
-                    if (is_string($item[$column->getField()]) && !preg_match($filter, $item[$column->getField()])) {
-                        unset($items[$key]);
-                    }
-                }
-            }
-        }
-
-        $this->data = $items;
-
-        //pageing
-        $data = array_slice($items, $page * $limit, $limit);
-        $rows = new Rows();
-        foreach ($data as $item) {
-            $row = new Row();
-            $row->setPrimaryField($this->id);
-            foreach ($item as $key => $value) {
-                $row->setField($key, $value);
-            }
-            $rows->addRow($row);
-        }
-        return $rows;
+        return $this->executeFromData($columns, $page, $limit, $maxResults);
     }
 
-    public function getTotalCount($columns)
+    public function populateSelectFilters($columns, $loop = false)
     {
-        return count($this->data);
+        $this->populateSelectFiltersFromData($columns, $loop);
+    }
+
+    public function getTotalCount($columns, $maxResults = null)
+    {
+        return $this->getTotalCountFromData($maxResults);
     }
 
     public function getHash()
@@ -148,16 +195,19 @@ class Vector extends Source
      * @param array $data
      * @throws \InvalidArgumentException
      */
-    public function setData(array $data){
+    public function setData($data){
         $this->data = $data;
+
         if(!is_array($this->data) || empty($this->data)){
             throw new \InvalidArgumentException('Data should be an array with content');
         }
+
         if (is_object(reset($this->data))) {
             foreach ($this->data as $key => $object) {
                 $this->data[$key] = (array) $object;
             }
         }
+
         $firstRaw = reset($this->data);
         if(!is_array($firstRaw) || empty($firstRaw)){
             throw new \InvalidArgumentException('Data should be a two-dimentional array');

@@ -3,28 +3,25 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid;
+namespace APY\DataGridBundle\Grid;
 
 class Rows implements \IteratorAggregate, \Countable
 {
-    /**
-     * @var Rows[]
-     */
     protected $rows;
 
-    public function __construct($array = array())
+    public function __construct(array $rows = array())
     {
         $this->rows = new \SplObjectStorage();
 
-        foreach ($array as $rows)
-        {
-            $this->addRow(new Row($rows));
+        foreach ($rows as $row) {
+            $this->addRow($row);
         }
     }
 
@@ -39,13 +36,8 @@ class Rows implements \IteratorAggregate, \Countable
      * @param Row $row
      * @return Rows
      */
-    function addRow($row)
+    function addRow(Row $row)
     {
-        if (!$row instanceof Row)
-        {
-            throw new \InvalidArgumentException('Your column needs to extend class Column.');
-        }
-
         $this->rows->attach($row);
 
         return $this;

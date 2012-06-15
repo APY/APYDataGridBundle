@@ -3,19 +3,20 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Mapping\Driver;
+namespace APY\DataGridBundle\Grid\Mapping\Driver;
 
 interface DriverInterface
 {
-    public function getClassColumns($class);
+    public function getClassColumns($class, $group = 'default');
 
-    public function getFieldsMetadata($class);
+    public function getFieldsMetadata($class, $group = 'default');
 
-    public function getGroupBy($class);
+    public function getGroupBy($class, $group = 'default');
 }

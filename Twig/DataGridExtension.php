@@ -3,19 +3,20 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Twig;
+namespace APY\DataGridBundle\Twig;
 
-use Sorien\DataGridBundle\Grid\Grid;
+use APY\DataGridBundle\Grid\Grid;
 
 class DataGridExtension extends \Twig_Extension
 {
-    const DEFAULT_TEMPLATE = 'SorienDataGridBundle::blocks.html.twig';
+    const DEFAULT_TEMPLATE = 'APYDataGridBundle::blocks.html.twig';
 
     /**
      * @var \Twig_Environment
@@ -25,7 +26,7 @@ class DataGridExtension extends \Twig_Extension
     /**
      * @var \Twig_TemplateInterface[]
      */
-    protected $templates;
+    protected $templates = array();
 
     /**
      * @var string
@@ -41,6 +42,11 @@ class DataGridExtension extends \Twig_Extension
      * @var array
      */
     protected $names;
+
+    /**
+     * @var array Array of booleans
+     */
+    protected $gridPrepared = array();
 
     /**
      * @var array
@@ -76,13 +82,15 @@ class DataGridExtension extends \Twig_Extension
             'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
             'grid_no_data'      => new \Twig_Function_Method($this, 'getGridNoData', array('is_safe' => array('html'))),
             'grid_no_result'    => new \Twig_Function_Method($this, 'getGridNoResult', array('is_safe' => array('html'))),
+            'grid_exports'      => new \Twig_Function_Method($this, 'getGridExports', array('is_safe' => array('html'))),
+            'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
         );
     }
 
     /**
      * Render grid block
      *
-     * @param \Sorien\DataGridBundle\Grid\Grid $grid
+     * @param \APY\DataGridBundle\Grid\Grid $grid
      * @param string $theme
      * @param string $id
      * @return string
@@ -90,11 +98,17 @@ class DataGridExtension extends \Twig_Extension
     public function getGrid($grid, $theme = null, $id = '', array $params = array())
     {
         $this->theme = $theme;
-        $this->names[$grid->getHash()] = $id == '' ? $grid->getId() : $id;
-        $this->params = $params;
-        $this->templates = array();
+        $grid->setTemplate($theme);
 
-        return $this->renderBlock('grid', array('grid' => $grid->prepare()));
+        $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
+        $this->params = $params;
+
+        if (!isset($this->gridPrepared[$grid->getHash()]) || $this->gridPrepared[$grid->getHash()] !==true) {
+            $grid->prepare();
+            $this->gridPrepared[$grid->getHash()] = true;
+        }
+
+        return $this->renderBlock('grid', array('grid' => $grid));
     }
 
     public function getGridTitles($grid)
@@ -122,12 +136,32 @@ class DataGridExtension extends \Twig_Extension
         return $this->renderBlock('grid_actions', array('grid' => $grid));
     }
 
+    public function getGridExports($grid)
+    {
+        return $this->renderBlock('grid_exports', array('grid' => $grid));
+    }
+
+    public function getGridSearch($grid, $theme = null, $id = '', array $params = array())
+    {
+        $this->theme = $theme;
+
+        $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
+        $this->params = $params;
+
+        if (!$this->gridPrepared) {
+            $grid->prepare();
+            $this->gridPrepared = true;
+        }
+
+        return $this->renderBlock('grid_search', array('grid' => $grid));
+    }
+
     /**
      * Cell Drawing override
      *
-     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
-     * @param \Sorien\DataGridBundle\Grid\Row $row
-     * @param \Sorien\DataGridBundle\Grid\Grid $grid
+     * @param \APY\DataGridBundle\Grid\Column\Column $column
+     * @param \APY\DataGridBundle\Grid\Row $row
+     * @param \APY\DataGridBundle\Grid\Grid $grid
      *
      * @return string
      */
@@ -135,37 +169,16 @@ class DataGridExtension extends \Twig_Extension
     {
         $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
 
-        if (($id = $this->names[$grid->getHash()]) != '')
+        $id = $this->names[$grid->getHash()];
+
+        if (($id != '' && ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_cell')
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getType().'_cell')
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell')))
+         || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
+         || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
+         || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
         {
-            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_cell'))
-            {
-                return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
-            }
-
-            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getType().'_cell'))
-            {
-                return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
-            }
-
-            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell'))
-            {
-                return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
-            }
-        }
-
-        if ($this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell'))
-        {
-            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
-        }
-
-        if ($this->hasBlock($block = 'grid_column_'.$column->getType().'_cell'))
-        {
-            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
-        }
-
-        if ($this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
-        {
-            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
+            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row, 'hash' => $grid->getHash()));
         }
 
         return $value;
@@ -174,77 +187,51 @@ class DataGridExtension extends \Twig_Extension
     /**
      * Filter Drawing override
      *
-     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
-     * @param \Sorien\DataGridBundle\Grid\Grid $grid
+     * @param \APY\DataGridBundle\Grid\Column\Column $column
+     * @param \APY\DataGridBundle\Grid\Grid $grid
      *
      * @return string
      */
-    public function getGridFilter($column, $grid)
+    public function getGridFilter($column, $grid, $submitOnChange = true)
     {
-        if (($id = $this->names[$grid->getHash()]) != '')
+        $id = $this->names[$grid->getHash()];
+
+        if (($id != '' && ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_filter')
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getType().'_filter')
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_filter_type_'.$column->getFilterType())
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getParentType().'_filter')))
+         || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_filter')
+         || $this->hasBlock($block = 'grid_column_type_'.$column->getType().'_filter')
+         || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType())
+         || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter'))
         {
-            if ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_filter'))
-            {
-                return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
-            }
-
-            if ($this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getType().'_filter'))
-            {
-                return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
-            }
-
-            if ($this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getParentType().'_filter'))
-            {
-                return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
-            }
+            return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash(), 'submitOnChange' => $submitOnChange));
         }
 
-        if ($this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_filter'))
-        {
-            return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
-        }
-
-        if ($this->hasBlock($block = 'grid_column_type_'.$column->getType().'_filter'))
-        {
-            return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
-        }
-
-        if ($this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter'))
-        {
-            return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash()));
-        }
-
-        return $column->renderFilter($grid->getHash());
+        return '';
     }
 
     /**
      * @param string $section
-     * @param \Sorien\DataGridBundle\Grid\Grid $grid
-     * @param \Sorien\DataGridBundle\Grid\Column\Column $param
+     * @param \APY\DataGridBundle\Grid\Grid $grid
+     * @param \APY\DataGridBundle\Grid\Column\Column $param
      * @return string
      */
     public function getGridUrl($section, $grid, $param = null)
     {
         $separator =  strpos($grid->getRouteUrl(), '?') ? '&' : '?';
 
-        if ($section == 'order')
-        {
-            if ($param->isSorted())
-            {
-                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|'.($param->getOrder() == 'asc' ? 'desc' : 'asc');
-            }
-            else
-            {
-                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|asc';
-            }
-        }
-        elseif ($section == 'page')
-        {
-            return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_PAGE.']='.$param;
-        }
-        elseif ($section == 'limit')
-        {
-            return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_LIMIT.']=';
+        switch ($section) {
+            case 'order':
+                if ($param->isSorted()) {
+                    return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|'.($param->getOrder() == 'asc' ? 'desc' : 'asc');
+                } else {
+                    return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|asc';
+                }
+            case 'page':
+                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_PAGE.']='.$param;
+            case 'limit':
+                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_LIMIT.']=';
         }
     }
 
@@ -267,10 +254,8 @@ class DataGridExtension extends \Twig_Extension
      */
     protected function renderBlock($name, $parameters)
     {
-        foreach ($this->getTemplates() as $template)
-        {
-            if ($template->hasBlock($name))
-            {
+        foreach ($this->getTemplates() as $template) {
+            if ($template->hasBlock($name)) {
                 return $template->renderBlock($name, array_merge($parameters, $this->params));
             }
         }
@@ -286,10 +271,8 @@ class DataGridExtension extends \Twig_Extension
      */
     protected function hasBlock($name)
     {
-        foreach ($this->getTemplates() as $template)
-        {
-            if ($template->hasBlock($name))
-            {
+        foreach ($this->getTemplates() as $template) {
+            if ($template->hasBlock($name)) {
                 return true;
             }
         }
@@ -305,34 +288,33 @@ class DataGridExtension extends \Twig_Extension
      */
     protected function getTemplates()
     {
-        if (empty($this->templates))
-        {
-            //get template name
-            if ($this->theme instanceof \Twig_Template)
-            {
+        if (empty($this->templates)) {
+            if ($this->theme instanceof \Twig_Template) {
                 $this->templates[] = $this->theme;
                 $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
-            }
-            elseif (is_string($this->theme))
-            {
-                $template = $this->environment->loadTemplate($this->theme);
-                while ($template != null)
-                {
-                    $this->templates[] = $template;
-                    $template = $template->getParent(array());
-                }
-
-                $this->templates[] = $this->environment->loadTemplate($this->theme);
-            }
-            elseif (is_null($this->theme))
-            {
+            } elseif (is_string($this->theme)) {
+                $this->templates = $this->getTemplatesFromString($this->theme);
+            } elseif (is_null($this->theme)) {
                 $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
-            }
-            else
-            {
+            } else {
                 throw new \Exception('Unable to load template');
             }
         }
+
+        return $this->templates;
+    }
+
+    protected function getTemplatesFromString($theme)
+    {
+        $this->templates = array();
+
+        $template = $this->environment->loadTemplate($theme);
+        while ($template != null) {
+            $this->templates[] = $template;
+            $template = $template->getParent(array());
+        }
+
+        $this->templates[] = $this->environment->loadTemplate($theme);
 
         return $this->templates;
     }

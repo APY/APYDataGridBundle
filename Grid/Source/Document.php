@@ -3,7 +3,8 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +12,11 @@
  *
  */
 
-namespace Sorien\DataGridBundle\Grid\Source;
+namespace APY\DataGridBundle\Grid\Source;
 
-use Sorien\DataGridBundle\Grid\Column\Column;
-use Sorien\DataGridBundle\Grid\Rows;
-use Sorien\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Grid\Rows;
+use APY\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Grid\Column\Column;
 
 class Document extends Source
 {
@@ -45,7 +46,7 @@ class Document extends Source
     protected $documentName;
 
     /**
-     * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
+     * @var \APY\DataGridBundle\Grid\Mapping\Metadata\Metadata
      */
     protected $metadata;
 
@@ -80,85 +81,109 @@ class Document extends Source
     }
 
     /**
-     * @param \Sorien\DataGridBundle\Grid\Columns $columns
+     * @param \APY\DataGridBundle\Grid\Columns $columns
      * @return null
      */
     public function getColumns($columns)
     {
-        foreach ($this->metadata->getColumnsFromMapping($columns) as $column)
-        {
+        foreach ($this->metadata->getColumnsFromMapping($columns) as $column) {
             $columns->addColumn($column);
         }
     }
 
     protected function normalizeOperator($operator)
     {
-        return ($operator == COLUMN::OPERATOR_REGEXP ? 'equals' : $operator);
+        switch ($operator) {
+            // For case insensitive
+            case Column::OPERATOR_EQ:
+            case Column::OPERATOR_LIKE:
+            case Column::OPERATOR_NLIKE:
+            case Column::OPERATOR_RLIKE:
+            case Column::OPERATOR_LLIKE:
+            case Column::OPERATOR_NEQ:
+                return 'equals';
+            case Column::OPERATOR_ISNULL:
+            case Column::OPERATOR_ISNOTNULL:
+                return 'exists';
+            default:
+                return $operator;
+        }
     }
 
     protected function normalizeValue($operator, $value)
     {
-        return ($operator == COLUMN::OPERATOR_REGEXP ? new \MongoRegex($value) : $value);
+        switch ($operator) {
+            case Column::OPERATOR_EQ:
+                return new \MongoRegex('/^'.$value.'$/i');
+            case Column::OPERATOR_NEQ:
+                return new \MongoRegex('/^(?!'.$value.'$).*$/i');
+            case Column::OPERATOR_LIKE:
+                return new \MongoRegex('/'.$value.'/i');
+            case Column::OPERATOR_NLIKE:
+                return new \MongoRegex('/^((?!'.$value.').)*$/i');
+            case Column::OPERATOR_RLIKE:
+                return new \MongoRegex('/^'.$value.'/i');
+            case Column::OPERATOR_LLIKE:
+                return new \MongoRegex('/'.$value.'$/i');
+            case Column::OPERATOR_ISNULL:
+                return false;
+            case Column::OPERATOR_ISNOTNULL:
+                return true;
+            default:
+                return $value;
+        }
     }
 
     /**
-     * @param \Sorien\DataGridBundle\Grid\Column\Column[] $columns
+     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
      * @param int $page  Page Number
      * @param int $limit  Rows Per Page
-     * @return \Sorien\DataGridBundle\Grid\Rows
+     * @return \APY\DataGridBundle\Grid\Rows
      */
-    public function execute($columns, $page = 0, $limit = 0)
+    public function execute($columns, $page = 0, $limit = 0, $maxResults = null)
     {
         $this->query = $this->manager->createQueryBuilder($this->documentName);
 
-        foreach ($columns as $column)
-        {
+        foreach ($columns as $column) {
             $this->query->select($column->getField());
 
-            if ($column->isSorted())
-            {
+            if ($column->isSorted()) {
                 $this->query->sort($column->getField(), $column->getOrder());
             }
 
-            if ($column->isFiltered())
-            {
-                if($column->getFiltersConnection() == column::DATA_CONJUNCTION)
-                {
-                    foreach ($column->getFilters() as $filter)
-                    {
-                        //normalize values
-                        $operator = $this->normalizeOperator($filter->getOperator());
-                        $value = $this->normalizeValue($filter->getOperator(), $filter->getValue());
+            if ($column->isPrimary()) {
+                $column->setFilterable(false);
+            } else if ($column->isFiltered()) {
+                // Some attributes of the column can be changed in this function
+                $filters = $column->getFilters('document');
 
+                foreach ($filters as $filter) {
+                    //normalize values
+                    $operator = $this->normalizeOperator($filter->getOperator());
+                    $value = $this->normalizeValue($filter->getOperator(), $filter->getValue());
+
+                    if ($column->getDataJunction() === Column::DATA_DISJUNCTION) {
+                        $this->query->addOr($this->query->expr()->field($column->getField())->$operator($value));
+                    } else {
                         $this->query->field($column->getField())->$operator($value);
                     }
-                }
-                elseif($column->getFiltersConnection() == column::DATA_DISJUNCTION)
-                {
-                    $values = array();
 
-                    foreach ($column->getFilters() as $filter)
-                    {
-                        $values[] = $filter->getValue();
-                    }
-
-                    if (!empty($values))
-                    {
-                        //@todo probably value normalization needed
-                        $this->query->field($column->getField())->all($values);
-                    }
                 }
             }
         }
 
-        if ($page > 0)
-        {
+        if ($page > 0) {
             $this->query->skip($page * $limit);
         }
 
-        if ($limit > 0)
-        {
+        if ($limit > 0) {
+            if ($maxResults !== null && ($maxResults - $page * $limit < $limit)) {
+                $limit = $maxResults - $page * $limit;
+            }
+
             $this->query->limit($limit);
+        } elseif ($maxResults !== null) {
+            $this->query->limit($maxResults);
         }
 
         //call overridden prepareQuery or associated closure
@@ -168,21 +193,21 @@ class Document extends Source
         $result = new Rows();
 
         $cursor = $this->query->getQuery()->execute();
+
         $this->count = $cursor->count();
 
-        foreach($cursor as $resource)
-        {
+        foreach($cursor as $resource) {
             $row = new Row();
             $properties = $this->getClassProperties($resource);
 
-            foreach ($columns as $column)
-            {
-                $row->setField($column->getId(), $properties[$column->getId()]);
+            foreach ($columns as $column) {
+                if (isset($properties[$column->getId()])) {
+                    $row->setField($column->getId(), $properties[$column->getId()]);
+                }
             }
 
             //call overridden prepareRow or associated closure
-            if (($modifiedRow = $this->prepareRow($row)) != null)
-            {
+            if (($modifiedRow = $this->prepareRow($row)) != null) {
                 $result->addRow($modifiedRow);
             }
         }
@@ -190,8 +215,12 @@ class Document extends Source
         return $result;
     }
 
-    public function getTotalCount($columns)
+    public function getTotalCount($columns, $maxResults = null)
     {
+        if ($maxResults !== null) {
+            return min(array($maxResults, $this->count));
+        }
+
         return $this->count;
     }
 
@@ -201,58 +230,58 @@ class Document extends Source
         $props   = $reflect->getProperties();
         $result  = array();
 
-        foreach ($props as $property)
-        {
+        foreach ($props as $property) {
             $property->setAccessible(true);
-            $propertyValue = $property->getValue($obj);
-
-            if ($propertyValue instanceof \DateTime)
-            {
-                $result[$property->getName()] = $propertyValue->format('d.m.Y H:i:s');
-            }
-            else
-            {
-                $result[$property->getName()] = $propertyValue;
-            }
+            $result[$property->getName()] = $property->getValue($obj);
         }
 
         return $result;
     }
 
-    public function getFieldsMetadata($class)
+    public function getFieldsMetadata($class, $group = 'default')
     {
         $result = array();
-        foreach ($this->odmMetadata->getReflectionProperties() as $property)
-        {
+        foreach ($this->odmMetadata->getReflectionProperties() as $property) {
             $name = $property->getName();
             $mapping = $this->odmMetadata->getFieldMapping($name);
             $values = array('title' => $name, 'source' => true);
 
-            if (isset($mapping['fieldName']))
-            {
+            if (isset($mapping['fieldName'])) {
                 $values['field'] = $mapping['fieldName'];
             }
 
-            if (isset($mapping['id']) && $mapping['id'] == 'id')
-            {
+            if (isset($mapping['id']) && $mapping['id'] == 'id') {
                 $values['primary'] = true;
             }
 
-            switch ($mapping['type'])
-            {
+            switch ($mapping['type']) {
                 case 'id':
-                case 'int':
                 case 'string':
-                case 'float':
-                case 'many':
+                case 'bin_custom':
+                case 'bin_func':
+                case 'bin_md5':
+                case 'bin':
+                case 'bin_uuid':
+                case 'file':
+                case 'key':
+                case 'increment':
                     $values['type'] = 'text';
                     break;
+                case 'int':
+                case 'float':
+                    $values['type'] = 'number';
+                    break;
+                /*case 'hash':
+                    $values['type'] = 'array';*/
                 case 'boolean':
                     $values['type'] = 'boolean';
                     break;
                 case 'date':
+                case 'timestamp':
                     $values['type'] = 'date';
                     break;
+                default:
+                    $values['type'] = 'text';
             }
 
             $result[$name] = $values;
@@ -261,9 +290,76 @@ class Document extends Source
         return $result;
     }
 
-    public function getHash()
+    public function populateSelectFilters($columns, $loop = false)
     {
-        return $this->documentName;
+        $queryFromSource = $this->manager->createQueryBuilder($this->documentName);
+        $queryFromQuery = clone $this->query;
+
+        // Clean the select fields from the query
+        foreach ($columns as $column) {
+            $queryFromQuery->exclude($column->getField());
+        }
+
+        /* @var $column Column */
+        foreach ($columns as $column) {
+            $selectFrom = $column->getSelectFrom();
+
+            if ($column->getFilterType() === 'select' && ($selectFrom === 'source' || $selectFrom === 'query')) {
+
+                // For negative operators, show all values
+                if ($selectFrom === 'query') {
+                    foreach($column->getFilters('document') as $filter) {
+                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE))) {
+                            $selectFrom = 'source';
+                            break;
+                        }
+                    }
+                }
+
+                // Dynamic from query or not ?
+                $query = ($selectFrom === 'source') ? clone $queryFromSource : clone $queryFromQuery;
+
+                $result = $query->select($column->getField())
+                    ->distinct($column->getField())
+                    ->sort($column->getField(), 'asc')
+                    ->skip(null)
+                    ->limit(null)
+                    ->getQuery()
+                    ->execute();
+
+                $values = array();
+                foreach($result as $value) {
+
+                    switch ($column->getType()) {
+                        case 'number':
+                        case 'datetime':
+                        case 'date':
+                        case 'time':
+                            if ($value instanceof \MongoDate || $value instanceof \MongoTimestamp) {
+                                $value = $value->sec;
+                            }
+
+                            // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
+                            if (is_array($value) && array_keys($value) == array('t','i')) {
+                                $value = $value['i'];
+                            }
+
+                            $values[$value] = $column->getDisplayedValue($value);
+                            break;
+                        default:
+                            $values[$value] = $value;
+                    }
+                }
+
+                // It avoids to have no result when the other columns are filtered
+                if ($selectFrom === 'query' && empty($values) && $loop === false) {
+                    $column->setSelectFrom('source');
+                    $this->populateSelectFilters($columns, true);
+                } else {
+                    $column->setValues($values);
+                }
+            }
+        }
     }
 
     public function delete(array $ids)
@@ -286,5 +382,10 @@ class Document extends Source
     public function getRepository()
     {
         return$this->manager->getRepository($this->documentName);
+    }
+
+    public function getHash()
+    {
+        return $this->documentName;
     }
 }

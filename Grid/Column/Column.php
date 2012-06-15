@@ -3,32 +3,55 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Column;
+namespace APY\DataGridBundle\Grid\Column;
 
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use APY\DataGridBundle\Grid\Filter;
 
 abstract class Column
 {
+    const DEFAULT_VALUE = null;
+
+    /**
+     * Filter
+     */
     const DATA_CONJUNCTION = 0;
     const DATA_DISJUNCTION = 1;
 
-    const OPERATOR_EQ   = 'eq';
-    const OPERATOR_NEQ  = 'neq';
-    const OPERATOR_LT   = 'lt';
-    const OPERATOR_LTE  = 'lte';
-    const OPERATOR_GT   = 'gt';
-    const OPERATOR_GTE  = 'gte';
-    const OPERATOR_REGEXP = 'req';
+    const OPERATOR_EQ     = 'eq';
+    const OPERATOR_NEQ    = 'neq';
+    const OPERATOR_LT     = 'lt';
+    const OPERATOR_LTE    = 'lte';
+    const OPERATOR_GT     = 'gt';
+    const OPERATOR_GTE    = 'gte';
+    const OPERATOR_BTW    = 'btw';
+    const OPERATOR_BTWE   = 'btwe';
+    const OPERATOR_LIKE   = 'like';
+    const OPERATOR_NLIKE  = 'nlike';
+    const OPERATOR_RLIKE  = 'rlike';
+    const OPERATOR_LLIKE  = 'llike';
+    const OPERATOR_ISNULL  = 'isNull';
+    const OPERATOR_ISNOTNULL  = 'isNotNull';
 
+    /**
+     * Align
+     */
     const ALIGN_LEFT = 'left';
     const ALIGN_RIGHT = 'right';
     const ALIGN_CENTER = 'center';
+
+    protected static $aligns = array(
+        self::ALIGN_LEFT,
+        self::ALIGN_RIGHT,
+        self::ALIGN_CENTER,
+    );
 
     /**
      * Internal parameters
@@ -44,8 +67,12 @@ abstract class Column
     protected $visibleForSource;
     protected $primary;
     protected $align;
+    protected $inputType;
     protected $field;
     protected $role;
+
+    protected $filterType;
+    protected $filter;
 
     protected $params;
     protected $isSorted = false;
@@ -58,11 +85,22 @@ abstract class Column
 
     protected $data;
 
+    protected $operatorsVisible = true;
+
+    protected $operators = array();
+
+    protected $defaultOperator = true;
+
+    protected $dataJunction = self::DATA_CONJUNCTION;
+
+    protected $values = array();
+
+    protected $selectFrom;
+
     /**
      * Default Column constructor
      *
      * @param array $params
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
      */
     public function __construct($params = null)
     {
@@ -81,26 +119,37 @@ abstract class Column
         $this->setVisibleForSource($this->getParam('source', false));
         $this->setPrimary($this->getParam('primary', false));
         $this->setAlign($this->getParam('align', self::ALIGN_LEFT));
+        $this->setInputType($this->getParam('inputType', 'text'));
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
         $this->setOrder($this->getParam('order'));
+        $this->setFilterType($this->getParam('filter', 'input'));
+        $this->setSelectFrom($this->getParam('selectFrom', 'query'));
+        $this->setValues($this->getParam('values', array()));
+        $this->setOperatorsVisible($this->getParam('operatorsVisible', true));
+        // Order is important for the order display
+        $this->setOperators($this->getParam('operators', array(
+            self::OPERATOR_EQ,
+            self::OPERATOR_NEQ,
+            self::OPERATOR_LT,
+            self::OPERATOR_LTE,
+            self::OPERATOR_GT,
+            self::OPERATOR_GTE,
+            self::OPERATOR_BTW,
+            self::OPERATOR_BTWE,
+            self::OPERATOR_LIKE,
+            self::OPERATOR_NLIKE,
+            self::OPERATOR_RLIKE,
+            self::OPERATOR_LLIKE,
+            self::OPERATOR_ISNULL,
+            self::OPERATOR_ISNOTNULL,
+        )));
+        $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
     }
 
     protected function getParam($id, $default = null)
     {
         return isset($this->params[$id]) ? $this->params[$id] : $default;
-    }
-
-    /**
-     * Draw filter
-     *
-     * @todo probably make function as abstract
-     * @param string $gridHash
-     * @return string
-     */
-    public function renderFilter($gridHash)
-    {
-        return '';
     }
 
     /**
@@ -113,23 +162,24 @@ abstract class Column
      */
     public function renderCell($value, $row, $router)
     {
-        if (is_callable($this->callback))
-        {
+        if (is_callable($this->callback)) {
             return call_user_func($this->callback, $value, $row, $router);
         }
-        else
-        {
-            return $value;
+
+        if (key_exists((string)$value, $this->values)) {
+            $value = $this->values[$value];
         }
+
+        return $value;
     }
 
     /**
      * Set column callback
      *
      * @param  $callback
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     * @return self
      */
-    public function setCallback($callback)
+    public function manipulateRenderCell($callback)
     {
         $this->callback = $callback;
 
@@ -140,7 +190,7 @@ abstract class Column
      * Set column identifier
      *
      * @param $id
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     * @return self
      */
     public function setId($id)
     {
@@ -174,7 +224,7 @@ abstract class Column
      * Set column title
      *
      * @param string $title
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setTitle($title)
     {
@@ -193,20 +243,6 @@ abstract class Column
         return $this->title;
     }
 
-    /**
-     * Return column visibility
-     *
-     * @return bool return true when column is visible
-     */
-    public function isVisible()
-    {
-        if ($this->visible && $this->securityContext !== null && $this->getRole() != null)
-        {
-            return $this->securityContext->isGranted($this->getRole());
-        }
-
-        return $this->visible;
-    }
 
     /**
      * Set column visibility
@@ -216,6 +252,22 @@ abstract class Column
     public function setVisible($visible)
     {
         $this->visible = $visible;
+
+        return $this;
+    }
+
+    /**
+     * Return column visibility
+     *
+     * @return bool return true when column is visible
+     */
+    public function isVisible()
+    {
+        if ($this->visible && $this->securityContext !== null && $this->getRole() != null) {
+            return $this->securityContext->isGranted($this->getRole());
+        }
+
+        return $this->visible;
     }
 
     /**
@@ -231,41 +283,8 @@ abstract class Column
     public function setSortable($sortable)
     {
         $this->sortable = $sortable;
-    }
 
-    public function getSortable()
-    {
-        return $this->sortable;
-    }
-
-    /**
-     * Return true if column is filtered
-     *
-     * @return boolean return true when column is filtered
-     */
-    public function isFiltered()
-    {
-        return $this->data != null;
-    }
-
-    public function setFilterable($filterable)
-    {
-        $this->filterable = $filterable;
-    }
-
-    public function getFilterable()
-    {
-        return $this->filterable;
-    }
-
-    /**
-     * column ability to filter
-     *
-     * @return bool return true when column can be filtred
-     */
-    public function isFilterable()
-    {
-        return $this->filterable;
+        return $this;
     }
 
     /**
@@ -279,19 +298,46 @@ abstract class Column
     }
 
     /**
+     * Return true if column is filtered
+     *
+     * @return boolean return true when column is filtered
+     */
+    public function isFiltered()
+    {
+        return ( (isset($this->data['from']) && $this->isQueryValid($this->data['from']) && $this->data['from'] != static::DEFAULT_VALUE)
+              || (isset($this->data['to']) && $this->isQueryValid($this->data['to']) && $this->data['to'] != static::DEFAULT_VALUE)
+              || (isset($this->data['operator']) && ($this->data['operator'] === self::OPERATOR_ISNULL || $this->data['operator'] === self::OPERATOR_ISNOTNULL)) );
+    }
+
+    public function setFilterable($filterable)
+    {
+        $this->filterable = $filterable;
+
+        return $this;
+    }
+
+    /**
+     * column ability to filter
+     *
+     * @return bool return true when column can be filtred
+     */
+    public function isFilterable()
+    {
+        return $this->filterable;
+    }
+
+    /**
      * set column order
      *
      * @param string $order asc|desc
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setOrder($order)
     {
-        if (!$order) {
-            return $this;
+        if ($order !== null) {
+            $this->order = $order;
+            $this->isSorted = true;
         }
-
-        $this->order = $order;
-        $this->isSorted = true;
 
         return $this;
     }
@@ -307,39 +353,18 @@ abstract class Column
     }
 
     /**
-     * get data filter connection (how column filters are connected with column data)
-     *
-     * @return bool column::DATA_CONJUNCTION | column::DATA_DISJUNCTION
-     */
-    public function getFiltersConnection()
-    {
-        return self::DATA_CONJUNCTION;
-    }
-
-    /**
-     * get column data filters
-     * todo: maybe change to own class not array
-     *
-     * @return \Sorien\DataGridBundle\Grid\Filter[]
-     */
-    public function getFilters()
-    {
-        return array();
-    }
-
-    /**
-     * set column width
+     * Set column width
      *
      * @param int $size in pixels
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setSize($size)
     {
-        if ($size >= -1)
-        {
-            $this->size = $size;
+        if ($size < -1) {
+            throw new \InvalidArgumentException(sprintf('Unsupported column size %s, use positive value or -1 for auto resize', $size));
         }
-        else throw new \InvalidArgumentException(sprintf('Unsupported column size %s, use positive value or -1 for auto resize', $size));
+
+        $this->size = $size;
 
         return $this;
     }
@@ -354,9 +379,9 @@ abstract class Column
         return $this->size;
     }
 
-    public function setOrderUrl($url)
+    public function setOrderUrl($orderUrl)
     {
-        $this->orderUrl = $url;
+        $this->orderUrl = $orderUrl;
 
         return $this;
     }
@@ -370,11 +395,28 @@ abstract class Column
      * set filter data from session | request
      *
      * @param  $data
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setData($data)
     {
-        $this->data = $data;
+        $this->data = array('operator' => $this->getDefaultOperator(), 'from' => static::DEFAULT_VALUE, 'to' => static::DEFAULT_VALUE);
+
+        $hasValue = false;
+        if (isset($data['from']) && $this->isQueryValid($data['from'])) {
+            $this->data['from'] = $data['from'];
+            $hasValue = true;
+        }
+
+        if (isset($data['to']) && $this->isQueryValid($data['to'])) {
+            $this->data['to'] = $data['to'];
+            $hasValue = true;
+        }
+
+        $isNullOperator = (isset($data['operator']) && ($data['operator'] === self::OPERATOR_ISNULL || $data['operator'] === self::OPERATOR_ISNOTNULL) );
+        if (($hasValue || $isNullOperator) && isset($data['operator']) && $this->hasOperator($data['operator'])) {
+            $this->data['operator'] = $data['operator'];
+        }
+
         return $this;
     }
 
@@ -385,17 +427,45 @@ abstract class Column
      */
     public function getData()
     {
-        return $this->data;
+        $result = array();
+
+        $hasValue = false;
+        if ($this->data['from'] != $this::DEFAULT_VALUE) {
+            $result['from'] = $this->data['from'];
+            $hasValue = true;
+        }
+
+        if ($this->data['to'] != $this::DEFAULT_VALUE) {
+            $result['to'] = $this->data['to'];
+            $hasValue = true;
+        }
+
+        $isNullOperator = (isset($this->data['operator']) && ($this->data['operator'] === self::OPERATOR_ISNULL || $this->data['operator'] === self::OPERATOR_ISNOTNULL) );
+        if ($hasValue || $isNullOperator) {
+            $result['operator'] = $this->data['operator'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return true if filter value is correct (has to be overridden in each Column class that can be filtered, in order to catch wrong values)
+     *
+     * @return boolean
+     */
+    public function isQueryValid($query)
+    {
+        return true;
     }
 
     /**
      * Set column visibility for source class
      * @param $value
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     * @return \APY\DataGridBundle\Grid\Column\Column
      */
-    public function setIsVisibleForSource($value)
+    public function setVisibleForSource($visibleForSource)
     {
-        $this->visibleForSource = $value;
+        $this->visibleForSource = $visibleForSource;
 
         return $this;
     }
@@ -409,9 +479,16 @@ abstract class Column
         return $this->visibleForSource;
     }
 
-    public function setVisibleForSource($visibleForSource)
+    /**
+     * Set column as primary
+     *
+     * @param boolean $primary
+     */
+    public function setPrimary($primary)
     {
-        $this->visibleForSource = $visibleForSource;
+        $this->primary = $primary;
+
+        return $this;
     }
 
     /**
@@ -424,26 +501,18 @@ abstract class Column
     }
 
     /**
-     * Set column as primary
-     *
-     * @param boolean $primary
-     */
-    public function setPrimary($primary)
-    {
-        $this->primary = $primary;
-    }
-
-    /**
      * Set column align
      * @param string $align left/right/center
      */
     public function setAlign($align)
     {
-        if ($align == $this::ALIGN_LEFT || $align == $this::ALIGN_CENTER || $align == $this::ALIGN_RIGHT)
-        {
-            $this->align = $align;
+        if (!in_array($align, self::$aligns)) {
+            throw new \InvalidArgumentException(sprintf('Unsupported align %s, just left, right and center are supported', $align));
         }
-        else throw new \InvalidArgumentException(sprintf('Unsupported align %s, just left, right and center are supported', $align));
+
+        $this->align = $align;
+
+        return $this;
     }
 
     /**
@@ -455,9 +524,21 @@ abstract class Column
         return $this->align;
     }
 
+    public function setInputType($inputType)
+    {
+        return $this->inputType = $inputType;
+    }
+
+    public function getInputType()
+    {
+        return $this->inputType;
+    }
+
     public function setField($field)
     {
         $this->field = $field;
+
+        return $this;
     }
 
     public function getField()
@@ -468,6 +549,8 @@ abstract class Column
     public function setRole($role)
     {
         $this->role = $role;
+
+        return $this;
     }
 
     public function getRole()
@@ -475,14 +558,170 @@ abstract class Column
         return $this->role;
     }
 
-    public function getType()
+    /**
+     * Filter
+     */
+
+    public function setFilterType($filterType)
     {
-        return '';
+        $this->filterType = strtolower($filterType);
+
+        return  $this;
     }
 
-    public function getParentType()
+    public function getFilterType()
     {
-        return '';
+        return $this->filterType;
+    }
+
+    public function getFilters($source)
+    {
+        $filters = array();
+
+        if ($this->hasOperator($this->data['operator'])) {
+            switch ($this->data['operator']) {
+                case self::OPERATOR_BTW:
+                    if ($this->data['from'] != static::DEFAULT_VALUE) {
+                        $filters[] = new Filter(self::OPERATOR_GT, $this->data['from']);
+                    }
+                    if ($this->data['to'] != static::DEFAULT_VALUE) {
+                            $filters[] = new Filter(self::OPERATOR_LT, $this->data['to']);
+                    }
+                    break;
+                case self::OPERATOR_BTWE:
+                    if ($this->data['from'] != static::DEFAULT_VALUE) {
+                        $filters[] = new Filter(self::OPERATOR_GTE, $this->data['from']);
+                    }
+                    if ($this->data['to'] != static::DEFAULT_VALUE) {
+                        $filters[] = new Filter(self::OPERATOR_LTE, $this->data['to']);
+                    }
+                    break;
+                case self::OPERATOR_ISNULL:
+                case self::OPERATOR_ISNOTNULL:
+                    $filters[] = new Filter($this->data['operator']);
+                    break;
+                default:
+                    $filters[] = new Filter($this->data['operator'], $this->data['from']);
+            }
+        }
+
+        return $filters;
+    }
+
+    public function setDataJunction($dataJunction)
+    {
+        $this->dataJunction = $dataJunction;
+
+        return $this;
+    }
+
+    /**
+     * get data filter junction (how column filters are connected with column data)
+     *
+     * @return bool self::DATA_CONJUNCTION | self::DATA_DISJUNCTION
+     */
+    public function getDataJunction()
+    {
+        return $this->dataJunction;
+    }
+
+    public function setOperators(array $operators)
+    {
+        $this->operators = $operators;
+
+        return $this;
+    }
+
+    /**
+     * Return column filter operators
+     *
+     * @return array $operators
+     */
+    public function getOperators()
+    {
+        // Issue with Doctrine (See http://www.doctrine-project.org/jira/browse/DDC-1857 and http://www.doctrine-project.org/jira/browse/DDC-1858)
+        if ($this->hasDQLFunction()) {
+            return array_intersect($this->operators, array(self::OPERATOR_EQ,
+                self::OPERATOR_NEQ,
+                self::OPERATOR_LT,
+                self::OPERATOR_LTE,
+                self::OPERATOR_GT,
+                self::OPERATOR_GTE,
+                self::OPERATOR_BTW,
+                self::OPERATOR_BTWE));
+        }
+
+        return $this->operators;
+    }
+
+    public function setDefaultOperator($defaultOperator)
+    {
+        if (!$this->hasOperator($defaultOperator)) {
+            throw new \Exception($defaultOperator . ' operator not found in operators list.');
+        }
+
+        $this->defaultOperator = $defaultOperator;
+
+        return $this;
+    }
+
+    public function getDefaultOperator()
+    {
+        return $this->defaultOperator;
+    }
+
+    /**
+     * Return true if $operator is in $operators
+     *
+     * @param string $operator
+     * @return boolean
+     */
+    public function hasOperator($operator)
+    {
+        return in_array($operator, $this->operators);
+    }
+
+    public function setOperatorsVisible($operatorsVisible)
+    {
+        $this->operatorsVisible = $operatorsVisible;
+
+        return $this;
+    }
+
+    public function getOperatorsVisible()
+    {
+        return $this->operatorsVisible;
+    }
+
+    public function setValues(array $values)
+    {
+        $this->values = $values;
+
+        return $this;
+    }
+
+    public function getValues()
+    {
+        return $this->values;
+    }
+
+    public function setSelectFrom($selectFrom)
+    {
+        $this->selectFrom = $selectFrom;
+
+        return $this;
+    }
+
+    public function getSelectFrom()
+    {
+        return $this->selectFrom;
+    }
+
+    public function hasDQLFunction(&$matches = null)
+    {
+        $regex = '/.(?P<all>(?P<field>\w+):(?P<function>\w+)(:)?(?P<parameters>\w*))$/';
+
+        return ($matches === null) ? preg_match($regex, $this->field) : preg_match($regex, $this->field, $matches);
     }
 
     /**
@@ -493,5 +732,17 @@ abstract class Column
     public function setSecurityContext(SecurityContextInterface $securityContext)
     {
         $this->securityContext = $securityContext;
+
+        return $this;
+    }
+
+    public function getParentType()
+    {
+        return '';
+    }
+
+    public function getType()
+    {
+        return '';
     }
 }

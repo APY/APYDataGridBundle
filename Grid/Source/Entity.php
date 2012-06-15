@@ -3,21 +3,18 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Source;
+namespace APY\DataGridBundle\Grid\Source;
 
-use Sorien\DataGridBundle\Grid\Column\Column;
-use Sorien\DataGridBundle\Grid\Rows;
-use Sorien\DataGridBundle\Grid\Row;
-use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\Expr\Orx;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Query\Expr\Comparison;
+use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Rows;
+use APY\DataGridBundle\Grid\Row;
 use Doctrine\ORM\Query\ResultSetMapping;
 
 class Entity extends Source
@@ -31,6 +28,11 @@ class Entity extends Source
      * @var \Doctrine\ORM\QueryBuilder
      */
     protected $query;
+
+    /**
+     * @var \Doctrine\ORM\QueryBuilder
+     */
+    protected $querySelectfromSource;
 
     /**
      * @var string e.g Vendor\Bundle\Entity\Page
@@ -49,7 +51,7 @@ class Entity extends Source
 
 
     /**
-     * @var \Sorien\DataGridBundle\Grid\Mapping\Metadata\Metadata
+     * @var \APY\DataGridBundle\Grid\Mapping\Metadata\Metadata
      */
     protected $metadata;
 
@@ -105,10 +107,10 @@ class Entity extends Source
     }
 
     /**
-     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
+     * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @return string
      */
-    protected function getFieldName($column, $withAlias = false)
+    protected function getFieldName($column, $withAlias = false, $forHavingClause = false)
     {
         $name = $column->getField();
 
@@ -125,24 +127,27 @@ class Entity extends Source
                 $this->joins['_' . $element] = $parent . '.' . $element;
                 $previousParent = $parent;
                 $parent = '_' . $element;
-                $name = $element;
-            } else {
-                $name .= '.'.$element;
             }
         }
 
         // Aggregate dql functions
-        if (preg_match('/.(?P<all>(?P<field>\w+):(?P<function>\w+)(:)?(?P<parameters>\w*))$/', $name, $matches)) {
+        $matches = array();
+        if ($column->hasDQLFunction($matches)) {
+            $parameter = '';
+            if ($matches['parameters'] !== '') {
+                $parameter = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'".$matches['parameters']."'");
+            }
+
             if ($withAlias) {
                 // Group by the primary field of the previous entity
                 $this->query->addGroupBy($previousParent);
-
-                $parameter = '';
-                if ($matches['parameters'] !== '') {
-                    $parameter = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'".$matches['parameters']."'");
-                }
+                $this->querySelectfromSource->addGroupBy($previousParent);
 
                 return $matches['function'].'('.$parent.'.'.$matches['field'].$parameter.') as '.substr($parent, 1).'::'.$matches['all'];
+            }
+
+            if ($forHavingClause) {
+                return $matches['function'].'('.$parent.'.'.$matches['field'].$parameter.')';
             }
 
             return substr($parent, 1).'::'.$matches['all'];
@@ -169,102 +174,96 @@ class Entity extends Source
     }
 
     /**
-     * @param \Sorien\DataGridBundle\Grid\Columns $columns
+     * @param \APY\DataGridBundle\Grid\Columns $columns
      * @return null
      */
     public function getColumns($columns)
     {
-        foreach ($this->metadata->getColumnsFromMapping($columns) as $column)
-        {
+        foreach ($this->metadata->getColumnsFromMapping($columns) as $column) {
             $columns->addColumn($column);
         }
     }
 
     protected function normalizeOperator($operator)
     {
-        return ($operator == COLUMN::OPERATOR_REGEXP ? 'like' : $operator);
+        switch ($operator) {
+            //case Column::OPERATOR_REGEXP:
+            case Column::OPERATOR_LIKE:
+            case Column::OPERATOR_LLIKE:
+            case Column::OPERATOR_RLIKE:
+            case Column::OPERATOR_NLIKE: return 'like';
+            default: return $operator;
+        }
     }
 
     protected function normalizeValue($operator, $value)
     {
-        if ($operator == COLUMN::OPERATOR_REGEXP)
-        {
-            preg_match('/\/\.\*([^\/]+)\.\*\//s', $value, $matches);
-            return '%'.$matches[1].'%';
-        }
-        else
-        {
-            return $value;
+        switch ($operator) {
+            //case Column::OPERATOR_REGEXP:
+            case Column::OPERATOR_LIKE:
+            case Column::OPERATOR_NLIKE: return "%$value%";
+            case Column::OPERATOR_LLIKE: return "%$value";
+            case Column::OPERATOR_RLIKE: return "$value%";
+            default: return $value;
         }
     }
 
     /**
-     * @param $columns \Sorien\DataGridBundle\Grid\Column\Column[]
+     * @param $columns \APY\DataGridBundle\Grid\Column\Column[]
      * @param $page int Page Number
      * @param $limit int Rows Per Page
-     * @return \Sorien\DataGridBundle\Grid\Rows
+     * @return \APY\DataGridBundle\Grid\Rows
      */
-    public function execute($columns, $page = 0, $limit = 0)
+    public function execute($columns, $page = 0, $limit = 0, $maxResults = null)
     {
         $this->query = $this->manager->createQueryBuilder($this->class);
         $this->query->from($this->class, self::TABLE_ALIAS);
-
-        $where = $this->query->expr()->andx();
-
-        $serializeColumns = array();
+        $this->querySelectfromSource = clone $this->query;
 
         $bindIndex = 1;
-        foreach ($columns as $column)
-        {
-            $this->query->addSelect($this->getFieldName($column, true));
+        $serializeColumns = array();
+        $where = $this->query->expr()->andx();
 
-            if ($column->isSorted())
-            {
+        foreach ($columns as $column) {
+            $fieldName = $this->getFieldName($column, true);
+            $this->query->addSelect($fieldName);
+            $this->querySelectfromSource->addSelect($fieldName);
+
+            if ($column->isSorted()) {
                 $this->query->orderBy($this->getFieldName($column), $column->getOrder());
             }
 
-            if ($column->isFiltered())
-            {
-                if($column->getFiltersConnection() == column::DATA_CONJUNCTION)
-                {
-                    foreach ($column->getFilters() as $filter)
-                    {
-                        $operator = $this->normalizeOperator($filter->getOperator());
+            if ($column->isFiltered()) {
+                // Some attributes of the column can be changed in this function
+                $filters = $column->getFilters('entity');
 
-                        $where->add($this->query->expr()->$operator(
-                            $this->getFieldName($column),
-                            "?$bindIndex"
-                        ));
+                $isDisjunction = $column->getDataJunction() === Column::DATA_DISJUNCTION;
 
-                        $this->query->setParameter(
-                            $bindIndex++,
-                            $this->normalizeValue($filter->getOperator(), $filter->getValue())
-                        );
+                $hasHavingClause = $column->hasDQLFunction();
+
+                $sub = $isDisjunction ? $this->query->expr()->orx() : ($hasHavingClause ? $this->query->expr()->andx() : $where);
+
+                foreach ($filters as $filter) {
+                    $operator = $this->normalizeOperator($filter->getOperator());
+
+                    $q = $this->query->expr()->$operator($this->getFieldName($column, false, $hasHavingClause), "?$bindIndex");
+
+                    if ($filter->getOperator() == Column::OPERATOR_NLIKE) {
+                        $q = $this->query->expr()->not($q);
+                    }
+
+                    $sub->add($q);
+
+                    if ($filter->getValue() !== null) {
+                        $this->query->setParameter($bindIndex++, $this->normalizeValue($filter->getOperator(), $filter->getValue()));
                     }
                 }
-                elseif($column->getFiltersConnection() == column::DATA_DISJUNCTION)
-                {
-                    $sub = $this->query->expr()->orx();
 
-                    foreach ($column->getFilters() as $filter)
-                    {
-                        $operator = $this->normalizeOperator($filter->getOperator());
-
-                        $sub->add($this->query->expr()->$operator(
-                              $this->getFieldName($column),
-                              "?$bindIndex"
-                        ));
-
-                        $this->query->setParameter(
-                            $bindIndex++,
-                            $this->normalizeValue($filter->getOperator(), $filter->getValue())
-                        );
-                    }
-
+                if ($hasHavingClause) {
+                    $this->query->having($sub);
+                } elseif ($isDisjunction) {
                     $where->add($sub);
                 }
-
-                $this->query->where($where);
             }
 
             if ($column->getType() === 'array') {
@@ -272,27 +271,36 @@ class Entity extends Source
             }
         }
 
-        foreach ($this->joins as $alias => $field)
-        {
-            $this->query->leftJoin($field, $alias);
+        if ($where->count()> 0) {
+            $this->query->where($where);
         }
 
-        if ($page > 0)
-        {
+        foreach ($this->joins as $alias => $field) {
+            $this->query->leftJoin($field, $alias);
+            $this->querySelectfromSource->leftJoin($field, $alias);
+        }
+
+        if ($page > 0) {
             $this->query->setFirstResult($page * $limit);
         }
 
-        if ($limit > 0)
-        {
+        if ($limit > 0) {
+            if ($maxResults !== null && ($maxResults - $page * $limit < $limit)) {
+                $limit = $maxResults - $page * $limit;
+            }
+
             $this->query->setMaxResults($limit);
+        } elseif ($maxResults !== null) {
+            $this->query->setMaxResults($maxResults);
         }
 
         if (!empty($this->groupBy)) {
             $this->query->resetDQLPart('groupBy');
+            $this->querySelectfromSource->resetDQLPart('groupBy');
 
-            foreach ($this->groupBy as $field)
-            {
+            foreach ($this->groupBy as $field) {
                 $this->query->addGroupBy($this->getGroupByFieldName($field));
+                $this->querySelectfromSource->addGroupBy($this->getGroupByFieldName($field));
             }
         }
 
@@ -304,16 +312,13 @@ class Entity extends Source
         // hydrate result
         $result = new Rows();
 
-        foreach ($items as $item)
-        {
+        foreach ($items as $item) {
             $row = new Row();
 
-            foreach ($item as $key => $value)
-            {
+            foreach ($item as $key => $value) {
                 $key = str_replace('::', '.', $key);
 
-                if (in_array($key, $serializeColumns))
-                {
+                if (in_array($key, $serializeColumns)) {
                     $value = unserialize($value);
                 }
 
@@ -321,8 +326,7 @@ class Entity extends Source
             }
 
             //call overridden prepareRow or associated closure
-            if (($modifiedRow = $this->prepareRow($row)) != null)
-            {
+            if (($modifiedRow = $this->prepareRow($row)) != null) {
                 $result->addRow($modifiedRow);
             }
         }
@@ -330,28 +334,29 @@ class Entity extends Source
         return $result;
     }
 
-    public function getTotalCount($columns)
+    public function getTotalCount($columns, $maxResults = null)
     {
-        $this->query->select($this->getFieldName($columns->getPrimaryColumn()));
-        $this->query->setFirstResult(null);
-        $this->query->setMaxResults(null);
+        $query = clone $this->query;
+        $query->select($this->getFieldName($columns->getPrimaryColumn()));
+        $query->setFirstResult(null);
+        $query->setMaxResults($maxResults);
 
         // Remove useless part
-        $this->query->resetDQLPart('orderBy');
+        $query->resetDQLPart('orderBy');
 
-        $sql = 'SELECT COUNT(*) as total FROM (' . $this->query->getQuery()->getSQL() . ') as '.self::COUNT_ALIAS;
+        $sql = 'SELECT COUNT(*) as total FROM (' . $query->getQuery()->getSQL() . ') as '.self::COUNT_ALIAS;
 
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('total', 'total');
 
         $q = $this->manager->createNativeQuery($sql, $rsm);
 
-        $q->setParameters($this->query->getParameters());
+        $q->setParameters($query->getParameters());
 
         return (int) $q->getSingleScalarResult();
     }
 
-    public function getFieldsMetadata($class)
+    public function getFieldsMetadata($class, $group = 'default')
     {
         $result = array();
         foreach ($this->ormMetadata->getFieldNames() as $name)
@@ -359,27 +364,26 @@ class Entity extends Source
             $mapping = $this->ormMetadata->getFieldMapping($name);
             $values = array('title' => $name, 'source' => true);
 
-            if (isset($mapping['fieldName']))
-            {
+            if (isset($mapping['fieldName'])) {
                 $values['field'] = $mapping['fieldName'];
                 $values['id'] = $mapping['fieldName'];
             }
 
-            if (isset($mapping['id']) && $mapping['id'] == 'id')
-            {
+            if (isset($mapping['id']) && $mapping['id'] == 'id') {
                 $values['primary'] = true;
             }
 
-            switch ($mapping['type'])
-            {
+            switch ($mapping['type']) {
+                case 'string':
+                case 'text':
+                    $values['type'] = 'text';
+                    break;
                 case 'integer':
                 case 'smallint':
                 case 'bigint':
-                case 'string':
-                case 'text':
                 case 'float':
                 case 'decimal':
-                    $values['type'] = 'text';
+                    $values['type'] = 'number';
                     break;
                 case 'boolean':
                     $values['type'] = 'boolean';
@@ -388,8 +392,10 @@ class Entity extends Source
                     $values['type'] = 'date';
                     break;
                 case 'datetime':
-                case 'time':
                     $values['type'] = 'datetime';
+                    break;
+                case 'time':
+                    $values['type'] = 'time';
                     break;
                 case 'array':
                 case 'object':
@@ -403,9 +409,65 @@ class Entity extends Source
         return $result;
     }
 
-    public function getHash()
+    public function populateSelectFilters($columns, $loop = false)
     {
-        return $this->entityName;
+        /* @var $column Column */
+        foreach ($columns as $column) {
+            $selectFrom = $column->getSelectFrom();
+
+            if ($column->getFilterType() === 'select' && ($selectFrom === 'source' || $selectFrom === 'query')) {
+
+                // For negative operators, show all values
+                if ($selectFrom === 'query') {
+                    foreach($column->getFilters('entity') as $filter) {
+                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE))) {
+                            $selectFrom = 'source';
+                            break;
+                        }
+                    }
+                }
+
+                // Dynamic from query or not ?
+                $query = ($selectFrom === 'source') ? clone $this->querySelectfromSource : clone $this->query;
+
+                $result = $query->select($this->getFieldName($column, true))
+                    ->distinct()
+                    ->orderBy($this->getFieldName($column), 'asc')
+                    ->setFirstResult(null)
+                    ->setMaxResults(null)
+                    ->getQuery()
+                    ->getResult();
+
+                $values = array();
+                foreach($result as $row) {
+                    $value = $row[str_replace('.', '::', $column->getId())];
+
+                    switch ($column->getType()) {
+                        case 'array':
+                            foreach (unserialize($value) as $val) {
+                                $values[$val] = $val;
+                            }
+                            break;
+                        case 'number':
+                        case 'datetime':
+                        case 'date':
+                        case 'time':
+                            $values[$value] = $column->getDisplayedValue($value);
+                            break;
+                        default:
+                            $values[$value] = $value;
+                    }
+                }
+
+                // It avoids to have no result when the other columns are filtered
+                if ($selectFrom === 'query' && empty($values) && $loop === false) {
+                    $column->setSelectFrom('source');
+                    $this->populateSelectFilters($columns, true);
+                } else {
+                    $column->setValues($values);
+                }
+            }
+        }
     }
 
     public function delete(array $ids)
@@ -428,5 +490,10 @@ class Entity extends Source
     public function getRepository()
     {
         return $this->manager->getRepository($this->entityName);
+    }
+
+    public function getHash()
+    {
+        return $this->entityName;
     }
 }

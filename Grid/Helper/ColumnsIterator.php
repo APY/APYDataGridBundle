@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Helper;
+namespace APY\DataGridBundle\Grid\Helper;
 
 class ColumnsIterator extends \FilterIterator
 {
@@ -18,15 +19,14 @@ class ColumnsIterator extends \FilterIterator
     public function __construct(\Iterator $iterator, $showOnlySourceColumns)
     {
         parent::__construct($iterator);
+
         $this->showOnlySourceColumns = $showOnlySourceColumns;
     }
 
     public function accept()
     {
-        /**
-         * @var \Sorien\DataGridBundle\Grid\Column\Column $current
-         */
         $current = $this->getInnerIterator()->current();
+
         return $this->showOnlySourceColumns ? $current->isVisibleForSource() : true;
     }
 }

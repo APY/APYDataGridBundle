@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Action;
+namespace APY\DataGridBundle\Grid\Action;
 
 class RowAction implements RowActionInterface
 {
@@ -25,15 +26,15 @@ class RowAction implements RowActionInterface
     /**
      * Default RowAction constructor
      *
-     * @param string $title Title of the mass action
+     * @param string $title Title of the row action
      * @param string $route Route to the row action
      * @param boolean $confirm Show confirm message if true
-     * @param string $target Set the target of this action (_slef,_blank,_parent,_top)
+     * @param string $target Set the target of this action (_self,_blank,_parent,_top)
      * @param array $attributes Attributes of the anchor tag
      *
-     * @return \Sorien\DataGridBundle\Grid\Action\RowAction
+     * @return \APY\DataGridBundle\Grid\Action\RowAction
      */
-    public function __construct($title, $route = null, $confirm = false, $target = '_self', $attributes = array())
+    public function __construct($title, $route, $confirm = false, $target = '_self', $attributes = array())
     {
         $this->title = $title;
         $this->route = $route;
@@ -48,7 +49,7 @@ class RowAction implements RowActionInterface
      *
      * @param string $title
      *
-     * @return \Sorien\DataGridBundle\Grid\Action\MassAction
+     * @return self
      */
     public function setTitle($title)
     {
@@ -95,6 +96,7 @@ class RowAction implements RowActionInterface
      * Set action confirm
      *
      * @param  $confirm
+     *
      * @return self
      */
     public function setConfirm($confirm)
@@ -165,7 +167,7 @@ class RowAction implements RowActionInterface
     /**
      * Set action column
      *
-     * @param \Sorien\DataGridBundle\Grid\Column\Column $column
+     * @param string $column Identifier of the action column
      *
      * @return self
      */
@@ -179,7 +181,7 @@ class RowAction implements RowActionInterface
     /**
      * get action column
      *
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
+     * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function getColumn()
     {
@@ -187,15 +189,37 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Set route parameters
+     * Add route parameter
      *
-     * @param array $routeParameters
+     * @param array|string $routeParameter
      *
      * @return self
      */
-    public function setRouteParameters(array $routeParameters)
+    public function addRouteParameters($routeParameters)
     {
-        $this->routeParameters = $routeParameters;
+        $routeParameters = (array) $routeParameters;
+
+        foreach ($routeParameters as $key => $routeParameter) {
+            if(is_int($key)) {
+                $this->routeParameters[$routeParameter] = $routeParameter;
+            } else {
+                $this->routeParameters[$key] = $routeParameter;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set route parameters
+     *
+     * @param array|string $routeParameters
+     *
+     * @return self
+     */
+    public function setRouteParameters($routeParameters)
+    {
+        $this->routeParameters = (array) $routeParameters;
 
         return $this;
     }

@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Action;
+namespace APY\DataGridBundle\Grid\Action;
 
 class DeleteMassAction extends MassAction
 {
@@ -17,7 +18,7 @@ class DeleteMassAction extends MassAction
      * Default DeleteMassAction constructor
      *
      * @param boolean $confirm Show confirm message if true
-     * @return \Sorien\DataGridBundle\Grid\Action\MassAction
+     * @return \APY\DataGridBundle\Grid\Action\MassAction
      */
     public function __construct($confirm = false)
     {

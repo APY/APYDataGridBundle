@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Mapping\Metadata;
+namespace APY\DataGridBundle\Grid\Mapping\Metadata;
 
 class Metadata
 {
@@ -31,6 +32,8 @@ class Metadata
     public function setFieldsMappings($fieldsMappings)
     {
         $this->fieldsMappings = $fieldsMappings;
+
+        return $this;
     }
 
     public function hasFieldMapping($field)
@@ -51,6 +54,8 @@ class Metadata
     public function setGroupBy($groupBy)
     {
         $this->groupBy = $groupBy;
+
+        return $this;
     }
 
     public function getGroupBy()
@@ -61,6 +66,8 @@ class Metadata
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
     }
 
     public function getName()
@@ -78,21 +85,16 @@ class Metadata
     {
         $columns = new \SplObjectStorage();
 
-        foreach ($this->getFields() as $value)
-        {
+        foreach ($this->getFields() as $value) {
             $params = $this->getFieldMapping($value);
             $type = $this->getFieldMappingType($value);
 
             /** todo move available extensions from columns */
-            if ($columnExtensions->hasExtensionForColumnType($type))
-            {
+            if ($columnExtensions->hasExtensionForColumnType($type)) {
                 $column = clone $columnExtensions->getExtensionForColumnType($type);
                 $column->__initialize($params);
-
                 $columns->attach($column);
-            }
-            else
-            {
+            } else {
                 throw new \Exception(sprintf("No suitable Column Extension found for column type: %s", $type));
             }
         }

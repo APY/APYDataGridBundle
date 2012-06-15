@@ -3,124 +3,101 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Column;
+namespace APY\DataGridBundle\Grid\Column;
 
-use Sorien\DataGridBundle\Grid\Filter;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 
-class DateTimeColumn extends TextColumn
+class DateTimeColumn extends Column
 {
-    protected $locale;
+    protected $dateFormat = \IntlDateFormatter::MEDIUM;
 
-    protected $charset;
-
-    protected $datetype = \IntlDateFormatter::MEDIUM;
-
-    protected $timetype = \IntlDateFormatter::MEDIUM;
+    protected $timeFormat = \IntlDateFormatter::MEDIUM;
 
     protected $format;
 
     protected $fallbackFormat = 'Y-m-d H:i:s';
 
-    /**
-     * Default Column constructor
-     *
-     * @param array $params
-     * @param Request $request
-     * @param string $charset
-     * @return \Sorien\DataGridBundle\Grid\Column\Column
-     */
-    public function __construct($params = null, Request $request = null, $charset = 'UTF-8')
-    {
-        $this->locale = $request->getLocale(); // Symfony 2.0 only
-        $this->charset = $charset;
-
-        $this->__initialize((array) $params);
-    }
-
     public function __initialize(array $params)
     {
         parent::__initialize($params);
 
-        $this->format = $this->getParam('format');
+        $this->setFormat($this->getParam('format'));
+        $this->setOperators($this->getParam('operators', array(
+            self::OPERATOR_EQ,
+            self::OPERATOR_NEQ,
+            self::OPERATOR_LT,
+            self::OPERATOR_LTE,
+            self::OPERATOR_GT,
+            self::OPERATOR_GTE,
+            self::OPERATOR_BTW,
+            self::OPERATOR_BTWE,
+            self::OPERATOR_ISNULL,
+            self::OPERATOR_ISNOTNULL,
+        )));
+        $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_EQ));
     }
 
-    public function setFormat($format)
+    public function isQueryValid($query)
     {
-        $this->format = $format;
-
-        return $this;
-    }
-
-    public function getFormat()
-    {
-        return $this->format;
-    }
-
-    public function isFiltered()
-    {
-        if (isset($this->data) && strtotime($this->data) !== false) {
+        if (strtotime($query) !== false) {
             return true;
         }
-
-        $this->data = null;
 
         return false;
     }
 
-    public function getFilters()
+    public function getFilters($source)
     {
-        return array(new Filter(self::OPERATOR_EQ, new \DateTime($this->data)));
+        $parentFilters = parent::getFilters($source);
+
+        $filters = array();
+        foreach($parentFilters as $filter) {
+            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue(new \DateTime($filter->getValue()));
+        }
+
+        return $filters;
     }
 
     public function renderCell($value, $row, $router)
     {
-        if ($value != null)
-        {
-            $timezone = new \DateTimeZone(date_default_timezone_get());
+        if (is_callable($this->callback)) {
+            return call_user_func($this->callback, $value, $row, $router);
+        }
 
-            $date = $this->getDatetime($value, $timezone);
+        return $this->getDisplayedValue($value);
+    }
+
+    public function getDisplayedValue($value)
+    {
+        if (!empty($value)) {
+            $dateTime = $this->getDatetime($value, new \DateTimeZone(date_default_timezone_get()));
 
             if (isset($this->format)) {
-                $value = $date->format($this->format);
+                $value = $dateTime->format($this->format);
             } else {
                 try {
-                    $formatter = new \IntlDateFormatter(
-                            $this->locale,
-                            $this->datetype,
-                            $this->timetype,
-                            date_default_timezone_get(),
-                            \IntlDateFormatter::GREGORIAN
-                    );
-
-                    // If intl extension is activated but not working
-                    if ($formatter instanceof \IntlDateFormatter) {
-                        $value = $formatter->format($date->getTimestamp());
-                    } else {
-                        throw new \Exception();
-                    }
+                    $transformer = new DateTimeToLocalizedStringTransformer(null, null, $this->dateFormat, $this->timeFormat);
+                    $value = $transformer->transform($dateTime);
                 } catch (\Exception $e) {
-                    $value = $date->format($this->fallbackFormat);
+                    $value = $dateTime->format($this->fallbackFormat);
                 }
             }
 
-            //Fixes the charset by converting a string from an UTF-8 charset to the charset of the kernel.
-            if ('UTF-8' !== $this->charset) {
-                $value = mb_convert_encoding($value, $this->charset, 'UTF-8');
+            if (key_exists((string)$value, $this->values)) {
+                $value = $this->values[$value];
             }
 
-            return parent::renderCell($value, $row, $router);
+            return $value;
         }
-        else
-        {
-            return '';
-        }
+
+        return '';
     }
 
     /**
@@ -145,6 +122,16 @@ class DateTimeColumn extends TextColumn
             $data = strtotime($data);
         }
 
+        // MongoDB Date and Timestamp
+        if ($data instanceof \MongoDate || $data instanceof \MongoTimestamp) {
+            $data = $data->sec;
+        }
+
+        // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
+        if (is_array($data) && array_keys($data) == array('t','i')) {
+            $data = $data['i'];
+        }
+
         $date = new \DateTime();
         $date->setTimestamp($data);
         $date->setTimezone($timezone);
@@ -152,9 +139,16 @@ class DateTimeColumn extends TextColumn
         return $date;
     }
 
-    public function getParentType()
+    public function setFormat($format)
     {
-        return 'text';
+        $this->format = $format;
+
+        return $this;
+    }
+
+    public function getFormat()
+    {
+        return $this->format;
     }
 
     public function getType()

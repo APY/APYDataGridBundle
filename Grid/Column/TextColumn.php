@@ -3,33 +3,49 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\Grid\Column;
+namespace APY\DataGridBundle\Grid\Column;
 
-use Sorien\DataGridBundle\Grid\Filter;
+use APY\DataGridBundle\Grid\Filter;
 
 class TextColumn extends Column
 {
-    public function getFilters()
+    public function isQueryValid($query)
     {
-        return array(new Filter(self::OPERATOR_REGEXP, '/.*'.$this->data.'.*/i'));
+        // Si select filter : if ((is_string($data) || is_integer($data)) && $data != $this::BLANK)
+        return is_string($query);
     }
 
-    public function setData($data)
+    public function getFilters($source)
     {
-        if (is_string($data))
-        {
-            $this->data = $data;
+        $parentFilters = parent::getFilters($source);
+
+        $filters = array();
+        foreach($parentFilters as $filter) {
+            switch ($filter->getOperator()) {
+                case self::OPERATOR_ISNULL:
+                    $filters[] =  new Filter(self::OPERATOR_ISNULL);
+                    $filters[] =  new Filter(self::OPERATOR_EQ, '');
+                    $this->setDataJunction(self::DATA_DISJUNCTION);
+                    break;
+                case self::OPERATOR_ISNOTNULL:
+                    $filters[] =  new Filter(self::OPERATOR_ISNOTNULL);
+                    $filters[] =  new Filter(self::OPERATOR_NEQ, '');
+                    break;
+                default:
+                    $filters[] = $filter;
+            }
         }
 
-        return $this;
+        return $filters;
     }
-    
+
     public function getType()
     {
         return 'text';

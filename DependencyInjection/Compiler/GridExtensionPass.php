@@ -3,13 +3,14 @@
 /*
  * This file is part of the DataGridBundle.
  *
- * (c) Stanislav Turza <sorien@mail.com>
+ * (c) Abhoryo <abhoryo@free.fr>
+ * (c) Stanislav Turza
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sorien\DataGridBundle\DependencyInjection\Compiler;
+namespace APY\DataGridBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,8 +33,7 @@ class GridExtensionPass implements CompilerPassInterface
         $calls = $definition->getMethodCalls();
         $definition->setMethodCalls(array());
 
-        foreach ($container->findTaggedServiceIds('grid.column.extension') as $id => $attributes)
-        {
+        foreach ($container->findTaggedServiceIds('grid.column.extension') as $id => $attributes) {
             $definition->addMethodCall('addColumnExtension', array(new Reference($id)));
         }
 
