@@ -171,7 +171,7 @@ class Vector extends Source
         $this->populateSelectFiltersFromData($columns, $loop);
     }
 
-    public function getTotalCount($columns, $maxResults = null)
+    public function getTotalCount($maxResults = null)
     {
         return $this->getTotalCountFromData($maxResults);
     }

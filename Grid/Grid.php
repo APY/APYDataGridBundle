@@ -490,7 +490,7 @@ class Grid
             $this->totalCount = $this->source->getTotalCountFromData($this->maxResults);
         } else {
             $this->source->populateSelectFilters($this->columns);
-            $this->totalCount = $this->source->getTotalCount($this->columns, $this->maxResults);
+            $this->totalCount = $this->source->getTotalCount($this->maxResults);
         }
 
         if(!is_int($this->totalCount)) {

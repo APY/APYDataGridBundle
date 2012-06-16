@@ -82,10 +82,10 @@ abstract class Source implements DriverInterface
     /**
      * Get Total count of data items
      *
-     * @param \APY\DataGridBundle\Grid\Column\Columns $columns
+     * @param int $maxResults
      * @return int
      */
-    abstract public function getTotalCount($columns, $maxResults = null);
+    abstract public function getTotalCount($maxResults = null);
 
     /**
      * Set container
@@ -336,7 +336,6 @@ abstract class Source implements DriverInterface
                         case 'datetime':
                         case 'date':
                         case 'time':
-                            error_log('#YPT_get_class($value): ' . var_export(get_class($value), true));
                             if ($value instanceof \DateTime) {
                                 $sortedItems[$key] = $value->getTimestamp();
                             } else {

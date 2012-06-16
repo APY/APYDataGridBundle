@@ -2,6 +2,7 @@
 
  * Fix bug - Filterable attribute from a source annotation doesn't work
  * Don't show a mapped field column if it has not been defined with a column annotation
+ * Fix #144
 
 `16 Jun 2012`
 

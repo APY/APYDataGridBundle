@@ -15,7 +15,8 @@ namespace APY\DataGridBundle\Grid\Source;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Row;
-use Doctrine\ORM\Query\ResultSetMapping;
+use APY\DataGridBundle\Grid\Helper\ORMCountWalker;
+use Doctrine\ORM\Query;
 
 class Entity extends Source
 {
@@ -220,7 +221,7 @@ class Entity extends Source
         $this->query->from($this->class, self::TABLE_ALIAS);
         $this->querySelectfromSource = clone $this->query;
 
-        $bindIndex = 1;
+        $bindIndex = 123;
         $serializeColumns = array();
         $where = $this->query->expr()->andx();
 
@@ -334,26 +335,27 @@ class Entity extends Source
         return $result;
     }
 
-    public function getTotalCount($columns, $maxResults = null)
+    public function getTotalCount($maxResults = null)
     {
-        $query = clone $this->query;
-        $query->select($this->getFieldName($columns->getPrimaryColumn()));
-        $query->setFirstResult(null);
-        $query->setMaxResults($maxResults);
+        // From Doctrine\ORM\Tools\Pagination\Paginator::count()
+        $countQuery = $this->query->getQuery();
 
-        // Remove useless part
-        $query->resetDQLPart('orderBy');
+        if ( ! $countQuery->getHint(ORMCountWalker::HINT_DISTINCT)) {
+            $countQuery->setHint(ORMCountWalker::HINT_DISTINCT, true);
+        }
 
-        $sql = 'SELECT COUNT(*) as total FROM (' . $query->getQuery()->getSQL() . ') as '.self::COUNT_ALIAS;
+        $countQuery->setHint(Query::HINT_CUSTOM_TREE_WALKERS, array('APY\DataGridBundle\Grid\Helper\ORMCountWalker'));
+        $countQuery->setFirstResult(null)->setMaxResults($maxResults);
 
-        $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('total', 'total');
+        try {
+            $data = $countQuery->getScalarResult();
+            $data = array_map('current', $data);
+            $count = array_sum($data);
+        } catch(NoResultException $e) {
+            $count = 0;
+        }
 
-        $q = $this->manager->createNativeQuery($sql, $rsm);
-
-        $q->setParameters($query->getParameters());
-
-        return (int) $q->getSingleScalarResult();
+        return $count;
     }
 
     public function getFieldsMetadata($class, $group = 'default')

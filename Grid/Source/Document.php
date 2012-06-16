@@ -215,7 +215,7 @@ class Document extends Source
         return $result;
     }
 
-    public function getTotalCount($columns, $maxResults = null)
+    public function getTotalCount($maxResults = null)
     {
         if ($maxResults !== null) {
             return min(array($maxResults, $this->count));
