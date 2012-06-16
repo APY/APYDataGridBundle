@@ -9,6 +9,8 @@ Delimiter = `\t`
 ```php
 <?php
 ...
+use APY\DataGridBundle\Grid\Export\TSVExport; 
+...
 $grid->addExport(new TSVExport($title, $fileName, $params, $charset));
 
 $grid->setSource($source);
@@ -35,6 +37,8 @@ $grid->setSource($source);
 ## Exemple
 ```php
 <?php
+...
+use APY\DataGridBundle\Grid\Export\TSVExport; 
 ...
 $grid->addExport(new TSVExport('TSV Export'));
 

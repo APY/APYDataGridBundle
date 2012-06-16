@@ -38,7 +38,7 @@ $grid->setSource($source);
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\DSVExport; 
+use APY\DataGridBundle\Grid\Export\SCSVExport; 
 ...
 $grid->addExport(new SCSVExport('SCCSV Export'));
 
