@@ -66,8 +66,8 @@ return $grid->getGridResponse();
 ...
 ```
 
-The Vector source treats this array and iterates the 10 first rows to guess the type of each columns.
-It uses the keys of your array to determine the name of the columns. In our case the columns will be: `id`, `publisher_id`, `title`, `authors`, `publication`, `createDate`, `pages` and `multilanguage`.
+The Vector source treats this array and iterates the 10 first rows to guess the type of each columns.  
+It uses the keys of your array to determine the name of the columns. In our case the columns will be: `id`, `publisher_id`, `title`, `authors`, `publication`, `createDate`, `pages` and `multilanguage`.  
 The columns can be filtered and ordered.
 
 **Note**: Each column have to be defined for each row.
@@ -104,7 +104,7 @@ books_more:
 <?php
 ...
 $source = new Vector($books);
-$source->setId(array('id', 'author_id'));
+$source->setId(array('id', 'publisher_id'));
 
 $grid = $this->get('grid');
 
@@ -127,7 +127,7 @@ $grid = $this->get('grid');
 $grid->setSource($source);
 
 $myRowAction = new RowAction('More Info', 'books_more', false, '_self', array('class' => 'show'));
-$source->setRouteParameter(array('id', 'author_id'));
+$source->setRouteParameter(array('id', 'publisher_id'));
 $grid->addRowAction($myRowAction);
 ...
 ```
@@ -161,7 +161,7 @@ return $grid->getGridResponse();
 
 * Mapped fields
 * GroupBy
-* DQL functions
+* Aggregate DQL functions
 * Change type of a column
 
 ## Unapplicable features

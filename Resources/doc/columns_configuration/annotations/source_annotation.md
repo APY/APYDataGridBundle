@@ -1,7 +1,7 @@
 Source Annotation for a class
 =============================
 
-The Source annotation for a class allows you to configure the grid.  
+The Source annotation for a class allows to configure the grid.  
 It's optional if you have declare Column annotation for your properties.
 
 ## Exemple

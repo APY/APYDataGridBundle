@@ -286,7 +286,7 @@ We'll try to create a CSV export.
     
 8. **Define the charset of the export file**
 
-    In French - for instance again - Microsoft Excel doesn't display correctly special characters. To resolve this problem, you have to define the charset of your export file.
+    In French - for instance again - Microsoft Excel doesn't displayed correctly special characters. To resolve this problem, you have to define the charset of your export file.
     
     ```php
     <?php

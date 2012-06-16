@@ -1,5 +1,5 @@
-Getting Started With DataGridBundle
-===================================
+Getting Started With APYDataGridBundle
+======================================
 
 ## Choose your source of data
 

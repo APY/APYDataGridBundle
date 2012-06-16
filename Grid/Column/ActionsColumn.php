@@ -17,7 +17,7 @@ class ActionsColumn extends Column
     protected $rowActions;
     protected $separator;
 
-    public function __construct($column, $title, array $rowActions = array(), $separator = ' ')
+    public function __construct($column, $title, array $rowActions = array(), $separator = '<br />')
     {
         $this->rowActions = $rowActions;
         $this->separator = $separator;

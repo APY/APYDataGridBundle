@@ -1,7 +1,7 @@
 PHPExcel simple HTML export
 =================================
 
-File extension = `html`
+File extension = `html`  
 Mime type = `text/html`
 
 **Note**: This export is limited to 52 columns.

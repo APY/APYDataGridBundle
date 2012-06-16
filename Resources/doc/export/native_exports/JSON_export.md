@@ -1,7 +1,7 @@
 JSON export
 ===========
 
-File extension = `json`
+File extension = `json`  
 Mime type = `application/octet-stream`
 
 ## Usage

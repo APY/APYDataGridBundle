@@ -1,7 +1,7 @@
 XML export
 ==========
 
-File extension = `xml`
+File extension = `xml`  
 Mime type = `application/octet-stream`
 
 ## Usage

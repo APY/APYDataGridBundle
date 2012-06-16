@@ -1,7 +1,7 @@
 Column Annotation for a property
 ================================
 
-The Column annotation for a property allow you to add a mapped source column.
+The Column annotation for a property allows to add a mapped source column.
 
 #### Exemple
 ```php
@@ -58,5 +58,5 @@ class Product
 |selectFrom|string|query|query, source, values|How to populate the selector of the select filters of the column.|
 |values|array|_none_||For select filters or replace values in the grid|
 
-**Note**: Every attribute have a setter and a getter method.
+**Note**: Every attribute have a setter and a getter method.  
 **Note²**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.

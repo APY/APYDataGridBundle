@@ -26,7 +26,7 @@ And the template
 
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|
-|grid|string||The grid object|
+|grid|APY/DataGridBundle/Grid/Grid||The grid object|
 |theme|string|APYDataGridBundle::blocks.html.twig|Temaplate used to render the grid|
 |id|string|_none_|Set the identifier of the grid.|
 |params|array|array()|Additional parameters passed to each block.|
@@ -73,3 +73,5 @@ Current template will automatically extended from base block template
 
 {% block grid_pager %}{% endblock grid_pager %}
 ```
+
+**Note**: Blocks have to be define after the call of the grid.

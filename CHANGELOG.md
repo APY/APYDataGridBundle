@@ -2,7 +2,7 @@
 
  * [Bundle] Push the actuel master branch into the new 1.0 branch. The master branch is now the version 2.0 of this bundle.
 
-**New in 2.0:** See [UPGRADE-2.0.md](UPGRADE-2.0) documentation.
+**New in 2.0:** See [UPGRADE-2.0](UPGRADE-2.0.md) documentation.
 
  * [BC Break][Bundle] Change the namespace of the bundle
  * [BC Break][Filters] Add operator selector feature with a default operator

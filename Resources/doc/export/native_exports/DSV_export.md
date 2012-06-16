@@ -1,8 +1,8 @@
 Delimiter-Separated Values export
 =================================
 
-File extension = _none_
-Mime type = `application/octet-stream`
+File extension = _none_  
+Mime type = `application/octet-stream`  
 Delimiter = _none_
 
 ## Usage

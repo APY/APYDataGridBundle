@@ -3,7 +3,7 @@ Document source
 
 Document source supports ODM dbal.
 
-**Note²**: Operators `Equals` and `Contains` support regular expression.
+**Note**: Operators `Equals` and `Contains` support regular expression.
 
 ## Usage
 

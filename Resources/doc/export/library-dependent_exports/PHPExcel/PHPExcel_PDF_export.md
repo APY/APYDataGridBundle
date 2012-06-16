@@ -1,7 +1,7 @@
 PHPExcel simple PDF export (Not working!)
 =========================================
 
-File extension = `pdf`
+File extension = `pdf`  
 Mime type = `application/pdf`
 
 **Note**: This export is limited to 52 columns.

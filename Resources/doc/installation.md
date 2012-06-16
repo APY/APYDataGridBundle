@@ -15,7 +15,7 @@ Add the following lines in your `deps` file:
 
 ```
 [DataGridBundle]
-    git=git://github.com/APY/DataGridBundle.git
+    git=git://github.com/Abhoryo/APYDataGridBundle.git
     target=bundles/APY/DataGridBundle
 ```
 
@@ -30,7 +30,7 @@ $ php bin/vendors install
 If you prefer instead to use git submodules, the run the following:
 
 ``` bash
-$ git submodule add git://github.com/APY/DataGridBundle.git vendor/bundles/APY/DataGridBundle
+$ git submodule add git://github.com/Abhoryo/APYDataGridBundle.git vendor/bundles/APY/DataGridBundle
 $ git submodule update --init
 ```
 

@@ -1,7 +1,7 @@
 PHPExcel Excel 5 (97-2003) export
 =================================
 
-File extension = `xls`
+File extension = `xls`  
 Mime type = `application/vnd.ms-excel`
 
 **Note**: This export is limited to 52 columns.

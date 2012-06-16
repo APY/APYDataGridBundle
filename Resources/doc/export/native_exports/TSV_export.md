@@ -1,8 +1,8 @@
 Tabulation-Separated Values export
 =================================
 
-File extension = `tsv`
-Mime type = `text/tab-separated-values`
+File extension = `tsv`  
+Mime type = `text/tab-separated-values`  
 Delimiter = `\t`
 
 ## Usage

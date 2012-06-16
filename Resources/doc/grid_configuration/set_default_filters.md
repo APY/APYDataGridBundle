@@ -1,5 +1,5 @@
 Set default filters of the grid
-====================================
+===============================
 
 You can define default filters. These values will be used on each new session of the grid.
 
@@ -53,7 +53,7 @@ $grid->setDefaultFilters($filters);
 |isNull|Is not defined|
 |isNotNull|Is defined|
 
-## Exemple
+## Example
 
 ```php
 <?php

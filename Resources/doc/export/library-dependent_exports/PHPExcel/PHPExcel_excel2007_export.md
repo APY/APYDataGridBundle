@@ -1,7 +1,7 @@
 PHPExcel Excel 2007 export
 =================================
 
-File extension = `xlsx`
+File extension = `xlsx`  
 Mime type = `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 
 **Note**: This export is limited to 52 columns.

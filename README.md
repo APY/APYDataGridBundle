@@ -1,7 +1,7 @@
 Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid.  
 This bundle was initiated by Stanislav Turza (Sorien).
 
-**Version**: 2.0
+**Version**: 2.0  
 **Compatibility**: Symfony 2.0.x
 
 See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/Abhoryo/APYDataGridBundle/blob/master/UPGRADE-2.0.md)
@@ -34,19 +34,19 @@ See the [summary](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resou
 
 ## Screenshot
 
-Full example:
+Full example with this [CSS style file](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/grid_configuration/working_example.css):
 
 ![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_full.png?raw=true)
 
-Simple example with the external filter box in english
+Simple example with the external filter box in english:
 
 ![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_en.png?raw=true)
 
-Simple example with the external filter box in french
+Same example in french:
 
 ![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_fr.png?raw=true)
 
-Data used in these screenshots (this is a phpmyadmin screenshot):
+Data used in these screenshots (this is a phpMyAdmin screenshot):
 
 ![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_database.png?raw=true)
 

@@ -1,7 +1,7 @@
 Column Annotation for a class
 =============================
 
-The Column annotation for a class allow you to add a non-mapped source column.
+The Column annotation for a class allows to add a non-mapped source column.
 
 Exemple:
 ```php

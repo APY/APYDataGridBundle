@@ -3,7 +3,7 @@ PHPExcel installation
 
 1. Download the library from the [PHPExcel website](http://phpexcel.codeplex.com/releases/).
 
-1. Unzip the archive and put the lib directory in `vendor/phpexcel/` directory.
+1. Unzip the archive and put the `lib` directory in `vendor/phpexcel/` directory.
 
 1. Register the prefix in the file `app/autoload.php`.
 

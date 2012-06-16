@@ -18,7 +18,7 @@ $grid->setSource($source);
 
 |Parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|
-|separator|string|' '|Separator of the default actions column|
+|separator|string|<br />|Separator of the default actions column|
 
 **Note**: This parameter accepts HTML tags.
 

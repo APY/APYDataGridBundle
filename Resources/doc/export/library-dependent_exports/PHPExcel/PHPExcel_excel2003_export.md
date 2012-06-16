@@ -1,7 +1,7 @@
 PHPExcel Excel 2003 export
 =================================
 
-File extension = `xlsx`
+File extension = `xlsx`  
 Mime type = `application/vnd.ms-excel`
 
 **Note**: This export is limited to 52 columns.

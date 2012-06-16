@@ -1,8 +1,8 @@
 Comma-Separated Values export
 =================================
 
-File extension = `csv`
-Mime type = `text/comma-separated-values`
+File extension = `csv`  
+Mime type = `text/comma-separated-values`  
 Delimiter = `,`
 
 ## Usage

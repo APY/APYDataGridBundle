@@ -3,7 +3,7 @@ Excel export
 
 **Warning**: This export produces a warning with new Office Excel.
 
-File extension = `xls`
+File extension = `xls`  
 Mime type = `application/vnd.ms-excel`
 
 ## Usage

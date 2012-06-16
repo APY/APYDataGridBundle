@@ -1,16 +1,16 @@
 SUMMARY
 =======
 
-1. [Introduction](https://github.com/APY/DataGridBundle/blob/master/Resources/doc/README.md)
+1. [Introduction](https://github.com/Abhoryo/APYDataGridBundle/blob/master/README.md)
 
 1. [Installation](installation.md)
 
-1. [Getting Started with DataGridBundle](getting_started.md)
+1. [Getting Started with APYDataGridBundle](getting_started.md)
 
-1. [Source](sources/)
-	1. [Entity (ORM)](sources/entity.md)
-	1. [Document (ODM)](sources/document.md)
-	1. [Vector (Array)](sources/vector.md)
+1. [Source](source/)
+	1. [Entity (ORM)](source/entity_source.md)
+	1. [Document (ODM)](source/document_source.md)
+	1. [Vector (Array)](source/vector_source.md)
 
 1. [Template (Twig)](template/)
 	1. [Display the grid](template/render_the_grid.md)

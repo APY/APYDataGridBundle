@@ -6,24 +6,24 @@ UPGRADE FROM S0RIENDataGridBundle(1.0) to APYDataGridBundle(2.0)
 The DataGridBundle has moved from the S0RIEN repository to the Abhoryo repository and his organisation APY.
 Therefore you should change the namespace of this bundle in your AppKernel.php:
 
-Before: `new APY\DataGridBundle\APYDataGridBundle()`
+Before: `new APY\DataGridBundle\APYDataGridBundle()`  
 After: `new APY\DataGridBundle\APYDataGridBundle()`
 
 And in autoload.php
 
-Before: `'APY' => __DIR__.'/../vendor/bundles',`
+Before: `'APY' => __DIR__.'/../vendor/bundles',`  
 After: `'APY' => __DIR__.'/../vendor/bundles',`
 
 Then in your files change all your `APY` use statements to `APY`
 
 Change your include block template.
 
-Before: `APYDataGridBundle::blocks.html.twig`
+Before: `APYDataGridBundle::blocks.html.twig`  
 After: `'APYDataGridBundle::blocks.html.twig`
 
 Example:
 
-Before: `use APY\DataGridBundle\Grid\Source\Entity;`
+Before: `use APY\DataGridBundle\Grid\Source\Entity;`  
 After: `use APY\DataGridBundle\Grid\Source\Entity;`
 
 You call safely replace all `Sorien` occurences by `APY`.
@@ -35,14 +35,14 @@ In 2.0, these columns don't exist because they are not types of data, but types 
 
 #### Select columns
 
-Before: `@Grid\Column(type="select", values={"type1"="Type 1", "type2"="Type 2"})`
+Before: `@Grid\Column(type="select", values={"type1"="Type 1", "type2"="Type 2"})`  
 After: `@Grid\Column(type="text", filter="select", selectFrom="values", values={"type1"="Type 1", "type2"="Type 2"})`
 
 See [annotation type attribute](columns_configuration/annotations/column_annotation_property.md) for others types.
 
 #### SourceSelect columns
 
-Before: `@Grid\Column(type="sourceselect")`
+Before: `@Grid\Column(type="sourceselect")`  
 After: `@Grid\Column(type="text", filter="select", selectFrom="source")` OR `@Grid\Column(type="text", filter="select", selectFrom="query")`
 
 In 2.0, you don't have to declare a repository method `findDistinctByField($field)` to get your values for the selector.
@@ -56,13 +56,13 @@ In 2.0, you don't have to declare a repository method `findDistinctByField($fiel
 In 2.0, a operator selector is available. When you select one of the between operators, a new field appears.  
 A second input field appears if you have define `input` in the `filter` attribute.
 
-Before: `@Grid\Column(type="range")`
+Before: `@Grid\Column(type="range")`  
 After: `@Grid\Column(type="text", filter="input")` OR `@Grid\Column(type="text", filter="select")`
 
-Before: `@Grid\Column(type="datetimerange")`
+Before: `@Grid\Column(type="datetimerange")`  
 After: `@Grid\Column(type="datetime", filter="input")` OR `@Grid\Column(type="datetime", filter="select")`
 
-Before: `@Grid\Column(type="daterange")`
+Before: `@Grid\Column(type="daterange")`  
 After: `@Grid\Column(type="date", filter="input")` OR `@Grid\Column(type="date", filter="select")`
 
 Range works for the type `number` too.
@@ -89,33 +89,33 @@ Range works for the type `number` too.
 
  * Column::setCallBack rename to manipulateRenderCell
  
-	Before: `$column->manipulateRenderCell(function ($value, $row, $router) {});`
+	Before: `$column->manipulateRenderCell(function ($value, $row, $router) {});`  
 	After: `$column->manipulateRenderCell(function ($value, $row, $router) {});`
 
  * Grid::initFilter rename to setDefaultFilters
  
-	Before: `$grid->initFilter(array());`
+	Before: `$grid->initFilter(array());`  
 	After: `$grid->setDefaultFilters(array());`
 
  * Grid::initOrder rename to setDefaultOrder
  
-	Before: `$grid->initOrder($columnId, $order);`
+	Before: `$grid->initOrder($columnId, $order);`  
 	After: `$grid->setDefaultOrder($columnId, $order);`
 
  * Grid::gridResponse rename to Grid::getGridResponse
 
-	Before: `$grid->gridResponse();`
+	Before: `$grid->gridResponse();`  
 	After: `$grid->getGridResponse();`
  
  * GridManager::gridManagerResponse rename to GridManager::getGridManagerResponse
 
-	Before: `$grid->gridManagerResponse();`
+	Before: `$grid->gridManagerResponse();`  
 	After: `$grid->getGridManagerResponse();`
 
 ## Set data on the source instead of the grid
 
-Before: `$grid->setData($array);`
+Before: `$grid->setData($array);`  
 After: `$source->setData($array);`
 
 
-## Clear your cache
+**And Clear your cache!**
