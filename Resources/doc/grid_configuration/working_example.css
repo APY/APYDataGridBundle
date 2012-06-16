@@ -109,7 +109,7 @@ th div {
 .grid-search label{
     width: 80px;
     display: inline-block;
-	text-align: right;
+    text-align: right;
 }
 
 .grid-search select, .grid-search .grid-filter-input-query input {

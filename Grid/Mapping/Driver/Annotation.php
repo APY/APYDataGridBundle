@@ -28,7 +28,7 @@ class Annotation implements DriverInterface
     public function __construct($reader)
     {
         $this->reader = $reader;
-        $this->columns = $this->fields = $this->loaded = $this->groupBy = array();
+        $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = array();
     }
 
     public function getClassColumns($class, $group = 'default')
@@ -57,6 +57,10 @@ class Annotation implements DriverInterface
         $reflection = new \ReflectionClass($className);
         $properties = array();
 
+        foreach ($this->reader->getClassAnnotations($reflection) as $class) {
+            $this->getMetadataFromClass($className, $class);
+        }
+
         foreach ($reflection->getProperties() as $property) {
             $this->fields[$className][$group][$property->getName()] = array();
 
@@ -66,12 +70,15 @@ class Annotation implements DriverInterface
             }
         }
 
-        foreach ($this->reader->getClassAnnotations($reflection) as $class) {
-            $this->getMetadataFromClass($className, $class);
-        }
-
         if (empty($this->columns[$className][$group])) {
             $this->columns[$className][$group] = array_keys($this->fields[$className][$group]);
+        } else {
+            foreach ($this->columns[$className][$group] as $columnId) {
+                // Ignore mapped fields
+                if (!isset($this->fields[$className][$group][$columnId]['filterable']) && strpos($columnId, '.') === false) {
+                    $this->fields[$className][$group][$columnId]['filterable'] = $this->filterable[$className][$group];
+                }
+            }
         }
 
         $this->loaded[$className][$group] = true;

@@ -25,7 +25,7 @@ class Source
     public function __construct($metadata = array())
     {
         $this->columns = (isset($metadata['columns']) && $metadata['columns'] != '') ? array_map('trim', explode(',', $metadata['columns'])) : array();
-        $this->filterable = !(isset($metadata['filterable']) && $metadata['filterable']);
+        $this->filterable = isset($metadata['filterable']) ? $metadata['filterable'] : true;
         $this->groups = (isset($metadata['groups']) && $metadata['groups'] != '') ? (array) $metadata['groups'] : array('default');
         $this->groupBy = (isset($metadata['groupBy']) && $metadata['groupBy'] != '') ? (array) $metadata['groupBy'] : array();
     }

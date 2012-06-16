@@ -1,3 +1,8 @@
+`17 Jun 2012`
+
+ * Fix bug - Filterable attribute from a source annotation doesn't work
+ * Don't show a mapped field column if it has not been defined with a column annotation
+
 `16 Jun 2012`
 
  * [Bundle] Push the actuel master branch into the new 1.0 branch. The master branch is now the version 2.0 of this bundle.
