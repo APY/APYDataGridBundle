@@ -33,6 +33,7 @@ class Grid
     const REQUEST_QUERY_LIMIT = '_limit';
     const REQUEST_QUERY_ORDER = '_order';
     const REQUEST_QUERY_TEMPLATE = '_template';
+    const REQUEST_QUERY_RESET = '_reset';
 
     /**
      * @var \Symfony\Component\HttpFoundation\Session;
@@ -226,8 +227,9 @@ class Grid
         //generate hash
         $this->createHash();
 
-        // Persistence - kill previous session
-        if (!$this->request->isXmlHttpRequest() && !$this->persistence && $this->request->headers->get('referer') != $this->request->getUriForPath($this->request->getPathInfo())) {
+        // Persistence or reset - kill previous session
+        if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $this->request->headers->get('referer') != $this->request->getUriForPath($this->request->getPathInfo()))
+         || !is_null($this->getDataFromContext(self::REQUEST_QUERY_RESET, true, false))) {
             $this->session->remove($this->getHash());
         }
 

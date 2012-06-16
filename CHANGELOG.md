@@ -3,6 +3,13 @@
  * Fix bug - Filterable attribute from a source annotation doesn't work
  * Don't show a mapped field column if it has not been defined with a column annotation
  * Fix #144
+ * Move the checkbox of massaction from the filters row to the titles row
+ * Add the reset filters feature (#36)
+ * Add a reset button in the massaction column of the filters row
+ * Add a reset link in the actions column of the filters row
+ * Add a reset button in the grid search box
+ * Update screenshots
+ * [BC Break] Pass the grid object to the cell and filter blocks instead of the hash of the grid
 
 `16 Jun 2012`
 

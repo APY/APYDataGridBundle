@@ -27,7 +27,7 @@ class ActionsColumn extends Column
             'title'      => $title,
             'sortable'   => false,
             'source'     => false,
-            'filterable' => false
+            'filterable' => true // Show a reset link instead of a filter
         ));
     }
 
@@ -86,6 +86,11 @@ class ActionsColumn extends Column
     public function getSeparator()
     {
         return $this->separator;
+    }
+
+    public function getFilterType()
+    {
+        return $this->getType();
     }
 
     public function getType()

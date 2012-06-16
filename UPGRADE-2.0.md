@@ -117,5 +117,9 @@ Range works for the type `number` too.
 Before: `$grid->setData($array);`  
 After: `$source->setData($array);`
 
+## Pass the grid object to the cell and filter blocks instead of the hash of the grid
+
+Before: `{{ hash }}`  
+After: `{{ grid.hash }}`
 
 **And Clear your cache!**

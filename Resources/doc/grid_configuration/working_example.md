@@ -122,6 +122,11 @@ And the template:
     text-decoration: none;
 }
 
+.grid th a.grid-reset {
+    margin-left: 5px;
+    font-weight: normal;
+}
+
 .grid tr.even
 {
     background-color: #FCFDFE;

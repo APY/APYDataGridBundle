@@ -178,7 +178,7 @@ class DataGridExtension extends \Twig_Extension
          || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
          || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
         {
-            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row, 'hash' => $grid->getHash()));
+            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row, 'grid' => $grid));
         }
 
         return $value;
@@ -205,7 +205,7 @@ class DataGridExtension extends \Twig_Extension
          || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType())
          || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter'))
         {
-            return $this->renderBlock($block, array('column' => $column, 'hash' => $grid->getHash(), 'submitOnChange' => $submitOnChange));
+            return $this->renderBlock($block, array('column' => $column, 'grid' => $grid, 'submitOnChange' => $submitOnChange));
         }
 
         return '';
@@ -232,6 +232,8 @@ class DataGridExtension extends \Twig_Extension
                 return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_PAGE.']='.$param;
             case 'limit':
                 return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_LIMIT.']=';
+            case 'reset':
+                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_RESET.']=';
         }
     }
 

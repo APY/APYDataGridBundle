@@ -42,19 +42,23 @@
     <tr class="grid-row-titles">
     {% for column in grid.columns %}
         {% if column.visible(grid.isReadyForExport) %}
-        <th class="{% if column.align != 'left'%}align-{{ column.align }}{% endif %}{% if loop.last %} last-column{% endif %}"{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>
-        {% set columnTitle = grid.prefixTitle ~ column.title %}
-        {% if (column.sortable) %}
-            <a href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by'|trans }} {{ columnTitle|trans }}">{{ columnTitle|trans }}</a>
-            {% if column.order == 'asc' %}
-                <div class="sort_up"></div>
-            {% elseif column.order == 'desc' %}
-                <div class="sort_down"></div>
+            <th class="{% if column.align != 'left'%}align-{{ column.align }}{% endif %}{% if loop.last %} last-column{% endif %}"{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>
+            {% if column.type == 'massaction' %}
+                <input type="checkbox" class="grid-mass-selector" onclick="{{ grid.hash }}_mark_visible(this.checked); return true;"/>
+            {% else %}
+                {% set columnTitle = grid.prefixTitle ~ column.title %}
+                {% if (column.sortable) %}
+                    <a href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by'|trans }} {{ columnTitle|trans }}">{{ columnTitle|trans }}</a>
+                    {% if column.order == 'asc' %}
+                        <div class="sort_up"></div>
+                    {% elseif column.order == 'desc' %}
+                        <div class="sort_down"></div>
+                    {% endif %}
+                {% else %}
+                    {{ columnTitle|trans }}
+                {% endif %}
             {% endif %}
-        {% else %}
-            {{ columnTitle|trans }}
-        {% endif %}
-        </th>
+            </th>
         {% endif %}
     {% endfor %}
     </tr>
@@ -75,14 +79,14 @@
 {% if grid.isFilterSectionVisible %}
     {{ block('grid_scripts_operator') }}
     <div class="grid-search">
-        <form id="{{ grid.hash }}" action="{{ grid.routeUrl }}" method="post">
+        <form id="{{ grid.hash }}_search" action="{{ grid.routeUrl }}" method="post">
         {% for column in grid.columns %}
             {% if column.visible(true) and column.isFilterable %}
                 {% set columnTitle = grid.prefixTitle ~ column.title %}
                 {% if column.filterable %}<div class="{{ cycle(['odd', 'even'], loop.index) }}"><label>{{ columnTitle|trans }}</label>{{ grid_filter(column, grid, false)|raw }}</div>{% endif %}
             {% endif %}
         {% endfor %}
-            <div class="grid-search-submit"><input type="submit" value="{{ 'Search'|trans }}"/></div>
+            <div class="grid-search-action"><input type="submit" class="grid-search-submit" value="{{ 'Search'|trans }}"/><input type="button" class="grid-search-reset" value="{{ 'Réinitialiser'|trans }}" onclick="window.location.href='{{ grid_url('reset', grid) }}'; return false;"/></div>
         </form>
     </div>
 {% endif %}
@@ -180,7 +184,7 @@
 {% endblock grid_column_actions_cell %}
 {# ------------------------------------------------ grid_column_massaction_cell --------------------------------------------- #}
 {% block grid_column_massaction_cell %}
-    <input type="checkbox" class="action" value="1" name="{{ hash }}[{{ column.id }}][{{ row.primaryFieldValue }}]"/>
+    <input type="checkbox" class="action" value="1" name="{{ grid.hash }}[{{ column.id }}][{{ row.primaryFieldValue }}]"/>
 {% endblock grid_column_massaction_cell %}
 {# ------------------------------------------------ grid_column_boolean_cell --------------------------------------------- #}
 {% block grid_column_boolean_cell %}
@@ -282,7 +286,7 @@ function {{ grid.hash }}_switchOperator(elt, query_)
 {% block grid_column_operator %}
 {% if column.operatorsVisible %}
 <span class="grid-filter-operator">
-    <select name="{{ hash }}[{{ column.id }}][operator]" onchange="{{ hash }}_switchOperator(this, '{{ hash }}__{{ column.id }}__query__');">
+    <select name="{{ grid.hash }}[{{ column.id }}][operator]" onchange="{{ grid.hash }}_switchOperator(this, '{{ grid.hash }}__{{ column.id }}__query__');">
     {% for operator in column.operators %}
         <option value="{{ operator }}"{% if op == operator %} selected="selected"{% endif %}>{{ operator |trans }}</option>
     {% endfor %}
@@ -302,8 +306,8 @@ function {{ grid.hash }}_switchOperator(elt, query_)
 <span class="grid-filter-input">
     {{ block('grid_column_operator')}}
     <span class="grid-filter-input-query">
-        <input type="{{ column.inputType }}" value="{{ from }}" class="grid-filter-input-query-from" name="{{ hash }}[{{ column.id }}][from]" id="{{ hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onkeypress="if (event.which == 13){this.form.submit();}"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }} />
-        <input type="{{ column.inputType }}" value="{{ to }}" class="grid-filter-input-query-to" name="{{ hash }}[{{ column.id }}][to]" id="{{ hash }}__{{ column.id }}__query__to" {% if submitOnChange is sameas(true) %}onkeypress="if (event.which == 13){this.form.submit();}"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }} />
+        <input type="{{ column.inputType }}" value="{{ from }}" class="grid-filter-input-query-from" name="{{ grid.hash }}[{{ column.id }}][from]" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onkeypress="if (event.which == 13){this.form.submit();}"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }} />
+        <input type="{{ column.inputType }}" value="{{ to }}" class="grid-filter-input-query-to" name="{{ grid.hash }}[{{ column.id }}][to]" id="{{ grid.hash }}__{{ column.id }}__query__to" {% if submitOnChange is sameas(true) %}onkeypress="if (event.which == 13){this.form.submit();}"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }} />
     </span>
 </span>
 {% endblock grid_column_filter_type_input %}
@@ -319,13 +323,13 @@ function {{ grid.hash }}_switchOperator(elt, query_)
 <span class="grid-filter-select">
     {{ block('grid_column_operator')}}
     <span class="grid-filter-select-query">
-        <select name="{{ hash }}[{{ column.id }}][from]" class="grid-filter-select-query-from" id="{{ hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onchange="this.form.submit();"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
+        <select name="{{ grid.hash }}[{{ column.id }}][from]" class="grid-filter-select-query-from" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onchange="this.form.submit();"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
             <option value="">&nbsp;</option>
             {% for key, value in column.values %}
                 <option value="{{ key }}"{% if not from is null and from == key %} selected="selected"{% endif %}>{{ value }}</option>
             {% endfor %}
         </select>
-        <select name="{{ hash }}[{{ column.id }}][to]" class="grid-filter-select-query-to" id="{{ hash }}__{{ column.id }}__query__to" {% if submitOnChange is sameas(true) %}onchange="this.form.submit();"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }}>
+        <select name="{{ grid.hash }}[{{ column.id }}][to]" class="grid-filter-select-query-to" id="{{ grid.hash }}__{{ column.id }}__query__to" {% if submitOnChange is sameas(true) %}onchange="this.form.submit();"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }}>
             <option value="">&nbsp;</option>
             {% for key, value in column.values %}
                 <option value="{{ key }}"{% if not to is null and to == key %} selected="selected"{% endif %}>{{ value }}</option>
@@ -336,5 +340,9 @@ function {{ grid.hash }}_switchOperator(elt, query_)
 {% endblock grid_column_filter_type_select %}
 {# -------------------------------------------- grid_column_massaction_filter --------------------------------------- #}
 {% block grid_column_filter_type_massaction %}
-    <input type="checkbox" class="grid-mass-selector" onclick="{{ hash }}_mark_visible(this.checked); return true;"/>
+    <input type="button" class="grid-search-reset" value="R" title="{{ 'Reset'|trans }}" onclick="window.location.href='{{ grid_url('reset', grid) }}'; return false;"/>
 {% endblock grid_column_filter_type_massaction %}
+{# -------------------------------------------- grid_column_actions_filter --------------------------------------- #}
+{% block grid_column_filter_type_actions %}
+    <a class="grid-reset" href="{{ grid_url('reset', grid) }}">{{ 'Reset'|trans }}</a>
+{% endblock grid_column_filter_type_actions %}
