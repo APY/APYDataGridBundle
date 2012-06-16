@@ -148,9 +148,9 @@ class DataGridExtension extends \Twig_Extension
         $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
         $this->params = $params;
 
-        if (!$this->gridPrepared) {
+        if (!isset($this->gridPrepared[$grid->getHash()]) || $this->gridPrepared[$grid->getHash()] !==true) {
             $grid->prepare();
-            $this->gridPrepared = true;
+            $this->gridPrepared[$grid->getHash()] = true;
         }
 
         return $this->renderBlock('grid_search', array('grid' => $grid));
