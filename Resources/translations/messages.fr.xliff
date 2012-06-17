@@ -110,6 +110,10 @@
                 <source>isNotNull</source>
                 <target>Est défini</target>
             </trans-unit>
+            <trans-unit id="28">
+                <source>%count% Results, </source>
+                <target>%count% Résultats, </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

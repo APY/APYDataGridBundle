@@ -10,6 +10,7 @@
  * Add a reset button in the grid search box
  * Update screenshots
  * [BC Break] Pass the grid object to the cell and filter blocks instead of the hash of the grid
+ * Add number of total results
 
 `16 Jun 2012`
 
