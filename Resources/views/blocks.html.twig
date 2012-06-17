@@ -86,7 +86,7 @@
                 {% if column.filterable %}<div class="{{ cycle(['odd', 'even'], loop.index) }}"><label>{{ columnTitle|trans }}</label>{{ grid_filter(column, grid, false)|raw }}</div>{% endif %}
             {% endif %}
         {% endfor %}
-            <div class="grid-search-action"><input type="submit" class="grid-search-submit" value="{{ 'Search'|trans }}"/><input type="button" class="grid-search-reset" value="{{ 'Réinitialiser'|trans }}" onclick="window.location.href='{{ grid_url('reset', grid) }}'; return false;"/></div>
+            <div class="grid-search-action"><input type="submit" class="grid-search-submit" value="{{ 'Search'|trans }}"/><input type="button" class="grid-search-reset" value="{{ 'Reset'|trans }}" onclick="window.location.href='{{ grid_url('reset', grid) }}'; return false;"/></div>
         </form>
     </div>
 {% endif %}
