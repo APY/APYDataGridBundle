@@ -62,9 +62,9 @@
                 <source>isNotNull</source>
                 <target>Is defined</target>
             </trans-unit>
-            
-            
-    <!-- with symbols -->           
+
+
+    <!-- with symbols -->
             <!--trans-unit id="26">
                 <source>eqs</source>
                 <target>=</target>

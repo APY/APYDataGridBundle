@@ -438,6 +438,8 @@ class Grid
         if (count($this->rows) == 0 && $this->page > 0){
             $this->page = 0;
             $this->prepare();
+
+            return $this;
         }
 
         //add row actions column
@@ -885,6 +887,19 @@ class Grid
 
     /**
      * Sets current Page
+     *
+     * @param $page
+     * @return Grid
+     */
+    public function setDefaultPage($page)
+    {
+        $this->setPage((int)$page - 1);
+
+        return $this;
+    }
+
+    /**
+     * Sets current Page (internal)
      *
      * @param $page
      * @return Grid
