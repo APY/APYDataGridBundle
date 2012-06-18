@@ -1008,7 +1008,7 @@ class Grid
     {
         if ($this->showFilters == true) {
             foreach ($this->columns as $column) {
-                if ($column->isFilterable()) {
+                if ($column->isFilterable() && $column->getType() != 'massaction' && $column->getType() != 'actions') {
                     return true;
                 }
             }
