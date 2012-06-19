@@ -370,12 +370,12 @@ class Grid
     public function executeMassActions()
     {
         $actionId = $this->getDataFromContext(Grid::REQUEST_QUERY_MASS_ACTION, true, false);
-        $actionAllKeys = (boolean)$this->getDataFromContext(Grid::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED, true, false);
-        $actionKeys = $actionAllKeys == false ? $this->getDataFromContext(MassActionColumn::ID, true, false) : array();
-
-        if ($actionId > -1 && is_array($actionKeys)) {
+        
+        if ($actionId > -1) {
             if (array_key_exists($actionId, $this->massActions)) {
                 $action = $this->massActions[$actionId];
+                $actionAllKeys = (boolean)$this->getDataFromContext(Grid::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED, true, false);
+                $actionKeys = $actionAllKeys == false ? (array) $this->getDataFromContext(MassActionColumn::ID, true, false) : array();
 
                 if (is_callable($action->getCallback())) {
                     call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session, $action->getParameters());
