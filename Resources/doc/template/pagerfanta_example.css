@@ -1,0 +1,32 @@
+nav {
+    text-align: center;
+}
+nav a, nav span {
+    display: inline-block;
+    border: 1px solid blue;
+    color: blue;
+    margin-right: .2em;
+    padding: .25em .35em;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+nav a:hover {
+    background: #ccf;
+}
+
+nav .dots {
+    border-width: 0;
+}
+
+nav .current {
+    background: #ccf;
+    font-weight: bold;
+}
+
+nav .disabled {
+    border-color: #ccf;
+    color: #ccf;
+}

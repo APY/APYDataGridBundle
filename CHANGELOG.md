@@ -1,3 +1,14 @@
+`19 Jun 2012`
+
+ * Add pagerfanta pager + doc
+ * Add a blank column
+ * Allow massaction without selected rows
+ * Fix bug - Reset templates array when you call a grid
+
+`18 Jun 2012`
+
+ * Fix bug - Don't show filters row with only massaction and actions column.
+
 `17 Jun 2012`
 
  * Fix bug - Filterable attribute from a source annotation doesn't work

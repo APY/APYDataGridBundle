@@ -13,6 +13,9 @@
 namespace APY\DataGridBundle\Twig;
 
 use APY\DataGridBundle\Grid\Grid;
+use Pagerfanta\Pagerfanta;
+use Pagerfanta\Adapter\NullAdapter;
+use Pagerfanta\View\DefaultView;
 
 class DataGridExtension extends \Twig_Extension
 {
@@ -84,7 +87,22 @@ class DataGridExtension extends \Twig_Extension
             'grid_no_result'    => new \Twig_Function_Method($this, 'getGridNoResult', array('is_safe' => array('html'))),
             'grid_exports'      => new \Twig_Function_Method($this, 'getGridExports', array('is_safe' => array('html'))),
             'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
+            'grid_pagerfanta'   => new \Twig_Function_Method($this, 'getPagerfanta', array('is_safe' => array('html'))),
         );
+    }
+
+    public function initGird($grid, $theme = null, $id = '', array $params = array())
+    {
+        $this->theme = $theme;
+        $this->templates = array();
+
+        $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
+        $this->params = $params;
+
+        if (!isset($this->gridPrepared[$grid->getHash()]) || $this->gridPrepared[$grid->getHash()] !==true) {
+            $grid->prepare();
+            $this->gridPrepared[$grid->getHash()] = true;
+        }
     }
 
     /**
@@ -97,18 +115,10 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getGrid($grid, $theme = null, $id = '', array $params = array())
     {
-        $this->theme = $theme;
-        $this->templates = array();
+        $this->initGird($grid, $theme, $id, $params);
 
+        // For export
         $grid->setTemplate($theme);
-
-        $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
-        $this->params = $params;
-
-        if (!isset($this->gridPrepared[$grid->getHash()]) || $this->gridPrepared[$grid->getHash()] !==true) {
-            $grid->prepare();
-            $this->gridPrepared[$grid->getHash()] = true;
-        }
 
         return $this->renderBlock('grid', array('grid' => $grid));
     }
@@ -141,22 +151,6 @@ class DataGridExtension extends \Twig_Extension
     public function getGridExports($grid)
     {
         return $this->renderBlock('grid_exports', array('grid' => $grid));
-    }
-
-    public function getGridSearch($grid, $theme = null, $id = '', array $params = array())
-    {
-        $this->theme = $theme;
-        $this->templates = array();
-
-        $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
-        $this->params = $params;
-
-        if (!isset($this->gridPrepared[$grid->getHash()]) || $this->gridPrepared[$grid->getHash()] !==true) {
-            $grid->prepare();
-            $this->gridPrepared[$grid->getHash()] = true;
-        }
-
-        return $this->renderBlock('grid_search', array('grid' => $grid));
     }
 
     /**
@@ -248,6 +242,33 @@ class DataGridExtension extends \Twig_Extension
     public function getGridNoResult($grid)
     {
         return $this->renderBlock('grid_no_result', array('grid' => $grid));
+    }
+
+    public function getGridSearch($grid, $theme = null, $id = '', array $params = array())
+    {
+        $this->initGird($grid, $theme, $id, $params);
+
+        return $this->renderBlock('grid_search', array('grid' => $grid));
+    }
+
+    public function getPagerfanta($grid, $theme = null, $id = '', array $params = array())
+    {
+        $this->initGird($grid, $theme, $id, $params);
+
+        $adapter = new NullAdapter($grid->getTotalCount());
+
+        $pagerfanta = new Pagerfanta($adapter);
+        $pagerfanta->setMaxPerPage($grid->getCurrentLimit());
+        $pagerfanta->setCurrentPage($grid->getPage() + 1);
+
+        $routeGenerator = function($page) use ($grid) {
+            return $this->getGridUrl('page', $grid, $page - 1);
+        };
+
+        $view = new DefaultView();
+        $html = $view->render($pagerfanta, $routeGenerator);
+
+        return $html;
     }
 
     /**

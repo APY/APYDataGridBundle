@@ -29,9 +29,11 @@ And the template
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|
 |grid|APY/DataGridBundle/Grid/Grid||The grid object|
-|theme|string|APYDataGridBundle::blocks.html.twig|Temaplate used to render the grid|
+|theme|string|APYDataGridBundle::blocks.html.twig|Template used to render the filters blocks|
 |id|string|_none_|Set the identifier of the grid.|
 |params|array|array()|Additional parameters passed to each block.|
+
+**Note**: You have to define the same `id` in this function and in the grid function. Same thing with the `param` argument if you use additionnal parameters in the rendering of the filters.
 
 #### Exemple
 

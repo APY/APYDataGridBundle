@@ -27,7 +27,7 @@ And the template
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|
 |grid|APY/DataGridBundle/Grid/Grid||The grid object|
-|theme|string|APYDataGridBundle::blocks.html.twig|Temaplate used to render the grid|
+|theme|string|APYDataGridBundle::blocks.html.twig|Template used to render the grid|
 |id|string|_none_|Set the identifier of the grid.|
 |params|array|array()|Additional parameters passed to each block.|
 
