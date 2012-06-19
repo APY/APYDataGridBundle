@@ -1,5 +1,5 @@
-Define the default page of the grid
-===================================
+Add a non mapped column
+=======================
 
 You can add a empty column to the grid. You can fill it with the row manipulator or in your template.  
 A column must be defined after the source otherwise it will always appear before the columns of the source.
@@ -10,12 +10,12 @@ A column must be defined after the source otherwise it will always appear before
 
 ```php
 <?php
-use APY\DataGridBundle\Grid\Column\TextColumn;
+use APY\DataGridBundle\Grid\Column\BlankColumn;
 ...
 $grid->setSource($source);
 
 // create a column
-$MyColumn = new TextColumn($params);
+$MyColumn = new BlankColumn($params);
 
 // Add the column to the last position
 $grid->addColumn($MyColumn);
@@ -35,19 +35,19 @@ See [column annotations for property](../columns_configuration/annotations/colum
 
 |parameter|Type|Default value|Possible values|Description|
 |:--:|:--|:--|:--|:--|
-|column|instance of Column||TextColumn(), DateColumn(), BooleanColumn...||
+|column|instance of Column||BlankColumn(), TextColumn(), DateColumn(), BooleanColumn...||
 |position|integer|0|position >= 0|0 means last position|
 
 ## Exemple
 
 ```php
 <?php
-use APY\DataGridBundle\Grid\Column\TextColumn;
+use APY\DataGridBundle\Grid\Column\BlankColumn;
 ...
 $grid->setSource($source);
 
 // First parameter : Associative array of parameters (See column annotations for property) 
-$MyColumn = new TextColumn(array('id' => 'My Column', 'title' => 'My Column', 'type' => 'number', 'filter' => 'input', 'size' => '54', 'sortable' => false, 'filterable' => false, 'source' => false));
+$MyColumn = new BlankColumn(array('id' => 'My Column', 'title' => 'My Column', 'type' => 'number', 'size' => '54'));
 
 // Add the column to the last position
 $grid->addColumn($MyColumn);
@@ -56,3 +56,5 @@ $grid->addColumn($MyColumn);
 $grid->addColumn($MyColumn, 3);
 ...
 ```
+
+**Note**: We use a BlankColumn because this type of column is not sortable and not filterable.
