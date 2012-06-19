@@ -1,6 +1,23 @@
 Render a pagerfanta pager
 =========================
 
+##Installation
+
+You have to install the [pagerfanta librairy](https://github.com/whiteoctober/Pagerfanta) in the directory vendor/pagerfanta/.
+
+Then add this new librairy to your autoload.php file.
+
+```php
+<?php
+// app/autoload.php
+$loader->registerNamespaces(array(
+    // ...
+    'APY'              => __DIR__.'/../vendor/bundles',
+    'Pagerfanta'       => __DIR__.'/../vendor/pagerfanta/src',
+    // ...
+));
+``` 
+
 ## Usage
 
 Override the pager block and call the pagerfanta pager

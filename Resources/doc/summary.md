@@ -18,6 +18,7 @@ SUMMARY
 	1. [Filter rendering](template/filter_rendering.md)
 	1. [Overriding internal blocks](template/overriding_internal_blocks.md)
 	1. [Display an external filters box](template/render_external_filters.md)
+	1. [Display a pagerfanta pager](template/render_pagerfanta_pager.md)
 
 1. [Columns Configuration with Annotations](columns_configuration/)
 	1. [Annotations](columns_configuration/annotations/)
