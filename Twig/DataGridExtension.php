@@ -98,6 +98,8 @@ class DataGridExtension extends \Twig_Extension
     public function getGrid($grid, $theme = null, $id = '', array $params = array())
     {
         $this->theme = $theme;
+        $this->templates = array();
+
         $grid->setTemplate($theme);
 
         $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
@@ -144,6 +146,7 @@ class DataGridExtension extends \Twig_Extension
     public function getGridSearch($grid, $theme = null, $id = '', array $params = array())
     {
         $this->theme = $theme;
+        $this->templates = array();
 
         $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
         $this->params = $params;
