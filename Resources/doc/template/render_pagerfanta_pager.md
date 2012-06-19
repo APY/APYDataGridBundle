@@ -3,7 +3,7 @@ Render a pagerfanta pager
 
 ##Installation
 
-You have to install the [pagerfanta librairy](https://github.com/whiteoctober/Pagerfanta) in the directory vendor/pagerfanta/.
+You have to install the [pagerfanta librairy](https://github.com/whiteoctober/Pagerfanta) in the directory `vendor/pagerfanta/`.
 
 Then add this new librairy to your autoload.php file.
 
@@ -52,7 +52,7 @@ And the template
 
 ## Exemple of css associated with this pager (from [Pagerfanta Github page](https://github.com/whiteoctober/Pagerfanta))
 
-![Pagerfanta screenshot](../images/pagerfanta.png)
+![Pagerfanta screenshot](../images/pagerfanta.png?raw=true)
 
 ```css
 nav {
