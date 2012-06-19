@@ -6,24 +6,24 @@ UPGRADE FROM S0RIENDataGridBundle(1.0) to APYDataGridBundle(2.0)
 The DataGridBundle has moved from the S0RIEN repository to the Abhoryo repository and his organisation APY.
 Therefore you should change the namespace of this bundle in your AppKernel.php:
 
-Before: `new APY\DataGridBundle\APYDataGridBundle()`  
+Before: `new Sorien\DataGridBundle\SorienDataGridBundle()`  
 After: `new APY\DataGridBundle\APYDataGridBundle()`
 
 And in autoload.php
 
-Before: `'APY' => __DIR__.'/../vendor/bundles',`  
+Before: `'Sorien' => __DIR__.'/../vendor/bundles',`  
 After: `'APY' => __DIR__.'/../vendor/bundles',`
 
 Then in your files change all your `APY` use statements to `APY`
 
 Change your include block template.
 
-Before: `APYDataGridBundle::blocks.html.twig`  
+Before: `SorienDataGridBundle::blocks.html.twig`  
 After: `'APYDataGridBundle::blocks.html.twig`
 
 Example:
 
-Before: `use APY\DataGridBundle\Grid\Source\Entity;`  
+Before: `use Sorien\DataGridBundle\Grid\Source\Entity;`  
 After: `use APY\DataGridBundle\Grid\Source\Entity;`
 
 You call safely replace all `Sorien` occurences by `APY`.
