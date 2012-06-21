@@ -128,6 +128,7 @@ class Entity extends Source
                 $this->joins['_' . $element] = $parent . '.' . $element;
                 $previousParent = $parent;
                 $parent = '_' . $element;
+                $name = $element;
             } else {
                 $name .= '.'.$element;
             }
