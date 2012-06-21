@@ -196,6 +196,10 @@ class Grid
         unset($this->routeParameters['_route']);
         unset($this->routeParameters['_controller']);
         unset($this->routeParameters['_route_params']);
+        unset($this->routeParameters['_template']);
+        unset($this->routeParameters['_template_default_vars']);
+        unset($this->routeParameters['_template_streamable']);
+        unset($this->routeParameters['_template_vars']);
 
         if (!is_null($source)) {
             $this->setSource($source);
@@ -228,7 +232,7 @@ class Grid
         $this->createHash();
 
         // Persistence or reset - kill previous session
-        if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $this->request->headers->get('referer') != $this->request->getUriForPath($this->request->getPathInfo()))
+        if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $this->request->headers->get('referer') != $this->request->getUri())
          || !is_null($this->getDataFromContext(self::REQUEST_QUERY_RESET, true, false))) {
             $this->session->remove($this->getHash());
         }
