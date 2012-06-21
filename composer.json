@@ -23,9 +23,9 @@
         "symfony/framework-bundle": ">=2.0.0"
     },
     "suggest": {
-        "ext-intl": "*",
-        "ext-mbstring": "*",
-        "PHPExcel": "*"
+        "ext-intl": "Translate the grid",
+        "ext-mbstring": "Convert your data with the right charset",
+        "PHPExcel": "Export the grid (Excel, HTML or PDF)"
     },
     "autoload": {
         "psr-0": { "APY\\DataGridBundle": "" }
