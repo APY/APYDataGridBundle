@@ -2,7 +2,7 @@
     "name": "apy/datagrid-bundle",
     "type": "symfony-bundle",
     "description": "Symfony2 Datagrid Bundle",
-    "keywords": ["datagrid"],
+    "keywords": ["Symfony", "datagrid"],
     "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
     "authors": [
         {
