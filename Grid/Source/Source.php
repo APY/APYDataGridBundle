@@ -164,7 +164,7 @@ abstract class Source implements DriverInterface
      */
     public function isDataLoaded()
     {
-        return !is_null($this->data);
+        return $this->data !== null;
     }
 
     /**
@@ -386,7 +386,9 @@ abstract class Source implements DriverInterface
             foreach ($item as $fieldName => $fieldValue) {
                 if ($this instanceof Entity) {
                     if (in_array($fieldName, $serializeColumns)) {
-                        $fieldValue = unserialize($fieldValue);
+                        if (is_string($fieldValue)) {
+                            $fieldValue = unserialize($fieldValue);
+                        }
                     }
                 }
 

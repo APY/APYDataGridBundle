@@ -322,7 +322,7 @@ class Entity extends Source
             foreach ($item as $key => $value) {
                 $key = str_replace('::', '.', $key);
 
-                if (in_array($key, $serializeColumns)) {
+                if (in_array($key, $serializeColumns) && is_string($value)) {
                     $value = unserialize($value);
                 }
 
@@ -449,7 +449,10 @@ class Entity extends Source
 
                     switch ($column->getType()) {
                         case 'array':
-                            foreach (unserialize($value) as $val) {
+                            if (is_string($value)) {
+                                $value = unserialize($value);
+                            }
+                            foreach ($value as $val) {
                                 $values[$val] = $val;
                             }
                             break;
