@@ -5,13 +5,13 @@
     "keywords": ["Symfony", "datagrid"],
     "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
     "authors": [
+	    {
+            "name": "Yoann Petit",
+            "email": "abhoryo@free.fr"
+        },
         {
             "name": "Stanislav Turza",
             "email": "stanislav.turza@gmail.com"
-        },
-        {
-            "name": "Yoann Petit",
-            "email": "abhoryo@free.fr"
         },
         {
             "name": "Evan Owens",

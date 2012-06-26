@@ -45,7 +45,7 @@ class GridManager implements \IteratorAggregate, \Countable
         $grid = $this->container->get('grid');
 
         // Route url is the same for all grids
-        if (is_null($this->routeUrl)) {
+        if ($this->routeUrl === null) {
             $this->routeUrl = $grid->getRouteUrl();
         }
 
@@ -62,9 +62,14 @@ class GridManager implements \IteratorAggregate, \Countable
 
         $checkHash = array();
 
+        $isReadyForRedirect = false;
         $this->grids->rewind();
         while($this->grids->valid()) {
             $grid = $this->grids->current();
+
+            if ($grid->isReadyForRedirect()) {
+                $isReadyForRedirect = true;
+            }
 
             if (in_array($grid->getHash(), $checkHash)) {
                 throw new \RuntimeException('Some grids seem similar. Please set an Indentifier for your grids.');
@@ -72,14 +77,10 @@ class GridManager implements \IteratorAggregate, \Countable
 
             $checkHash[] = $grid->getHash();
 
-            if ($grid->isReadyForRedirect()) {
-                return true;
-            }
-
             $this->grids->next();
         }
 
-        return false;
+        return $isReadyForRedirect;
     }
 
     public function isReadyForExport()
@@ -146,7 +147,7 @@ class GridManager implements \IteratorAggregate, \Countable
                 $i++;
             }
 
-            if (is_null($view)) {
+            if ($view === null) {
                 return $parameters;
             }
 

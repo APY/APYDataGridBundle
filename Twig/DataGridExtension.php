@@ -47,11 +47,6 @@ class DataGridExtension extends \Twig_Extension
     protected $names;
 
     /**
-     * @var array Array of booleans
-     */
-    protected $gridPrepared = array();
-
-    /**
      * @var array
      */
     protected $params = array();
@@ -98,11 +93,6 @@ class DataGridExtension extends \Twig_Extension
 
         $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
         $this->params = $params;
-
-        if (!isset($this->gridPrepared[$grid->getHash()]) || $this->gridPrepared[$grid->getHash()] !==true) {
-            $grid->prepare();
-            $this->gridPrepared[$grid->getHash()] = true;
-        }
     }
 
     /**
@@ -258,7 +248,7 @@ class DataGridExtension extends \Twig_Extension
         $adapter = new NullAdapter($grid->getTotalCount());
 
         $pagerfanta = new Pagerfanta($adapter);
-        $pagerfanta->setMaxPerPage($grid->getCurrentLimit());
+        $pagerfanta->setMaxPerPage($grid->getLimit());
         $pagerfanta->setCurrentPage($grid->getPage() + 1);
 
         $routeGenerator = function($page) use ($grid) {
@@ -320,7 +310,7 @@ class DataGridExtension extends \Twig_Extension
                 $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
             } elseif (is_string($this->theme)) {
                 $this->templates = $this->getTemplatesFromString($this->theme);
-            } elseif (is_null($this->theme)) {
+            } elseif ($this->theme === null) {
                 $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
             } else {
                 throw new \Exception('Unable to load template');

@@ -131,7 +131,7 @@
     {{ ', Display'|trans }}
     <select onchange="window.location.href='{{ grid_url('limit', grid) }}'+this.value">
     {% for key, value in grid.limits %}
-        <option value="{{ key }}"{% if (key == grid.currentlimit) %} selected="selected"{% endif %}>{{ value }}</option>
+        <option value="{{ key }}"{% if (key == grid.limit) %} selected="selected"{% endif %}>{{ value }}</option>
     {% endfor %}
     </select> {{ 'Items per page'|trans }}
 </div>

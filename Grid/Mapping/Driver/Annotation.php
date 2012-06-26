@@ -97,7 +97,7 @@ class Annotation implements DriverInterface
                 throw new \Exception(sprintf('Parameter `id` can\'t be used in annotations for property `%s`, please remove it from class %s', $name, $className));
             }
 
-            if (is_null($name)) {
+            if ($name === null) {
                 if (isset($metadata['id'])) {
                     $this->fields[$className][$group][$metadata['id']]['source'] = false;
                 } else {
