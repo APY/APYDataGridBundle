@@ -7,6 +7,7 @@ Vector source
  * [Create a Vector without data](#nodata)
  * [Set a primary field](#set_id)
  * [Columns configuration](#columns_configuration)
+ * [How the type of each column is guessed ?](#guess)
 
 <a name="about"/>
 ## About the Vector source
@@ -72,7 +73,7 @@ It uses the keys of your array to determine the name of the columns. In our case
 The columns can be filtered and ordered.
 
 **Note**: Each column have to be defined for each row.
-**Note²**: Operators `Equals` and `Contains` support regular expression.
+**NoteÂ²**: Operators `Equals` and `Contains` support regular expression.
 
 <a name="nodata"/>
 ## Create a Vector without data
@@ -181,6 +182,7 @@ return $grid->getGridResponse();
 ...
 ```
 
+<a name="columns_configuration_2"/>
 You can also do that using an array of Column:
 ```php
 <?php
@@ -201,6 +203,14 @@ return $grid->getGridResponse();
 ...
 ```
 
+<a name="guess"/>
+## How the type of each column is guessed ?
+When we use a Vector source, the type of each column composing our grid will be guessed. Here is how it works:
+- if we only have data, the type is guessed parsing the 10 first lines of our data.
+- if we have data and an array of Column (see [here](#columns_configuration_2)), the type is guessed parsing the 10 first lines of our data, when the column is not in our array of Column.
+- if we only have an array of Column, we only use this array to return columns
+
+
 ## Missing features
 
 * Mapped fields
@@ -211,4 +221,3 @@ return $grid->getGridResponse();
 ## Unapplicable features
 
 * Groups annnotation
-
