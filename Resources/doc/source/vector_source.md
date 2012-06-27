@@ -4,8 +4,10 @@ Vector source
 # Summary
  * [About the Vector source](#about)
  * [Create a Vector](#usage)
+ * [Create a Vector without data](#nodata)
  * [Set a primary field](#set_id)
  * [Columns configuration](#columns_configuration)
+ * [How the type of each column is guessed ?](#guess)
 
 <a name="about"/>
 ## About the Vector source
@@ -66,18 +68,41 @@ return $grid->getGridResponse();
 ...
 ```
 
-The Vector source treats this array and iterates the 10 first rows to guess the type of each columns.  
-It uses the keys of your array to determine the name of the columns. In our case the columns will be: `id`, `publisher_id`, `title`, `authors`, `publication`, `createDate`, `pages` and `multilanguage`.  
+The Vector source treats this array and iterates the 10 first rows to guess the type of each columns.
+It uses the keys of your array to determine the name of the columns. In our case the columns will be: `id`, `publisher_id`, `title`, `authors`, `publication`, `createDate`, `pages` and `multilanguage`.
 The columns can be filtered and ordered.
 
 **Note**: Each column have to be defined for each row.
-**Note²**: Operators `Equals` and `Contains` support regular expression.
+**NoteÂ²**: Operators `Equals` and `Contains` support regular expression.
+
+<a name="nodata"/>
+## Create a Vector without data
+
+In some cases, you want to render a grid without data (With the message No results). To do that you have to pass an array of Column when you instantiate your Vector.
+```php
+<?php
+use APY\DataGridBundle\Grid\Column;
+...
+$columns = array(
+    new Column\NumberColumn(array('id' => 'id', 'primary' => true, 'title' => 'id')),
+    new Column\NumberColumn(array('id' => 'publisher_id', 'title' => 'Publication id')),
+    new Column\TextColumn(array('id' => 'title', 'title' => 'Title')),
+    new Column\ArrayColumn(array('id' => 'authors', 'title' => 'Authors')),
+    new Column\DateColumn(array('id' => 'publication', 'title' => 'Publication Date', 'format' => 'd/m/Y')),
+    new Column\DateTimeColumn(array('id' => 'createDate', 'title' => 'Creation Date', 'format' => 'd/m/Y H:i:s')),
+    new Column\NumberColumn(array('id' => 'pages', 'title' => 'Number of pages')),
+    new Column\BooleanColumn(array('id' => 'multilanguage', 'title' => 'Multilanguage')),
+);
+
+$source = new Vector(array(), $columns);
+...
+```
 
 <a name="set_id"/>
 ## Set a primary field
 
-Vector will use the first "column" found as the Primary Field of your grid.  
-In our case it will be the column named "id". If you are using action columns, they will use this primary field.  
+Vector will use the first "column" found as the Primary Field of your grid.
+In our case it will be the column named "id". If you are using action columns, they will use this primary field.
 If you want to use a specific column or set columns as the primary field, use Vector::setId($id).
 
 In our exemple we could map our actions on the publisher_id.
@@ -86,7 +111,7 @@ In our exemple we could map our actions on the publisher_id.
 <?php
 ...
     $source = new Vector($books);
-    
+
     $source->setId('publisher_id');
 ...
 ```
@@ -157,14 +182,42 @@ return $grid->getGridResponse();
 ...
 ```
 
+<a name="columns_configuration_2"/>
+You can also do that using an array of Column:
+```php
+<?php
+use APY\DataGridBundle\Grid\Column;
+...
+$columns = array(
+    new Column\NumberColumn(array('id' => 'id', 'filterable' => true))
+    new Column\ArrayColumn(array('id' => 'authors', 'filter' => 'select', 'selectFrom' => 'query', 'sortable' => false))
+);
+
+$source = new Vector($books, $columns);
+
+$grid = $this->get('grid');
+
+$grid->setSource($source);
+
+return $grid->getGridResponse();
+...
+```
+
+<a name="guess"/>
+## How the type of each column is guessed ?
+When we use a Vector source, the type of each column composing our grid will be guessed. Here is how it works:
+- if we only have data, the type is guessed parsing the 10 first lines of our data.
+- if we have data and an array of Column (see [here](#columns_configuration_2)), the type is guessed parsing the 10 first lines of our data, when the column is not in our array of Column.
+- if we only have an array of Column, we only use this array to return columns
+
+
 ## Missing features
 
 * Mapped fields
 * GroupBy
 * Aggregate DQL functions
-* Change type of a column
+* <del>Change type of a column</del>
 
 ## Unapplicable features
 
 * Groups annnotation
-

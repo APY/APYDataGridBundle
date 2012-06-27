@@ -23,17 +23,7 @@ class Vector extends Source
     /**
      * @var array
      */
-    protected $fieldNames;
-
-    /**
-     * @var array
-     */
-    protected $fieldType;
-
-    /**
-     * @var array
-     */
-    protected $data;
+    protected $data = array();
 
     /**
      * either a column name as a string
@@ -42,34 +32,69 @@ class Vector extends Source
      */
     protected $id = null;
 
-    protected $items = array();
+    /**
+     * Array of columns
+     * @var Column[]
+     */
+    protected $columns;
 
     /**
      * Creates the Vector and sets its data
-     * @param array $array
+     * @param array $data
      */
-    public function __construct(array $array)
+    public function __construct(array $data, array $columns = array())
     {
-        $this->setData($array);
+        if (!empty($data)) {
+            $this->setData($data);
+        }
+
+        $this->setColumns($columns);
     }
 
     public function initialise($container)
     {
-        $this->fieldNames = array_keys(reset($this->data));
-        $this->guessColumnsType();
+        if (!empty($this->data)) {
+            $this->guessColumns();
+        }
     }
 
-    protected function guessColumnsType()
+    protected function guessColumns()
     {
+        $columns = array();
+        $dataColumnIds = array_keys(reset($this->data));
+
+        foreach ($dataColumnIds as $id) {
+            if (!$this->hasColumn($id)) {
+                $params = array(
+                    'id' => $id,
+                    'title' => $id,
+                    'source' => true,
+                    'filterable' => true,
+                    'sortable' => true,
+                    'visible' => true,
+                    'field' => $id,
+                );
+                $columns[] = new Column\UntypedColumn($params);
+            } else {
+                $columns[] = $this->getColumn($id);
+            }
+        }
+
+        $this->setColumns($columns);
+
         // Guess on the first 10 rows only
         $iteration = min(10, count($this->data));
 
-        foreach ($this->fieldNames as $fieldName) {
+        foreach ($this->columns as $c) {
+            if (!$c instanceof Column\UntypedColumn) {
+                continue;
+            }
+
             $i = 0;
             $fieldTypes = array();
 
             foreach ($this->data as $row) {
-                $fieldValue = $row[$fieldName];
+                $fieldValue = $row[$c->getId()];
 
                 if ($fieldValue !== '' && $fieldValue !== null) {
                     if (is_array($fieldValue)) {
@@ -81,7 +106,7 @@ class Vector extends Source
                         } else {
                             $fieldTypes['datetime'] = 1;
                         }
-                    } elseif ($fieldValue === true || $fieldValue === false || $fieldValue == 1 || $fieldValue == 0) {
+                    } elseif (true === $fieldValue || false === $fieldValue || 1 === $fieldValue || 0 === $fieldValue || '1' === $fieldValue || '0' === $fieldValue) {
                         $fieldTypes['boolean'] = 1;
                     } elseif (is_numeric($fieldValue)) {
                         $fieldTypes['number'] = 1;
@@ -96,15 +121,13 @@ class Vector extends Source
             }
 
             if(count($fieldTypes) == 1) {
-                $this->fieldType[$fieldName] = key($fieldTypes);
-            } elseif (count($fieldTypes) == 2) {
-                if (isset($fieldTypes['boolean']) && isset($fieldTypes['number'])) {
-                    $this->fieldType[$fieldName] = 'number';
-                } elseif (isset($fieldTypes['date']) && isset($fieldTypes['datetime'])) {
-                    $this->fieldType[$fieldName] = 'datetime';
-                }
+                $c->setType(key($fieldTypes));
+            } elseif (isset($fieldTypes['boolean']) && isset($fieldTypes['number'])) {
+                $c->setType('number');
+            } elseif (isset($fieldTypes['date']) && isset($fieldTypes['datetime'])) {
+                $c->setType('datetime');
             } else {
-                $this->fieldType[$fieldName] = 'text';
+                $c->setType('text');
             }
         }
     }
@@ -116,37 +139,36 @@ class Vector extends Source
     public function getColumns($columns)
     {
         $token = empty($this->id); //makes the first column primary by default
-        foreach ($this->fieldNames as $fieldName) {
-            $params = array(
-                'id' => $fieldName,
-                'title' => $fieldName,
-                'primary' => (is_array($this->id) && in_array($fieldName, $this->id)) || $fieldName == $this->id || $token,
-                'source' => true,
-                'filterable' => true,
-                'sortable' => true,
-                'visible' => true,
-                'field' => $fieldName,
-            );
 
-            switch ($this->fieldType[$fieldName]) {
-                case 'text':
-                    $column = new Column\TextColumn($params);
-                    break;
-                case 'date':
-                    $column = new Column\DateColumn($params);
-                    break;
-                case 'datetime':
-                    $column = new Column\DateTimeColumn($params);
-                    break;
-                case 'boolean':
-                    $column = new Column\BooleanColumn($params);
-                    break;
-                case 'number':
-                    $column = new Column\NumberColumn($params);
-                    break;
-                case 'array':
-                    $column = new Column\ArrayColumn($params);
-                    break;
+        foreach ($this->columns as $c) {
+            if ($c instanceof Column\UntypedColumn) {
+                switch ($c->getType()) {
+                    case 'date':
+                        $column = new Column\DateColumn($c->getParams());
+                        break;
+                    case 'datetime':
+                        $column = new Column\DateTimeColumn($c->getParams());
+                        break;
+                    case 'boolean':
+                        $column = new Column\BooleanColumn($c->getParams());
+                        break;
+                    case 'number':
+                        $column = new Column\NumberColumn($c->getParams());
+                        break;
+                    case 'array':
+                        $column = new Column\ArrayColumn($c->getParams());
+                        break;
+                    case 'text':
+                    default:
+                        $column = new Column\TextColumn($c->getParams());
+                        break;
+                }
+            } else {
+                $column = $c;
+            }
+
+            if (!$column->isPrimary()) {
+                $column->setPrimary((is_array($this->id) && in_array($column->getId(), $this->id)) || $column->getId() == $this->id || $token);
             }
 
             $columns->addColumn($column);
@@ -178,7 +200,7 @@ class Vector extends Source
 
     public function getHash()
     {
-        return __CLASS__.md5(implode('', $this->fieldNames));
+        return __CLASS__.md5(implode('', array_map(function($c) { return $c->getId(); } , $this->columns)));
     }
 
     /**
@@ -215,4 +237,29 @@ class Vector extends Source
     }
 
     public function delete(array $ids){}
+
+    protected function setColumns($columns)
+    {
+        $this->columns = $columns;
+    }
+
+    protected function hasColumn($id)
+    {
+        foreach ($this->columns as $c) {
+            if ($id === $c->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function getColumn($id)
+    {
+        foreach ($this->columns as $c) {
+            if ($id === $c->getId()) {
+                return $c;
+            }
+        }
+    }
 }
