@@ -141,10 +141,6 @@ class Vector extends Source
         $token = empty($this->id); //makes the first column primary by default
 
         foreach ($this->columns as $c) {
-            if (!$c->isPrimary()) {
-                $c->setPrimary((is_array($this->id) && in_array($c->getId(), $this->id)) || $c->getId() == $this->id || $token);
-            }
-
             if ($c instanceof Column\UntypedColumn) {
                 switch ($c->getType()) {
                     case 'date':
@@ -169,6 +165,10 @@ class Vector extends Source
                 }
             } else {
                 $column = $c;
+            }
+
+            if (!$column->isPrimary()) {
+                $column->setPrimary((is_array($this->id) && in_array($column->getId(), $this->id)) || $column->getId() == $this->id || $token);
             }
 
             $columns->addColumn($column);
