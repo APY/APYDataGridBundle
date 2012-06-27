@@ -189,7 +189,7 @@
 {% endblock grid_column_massaction_cell %}
 {# ------------------------------------------------ grid_column_boolean_cell --------------------------------------------- #}
 {% block grid_column_boolean_cell %}
-    {% set val = value is sameas(false) ? false : value %}
+    {% set val = value is sameas(false) ? 'false' : value %}
     <span class="grid_boolean_{{ val }}" title="{{ val }}">{{ val }}</span>
 {% endblock grid_column_boolean_cell %}
 {# ------------------------------------------------ grid_array_columns --------------------------------------------- #}
