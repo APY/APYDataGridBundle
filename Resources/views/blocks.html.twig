@@ -260,8 +260,6 @@ function {{ grid.hash }}_mark_all(select)
 
     return false;
 }
-
-
 </script>
 {% endblock grid_scripts %}
 {# ------------------------------------------- grid_scripts_operator ------------------------------------------------- #}
@@ -273,24 +271,22 @@ function {{ grid.hash }}_mark_all(select)
 <script type="text/javascript">
 function {{ grid.hash }}_switchOperator(elt, query_)
 {
-    if ((elt.options[elt.selectedIndex].value == '{{ btwOperator }}')
-     || (elt.options[elt.selectedIndex].value == '{{ btweOperator }}')) {
-            document.getElementById(query_+'from').style.display = '';
+    if ((elt.options[elt.selectedIndex].value == '{{ btwOperator }}') || (elt.options[elt.selectedIndex].value == '{{ btweOperator }}')) {
+        document.getElementById(query_+'from').style.display = '';
         document.getElementById(query_+'from').disabled=false;
         document.getElementById(query_+'to').style.display = '';
         document.getElementById(query_+'to').disabled=false;
-    } else if ((elt.options[elt.selectedIndex].value == '{{ isNullOperator }}')
-     || (elt.options[elt.selectedIndex].value == '{{ isNotNullOperator }}')) {
-            document.getElementById(query_+'from').style.display = 'none';
+    } else if ((elt.options[elt.selectedIndex].value == '{{ isNullOperator }}') || (elt.options[elt.selectedIndex].value == '{{ isNotNullOperator }}')) {
+        document.getElementById(query_+'from').style.display = 'none';
         document.getElementById(query_+'from').disabled=true;
         document.getElementById(query_+'to').style.display = 'none';
         document.getElementById(query_+'to').disabled=true;
-            elt.form.submit();
+        elt.form.submit();
     } else {
-            document.getElementById(query_+'from').style.display = '';
+        document.getElementById(query_+'from').style.display = '';
         document.getElementById(query_+'from').disabled=false;
-            document.getElementById(query_+'to').style.display = 'none';
-            document.getElementById(query_+'to').disabled=true;
+        document.getElementById(query_+'to').style.display = 'none';
+        document.getElementById(query_+'to').disabled=true;
     }
 }
 </script>
