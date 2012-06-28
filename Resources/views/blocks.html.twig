@@ -121,21 +121,33 @@
 {# ---------------------------------------------------- grid_pager -------------------------------------------------- #}
 {% block grid_pager %}
 <div class="pager" style="float:left">
-    {{ '%count% Results, '|trans({ '%count%' : grid.totalCount }) }}
+    {{ block('grid_pager_totalcount') }}
+    {{ block('grid_pager_selectpage') }}
+    {{ block('grid_pager_results_perpage') }}
+</div>
+{% endblock grid_pager %}
+{# ---------------------------------------------------- grid_pager_totalcount -------------------------------------------------- #}
+{% block grid_pager_totalcount %}
+    {{ '%count% Results, ' | trans({ '%count%' : grid.totalCount }) }}
+{% endblock grid_pager_totalcount %}
+{# ---------------------------------------------------- grid_pager_selectpage -------------------------------------------------- #}
+{% block grid_pager_selectpage %}
     {{ 'Page'|trans }}
     {% spaceless %}
     <input type="button" class="prev" {% if grid.page <= 0 %}disabled="disabled"{% endif %} value="<" onclick="window.location.href='{{ grid_url('page', grid, grid.page-1) }}'; return false;"/>
     <input type="text" value="{{ grid.page + 1 }}" size="2" onkeypress="if (event.which == 13) { window.location.href='{{ grid_url('page', grid) }}'+(parseInt(this.value)-1); return false; }"/>
     <input type="button" value=">" class="next" {% if grid.page >= grid.pageCount-1 %}disabled="disabled"{% endif %} onclick="window.location.href='{{ grid_url('page', grid, grid.page + 1) }}'; return false;"/> {{ 'of %count%'|trans({ '%count%' : grid.pageCount }) }}
     {% endspaceless %}
+{% endblock grid_pager_selectpage %}
+{# ---------------------------------------------------- grid_pager_results_perpage -------------------------------------------------- #}
+{% block grid_pager_results_perpage %}
     {{ ', Display'|trans }}
     <select onchange="window.location.href='{{ grid_url('limit', grid) }}'+this.value">
     {% for key, value in grid.limits %}
         <option value="{{ key }}"{% if (key == grid.limit) %} selected="selected"{% endif %}>{{ value }}</option>
     {% endfor %}
     </select> {{ 'Items per page'|trans }}
-</div>
-{% endblock grid_pager %}
+{% endblock grid_pager_results_perpage %}
 {# --------------------------------------------------- grid_actions ------------------------------------------------- #}
 {% block grid_actions %}
 <div class="mass-actions">
@@ -261,25 +273,25 @@ function {{ grid.hash }}_mark_all(select)
 <script type="text/javascript">
 function {{ grid.hash }}_switchOperator(elt, query_)
 {
-	if ((elt.options[elt.selectedIndex].value == '{{ btwOperator }}')
-	 || (elt.options[elt.selectedIndex].value == '{{ btweOperator }}')) {
+    if ((elt.options[elt.selectedIndex].value == '{{ btwOperator }}')
+     || (elt.options[elt.selectedIndex].value == '{{ btweOperator }}')) {
             document.getElementById(query_+'from').style.display = '';
-	    document.getElementById(query_+'from').disabled=false;
-	    document.getElementById(query_+'to').style.display = '';
-	    document.getElementById(query_+'to').disabled=false;
-	} else if ((elt.options[elt.selectedIndex].value == '{{ isNullOperator }}')
-	 || (elt.options[elt.selectedIndex].value == '{{ isNotNullOperator }}')) {
+        document.getElementById(query_+'from').disabled=false;
+        document.getElementById(query_+'to').style.display = '';
+        document.getElementById(query_+'to').disabled=false;
+    } else if ((elt.options[elt.selectedIndex].value == '{{ isNullOperator }}')
+     || (elt.options[elt.selectedIndex].value == '{{ isNotNullOperator }}')) {
             document.getElementById(query_+'from').style.display = 'none';
-	    document.getElementById(query_+'from').disabled=true;
-	    document.getElementById(query_+'to').style.display = 'none';
-	    document.getElementById(query_+'to').disabled=true;
+        document.getElementById(query_+'from').disabled=true;
+        document.getElementById(query_+'to').style.display = 'none';
+        document.getElementById(query_+'to').disabled=true;
             elt.form.submit();
-	} else {
+    } else {
             document.getElementById(query_+'from').style.display = '';
-	    document.getElementById(query_+'from').disabled=false;
+        document.getElementById(query_+'from').disabled=false;
             document.getElementById(query_+'to').style.display = 'none';
             document.getElementById(query_+'to').disabled=true;
-	}
+    }
 }
 </script>
 {% endblock grid_scripts_operator %}
