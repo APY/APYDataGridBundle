@@ -325,8 +325,10 @@ class Grid
 
     protected function processPersistence()
     {
+        $referer = strtok($this->request->headers->get('referer'), '?');
+
         // Persistence or reset - kill previous session
-        if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $this->request->headers->get('referer') != $this->request->getUri())
+        if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $referer != $this->request->getUriForPath($this->request->getPathInfo()))
          || isset($this->requestData[self::REQUEST_QUERY_RESET])) {
             $this->session->remove($this->hash);
         }
