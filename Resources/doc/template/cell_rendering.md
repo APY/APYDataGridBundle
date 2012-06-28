@@ -41,7 +41,7 @@ grid(grid, 'MyProjectMyBundle::my_grid_template.html.twig')
 {% extends 'APYDataGridBundle::blocks.html.twig' %}
 
 {% block grid_column_text_cell %}
-<a href="?{{ hash }}[{{ column.id }}][from]={{ value }}">{{ value }}</a>
+<a href="?{{ grid.hash }}[{{ column.id }}][from]={{ value }}">{{ value }}</a>
 {% endblock grid_column_text_cell %}
 ```
 
