@@ -104,7 +104,6 @@ abstract class Export implements ContainerAwareInterface
             'Content-Type' => $this->getMimeType(),
             'Content-Disposition' => sprintf('attachment; filename="%s"', $this->getBaseName()),
             'Content-Transfer-Encoding' => 'binary',
-            'Expires' => '0',
             'Cache-Control' => 'must-revalidate',
             'Pragma' => 'public',
             'Content-Length' => $filesize
@@ -112,6 +111,7 @@ abstract class Export implements ContainerAwareInterface
 
         $response = new Response($this->content, 200, $headers);
         $response->setCharset($this->charset);
+        $response->expire();
 
         return $response;
     }
