@@ -23,6 +23,10 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('limits')
+                    ->beforeNormalization()
+                        ->ifTrue(function($v) { return !is_array($v); })
+                        ->then(function($v) { return array($v); })
+                    ->end()
                     ->defaultValue(array(20 => '20', 50 => '50', 100 => '100'))
                     ->prototype('scalar')->end()
                 ->end()

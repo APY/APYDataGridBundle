@@ -6,6 +6,16 @@ Define the selector of the number of items per page
 apy_data_grid
     limits: {5: 'five', 10: 'ten', 15: 'fifteen'}
 ```
+Or
+```yml
+apy_data_grid
+    limits: [5, 10, 15]
+```
+Or
+```yml
+apy_data_grid
+    limits: 5
+```
 
 ## Exemple
 ```php
