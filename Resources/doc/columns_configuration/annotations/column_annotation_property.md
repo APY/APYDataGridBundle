@@ -50,6 +50,8 @@ class Product
 |filterable|boolean|true|true or false|Sets the possibility of filtering of the column|
 |visible|boolean|true|true or false|Sets the visibilty of the column|
 |operatorsVisible|boolean|true|true or false|Sets the visibilty of the operators filter|
+|operators|array|operators of the column|See [operators](../types/text_column.md#available_operators)|Sets the operators of the column|
+|defaultOperator|string|default operator of the column|See [operators](../types/text_column.md#available_operators)|Sets the default operator of the column|
 |primary|boolean|false|true or false|Sets the primary key of the source|
 |align|string|left|left, right or center|Sets the text alignment with a CSS class|
 |inputType|string|text|See [HTML5 input types](http://w3schools.com/html5/html5_form_input_types.asp)|Sets the type of the input filter field|
@@ -58,5 +60,6 @@ class Product
 |selectFrom|string|query|query, source, values|How to populate the selector of the select filters of the column.|
 |values|array|_none_||For select filters or replace values in the grid|
 
-**Note**: Every attribute have a setter and a getter method.  
-**Note²**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.
+**Note 1**: Every attribute have a setter and a getter method.  
+**Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.
+**Note 2**: If operators are not visible, filtering is performed with the default operator.
