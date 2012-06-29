@@ -86,7 +86,7 @@ class Vector extends Source
         $iteration = min(10, count($this->data));
 
         foreach ($this->columns as $c) {
-            if (!$c instanceof Column\UntypedColumn) {
+            if (!$c instanceof Column\UntypedColumn || ($c instanceof Column\UntypedColumn && null === $c->getType())) {
                 continue;
             }
 
@@ -106,7 +106,7 @@ class Vector extends Source
                         } else {
                             $fieldTypes['datetime'] = 1;
                         }
-                    } elseif (true === $fieldValue || false === $fieldValue || 1 === $fieldValue || 0 === $fieldValue || '1' === $fieldValue || '0' === $fieldValue) {
+                    } elseif (true === $fieldValue || false === $fieldValue) {
                         $fieldTypes['boolean'] = 1;
                     } elseif (is_numeric($fieldValue)) {
                         $fieldTypes['number'] = 1;
@@ -122,8 +122,6 @@ class Vector extends Source
 
             if(count($fieldTypes) == 1) {
                 $c->setType(key($fieldTypes));
-            } elseif (isset($fieldTypes['boolean']) && isset($fieldTypes['number'])) {
-                $c->setType('number');
             } elseif (isset($fieldTypes['date']) && isset($fieldTypes['datetime'])) {
                 $c->setType('datetime');
             } else {
