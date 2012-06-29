@@ -233,7 +233,7 @@ abstract class Export implements ContainerAwareInterface
 
     protected function getFlatRawGridData($grid)
     {
-        $$data = $this->getRawGridData($grid);
+        $data = $this->getRawGridData($grid);
 
         $flatData = array();
         if (isset($data['titles'])) {
