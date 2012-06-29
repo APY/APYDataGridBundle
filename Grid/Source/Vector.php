@@ -99,7 +99,7 @@ class Vector extends Source
                 if ($fieldValue !== '' && $fieldValue !== null) {
                     if (is_array($fieldValue)) {
                         $fieldTypes['array'] = 1;
-                    } elseif (strtotime($fieldValue) !== false) {
+                    } elseif (strlen($fieldValue) >= 3 && strtotime($fieldValue) !== false) {
                         $dt = new \DateTime($fieldValue);
                         if ($dt->format('His') === '000000') {
                             $fieldTypes['date'] = 1;
