@@ -1,6 +1,12 @@
 Define the selector of the number of items per page
 ===================================================
 
+## Set default limits in your config.yml
+```yml
+apy_data_grid
+    limits: {5: 'five', 10: 'ten', 15: 'fifteen'}
+```
+
 ## Exemple
 ```php
 <?php
