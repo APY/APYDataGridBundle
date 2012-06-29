@@ -6,6 +6,8 @@ Set max results
 ```php
 <?php
 ...
+$grid->setSource($source);
+
 $grid->setMaxResults($maxResults);
 ...
 ```
@@ -21,6 +23,8 @@ $grid->setMaxResults($maxResults);
 ```php
 <?php
 ...
+$grid->setSource($source);
+
 $grid->setMaxResults(50);
 ...
 ```

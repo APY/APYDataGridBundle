@@ -26,27 +26,25 @@ $grid->setSource($source);
 |:--:|:--|:--|:--|:--|
 |row|instance of Row|The current row to manipulate|
 
-**Note:** You can only manipulate rows before you set the source of the grid.
-
 ## Exemples
 
 ```php
 <?php
 ...
 $source->manipulateRow(
-	function ($row)
-	{
-		if ($row->getField('enabled') == '1') {
-			$row->setColor('#00ff00');
-		}
-		
-		// Don't show the row if the price is greater than 10
-		if ($row->getField('price')>10) {
-			return null;
-		}
-		
-		return $row;
-	}
+    function ($row)
+    {
+        if ($row->getField('enabled') == '1') {
+            $row->setColor('#00ff00');
+        }
+        
+        // Don't show the row if the price is greater than 10
+        if ($row->getField('price')>10) {
+            return null;
+        }
+        
+        return $row;
+    }
 );
 
 $grid->setSource($source);
@@ -61,20 +59,20 @@ $maxPrice = 10;
 $soldOutLabel = 'Sold out';
 
 $source->manipulateRow(
-	function ($row) use ($maxPrice, $soldOutLabel)
-	{
-		// Don't show the row if the price is greater than $maxPrice
-		if ($row->getField('price') > $maxPrice) {
-			return null;
-		}
-		
-		// Change the ouput of the column quantity if anarticle is sold out
-		if ($row->getField('quantity') == 0) {
-			$row->setField('quantity', $soldOutLabel);
-		}
-		
-		return $row;
-	}
+    function ($row) use ($maxPrice, $soldOutLabel)
+    {
+        // Don't show the row if the price is greater than $maxPrice
+        if ($row->getField('price') > $maxPrice) {
+            return null;
+        }
+        
+        // Change the ouput of the column quantity if anarticle is sold out
+        if ($row->getField('quantity') == 0) {
+            $row->setField('quantity', $soldOutLabel);
+        }
+        
+        return $row;
+    }
 );
 
 $grid->setSource($source);

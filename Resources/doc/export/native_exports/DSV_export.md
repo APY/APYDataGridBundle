@@ -11,13 +11,11 @@ Delimiter = _none_
 ...
 use APY\DataGridBundle\Grid\Export\DSVExport; 
 ...
-$grid->addExport(new DSVExport($title, $fileName, $params, $charset));
-
 $grid->setSource($source);
+
+$grid->addExport(new DSVExport($title, $fileName, $params, $charset));
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 #### DSVExport::__construct parameters
 
@@ -40,11 +38,11 @@ $grid->setSource($source);
 ...
 use APY\DataGridBundle\Grid\Export\DSVExport; 
 ...
+$grid->setSource($source);
+
 $grid->addExport(new DSVExport('DSV Export with ,', 'export', array('delimiter' => ',')));
 $grid->setFileExtension('csv');
 $grid->setMimeType('text/comma-separated-values');
-
-$grid->setSource($source);
 ...
 ```
 
@@ -55,13 +53,13 @@ OR
 ...
 use APY\DataGridBundle\Grid\Export\DSVExport; 
 ...
+$grid->setSource($source);
+
 $grid->addExport(new DSVExport('DSV Export with ,'));
 $grid->setDelimiter(',');
 $grid->setFileName('export');
 $grid->setFileExtension('csv');
 $grid->setMimeType('text/comma-separated-values');
-
-$grid->setSource($source);
 ...
 ```
 

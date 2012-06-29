@@ -1,7 +1,7 @@
 Render a pagerfanta pager
 =========================
 
-##Installation
+## Installation
 
 You have to install the [pagerfanta librairy](https://github.com/whiteoctober/Pagerfanta) in the directory `vendor/pagerfanta/`.
 

@@ -15,8 +15,6 @@ $grid->setDefaultOrder($columnId, $order);
 ...
 ```
 
-**Note**: This parameter must be defined after the source.
-
 ## Grid::setDefaultOrder parameters
 
 |parameter|Type|Default value|Possible values|Description|
@@ -35,10 +33,11 @@ $grid->setDefaultOrder($columnId, $order);
 ```php
 <?php
 ...
+// Set the source
+$grid->setSource($source);
+
 // Set the default order of the grid
 $grid->setDefaultOrder('my_column_id', 'asc');
 
-// Set the source
-$grid->setSource($source);
 ...
 ```

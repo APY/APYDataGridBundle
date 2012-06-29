@@ -11,13 +11,11 @@ Delimiter = `\t`
 ...
 use APY\DataGridBundle\Grid\Export\TSVExport; 
 ...
-$grid->addExport(new TSVExport($title, $fileName, $params, $charset));
-
 $grid->setSource($source);
+
+$grid->addExport(new TSVExport($title, $fileName, $params, $charset));
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 #### TSVExport::__construct parameters
 
@@ -40,9 +38,9 @@ $grid->setSource($source);
 ...
 use APY\DataGridBundle\Grid\Export\TSVExport; 
 ...
-$grid->addExport(new TSVExport('TSV Export'));
-
 $grid->setSource($source);
+
+$grid->addExport(new TSVExport('TSV Export'));
 ...
 ```
 

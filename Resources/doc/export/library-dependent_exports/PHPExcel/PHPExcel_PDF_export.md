@@ -12,13 +12,11 @@ Mime type = `application/pdf`
 ...
 use APY\DataGridBundle\Grid\Export\PHPExcelPDFExport; 
 ...
-$grid->addExport(new PHPExcelPDFExport($title, $fileName, $params, $charset));
-
 $grid->setSource($source);
+
+$grid->addExport(new PHPExcelPDFExport($title, $fileName, $params, $charset));
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 #### PHPExcelPDFExport::__construct parameters
 
@@ -38,9 +36,9 @@ _None_
 ```php
 <?php
 ...
-$grid->addExport(new PHPExcelPDFExport('Simple PDF Export'));
-
 $grid->setSource($source);
+
+$grid->addExport(new PHPExcelPDFExport('Simple PDF Export'));
 ...
 ```
 
@@ -53,6 +51,7 @@ See the ducmentation `PHPExcel developer documentation.doc` on the [official web
 ```php
 <?php
 ...
+$grid->setSource($source);
 
 $export = new PHPExcelPDFExport('Simple PDF Export');
 
@@ -69,7 +68,5 @@ $export->objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_W
 $export->objPHPExcel->getActiveSheet()->getPageSetup()->setScale(50);
 
 $grid->addExport(export);
-
-$grid->setSource($source);
 ...
 ```

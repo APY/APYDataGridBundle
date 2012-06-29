@@ -12,13 +12,11 @@ Mime type = `application/vnd.ms-excel`
 ...
 use APY\DataGridBundle\Grid\Export\ExcelExport; 
 ...
-$grid->addExport(new ExcelExport($title, $fileName, $params, $charset));
-
 $grid->setSource($source);
+
+$grid->addExport(new ExcelExport($title, $fileName, $params, $charset));
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 #### ExcelExport::__construct parameters
 
@@ -39,8 +37,8 @@ _None_
 ...
 use APY\DataGridBundle\Grid\Export\ExcelExport; 
 ...
-$grid->addExport(new ExcelExport('Excel Export'));
-
 $grid->setSource($source);
+
+$grid->addExport(new ExcelExport('Excel Export'));
 ...
 ```

@@ -10,15 +10,13 @@ When you define mass actions, a selector appears and a new column of checkboxes 
 <?php
 use APY\DataGridBundle\Grid\Action\MassAction;
 ...
+$grid->setSource($source);
+
 $massAction = new MassAction($title, $callback, $confirm, $parameters);
 
 $grid->addMassAction($massAction);
-
-$grid->setSource($source);
 ...
 ```
-
-**Note**: Mass actions must be defined before the source because the callback to the function is performed when you set the source.
 
 ## Class parameters
 
@@ -36,6 +34,8 @@ $grid->setSource($source);
 <?php
 use APY\DataGridBundle\Grid\Action\MassAction;
 ...
+$grid->setSource($source);
+
 // Static class method call
 $yourMassAction = new MassAction('Action 1', 'MyProject\MyBundle\Controller\DefaultController::myStaticMethod');
 // OR
@@ -47,7 +47,5 @@ $grid->addMassAction($yourMassAction);
 $yourMassAction2 = new MassAction('Action 2', array($obj,'myMethod'));
         
 $grid->addMassAction($yourMassAction2);
-
-$grid->setSource($source);
 ...
 ```

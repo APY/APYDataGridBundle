@@ -174,9 +174,9 @@ $grid->setSource($source);
 $grid->getColumn('id')->setFilterable(false);
 
 $grid->getColumn('authors')
-	->setFilterType('select')
-	->setSelectFrom('query')
-	->setSort(false);
+    ->setFilterType('select')
+    ->setSelectFrom('query')
+    ->setSortable(false);
 
 return $grid->getGridResponse();
 ...
@@ -216,7 +216,6 @@ When we use a Vector source, the type of each column composing our grid will be 
 * Mapped fields
 * GroupBy
 * Aggregate DQL functions
-* <del>Change type of a column</del>
 
 ## Unapplicable features
 

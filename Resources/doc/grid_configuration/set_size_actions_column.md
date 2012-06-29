@@ -6,13 +6,11 @@ Set the size of the actions column
 ```php
 <?php
 ...
-$grid->setActionsColumnSize($size);
-
 $grid->setSource($source);
+
+$grid->setActionsColumnSize($size);
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 ## Grid::setActionsColumnSize parameters
 
@@ -27,9 +25,9 @@ $grid->setSource($source);
 ...
 use APY\DataGridBundle\Grid\Action\RowAction;
 ...
-$grid->setActionsColumnSize(150);
-
 $grid->setSource($source);
+
+$grid->setActionsColumnSize(150);
 
 // Attach a rowAction to the Actions Column
 $rowAction1 = new RowAction('Show', 'route_to_show');

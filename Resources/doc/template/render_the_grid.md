@@ -10,6 +10,8 @@ Pass the $grid object to the view and call your grid render in your template.
 ...
 $grid = $this->get('grid');
 
+$grid->setSource($source);
+
 return $grid->getGridResponse('MyProjectMyBundle::my_grid.html.twig');
 ...
 ```

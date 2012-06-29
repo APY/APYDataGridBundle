@@ -10,13 +10,11 @@ Mime type = `application/octet-stream`
 ...
 use APY\DataGridBundle\Grid\Export\XMLExport; 
 ...
-$grid->addExport(new XMLExport($title, $fileName, $params, $charset));
-
 $grid->setSource($source);
+
+$grid->addExport(new XMLExport($title, $fileName, $params, $charset));
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 #### XMLExport::__construct parameters
 
@@ -37,9 +35,9 @@ _None_
 ...
 use APY\DataGridBundle\Grid\Export\XMLExport; 
 ...
-$grid->addExport(new XMLExport('XML Export'));
-
 $grid->setSource($source);
+
+$grid->addExport(new XMLExport('XML Export'));
 ...
 ```
 

@@ -50,7 +50,7 @@ class Product
 |filterable|boolean|true|true or false|Sets the possibility of filtering of the column|
 |visible|boolean|true|true or false|Sets the visibilty of the column|
 |operatorsVisible|boolean|true|true or false|Sets the visibilty of the operators filter|
-|operators|array|operators of the column|See [operators](../types/text_column.md#available_operators)|Sets the operators of the column|
+|operators|array|operators of the column|See [operators](../types/text_column.md#available_operators)|Sets the available operators of the column|
 |defaultOperator|string|default operator of the column|See [operators](../types/text_column.md#available_operators)|Sets the default operator of the column|
 |primary|boolean|false|true or false|Sets the primary key of the source|
 |align|string|left|left, right or center|Sets the text alignment with a CSS class|

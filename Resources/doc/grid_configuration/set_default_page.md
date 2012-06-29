@@ -8,12 +8,10 @@ If the default page is greater than the number of page, the page is set to 1.
 ```php
 <?php
 ...
-// Set the default page
-$grid->setDefaultPage(4);
-
 // Set the source
 $grid->setSource($source);
+
+// Set the default page
+$grid->setDefaultPage(4);
 ...
 ```
-
-**Note**: This parameter must be defined before the source.

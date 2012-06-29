@@ -48,6 +48,8 @@ SUMMARY
 		1. [Create a filter](columns_configuration/filters/create_filter.md)
 
 1. [Grid Configuration in PHP](grid_configuration/)
+	1. [Set the identifier of the grid](grid_configuration/set_grid_identifier.md)
+	1. [Set the persistence of the grid](grid_configuration/set_grid_persistence.md)
 	1. [Pagination](grid_configuration/set_limits.md)
 	1. [Set max results](grid_configuration/set_max_results.md)
 	1. [Add column](grid_configuration/add_column.md)

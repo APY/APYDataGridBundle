@@ -30,8 +30,6 @@ $grid->getColumn('my_column_id')->manipulateRenderCell($callback);
 |row|instance of Row|The current row|
 |router|instance of the router engine|The symfony router|
 
-**Note:** You can only manipulate the render of a cell after you set the source of the grid.
-
 ## Exemples
 
 ```php
@@ -40,14 +38,14 @@ $grid->getColumn('my_column_id')->manipulateRenderCell($callback);
 $grid->setSource($source);
 
 $grid->getColumn('my_column_id')->manipulateRenderCell(
-	function($value, $row, $router) {
-		return $router->generateUrl('_my_route', array('param' => $row->getField('column4')));
-	}
+    function($value, $row, $router) {
+        return $router->generateUrl('_my_route', array('param' => $row->getField('column4')));
+    }
 );
 ...
 ```
 
-**Note**: You can fetch column not visible if the source attribute is set to true.
+**Note**: You can fetch hidden columns if the source attribute is set to true.
 
 Use this method to fill an empty column:
 
@@ -57,10 +55,12 @@ Use this method to fill an empty column:
 $grid->setSource($source);
 
 // Add a column with a rendering callback
-$MyColumn = new TextColumn(array('id' => 'Another Column')); 
+$MyColumn = new TextColumn(array('id' => 'Another Column'));
+
 $MyColumn->manipulateRenderCell(function($value, $row, $router) {
-	return $router->generateUrl('_my_route', array('param' => $row->getField('column4')));}
+    return $router->generateUrl('_my_route', array('param' => $row->getField('column4')));}
 );
+
 $grid->addColumn($MyColumn);
 ...
 ```

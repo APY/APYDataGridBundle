@@ -34,7 +34,11 @@ class DefaultController extends Controller
 
         /* @var $grid APY\DataGridBundle\Grid\Grid */
 
+        // Get a grid instance
         $grid = $this->get('grid');
+        
+        // Set the source
+        $grid->setSource($source);
 
         // Set the selector of the number of items per page
         $grid->setLimits(array(5, 10, 15));
@@ -53,15 +57,12 @@ class DefaultController extends Controller
         // Add a delete mass action
         $grid->addMassAction(new DeleteMassAction());
 
-        // Set the source
-        $grid->setSource($source);
-
         // Add a column in the third position
-        $MyColumn = new TextColumn(array('id' => 'My Column', 'title'=>'My Column', 'size' => '54', 'sortable' => true, 'filterable' => false, 'source' => false));
+        $MyColumn = new BlankColumn(array('id' => 'My Column', 'title'=>'My Column', 'size' => '54'));
         $grid->addColumn($MyColumn, 3);
 
-        // Add a column with a rendering callback
-        $MyColumn2 = new TextColumn(array('id' => 'Another Column'));
+        // Add a typed column with a rendering callback
+        $MyColumn2 = new DateColumn(array('id' => 'Another Column', 'sortable' => true, 'filterable' => false, 'source' => false));
         $MyColumn2->manipulateRender(function($value, $row, $router) {
             return $router->generateUrl('_my_route', array('param' => $row->getField('column')));}
         );

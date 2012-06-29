@@ -16,8 +16,6 @@ $grid->setDefaultFilters($filters);
 ...
 ```
 
-**Note**: This parameter must be defined after the source.
-
 ## Grid::setDefaultFilters parameters
 
 |parameter|Type|Default value|Description|
@@ -58,6 +56,9 @@ $grid->setDefaultFilters($filters);
 ```php
 <?php
 ...
+// Set the source
+$grid->setSource($source);
+
 // Set default filters of the grid
 $grid->setDefaultFilters(array(
     'your_column_to_filter1' => 'your_init_value1', // Use the default operator of the column
@@ -67,8 +68,5 @@ $grid->setDefaultFilters(array(
     'your_column_to_filter4' => array('operator' => 'btw', 'from' => 'your_init_value_from4', 'to' => 'your_init_value_to4') // Range filter with the operator 'tbw'
     'your_column_to_filter4' => array('operator' => 'isNull') // isNull operator
 ));
-
-// Set the source
-$grid->setSource($source);
 ...
 ```

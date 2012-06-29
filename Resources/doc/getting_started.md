@@ -90,31 +90,6 @@ public function myGridAction()
 }
 ```
 
-## Configuration before attached the source to the grid
-
-```php
-<?php
-public function myGridAction()
-{
-    ...
-    $grid = $this->get('grid');
-    
-    // Add mass actions
-	// Add row actions
-    // Manipulate the query builder
-    // Manipulate rows data
-    // Manipulate columns
-    // Set the default page
-    // Set items per page selector
-    // Set max results
-    // Set prefix titles
-	// Set the data for Entity and Document sources
-	// Exports
-    
-    ...
-}
-```
-
 ## Attach the source to the grid
 
 ```php
@@ -124,33 +99,37 @@ public function myGridAction()
     ...
     $grid = $this->get('grid');
     
-    // Configuration before attached the source to the grid
-    
     $grid->setSource($source);
     ...
 }
 ```
 
-## Configuration after attached the source to the grid
+## Configuration of the grid
 
 ```php
 <?php
 public function myGridAction()
 {
     ...
-    // Configuration before attached the source to the grid
-    
     $grid->setSource($source);
     
-    // Add row actions
+    // Set the identifier of the grid
     // Add a column
     // Show/Hide columns
-    // Manipulate column render cell
     // Set default filters
     // Set the default order
-    // Manipulate columns
+    // Set the default page
     // Set max results
     // Set prefix titles
+    // Add mass actions
+    // Add row actions
+    // Manipulate the query builder
+    // Manipulate rows data
+    // Manipulate columns
+    // Manipulate column render cell
+    // Set items per page selector
+    // Set the data for Entity and Document sources
+    // Exports
     ...
 }
 ```
@@ -164,7 +143,7 @@ public function myGridAction()
     ...
     $grid->setSource($source);
 
-    // Configuration after attached the source to the grid
+    // Configuration of the grid
 
     return $this->render('MyProjectMyBundle::grid.html.twig', array('grid' => $grid));
     ...
@@ -180,7 +159,7 @@ public function myGridAction()
     ...
     $grid->setSource($source);
 
-    // Configuration after attached the source to the grid
+    // Configuration of the grid
 
     return $grid->getGridResponse('MyProjectMyBundle::grid.html.twig');
     ...
@@ -208,12 +187,10 @@ class DefaultController extends Controller
         // Get a grid instance
         $grid = $this->get('grid');
 
-        // Configuration before attached the source to the grid
-
         // Attach the source to the grid
         $grid->setSource($source);
 
-        // Configuration after attached the source to the grid
+        // Configuration of the grid
 
         // Manage the grid redirection, exports and the response of the controller
         return $grid->getGridResponse('MyProjectMyBundle::grid.html.twig');

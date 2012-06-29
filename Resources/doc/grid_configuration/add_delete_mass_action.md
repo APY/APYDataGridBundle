@@ -9,9 +9,9 @@ It doesn't work with the `Select All` option, only the visible rows can be delet
 <?php
 use APY\DataGridBundle\Grid\Action\DeleteMassAction;
 ...
-$grid->addMassAction(new DeleteMassAction());
-
 $grid->setSource($source);
+
+$grid->addMassAction(new DeleteMassAction());
 ...
 ```
 

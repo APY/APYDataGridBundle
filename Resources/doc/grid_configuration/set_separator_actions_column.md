@@ -6,13 +6,11 @@ Set the separator of the actions column
 ```php
 <?php
 ...
-$grid->setActionsColumnSeparator($separator);
-
 $grid->setSource($source);
+
+$grid->setActionsColumnSeparator($separator);
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 ## Grid::setActionsColumnSize parameters
 
@@ -29,9 +27,9 @@ $grid->setSource($source);
 ...
 use APY\DataGridBundle\Grid\Action\RowAction;
 ...
-$grid->setActionsColumnSeparator("<br />");
-
 $grid->setSource($source);
+
+$grid->setActionsColumnSeparator("<br />");
 
 // Attach a rowAction to the Actions Column
 $rowAction1 = new RowAction('Show', 'route_to_show');

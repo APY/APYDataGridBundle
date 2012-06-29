@@ -43,13 +43,11 @@ Bookmarks are related by the logged user, so you can retrieve it directly from t
 ```php
 <?php
 ...
-$grid->setSource($source);
+$source->setData($data);
 
-$grid->setData($data);
+$grid->setSource($source);
 ...
 ```
-
-**Note:** You can only use this function after you set the source of the grid.
 
 ## Method parameters
 

@@ -28,8 +28,8 @@ This template are the input filter but with a different name.
 <span class="grid-filter-input">
     {{ block('grid_column_operator')}}
     <span class="grid-filter-input-query">
-        <input type="{{ column.inputType }}" value="{{ from }}" class="grid-filter-input-query-from" name="{{ hash }}[{{ column.id }}][from]" id="{{ hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onkeypress="if (event.which == 13){this.form.submit();}"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }} />
-        <input type="{{ column.inputType }}" value="{{ to }}" class="grid-filter-input-query-to" name="{{ hash }}[{{ column.id }}][to]" id="{{ hash }}__{{ column.id }}__query__to" {% if submitOnChange is sameas(true) %}onkeypress="if (event.which == 13){this.form.submit();}"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }} />
+        <input type="{{ column.inputType }}" value="{{ from }}" class="grid-filter-input-query-from" name="{{ grid.hash }}[{{ column.id }}][from]" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onkeypress="if (event.which == 13){this.form.submit();}"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }} />
+        <input type="{{ column.inputType }}" value="{{ to }}" class="grid-filter-input-query-to" name="{{ grid.hash }}[{{ column.id }}][to]" id="{{ grid.hash }}__{{ column.id }}__query__to" {% if submitOnChange is sameas(true) %}onkeypress="if (event.which == 13){this.form.submit();}"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }} />
     </span>
 </span>
 

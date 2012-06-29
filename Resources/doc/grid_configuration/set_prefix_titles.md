@@ -8,6 +8,8 @@ You can define a prefix title for all columns of the grid.
 ```php
 <?php
 ...
+$grid->setSource($source);
+
 $grid->setPrefixTitle($prefixTitle);
 ...
 ```
@@ -23,6 +25,8 @@ $grid->setPrefixTitle($prefixTitle);
 ```php
 <?php
 ...
+$grid->setSource($source);
+
 $grid->setPrefixTitle('member.field.')
 ...
 ```

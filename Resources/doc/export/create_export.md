@@ -53,10 +53,10 @@ We'll try to create a CSV export.
             $source = new Entity('MyProjectMyBundle:User');
 
             $grid = $this->get('grid');
+
+            $grid->setSource($source);
             
             $grid->addExport(new CSVExport('CSV Export', 'export'));
-            
-            $grid->setSource($source);
             
             return $grid->getGridResponse('MyProjectMyBundle::grid.html.twig');
         }
@@ -278,9 +278,9 @@ We'll try to create a CSV export.
     ```php
     <?php
     ...
-    $grid->addExport(new CSVExport('CSV Export in French', 'export', array('delimiter' => ';')));
-    
     $grid->setSource($source);
+
+    $grid->addExport(new CSVExport('CSV Export in French', 'export', array('delimiter' => ';')));
     ...
     ```
     
@@ -291,9 +291,9 @@ We'll try to create a CSV export.
     ```php
     <?php
     ...
-    $grid->addExport(new CSVExport('CSV Export in French', 'export', array('delimiter' => ';'), 'Windows-1252'));
-    
     $grid->setSource($source);
+
+    $grid->addExport(new CSVExport('CSV Export in French', 'export', array('delimiter' => ';'), 'Windows-1252'));
     ...
     ```
     

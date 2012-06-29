@@ -4,7 +4,7 @@ Add a non mapped column
 You can add a empty column to the grid. You can fill it with the row manipulator or in your template.  
 A column must be defined after the source otherwise it will always appear before the columns of the source.
 
-**This column mustn't be marked as sortable, filterable and source.**
+**If you want to use a typed column, this column mustn't be marked as sortable, filterable and source. Else use the BlankColumn.**
 
 ## Usage
 

@@ -16,8 +16,6 @@ $grid->hideColumns($columnIds);
 ...
 ```
 
-**Note**: This parameter must be defined after the source.
-
 ## Method parameters
 
 |parameter|Type|Default value|Description|

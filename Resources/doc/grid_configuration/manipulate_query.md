@@ -26,18 +26,16 @@ $grid->setSource($source);
 |:--:|:--|:--|:--|:--|
 |query|instance of QueryBuilder|The QueryBuilder instance before its execution|
 
-**Note:** You can only manipulate the query before you set the source of the grid.
-
 ## Exemples
 
 ```php
 <?php
 ...
 $source->manipulateQuery(
-	function ($query)
-	{
-		$query->resetDQLPart('orderBy');
-	}
+    function ($query)
+    {
+        $query->resetDQLPart('orderBy');
+    }
 );
 
 $grid->setSource($source);
@@ -52,14 +50,14 @@ If you want to pass some context parameters:
 $tableAlias = $source::TABLE_ALIAS;
 
 $source->manipulateQuery(
-	function ($query) use ($tableAlias)
-	{
-		$query->andWhere($tableAlias . '.active = 1');
-	}
+    function ($query) use ($tableAlias)
+    {
+        $query->andWhere($tableAlias . '.active = 1');
+    }
 );
 
 $grid->setSource($source);
 ...
 ```
 
-**Warning**: You must use "andWhere" instead of "Where" statement otherwise column filtering won't work. Same thing about the order and the group(addOrder, addGroup).
+**Warning**: You must use "andWhere" instead of "Where" statement otherwise column filtering won't work. Same thing about the order and the group (addOrder, addGroup).

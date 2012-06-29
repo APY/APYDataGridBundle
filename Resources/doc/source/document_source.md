@@ -22,8 +22,8 @@ class DefaultController extends Controller
 
         /* @var $grid \APY\DataGridBundle\Grid\Grid */
         $grid = $this->get('grid');
-		
-		$grid->setSource($source);
+
+        $grid->setSource($source);
         
         return $grid->getGridResponse('MyProjectMyBundle::my_grid.html.twig');
     }
@@ -55,8 +55,8 @@ class DefaultController extends Controller
         /* @var $grid \APY\DataGridBundle\Grid\Grid */
         $grid = $this->get('grid');
         
-		$grid->setSource($source);
-		
+        $grid->setSource($source);
+
         return $grid->getGridResponse('MyProjectMyBundle::grid.html.twig');
     }
 }

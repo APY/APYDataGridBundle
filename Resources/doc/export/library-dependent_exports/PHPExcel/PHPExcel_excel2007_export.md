@@ -12,13 +12,11 @@ Mime type = `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 ...
 use APY\DataGridBundle\Grid\Export\PHPExcel2007Export; 
 ...
-$grid->addExport(new PHPExcel2007Export($title, $fileName, $params, $charset));
-
 $grid->setSource($source);
+
+$grid->addExport(new PHPExcel2007Export($title, $fileName, $params, $charset));
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 #### PHPExcel2007Export::__construct parameters
 
@@ -38,9 +36,9 @@ _None_
 ```php
 <?php
 ...
-$grid->addExport(new PHPExcel2007Export('Excel 2007 Export'));
-
 $grid->setSource($source);
+
+$grid->addExport(new PHPExcel2007Export('Excel 2007 Export'));
 ...
 ```
 
@@ -53,6 +51,7 @@ See the ducmentation `PHPExcel developer documentation.doc` on the [official web
 ```php
 <?php
 ...
+$grid->setSource($source);
 
 $export = new PHPExcel2007Export('Excel 2007 Export');
 
@@ -65,7 +64,5 @@ $export->objPHPExcel->getProperties()->setKeywords("office php");
 $export->objPHPExcel->getProperties()->setCategory("Test result file");
 
 $grid->addExport(export);
-
-$grid->setSource($source);
 ...
 ```

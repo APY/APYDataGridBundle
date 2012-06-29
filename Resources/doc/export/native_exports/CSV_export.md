@@ -11,13 +11,11 @@ Delimiter = `,`
 ...
 use APY\DataGridBundle\Grid\Export\CSVExport; 
 ...
-$grid->addExport(new CSVExport($title, $fileName, $params, $charset));
-
 $grid->setSource($source);
+
+$grid->addExport(new CSVExport($title, $fileName, $params, $charset));
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 #### CSVExport::__construct parameters
 
@@ -40,9 +38,9 @@ $grid->setSource($source);
 ...
 use APY\DataGridBundle\Grid\Export\CSVExport; 
 ...
-$grid->addExport(new CSVExport('CSV Export'));
-
 $grid->setSource($source);
+
+$grid->addExport(new CSVExport('CSV Export'));
 ...
 ```
 

@@ -11,13 +11,11 @@ Delimiter = `;`
 ...
 use APY\DataGridBundle\Grid\Export\SCSVExport; 
 ...
-$grid->addExport(new SCSVExport($title, $fileName, $params, $charset));
-
 $grid->setSource($source);
+
+$grid->addExport(new SCSVExport($title, $fileName, $params, $charset));
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 #### SCSVExport::__construct parameters
 
@@ -40,9 +38,9 @@ $grid->setSource($source);
 ...
 use APY\DataGridBundle\Grid\Export\SCSVExport; 
 ...
-$grid->addExport(new SCSVExport('SCCSV Export'));
-
 $grid->setSource($source);
+
+$grid->addExport(new SCSVExport('SCCSV Export'));
 ...
 ```
 

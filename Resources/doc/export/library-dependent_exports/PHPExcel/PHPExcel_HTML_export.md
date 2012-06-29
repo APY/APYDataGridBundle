@@ -12,13 +12,11 @@ Mime type = `text/html`
 ...
 use APY\DataGridBundle\Grid\Export\PHPExcelHTMLExport; 
 ...
-$grid->addExport(new PHPExcelHTMLExport($title, $fileName, $params, $charset));
-
 $grid->setSource($source);
+
+$grid->addExport(new PHPExcelHTMLExport($title, $fileName, $params, $charset));
 ...
 ```
-
-**Note**: This parameter must be defined before the source.
 
 #### PHPExcelHTMLExport::__construct parameters
 
@@ -38,9 +36,9 @@ _None_
 ```php
 <?php
 ...
-$grid->addExport(new PHPExcelHTMLExport('Simple HTML Export'));
-
 $grid->setSource($source);
+
+$grid->addExport(new PHPExcelHTMLExport('Simple HTML Export'));
 ...
 ```
 
@@ -53,6 +51,7 @@ See the ducmentation `PHPExcel developer documentation.doc` on the [official web
 ```php
 <?php
 ...
+$grid->setSource($source);
 
 $export = new PHPExcelHTMLExport('Simple HTML Export');
 
@@ -65,7 +64,5 @@ $export->objPHPExcel->getProperties()->setKeywords("office php");
 $export->objPHPExcel->getProperties()->setCategory("Test result file");
 
 $grid->addExport(export);
-
-$grid->setSource($source);
 ...
 ```
