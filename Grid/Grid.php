@@ -88,7 +88,7 @@ class Grid
     /**
      * @var int
      */
-    protected $page;
+    protected $page = 0;
 
     /**
      * @var int
@@ -113,22 +113,22 @@ class Grid
     /**
      * @var \APY\DataGridBundle\Grid\Action\MassAction[]
      */
-    protected $massActions;
+    protected $massActions = array();
 
     /**
      * @var \APY\DataGridBundle\Grid\Action\RowAction[]
      */
-    protected $rowActions;
+    protected $rowActions = array();
 
     /**
      * @var boolean
      */
-    protected $showFilters;
+    protected $showFilters = true;
 
     /**
      * @var boolean
      */
-    protected $showTitles;
+    protected $showTitles = true;
 
     /**
      * @var array|object request
@@ -168,7 +168,7 @@ class Grid
     /**
      * @var \APY\DataGridBundle\Grid\Export\Export[]
      */
-    protected $exports;
+    protected $exports = array();
 
     /**
      * @var boolean
@@ -236,13 +236,7 @@ class Grid
 
         $this->id = $id;
 
-        $this->page = 0;
-        $this->showTitles = $this->showFilters = true;
-
         $this->columns = new Columns($container->get('security.context'));
-        $this->massActions = array();
-        $this->rowActions = array();
-        $this->exports = array();
 
         $this->routeParameters = $this->request->attributes->all();
         unset($this->routeParameters['_route']);
