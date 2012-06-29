@@ -19,7 +19,7 @@
         <service id="grid" class="%grid.base.class%" scope="prototype">
             <argument type="service" id="service_container" />
             <call method="setLimits">
-                <argument>%datagrid.limits%</argument>
+                <argument>%apy_data_grid.limits%</argument>
             </call>
         </service>
 

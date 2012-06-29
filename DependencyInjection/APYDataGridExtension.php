@@ -28,6 +28,6 @@ class APYDataGridExtension extends Extension
         $loader->load('services.xml');
         $loader->load('columns.xml');
 
-        $container->setParameter('datagrid.limits', $config['limits']);
+        $container->setParameter('apy_data_grid.limits', $config['limits']);
     }
 }
