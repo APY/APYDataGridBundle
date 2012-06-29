@@ -32,3 +32,9 @@ $grid->setSource($source);
 $grid->setPersistence(true);
 ...
 ```
+
+## Set default persistence in your config.yml
+```yml
+apy_data_grid:
+    persistence: true
+```

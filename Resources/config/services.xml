@@ -6,8 +6,8 @@
 
     <parameters>
         <parameter key="grid.twig_extension.class">APY\DataGridBundle\Twig\DataGridExtension</parameter>
-        <parameter key="grid.base.class">APY\DataGridBundle\Grid\Grid</parameter>
-        <parameter key="grid.manager.base.class">APY\DataGridBundle\Grid\GridManager</parameter>
+        <parameter key="grid.class">APY\DataGridBundle\Grid\Grid</parameter>
+        <parameter key="grid.manager.class">APY\DataGridBundle\Grid\GridManager</parameter>
     </parameters>
 
     <services>
@@ -16,14 +16,17 @@
             <argument type="service" id="router" />
         </service>
 
-        <service id="grid" class="%grid.base.class%" scope="prototype">
+        <service id="grid" class="%grid.class%" scope="prototype">
             <argument type="service" id="service_container" />
             <call method="setLimits">
                 <argument>%apy_data_grid.limits%</argument>
             </call>
+            <call method="setPersistence">
+                <argument>%apy_data_grid.persistence%</argument>
+            </call>
         </service>
 
-        <service id="grid.manager" class="%grid.manager.base.class%">
+        <service id="grid.manager" class="%grid.manager.class%">
             <argument type="service" id="service_container" />
         </service>
 

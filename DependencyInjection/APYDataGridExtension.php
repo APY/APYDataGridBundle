@@ -29,5 +29,6 @@ class APYDataGridExtension extends Extension
         $loader->load('columns.xml');
 
         $container->setParameter('apy_data_grid.limits', $config['limits']);
+        $container->setParameter('apy_data_grid.persistence', $config['persistence']);
     }
 }

@@ -30,6 +30,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(array(20 => '20', 50 => '50', 100 => '100'))
                     ->prototype('scalar')->end()
                 ->end()
+                ->booleanNode('persistence')->defaultFalse()->end()
             ->end()
         ;
         return $treeBuilder;
