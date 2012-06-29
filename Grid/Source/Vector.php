@@ -86,7 +86,7 @@ class Vector extends Source
         $iteration = min(10, count($this->data));
 
         foreach ($this->columns as $c) {
-            if (!$c instanceof Column\UntypedColumn || ($c instanceof Column\UntypedColumn && null === $c->getType())) {
+            if (!$c instanceof Column\UntypedColumn || ($c instanceof Column\UntypedColumn && null !== $c->getType())) {
                 continue;
             }
 
