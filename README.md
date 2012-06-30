@@ -4,7 +4,7 @@ This bundle was initiated by Stanislav Turza (Sorien).
 **Version**: 2.0  
 **Compatibility**: Symfony >= 2.0.0
 
-[![Build Status](http://travis-ci.org/Abhoryo/APYDataGridBundle.png)](http://travis-ci.org/#!/Abhoryo/APYDataGridBundle)
+[![Build Status](https://secure.travis-ci.org/Abhoryo/APYDataGridBundle.png?branch=master)](http://travis-ci.org/Abhoryo/APYDataGridBundle)
 
 See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/Abhoryo/APYDataGridBundle/blob/master/UPGRADE-2.0.md)
 
