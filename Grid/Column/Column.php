@@ -81,6 +81,7 @@ abstract class Column
     protected $operators;
     protected $defaultOperator;
     protected $values;
+    protected $defaultValues;
     protected $selectFrom;
     protected $multiFilter;
 
@@ -115,6 +116,7 @@ abstract class Column
         $this->setFilterType($this->getParam('filter', 'input'));
         $this->setSelectFrom($this->getParam('selectFrom', 'query'));
         $this->setValues($this->getParam('values', array()));
+        $this->setDefaultValues($this->getParam('defaultValues', array()));
         $this->setOperatorsVisible($this->getParam('operatorsVisible', true));
         // Order is important for the order display
         $this->setOperators($this->getParam('operators', array(
@@ -708,6 +710,18 @@ abstract class Column
     public function getValues()
     {
         return $this->values;
+    }
+
+    public function setDefaultValues(array $defaultValues)
+    {
+        $this->defaultValues = $defaultValues;
+
+        return $this;
+    }
+
+    public function getDefaultValues()
+    {
+        return $this->defaultValues;
     }
 
     public function setSelectFrom($selectFrom)
