@@ -38,7 +38,7 @@ In 2.0, these columns don't exist because they are not types of data, but types 
 Before: `@Grid\Column(type="select", values={"type1"="Type 1", "type2"="Type 2"})`  
 After: `@Grid\Column(type="text", filter="select", selectFrom="values", values={"type1"="Type 1", "type2"="Type 2"})`
 
-See [annotation type attribute](columns_configuration/annotations/column_annotation_property.md) for others types.
+See [annotation type attribute](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/columns_configuration/annotations/column_annotation_property.md) for others types.
 
 #### SourceSelect columns
 
