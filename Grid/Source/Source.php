@@ -448,6 +448,14 @@ abstract class Source implements DriverInterface
 
                             $values[$value] = $column->getDisplayedValue($value);
                             break;
+                        case 'array':
+                            if (is_string($value)) {
+                                $value = unserialize($value);
+                            }
+                            foreach ($value as $val) {
+                                $values[$val] = $val;
+                            }
+                            break;
                         default:
                             $values[$value] = $value;
                     }
@@ -458,6 +466,9 @@ abstract class Source implements DriverInterface
                     $column->setSelectFrom('source');
                     $this->populateSelectFiltersFromData($columns, true);
                 } else {
+                    if ($column->getType() == 'array') {
+                        natcasesort($values);
+                    }
                     $column->setValues(array_unique($values));
                 }
             }
