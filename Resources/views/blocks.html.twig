@@ -333,10 +333,11 @@ function {{ grid.hash }}_switchOperator(elt, query_)
 {% set op = column.data.operator is defined ? column.data.operator : column.defaultOperator %}
 {% set from = column.data.from is defined ? column.data.from : null %}
 {% set to = column.data.to is defined ? column.data.to : null %}
+{% set multiple = column.multiFilter %}
 <span class="grid-filter-select">
     {{ block('grid_column_operator')}}
     <span class="grid-filter-select-query">
-        <select name="{{ grid.hash }}[{{ column.id }}][from]" class="grid-filter-select-query-from" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onchange="this.form.submit();"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
+        <select{% if multiple %} multiple="multiple"{% endif %} name="{{ grid.hash }}[{{ column.id }}][from][]" class="grid-filter-select-query-from" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onchange="this.form.submit();"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
             <option value="">&nbsp;</option>
             {% for key, value in column.values %}
                 <option value="{{ key }}"{% if not from is null and from == key %} selected="selected"{% endif %}>{{ value }}</option>

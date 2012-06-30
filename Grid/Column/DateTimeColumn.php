@@ -46,11 +46,14 @@ class DateTimeColumn extends Column
 
     public function isQueryValid($query)
     {
-        if (strtotime($query) !== false) {
-            return true;
-        }
+        $result = array_filter((array) $query, array($this, "isDateTime"));
 
-        return false;
+        return !empty($result);
+    }
+
+    protected function isDateTime($query)
+    {
+        return strtotime($query) !== false;
     }
 
     public function getFilters($source)

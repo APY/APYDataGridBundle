@@ -78,11 +78,9 @@ class NumberColumn extends Column
 
     public function isQueryValid($query)
     {
-        if (is_numeric($query) !== false) {
-            return true;
-        }
+        $result = array_filter((array) $query, "is_numeric");
 
-        return false;
+        return !empty($result);
     }
 
     public function renderCell($value, $row, $router)
