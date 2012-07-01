@@ -340,7 +340,7 @@ function {{ grid.hash }}_switchOperator(elt, query_)
         <select{% if multiple %} multiple="multiple"{% endif %} name="{{ grid.hash }}[{{ column.id }}][from][]" class="grid-filter-select-query-from" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onchange="this.form.submit();"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
             <option value="">&nbsp;</option>
             {% for key, value in column.values %}
-                <option value="{{ key }}"{% if not from is null and from == key %} selected="selected"{% endif %}{% if value in column.defaultValues %} selected="selected"{% endif %}>{{ value }}</option>
+                <option value="{{ key }}"{% if not from is null and from == key %} selected="selected"{% endif %}>{{ value }}</option>
             {% endfor %}
         </select>
         <select name="{{ grid.hash }}[{{ column.id }}][to]" class="grid-filter-select-query-to" id="{{ grid.hash }}__{{ column.id }}__query__to" {% if submitOnChange is sameas(true) %}onchange="this.form.submit();"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }}>

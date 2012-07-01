@@ -158,7 +158,7 @@ abstract class Column
             return call_user_func($this->callback, $value, $row, $router);
         }
 
-        if (key_exists((string)$value, $this->values)) {
+        if (aray_key_exists((string)$value, $this->values)) {
             $value = $this->values[$value];
         }
 
@@ -722,6 +722,16 @@ abstract class Column
     public function getDefaultValues()
     {
         return $this->defaultValues;
+    }
+
+    public function applyDefaultValues()
+    {
+        $this->data = array('operator' => $this->getDefaultOperator(), 'from' => static::DEFAULT_VALUE, 'to' => static::DEFAULT_VALUE);
+        foreach ($this->getDefaultValues() as $defaultValue) {
+            if (in_array($defaultValue, $this->getValues())) {
+                $this->data['from'] = $defaultValue;
+            }
+        }
     }
 
     public function setSelectFrom($selectFrom)
