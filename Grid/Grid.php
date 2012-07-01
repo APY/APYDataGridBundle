@@ -674,7 +674,9 @@ class Grid
 
     protected function saveSession()
     {
-        $this->session->set($this->hash, $this->sessionData);
+        if (!empty($this->sessionData)) {
+            $this->session->set($this->hash, $this->sessionData);
+        }
     }
 
     protected function createHash()
