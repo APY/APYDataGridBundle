@@ -829,7 +829,7 @@ class Grid
      */
     public function getTemplate()
     {
-        return $this->get(self::REQUEST_QUERY_TEMPLATE, false, true);
+        return $this->get(self::REQUEST_QUERY_TEMPLATE);
     }
 
     /**
