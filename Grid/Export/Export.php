@@ -403,8 +403,6 @@ abstract class Export implements ContainerAwareInterface
             $template = $template->getParent(array());
         }
 
-        $templates[] = $this->twig->loadTemplate($theme);
-
         return $templates;
     }
 
