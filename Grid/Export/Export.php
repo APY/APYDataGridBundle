@@ -378,13 +378,15 @@ abstract class Export implements ContainerAwareInterface
 
         if (empty($this->templates)) {
             //get template name
-            if ($template instanceof \Twig_Template) {
-                $this->templates[] = $template;
-                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
-            } elseif (is_string($template)) {
-                $this->templates = $this->getTemplatesFromString($template);
+            if (is_string($template)) {
+                if (substr($template, 0, 8) === '__SELF__') {
+                    $this->templates = $this->getTemplatesFromString(substr($template, 8));
+                    $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+                } else {
+                    $this->templates = $this->getTemplatesFromString($template);
+                }
             } elseif ($this->template === null) {
-                $this->templates[] = $this->twig->loadTemplate($this::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
             } else {
                 throw new \Exception('Unable to load template');
             }
