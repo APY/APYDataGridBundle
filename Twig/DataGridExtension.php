@@ -330,8 +330,6 @@ class DataGridExtension extends \Twig_Extension
             $template = $template->getParent(array());
         }
 
-        $this->templates[] = $this->environment->loadTemplate($theme);
-
         return $this->templates;
     }
 
