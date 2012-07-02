@@ -307,11 +307,11 @@ class DataGridExtension extends \Twig_Extension
         if (empty($this->templates)) {
             if ($this->theme instanceof \Twig_Template) {
                 $this->templates[] = $this->theme;
-                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->environment->loadTemplate(static::DEFAULT_TEMPLATE);
             } elseif (is_string($this->theme)) {
                 $this->templates = $this->getTemplatesFromString($this->theme);
             } elseif ($this->theme === null) {
-                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->environment->loadTemplate(static::DEFAULT_TEMPLATE);
             } else {
                 throw new \Exception('Unable to load template');
             }
