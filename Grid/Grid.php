@@ -809,7 +809,7 @@ class Grid
             $storage = $this->session->get($this->getHash());
 
             if ($template instanceof \Twig_Template) {
-                $template = $template->getTemplateName();
+                $template = '__SELF__' . $template->getTemplateName();
             } elseif (!is_string($template) && $template === null) {
                 throw new \Exception('Unable to load template');
             }
