@@ -245,8 +245,8 @@ abstract class Export implements ContainerAwareInterface
 
     protected function getGridTitles()
     {
-        $titlesHTML = $this->twig->loadTemplate($this->getTemplate())->renderBlock('grid_titles', array('grid' => $this->grid));
-
+        $titlesHTML = $this->renderBlock('grid_titles', array('grid' => $this->grid));
+        
         preg_match_all('#<th[^>]*?>(.*)?</th>#isU', $titlesHTML, $matches);
 
         if (empty($matches)) {
