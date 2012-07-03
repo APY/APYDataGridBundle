@@ -44,11 +44,6 @@ And the template
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|
 |grid|APY/DataGridBundle/Grid/Grid||The grid object|
-|theme|string|APYDataGridBundle::blocks.html.twig|Template used to render the grid|
-|id|string|_none_|Set the identifier of the grid.|
-|params|array|array()|Additional parameters passed to each block.|
-
-**Note:** `theme`, `id` and `params` arguments have to be defined only if you call the grid_pagerfanta block before the grid block in your grid template.
 
 ## Exemple of css associated with this pager (from [Pagerfanta Github page](https://github.com/whiteoctober/Pagerfanta))
 

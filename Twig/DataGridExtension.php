@@ -200,10 +200,8 @@ class DataGridExtension extends \Twig_Extension
         return $this->renderBlock('grid_search', array('grid' => $grid));
     }
 
-    public function getPagerfanta($grid, $theme = null, $id = '', array $params = array())
+    public function getPagerfanta($grid)
     {
-        $this->initGird($grid, $theme, $id, $params);
-
         $adapter = new NullAdapter($grid->getTotalCount());
 
         $pagerfanta = new Pagerfanta($adapter);
