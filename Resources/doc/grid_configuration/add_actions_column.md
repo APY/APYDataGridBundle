@@ -57,7 +57,7 @@ use APY\DataGridBundle\Grid\Column\ActionsColumn;
 $grid->setSource($source);
 
 // Create an Actions Column
-$actionsColumn = new ActionsColumn('info_column_1', 'Actions 1'));
+$actionsColumn = new ActionsColumn('info_column_1', 'Actions 1');
 $actionsColumn->setSeparator("<br />");
 $grid->addColumn($actionsColumn, 1);
 
