@@ -933,7 +933,7 @@ class Grid
     }
 
     /**
-     * Set the default grid order
+     * Set the default grid order.  Order must be lowercase.
      *
      * @param array Hash of columnName => initValue
      *
@@ -941,6 +941,7 @@ class Grid
      */
     public function setDefaultOrder($columnId, $order)
     {
+        $order = strtolower($order);
         $this->defaultOrder = "$columnId|$order";
 
         return $this;
