@@ -38,8 +38,8 @@ function {{ grid.hash }}_submitForm(event, form, force)
 
 {% block grid_scripts_ajax %}
 $(function () {
-    // Order link
-    $('#{{ grid.hash }} a.order').click(function () {
+    // Order and pagerfanta links
+    $('a.order, nav a', '#{{ grid.hash }}').click(function () {
         {{ grid.hash }}_goto(this.href);
 
         return false;

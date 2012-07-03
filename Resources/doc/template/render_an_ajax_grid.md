@@ -20,3 +20,11 @@ After: `{{ grid(data, 'APYDataGridBundle::blocks_js.jquery.html.twig') }}`
 
 {{ grid(data, 'APYDataGridBundle::blocks_js.jquery.html.twig') }}
 ```
+
+**Note**: Pagerfanta have to extend the same template as the grid
+
+```django
+{% block grid_pager %}
+{{ grid_pagerfanta(grid, 'APYDataGridBundle::blocks_js.jquery.html.twig') }}
+{% endblock grid_pager %}
+```
