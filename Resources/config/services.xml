@@ -24,6 +24,12 @@
             <call method="setPersistence">
                 <argument>%apy_data_grid.persistence%</argument>
             </call>
+            <call method="setNoDataMessage">
+                <argument>%apy_data_grid.no_data_message%</argument>
+            </call>
+            <call method="setNoResultMessage">
+                <argument>%apy_data_grid.no_result_message%</argument>
+            </call>
         </service>
 
         <service id="grid.manager" class="%grid.manager.class%">
