@@ -665,7 +665,7 @@ class Grid
     protected function set($key, $data)
     {
         // Only the filters values are removed from the session
-        if (key_exists($key, $this->sessionData) && isset($data['from']) && $data['from'] === '') {
+        if (array_key_exists($key, $this->sessionData) && isset($data['from']) && $data['from'] === '') {
             unset($this->sessionData[$key]);
         } elseif ($data !== null) {
             $this->sessionData[$key] = $data;
