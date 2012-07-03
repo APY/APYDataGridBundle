@@ -45,16 +45,7 @@ And the template
 
 ## Override the getGridResponse function
 
-Assigning to your own template parameter:
-
-```php
-<?php
-...
-$grid = $this->get('grid');
-$grid->setSource($source);
-$grid->getGridResponse();
-return array('my_grid' => $grid);
-```
+See [Grid Response helper](../grid_configuration/grid_response.md) for a detailed outline of ```getGridResponse```.
 
 Example with two grids:
 
@@ -74,7 +65,7 @@ if ($grid->isReadyForRedirect()) {
 ...
 ```
 
-**Note:** GridResponse parameters (sorting, etc) are useless in this case and exports are managed directly in the getGridResponse function.
+**Note:** GridResponse parameters are useless in this case and exports are managed directly in the getGridResponse function.
 
 ## _self template
 
