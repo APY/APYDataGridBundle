@@ -158,7 +158,7 @@ abstract class Column
             return call_user_func($this->callback, $value, $row, $router);
         }
 
-        if (aray_key_exists((string)$value, $this->values)) {
+        if (array_key_exists((string)$value, $this->values)) {
             $value = $this->values[$value];
         }
 
