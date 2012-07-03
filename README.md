@@ -21,6 +21,7 @@ See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGEL
 - Supports mapped fields with Entity source
 - Annotations and PHP configuration
 - External filters box
+- Ajax loading
 - Pagination (You can also use Pagerfanta)
 - Column width and column align
 - Prefix tranlated titles
