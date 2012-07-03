@@ -1,6 +1,8 @@
 Overriding internal blocks
 ==========================
 
+These following blocks are already defined. For others blocks, see [cell rendering](cell_rendering.md) and [filter rendering](filter_rendering.md)
+
  * **grid**  
     This block manages the display of the grid.
  * **grid_no_data**  
@@ -16,7 +18,7 @@ Overriding internal blocks
  * **grid_rows**  
     This block manages the display of the rows.
  * **grid_pager**  
-    This block call the three pager blocks: grid_pager_totalcount, grid_pager_selectpage, grid_pager_results_perpage.
+    This block calls the three pager blocks: grid_pager_totalcount, grid_pager_selectpage, grid_pager_results_perpage.
  * **grid_pager_totalcount**  
     This block manages the display of the total of rows.
  * **grid_pager_selectpage**  
@@ -46,7 +48,7 @@ Overriding internal blocks
  * **grid_column_filter_type_actions**  
     This block manages the display of the row actions filter cell.
  * **grid_scripts**  
-    This block call the following scripts blocks.
+    This block calls the following scripts blocks.
  * **grid_scripts_goto**  
     This block contains the javascript function to call an url of the grid.
  * **grid_scripts_reset**  
