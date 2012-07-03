@@ -3,7 +3,8 @@ Render the grid
 
 ## Usage
 
-Pass the $grid object to the view and call your grid render in your template.
+Pass the $grid object to the view and call your grid render in your template.  This will automatically populate a
+Twig variable ```grid```.
 
 ```php
 <?php
@@ -44,6 +45,17 @@ And the template
 
 ## Override the getGridResponse function
 
+Assigning to your own template parameter:
+
+```php
+<?php
+...
+$grid = $this->get('grid');
+$grid->setSource($source);
+$grid->getGridResponse();
+return array('my_grid' => $grid);
+```
+
 Example with two grids:
 
 ```php
@@ -62,7 +74,7 @@ if ($grid->isReadyForRedirect()) {
 ...
 ```
 
-**Note:** GridResponse parameters are useless in this case and exports are managed directly in the getGridResponse function.
+**Note:** GridResponse parameters (sorting, etc) are useless in this case and exports are managed directly in the getGridResponse function.
 
 ## _self template
 
