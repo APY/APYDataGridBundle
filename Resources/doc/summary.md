@@ -14,6 +14,7 @@ SUMMARY
 
 1. [Template (Twig)](template/)
 	1. [Display the grid](template/render_the_grid.md)
+	1. [Display an ajax grid](template/render_an_ajax_grid.md)
 	1. [Cell rendering](template/cell_rendering.md)
 	1. [Filter rendering](template/filter_rendering.md)
 	1. [Overriding internal blocks](template/overriding_internal_blocks.md)
@@ -65,6 +66,9 @@ SUMMARY
 	1. [Set a default page](grid_configuration/set_default_page.md)
 	1. [Set a default order](grid_configuration/set_default_order.md)
 	1. [Set default filters](grid_configuration/set_default_filters.md)
+	1. [Set the no data message](grid_configuration/set_no_data_message.md)
+	1. [Set the no result message](grid_configuration/set_no_result_message.md)
+	1. [Always show the grid](grid_configuration/always_show_grid.md)
 	1. [Set a title prefix](grid_configuration/set_prefix_titles.md)
 	1. [Set the size of the actions colum](grid_configuration/set_size_actions_column.md)
 	1. [Set the separator of the actions colum](grid_configuration/set_separator_actions_column.md)

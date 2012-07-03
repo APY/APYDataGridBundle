@@ -1,3 +1,57 @@
+`3 July 2012`
+
+ * Add ajax loading with jquery
+ * Update composer requirements (Twig >= 1.5.0)
+ * Lower case the order in Grid::setDefaultOrder
+ * Add default configuration for no data and no result messages
+
+`2 July 2012`
+
+ * Fix bug - Blocks are not found with the `_self` template for an export
+ 
+`1 July 2012`
+
+ * Fix bug - Don't save empty session! 
+
+`30 Jun 2012`
+
+ * Add configuration files for tests
+ * Add travis-ci support
+
+`29 Jun 2012`
+
+ * Add default configuration for limits and persistence
+ * Fix bug - Fix the guess of a datetime column in vector source
+
+`28 Jun 2012`
+
+ * Explode grid_pager block into three blocks
+ * Fix bug - Fix persistence with order and pager
+
+`27 Jun 2012`
+
+ * Manage empty data with a vector source
+ * Add a default columns parameters for the vector source
+ * Update vector source documentation
+ * Fix bug - Write data to the session when a null operator is selected
+ 
+`26 Jun 2012`
+
+ * [Bundle] Push the actuel master branch into the new 2.0 branch and tag. The master branch is now the version 2.1 of this bundle
+ 
+**New in 2.1:** No BC Break
+
+ * Rework grid = Lazy loading of all parameters. Every parameters can be set after the source and the code is more understandable
+ * Fix bug - Fix false values in twig with symfony 2.1
+ 
+`23 Jun 2012`
+
+ * Fix bug - Array values are already unserialized with the new doctrine in Symfony 2.1
+
+`20 Jun 2012`
+
+ * Fix bug - Issue with mapped fields on two or more levels
+
 `19 Jun 2012`
 
  * Add pagerfanta pager + doc
@@ -7,7 +61,7 @@
 
 `18 Jun 2012`
 
- * Fix bug - Don't show filters row with only massaction and actions column.
+ * Fix bug - Don't show filters row with only massaction and actions column
 
 `17 Jun 2012`
 
@@ -25,13 +79,13 @@
 
 `16 Jun 2012`
 
- * [Bundle] Push the actuel master branch into the new 1.0 branch. The master branch is now the version 2.0 of this bundle.
+ * [Bundle] Push the actuel master branch into the new 1.0 branch. The master branch is now the version 2.0 of this bundle
 
 **New in 2.0:** See [UPGRADE-2.0](UPGRADE-2.0.md) documentation.
 
  * [BC Break][Bundle] Change the namespace of the bundle
  * [BC Break][Filters] Add operator selector feature with a default operator
- * [Filters] Add operators Equals, Not equal to, Lower than, Lower than or equal to, Greater than, Greater than or equal to, Between exclusive, Between inclusive, Contains, Not contains, Starts with, Ends with, Is not defined, Is defined,
+ * [Filters] Add operators Equals, Not equal to, Lower than, Lower than or equal to, Greater than, Greater than or equal to, Between exclusive, Between inclusive, Contains, Not contains, Starts with, Ends with, Is not defined, Is defined
  * [Filters] Add annotation and php support for the operator selector feature and for the default operator
  * [BC Break][Columns] Remove range, select and sourceselect columns (Include now in all columns with the filter attribute)
  * [Annotations][Filters] Add an attribute to define the type of the filter (input, select)
@@ -45,7 +99,7 @@
  * [Mass action] Add additional parameters passed to the callback
  * [Columns] Add number column (decimal, money, percent, duration, scientific, spell out)
  * [Export] Add export feature
- * [Export] Add DSV, CSV, SCSV, TSV, XML, Excel (with PHPExcel library) and html (with PHPExcel library) exports.
+ * [Export] Add DSV, CSV, SCSV, TSV, XML, Excel (with PHPExcel library) and html (with PHPExcel library) exports
  * [Grid::setLimits] Add support for a simple array to define limits (e.g. $grid->setLimits(5, 10);)
  * [BC Break][Sources] Source::setCallBack rename to manipulateRow and manipulateQuery and the first argument is removed
  * [BC Break][Columns] Column::setCallBack rename to manipulateRenderCell
@@ -53,7 +107,7 @@
  * [Row action] rowAction::setRouteParameters allows string
  * [BC Break][Grid::gridResponse] Grid::gridResponse rename to Grid::getGridResponse
  * [BC Break][Grid::gridManagerResponse] GridManager::gridManagerResponse rename to GridManager::getGridManagerResponse
- * [Grid::getGridResponse] The view parameters and the view name in Grid::getGridResponse can be set in reverse order to match the Template::render function.
+ * [Grid::getGridResponse] The view parameters and the view name in Grid::getGridResponse can be set in reverse order to match the Template::render function
  * [Grid::getGridResponse] Add array('grid' => $grid) automatically in view parameters with Grid::getGridResponse
  * [Grid::getGridManagerResponse] GridManager::getGridManagerResponse can be set in reverse order to match the Template::render function.
  * [Grid::getGridManagerResponse] Add array('grid1' => $grid1, 'grid2' => $grid2, ...) automatically in view parameters with GridManager::getGridManagerResponse
@@ -73,7 +127,7 @@
  * [Grid::setData] Add populate select filters feature
  * [Template] Add some css classes
  * [Template] Show 'false' in the grid if value === false in boolean column because a false value isn't show in twig)
- * [Template] Add width attribute on filter th tag too.
+ * [Template] Add width attribute on filter th tag too
  * [ActionsColumn] Add the method Grid::setActionsColumnSize to set the size of the actions column
  * [ActionsColumn] Add the method Grid::setActionsColumnSeparator to set the separator of the actions column
  * [Filter] Disallow url filtering if the column is not filterable
@@ -82,11 +136,11 @@
  * [Bundle] Update composer
  * [Bundle] Clean and optimize code
  * [Bundle] Follow Code Standard of Symfony2
- * [Docs] Rework the whole documentation with the new features.
+ * [Docs] Rework the whole documentation with the new features
 
 `25 May 2012`
 
- * XMLHttpRequest force the persistence mode
+ * Fix bug - XMLHttpRequest force the persistence mode
 
 `15 May 2012`
 

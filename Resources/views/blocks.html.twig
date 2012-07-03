@@ -38,6 +38,8 @@
 {% endblock grid %}
 {# --------------------------------------------------- grid_no_data ------------------------------------------------- #}
 {% block grid_no_data %}<p class="no_data">{{ grid.noDataMessage|default('No data')|trans|raw }}</p>{% endblock grid_no_data %}
+{# --------------------------------------------------- grid_no_result ------------------------------------------------- #}
+{% block grid_no_result %}{{ grid.noResultMessage|default('No result')|trans|raw }}{% endblock grid_no_result %}
 {# --------------------------------------------------- grid_titles -------------------------------------------------- #}
 {% block grid_titles %}
     <tr class="grid-row-titles">
@@ -115,8 +117,6 @@
     </tr>
     {% endfor %}
 {% endblock grid_rows %}
-{# --------------------------------------------------- grid_no_result ------------------------------------------------- #}
-{% block grid_no_result %}{{ grid.noResultMessage|default('No result')|trans|raw }}{% endblock grid_no_result %}
 {# ---------------------------------------------------- grid_pager -------------------------------------------------- #}
 {% block grid_pager %}
 <div class="pager" style="float:left">
