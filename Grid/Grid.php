@@ -933,7 +933,7 @@ class Grid
     }
 
     /**
-     * Set the default grid order.  Order must be lowercase.
+     * Set the default grid order.
      *
      * @param array Hash of columnName => initValue
      *
