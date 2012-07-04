@@ -31,5 +31,11 @@
     "autoload": {
         "psr-0": { "APY\\DataGridBundle": "" }
     },
-    "target-dir": "APY/DataGridBundle"
+    "target-dir": "APY/DataGridBundle",
+	"minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.1-dev"
+        }
+    }
 }
