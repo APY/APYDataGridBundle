@@ -97,6 +97,8 @@ abstract class Column
 
     protected $selectFrom;
 
+    protected $searchOnClick = false;
+
     /**
      * Default Column constructor
      *
@@ -145,6 +147,7 @@ abstract class Column
             self::OPERATOR_ISNOTNULL,
         )));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
+        $this->setSearchOnClick($this->getParam('searchOnClick'), false);
     }
 
     protected function getParam($id, $default = null)
@@ -744,5 +747,17 @@ abstract class Column
     public function getType()
     {
         return '';
+    }
+
+    public function setSearchOnClick($searchOnClick)
+    {
+        $this->searchOnClick = $searchOnClick;
+
+        return $this;
+    }
+
+    public function getSearchOnClick()
+    {
+        return $this->searchOnClick;
     }
 }

@@ -26,7 +26,7 @@ class Product
      * @GRID\Column(title="Type", size="120", filterable=false, filter="select",  selectFrom="values", values={"type1"="Type 1","type2"="Type 2"}, groups={"default", "admin", "backend", "total"})
      */
     protected $type;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
@@ -59,7 +59,8 @@ class Product
 |groups|string<br />or<br />array|Exemple: groups="group1",<br />groups={"group1"}, groups={"group1", "group2"}||Use this attribute to define more than one configuration for an Entity/Document. <br />If no groups is defined, the annotation is attributed for all groups.<br />$source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');|
 |selectFrom|string|query|query, source, values|How to populate the selector of the select filters of the column.|
 |values|array|_none_||For select filters or replace values in the grid|
+|searchOnClick|boolean|false|true or false|Sets the possibility to perform a search on the clicked cell (filterable has to be true)|
 
-**Note 1**: Every attribute have a setter and a getter method.  
+**Note 1**: Every attribute have a setter and a getter method.
 **Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.
 **Note 2**: If operators are not visible, filtering is performed with the default operator.

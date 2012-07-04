@@ -208,6 +208,11 @@
         {{ index|raw }}{{ column.separator|raw }}
 {%- endfor %}
 {% endblock grid_column_array_cell %}
+{# ------------------------------------------- grid_column_search_onclick_cell ---------------------------------------- #}
+{% block grid_column_search_onclick_cell %}
+    {% set searchVal = row.field(column.id) %}
+    <a href="?{{ grid.hash }}[{{ column.id }}][from]={{ searchVal | url_encode() }}">{{ value }}</a>
+{% endblock grid_column_search_onclick_cell %}
 {# -------------------------------------------- grid_column_operator --------------------------------------- #}
 {% block grid_column_operator %}
 {% if column.operatorsVisible %}

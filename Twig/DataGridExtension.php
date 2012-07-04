@@ -129,10 +129,12 @@ class DataGridExtension extends \Twig_Extension
 
         if (($id != '' && ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_cell')
                         || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getType().'_cell')
-                        || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell')))
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell'))
+                        || $column->isFilterable() && $column->getSearchOnClick() && $this->hasBlock($block = 'grid_'.$id.'_column_search_onclick_cell'))
          || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
          || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
-         || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
+         || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell')
+         || $column->isFilterable() && $column->getSearchOnClick() && $this->hasBlock($block = 'grid_column_search_onclick_cell'))
         {
             return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row, 'grid' => $grid));
         }

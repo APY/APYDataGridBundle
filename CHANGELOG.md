@@ -1,3 +1,7 @@
+`4 July 2012`
+
+ * Add searchOnClick parameter to Column class
+
 `3 July 2012`
 
  * Add ajax loading with jquery
@@ -8,10 +12,10 @@
 `2 July 2012`
 
  * Fix bug - Blocks are not found with the `_self` template for an export
- 
+
 `1 July 2012`
 
- * Fix bug - Don't save empty session! 
+ * Fix bug - Don't save empty session!
 
 `30 Jun 2012`
 
@@ -34,16 +38,16 @@
  * Add a default columns parameters for the vector source
  * Update vector source documentation
  * Fix bug - Write data to the session when a null operator is selected
- 
+
 `26 Jun 2012`
 
  * [Bundle] Push the actuel master branch into the new 2.0 branch and tag. The master branch is now the version 2.1 of this bundle
- 
+
 **New in 2.1:** No BC Break
 
  * Rework grid = Lazy loading of all parameters. Every parameters can be set after the source and the code is more understandable
  * Fix bug - Fix false values in twig with symfony 2.1
- 
+
 `23 Jun 2012`
 
  * Fix bug - Array values are already unserialized with the new doctrine in Symfony 2.1
