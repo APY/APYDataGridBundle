@@ -173,6 +173,11 @@ class Grid
     /**
      * @var boolean
      */
+    protected $redirect = null;
+
+    /**
+     * @var boolean
+     */
     protected $isReadyForExport = false;
 
     /**
@@ -279,6 +284,10 @@ class Grid
             throw new \Exception('The source of the grid is not set.');
         }
 
+        if ($this->redirect !== null) {
+            return $this->redirect;
+        }
+
         $this->createHash();
 
         $this->requestData = (array) $this->request->get($this->hash);
@@ -299,7 +308,7 @@ class Grid
                 $this->saveSession();
             }
 
-            return true;
+            $this->redirect = true;
         } else {
             if ($this->newSession) {
                 $this->setDefaultSessionData();
@@ -312,8 +321,10 @@ class Grid
 
             $this->prepare();
 
-            return false;
+            $this->redirect = false;
         }
+
+        return $this->redirect;
     }
 
     protected function processPersistence()
