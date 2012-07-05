@@ -472,9 +472,9 @@ abstract class Source implements DriverInterface
     public function getTotalCountFromData($maxResults = null)
     {
         if ($maxResults !== null) {
-            return min(array($maxResults, count($this->data)));
+            return min(array($maxResults, count($this->items)));
         }
 
-        return count($this->data);
+        return count($this->items);
     }
 }
