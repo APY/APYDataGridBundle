@@ -39,7 +39,19 @@
 {# --------------------------------------------------- grid_no_data ------------------------------------------------- #}
 {% block grid_no_data %}<p class="no_data">{{ grid.noDataMessage|default('No data')|trans|raw }}</p>{% endblock grid_no_data %}
 {# --------------------------------------------------- grid_no_result ------------------------------------------------- #}
-{% block grid_no_result %}{{ grid.noResultMessage|default('No result')|trans|raw }}{% endblock grid_no_result %}
+{% block grid_no_result %}
+{% spaceless %}
+{% set nbColumns = 0 %}
+{% for column in grid.columns %}
+    {% if column.visible(grid.isReadyForExport) %}
+        {% set nbColumns = nbColumns + 1 %}
+    {% endif %}
+{% endfor %}
+<tr class="grid-row-cells">
+    <td class="last-column last-row" colspan="{{ nbColumns }}" style="text-align: center;">{{ grid.noResultMessage|default('No result')|trans|raw }}</td>
+</tr>
+{% endspaceless %}
+{% endblock grid_no_result %}
 {# --------------------------------------------------- grid_titles -------------------------------------------------- #}
 {% block grid_titles %}
     <tr class="grid-row-titles">
@@ -106,15 +118,7 @@
     {% endspaceless %}
     </tr>
     {% else %}
-    {% set nbColumns = 0 %}
-    {% for column in grid.columns %}
-        {% if column.visible(grid.isReadyForExport) %}
-            {% set nbColumns = nbColumns + 1 %}
-        {% endif %}
-    {% endfor %}
-    <tr class="grid-row-cells">
-        <td class="last-column last-row" colspan="{{ nbColumns }}" style="text-align: center;">{{ grid_no_result(grid) }}</td>
-    </tr>
+        {{ grid_no_result(grid) }}
     {% endfor %}
 {% endblock grid_rows %}
 {# ---------------------------------------------------- grid_pager -------------------------------------------------- #}
