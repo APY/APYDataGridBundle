@@ -59,6 +59,29 @@ class DataGridExtension extends \Twig_Extension
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
+        
+        // Avoids the exception "Variable does not exist" with the _self template
+        $globals = $this->environment->getGlobals();
+
+        if (!isset($globals['grid'])) {
+            $this->environment->addGlobal('grid', null);
+        }
+
+        if (!isset($globals['column'])) {
+            $this->environment->addGlobal('column', null);
+        }
+
+        if (!isset($globals['row'])) {
+            $this->environment->addGlobal('row', null);
+        }
+
+        if (!isset($globals['value'])) {
+            $this->environment->addGlobal('value', null);
+        }
+
+        if (!isset($globals['submitOnChange'])) {
+            $this->environment->addGlobal('submitOnChange', null);
+        }
     }
 
     /**
@@ -134,10 +157,10 @@ class DataGridExtension extends \Twig_Extension
          || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
          || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
         {
-            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row, 'grid' => $grid));
+            return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'row' => $row, 'value' => $value));
         }
 
-        return $this->renderBlock('grid_column_cell', array('column' => $column, 'value' => $value, 'row' => $row, 'grid' => $grid));
+        return $this->renderBlock('grid_column_cell', array('grid' => $grid, 'column' => $column, 'row' => $row, 'value' => $value));
     }
 
     /**
@@ -161,7 +184,7 @@ class DataGridExtension extends \Twig_Extension
          || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType())
          || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter'))
         {
-            return $this->renderBlock($block, array('column' => $column, 'grid' => $grid, 'submitOnChange' => $submitOnChange));
+            return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'submitOnChange' => $submitOnChange));
         }
 
         return '';
