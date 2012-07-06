@@ -1,8 +1,8 @@
 Cell rendering
 ==============
 
-Cell rendering in the grid is handled by specific blocks in your template.  
-If this block doesn't exist, the value is displayed without any transformation.  
+Cell rendering in the grid is handled by specific blocks in your template.
+If this block doesn't exist, the value is displayed without any transformation.
 The following parameters are passed to the block `grid_column_%column_type%_cell`.
 
 ## Block parameters
@@ -28,23 +28,6 @@ The following parameters are passed to the block `grid_column_%column_type%_cell
 
 ## Examples
 
-#### Search the selected value on click for text columns
-
-```janjo
-...
-grid(grid, 'MyProjectMyBundle::my_grid_template.html.twig')
-...
-```
-
-```janjo
-<!-- MyProjectMyBundle::my_grid_template.html.twig -->
-{% extends 'APYDataGridBundle::blocks.html.twig' %}
-
-{% block grid_column_text_cell %}
-<a href="?{{ grid.hash }}[{{ column.id }}][from]={{ value }}">{{ value }}</a>
-{% endblock grid_column_text_cell %}
-```
-
 #### Use icons for boolean columns with passed additional parameters
 
 ```janjo
@@ -60,3 +43,18 @@ grid(grid, 'MyProjectMyBundle::my_grid_template.html.twig', '', {'imgDir': 'img/
 {% endblock grid_column_boolean_cell %}
 ```
 
+#### Use the SearchOnclick functionality with the previous block
+
+```janjo
+grid(grid, 'MyProjectMyBundle::my_grid_template.html.twig', '', {'imgDir': 'img/'})
+```
+
+```janjo
+<!-- MyProjectMyBundle::my_grid_template.html.twig -->
+{% extends 'APYDataGridBundle::blocks.html.twig' %}
+
+{% block grid_column_boolean_cell %}
+    {% set value = '<img src="'~assets(params.imgDir ~ value ~ '.jpg')~'" alt="~value~" />' %}
+    {{ block('grid_column_cell') }}
+{% endblock grid_column_boolean_cell %}
+```

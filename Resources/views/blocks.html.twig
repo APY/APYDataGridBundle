@@ -199,20 +199,28 @@
 {% endblock grid_column_massaction_cell %}
 {# ------------------------------------------------ grid_column_boolean_cell --------------------------------------------- #}
 {% block grid_column_boolean_cell %}
-    {% set val = value is sameas(false) ? 'false' : value %}
-    <span class="grid_boolean_{{ val }}" title="{{ val }}">{{ val }}</span>
+    {% set value = value is sameas(false) ? 'false' : value %}
+    <span class="grid_boolean_{{ value }}" title="{{ value }}">{{ block('grid_column_cell') }}</span>
 {% endblock grid_column_boolean_cell %}
 {# ------------------------------------------------ grid_array_columns --------------------------------------------- #}
 {% block grid_column_array_cell %}
-{% for index in value -%}
-        {{ index|raw }}{{ column.separator|raw }}
+{% set sourceValues = row.field(column.id) %}
+{% set values = value %}
+{% for key, index in values -%}
+    {% set value = index %}
+    {% set sourceValue = sourceValues[key] %}
+    {{ block('grid_column_cell') | raw }}{{ column.separator | raw }}
 {%- endfor %}
 {% endblock grid_column_array_cell %}
-{# ------------------------------------------- grid_column_search_onclick_cell ---------------------------------------- #}
-{% block grid_column_search_onclick_cell %}
-    {% set searchVal = row.field(column.id) %}
-    <a href="?{{ grid.hash }}[{{ column.id }}][from]={{ searchVal | url_encode() }}">{{ value }}</a>
-{% endblock grid_column_search_onclick_cell %}
+{# ------------------------------------------- grid_column_cell ---------------------------------------- #}
+{% block grid_column_cell %}
+{% if column.filterable and column.searchOnClick %}
+    {% set sourceValue = sourceValue is defined ? sourceValue : row.field(column.id) %}
+    <a href="?{{ grid.hash }}[{{ column.id }}][from]={{ sourceValue | url_encode() }}">{{ value }}</a>
+{% else %}
+    {{ value }}
+{% endif %}
+{% endblock grid_column_cell %}
 {# -------------------------------------------- grid_column_operator --------------------------------------- #}
 {% block grid_column_operator %}
 {% if column.operatorsVisible %}
