@@ -40,13 +40,17 @@ class GridManager implements \IteratorAggregate, \Countable
        return $this->grids->count();
     }
 
-    public function createGrid()
+    public function createGrid($id = null)
     {
         $grid = $this->container->get('grid');
 
         // Route url is the same for all grids
         if ($this->routeUrl === null) {
             $this->routeUrl = $grid->getRouteUrl();
+        }
+
+        if ($id !== null) {
+            $grid->setId($id);
         }
 
         $this->grids->attach($grid);
