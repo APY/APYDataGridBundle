@@ -80,7 +80,7 @@ class DataGridExtension extends \Twig_Extension
         );
     }
 
-    public function initGird($grid, $theme = null, $id = '', array $params = array())
+    public function initGrid($grid, $theme = null, $id = '', array $params = array())
     {
         $this->theme = $theme;
         $this->templates = array();
@@ -99,7 +99,7 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getGrid($grid, $theme = null, $id = '', array $params = array())
     {
-        $this->initGird($grid, $theme, $id, $params);
+        $this->initGrid($grid, $theme, $id, $params);
 
         // For export
         $grid->setTemplate($theme);
@@ -195,7 +195,7 @@ class DataGridExtension extends \Twig_Extension
 
     public function getGridSearch($grid, $theme = null, $id = '', array $params = array())
     {
-        $this->initGird($grid, $theme, $id, $params);
+        $this->initGrid($grid, $theme, $id, $params);
 
         return $this->renderBlock('grid_search', array('grid' => $grid));
     }
