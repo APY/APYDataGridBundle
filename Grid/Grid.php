@@ -937,6 +937,10 @@ class Grid
                 $value = array('from' => $ColumnValue);
             }
 
+            if ($value['from'] === false) {
+                $value['from'] = '0';
+            }
+
             $this->defaultFilters[$columnId] = $value;
         }
 
