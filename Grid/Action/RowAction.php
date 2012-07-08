@@ -201,7 +201,7 @@ class RowAction implements RowActionInterface
 
         foreach ($routeParameters as $key => $routeParameter) {
             if(is_int($key)) {
-                $this->routeParameters[$routeParameter] = $routeParameter;
+                $this->routeParameters[] = $routeParameter;
             } else {
                 $this->routeParameters[$key] = $routeParameter;
             }
