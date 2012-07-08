@@ -2,6 +2,54 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="1">
+                <source>Page</source>
+                <target>Страница</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>, Display</source>
+                <target>, Показать</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>of %count%</source>
+                <target>из %count%</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Items per page</source>
+                <target>Записей на страницу</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Select visible</source>
+                <target>Выбрать видимые</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Select all</source>
+                <target>Выбрать все</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Deselect visible</source>
+                <target>Отменить выделение видимых</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Deselect all</source>
+                <target>Отменить выделение всех</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>Action</source>
+                <target>Действие</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Submit Action</source>
+                <target>Выполнить</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>From:</source>
+                <target>С:</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>To:</source>
+                <target>По:</target>
+            </trans-unit>
             <trans-unit id="13">
                 <source>eq</source>
                 <target>Равно</target>
@@ -62,61 +110,10 @@
                 <source>isNotNull</source>
                 <target>Определено (не null)</target>
             </trans-unit>
-
-
-    <!-- with symbols -->
-            <!--trans-unit id="26">
-                <source>eqs</source>
-                <target>=</target>
-            </trans-unit>
-            <trans-unit id="27">
-                <source>neqs</source>
-                <target>≠</target>
-            </trans-unit>
             <trans-unit id="28">
-                <source>lts</source>
-                <target>&lt;</target>
+                <source>%count% Results, </source>
+                <target>%count% Запись(-и, -ей), </target>
             </trans-unit>
-            <trans-unit id="29">
-                <source>ltes</source>
-                <target>≤</target>
-            </trans-unit>
-            <trans-unit id="30">
-                <source>gts</source>
-                <target>&gt;</target>
-            </trans-unit>
-            <trans-unit id="31">
-                <source>gtes</source>
-                <target>≥</target>
-            </trans-unit>
-            <trans-unit id="32">
-                <source>reqs</source>
-                <target>^x$</target>
-            </trans-unit>
-            <trans-unit id="33">
-                <source>likes</source>
-                <target>(x)</target>
-            </trans-unit>
-            <trans-unit id="34">
-                <source>nlikes</source>
-                <target>()x</target>
-            </trans-unit>
-            <trans-unit id="35">
-                <source>rlikes</source>
-                <target>x*</target>
-            </trans-unit>
-            <trans-unit id="36">
-                <source>llikes</source>
-                <target>*x</target>
-            </trans-unit>
-            <trans-unit id="37">
-                <source>btws</source>
-                <target>&lt;x&lt;</target>
-            </trans-unit>
-            <trans-unit id="38">
-                <source>btwes</source>
-                <target>&lt;=x&lt;<=/target>
-            </trans-unit-->
         </body>
     </file>
 </xliff>
