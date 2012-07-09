@@ -453,7 +453,7 @@ function {{ grid.hash }}_switchOperator(elt, query_)
 {% block grid_scripts_submit_form %}
 function {{ grid.hash }}_submitForm(event, form)
 {
-    if (event.which == 13) {
+    if (event.type != 'keypress' || event.which == 13) {
         form.submit();
     }
 
