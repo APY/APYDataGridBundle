@@ -137,7 +137,7 @@ abstract class Export implements ContainerAwareInterface
      */
     public function getContent()
     {
-        return $this->container;
+        return $this->content;
     }
 
     /**
