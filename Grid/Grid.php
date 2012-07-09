@@ -725,7 +725,7 @@ class Grid
     public function getColumn($columnId)
     {
         foreach ($this->lazyAddColumn as $column) {
-            if ($column->getId() == $columnId) {
+            if ($column['column']->getId() == $columnId) {
                 return $column;
             }
         }
