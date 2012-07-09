@@ -2,6 +2,54 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="1">
+                <source>Page</source>
+                <target>Página</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>, Display</source>
+                <target>, Mostrar</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>of %count%</source>
+                <target>de %count%</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Items per page</source>
+                <target>Registros por página</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Select visible</source>
+                <target>Seleccionar visible</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Select all</source>
+                <target>Seleccionar todo</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Deselect visible</source>
+                <target>Deseleccionar visible</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Deselect all</source>
+                <target>Deseleccionar todo</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>Action</source>
+                <target>Acción</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Submit Action</source>
+                <target>Enviar</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>From:</source>
+                <target>De:</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>To:</source>
+                <target>Para:</target>
+            </trans-unit>
             <trans-unit id="13">
                 <source>eq</source>
                 <target>Igual a</target>
@@ -62,9 +110,13 @@
                 <source>isNotNull</source>
                 <target>Está definido</target>
             </trans-unit>
+            <trans-unit id="28">
+                <source>%count% Results, </source>
+                <target>%count% Registros, </target>
+            </trans-unit>
 
 
-    <!-- with symbols -->
+    <!-- con simbolos -->
             <!--trans-unit id="26">
                 <source>eqs</source>
                 <target>=</target>
