@@ -75,7 +75,7 @@ SUMMARY
 	1. [Set data to avoid calling the database](grid_configuration/set_data.md)
 	1. [Grid Response helper](grid_configuration/grid_response.md)
 	1. [Multi Grid manager](grid_configuration/multi_grid_manager.md)
-	1. [Working Exemple](grid_configuration/working_example.md)
+	1. [Working Example](grid_configuration/working_example.md)
 
 1. [Export](export/)
 	1. [Native exports](export/native_exports/)
