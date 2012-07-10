@@ -32,7 +32,7 @@ class Product
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      *
      * @GRID\Column(field="category.name", title="Category Name")
-     * @GRID\Column(field="category.children", type="array", title="Category Children")
+     * @GRID\Column(field="category.children.name", type="array", title="Category Children")
      */
     protected $category;
 }
@@ -61,6 +61,6 @@ class Product
 |values|array|_none_||For select filters or replace values in the grid|
 |searchOnClick|boolean|false|true or false|Sets the possibility to perform a search on the clicked cell (filterable has to be true)|
 
-**Note 1**: Every attribute have a setter and a getter method.
-**Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.
-**Note 2**: If operators are not visible, filtering is performed with the default operator.
+**Note 1**: Every attribute have a setter and a getter method.  
+**Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.  
+**Note 3**: If operators are not visible, filtering is performed with the default operator.
