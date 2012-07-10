@@ -447,7 +447,7 @@ class Grid
             list($columnId, $columnOrder) = explode('|', $this->defaultOrder);
 
             $column = $this->columns->getColumnById($columnId);
-            if ($column->isSortable() && in_array(strtolower($columnOrder), array('asc', 'desc'))) {
+            if (in_array(strtolower($columnOrder), array('asc', 'desc'))) {
                 $this->set(self::REQUEST_QUERY_ORDER, $this->defaultOrder);
             }
         }
