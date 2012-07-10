@@ -33,11 +33,13 @@ class ActionsColumn extends Column
 
     public function getRouteParameters($row, $action)
     {
+        // default the entity primary field with value, can be overriden in buttom
+        $routeParameters = array(
+            $row->getPrimaryField() => $row->getPrimaryFieldValue()
+        );
         $actionParameters = $action->getRouteParameters();
 
         if(!empty($actionParameters)) {
-            $routeParameters = array();
-
             foreach ($actionParameters as $name => $parameter) {
                 if(is_int($name)) {
                     $routeParameters[$this->getValidRouteParameters($parameter)] = $row->getField($parameter);
@@ -45,11 +47,9 @@ class ActionsColumn extends Column
                     $routeParameters[$this->getValidRouteParameters($name)] = $parameter;
                 }
             }
-
-            return $routeParameters;
         }
 
-        return array($row->getPrimaryField() => $row->getPrimaryFieldValue());
+        return $routeParameters;
     }
 
     protected function getValidRouteParameters($name)
