@@ -16,7 +16,7 @@
             </trans-unit>
             <trans-unit id="4">
                 <source>Items per page</source>
-                <target>Записей на страницу</target>
+                <target>Записей на странице</target>
             </trans-unit>
             <trans-unit id="5">
                 <source>Select visible</source>
@@ -111,7 +111,7 @@
                 <target>Определено (не null)</target>
             </trans-unit>
             <trans-unit id="28">
-                <source>%count% Results,</source>
+                <source>%count% Results, </source>
                 <target>{0}%count% Записей, |{1}%count% Запись, |{2,3,4}%count% Записи, |[5, inf]%count%Записей, </target>
             </trans-unit>
             <trans-unit id="29">
