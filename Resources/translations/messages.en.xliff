@@ -64,7 +64,11 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
+<<<<<<< HEAD
                 <target>{0,1}%count% Result, |[2, Inf]%count% Results, </target>
+=======
+                <target>{0,1}%count% Result, |[2, inf]%count% Results, </target>
+>>>>>>> upstream/master
             </trans-unit>
 
     <!-- with symbols -->
