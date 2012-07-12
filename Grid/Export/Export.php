@@ -410,8 +410,6 @@ abstract class Export implements ContainerAwareInterface
 
     protected function cleanHTML($value)
     {
-        $value = trim($value);
-
         // Clean indent
         $value = preg_replace('/>[\s\n\t\r]*</', '><', $value);
 
@@ -420,6 +418,8 @@ abstract class Export implements ContainerAwareInterface
 
         // Convert Special Characters in HTML
         $value = html_entity_decode($value);
+        
+        $value = trim($value);
 
         return $value;
     }
