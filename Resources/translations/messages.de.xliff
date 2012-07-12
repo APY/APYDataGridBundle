@@ -50,6 +50,82 @@
                 <source>To:</source>
                 <target>Bis:</target>
             </trans-unit>
+            <trans-unit id="13">
+                <source>eq</source>
+                <target>ist gleich</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>neq</source>
+                <target>ungleich</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>lt</source>
+                <target>kleiner als</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>lte</source>
+                <target>kleiner gleich</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>gt</source>
+                <target>größer als</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>gte</source>
+                <target>größer gleich</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>req</source>
+                <target>Regulärer Ausdruck</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>like</source>
+                <target>enthält</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>nlike</source>
+                <target>enthält nicht</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>rlike</source>
+                <target>fängt an mit</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>llike</source>
+                <target>endet mit</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>btw</source>
+                <target>zwischen (exklusiv)</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>btwe</source>
+                <target>zwischen (inklusiv)</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>isNull</source>
+                <target>ist nicht definiert</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>isNotNull</source>
+                <target>ist definiert</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>%count% Results, </source>
+                <target>{0}Keine Ergebnisse, |{1}%count% Ergebnis, |[2, Inf]%count% Ergebnisse, </target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>No result</source>
+                <target>Keine Ergebnisse</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>Export</source>
+                <target>Export</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>Reset</source>
+                <target>Zurücksetzen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
