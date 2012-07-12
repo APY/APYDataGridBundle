@@ -138,7 +138,7 @@
 {{ 'Page'|trans }}
 {% spaceless %}
 <input type="button" class="prev" {% if grid.page <= 0 %}disabled="disabled"{% endif %} value="<" onclick="return {{ grid.hash }}_previousPage();"/>
-<input type="text" class="current" value="{{ grid.page + 1 }}" size="2" onkeypress="{{ grid.hash }}_enterPage(parseInt(this.value)-1)"/>
+<input type="text" class="current" value="{{ grid.page + 1 }}" size="2" onkeypress="return {{ grid.hash }}_enterPage(parseInt(this.value)-1);"/>
 <input type="button" value=">" class="next" {% if grid.page >= grid.pageCount-1 %}disabled="disabled"{% endif %} onclick="return {{ grid.hash }}_nextPage();"/> {{ 'of %count%'|trans({ '%count%' : grid.pageCount }) }}
 {% endspaceless %}
 {% endblock grid_pager_selectpage %}
