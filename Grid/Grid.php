@@ -1441,7 +1441,7 @@ class Grid
      * Redirects or Renders a view - helper function
      *
      * @param string|array $param1 The view name or an array of parameters to pass to the view
-     * @param string|array $param1 The view name or an array of parameters to pass to the view
+     * @param string|array $param2 The view name or an array of parameters to pass to the view
      * @param Response $response A response instance
      *
      * @return Response A Response instance
