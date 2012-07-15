@@ -6,12 +6,27 @@ function {{ grid.hash }}_goto(url, data, type)
     type = type || 'GET';
     data = data || [];
 
+    
     $.ajax({
         url: url,
         data: data,
-        type: type
-    }).done(function( msg ) {
-        $('#{{ grid.hash }}').parent().replaceWith(msg);
+        type: type,
+        dataType: 'html',
+        dataFilter: function (data, type){
+        
+            grid_temp = document.createElement("div");
+            grid_temp.id = "grid_temp";
+            grid_temp.innerHTML = data;
+            document.body.appendChild(grid_temp);
+            data = $("#grid_temp");
+            $("#grid_temp").remove();
+            
+            return data;
+        }
+    }).done(function( data ) {
+        theForm = data.find('form[id^=grid]');
+        $('#{{ grid.hash }}').replaceWith(theForm);
+        
     });
 
     return false
@@ -39,21 +54,21 @@ function {{ grid.hash }}_submitForm(event, form, force)
 {% block grid_scripts_ajax %}
 $(function () {
     // Order and pagerfanta links
-    $('a.order, nav a', '#{{ grid.hash }}').click(function () {
+    $('a.order, nav a', '#{{ grid.hash }}').live('click', function () {
         {{ grid.hash }}_goto(this.href);
 
         return false;
     });
 
     // Reset link
-    $('#{{ grid.hash }} a.grid-reset').click(function () {
+    $('#{{ grid.hash }} a.grid-reset').live('click', function () {
         {{ grid.hash }}_reset();
 
         return false;
     });
 
     // Mass actions submit
-    $('#{{ grid.hash }} input.submit-massaction').click(function () {
+    $('#{{ grid.hash }} input.submit-massaction').live('click', function () {
         var selector = $('#{{ grid.hash }} .grid_massactions select');
 
         {{ grid.hash }}_goto('{{ grid.routeUrl }}', selector.attr('name') + '=' + selector.val(), 'POST');
