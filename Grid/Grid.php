@@ -226,7 +226,6 @@ class Grid
     protected $actionsColumnSize;
     protected $actionsColumnSeparator;
 
-
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container
      * @param string $id set if you are using more then one grid inside controller
@@ -243,14 +242,12 @@ class Grid
 
         $this->columns = new Columns($container->get('security.context'));
 
-        $this->routeParameters = $this->request->attributes->all();
-        unset($this->routeParameters['_route']);
-        unset($this->routeParameters['_controller']);
-        unset($this->routeParameters['_route_params']);
-        unset($this->routeParameters['_template']);
-        unset($this->routeParameters['_template_default_vars']);
-        unset($this->routeParameters['_template_streamable']);
-        unset($this->routeParameters['_template_vars']);
+        $this->routeParameters = array_merge($this->request->query->all(), $this->request->attributes->all());
+        foreach ($this->routeParameters as $key => $param) {
+            if (substr($key, 0, 1) == '_') {
+                unset($this->routeParameters[$key]);
+            }
+        }
     }
 
     /**
@@ -903,13 +900,27 @@ class Grid
     }
 
     /**
+     * Sets Route URL
+     *
+     * @param string routeUrl
+     *
+     * @return self
+     */
+    public function setRouteUrl($routeUrl)
+    {
+        $this->routeUrl = $routeUrl;
+
+        return $this;
+    }
+
+    /**
      * Returns Route URL
      *
      * @return string
      */
     public function getRouteUrl()
     {
-        if ($this->routeUrl == '') {
+        if ($this->routeUrl === null) {
             $this->routeUrl = $this->router->generate($this->request->get('_route'), $this->getRouteParameters());
         }
 
