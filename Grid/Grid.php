@@ -242,7 +242,7 @@ class Grid
 
         $this->columns = new Columns($container->get('security.context'));
 
-        $this->routeParameters = array_merge($this->request->query->all(), $this->request->attributes->all());
+        $this->routeParameters = $this->request->attributes->all();
         foreach ($this->routeParameters as $key => $param) {
             if (substr($key, 0, 1) == '_') {
                 unset($this->routeParameters[$key]);
