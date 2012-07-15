@@ -1,7 +1,7 @@
 {# ------------------------------------------------------ grid ------------------------------------------------------ #}
 {% block grid %}
 <div class="grid">
-{% if grid.totalCount > 0 or grid.isFiltered or grid.noDataMessage is sameas(false) %}
+{% if grid.rows|length > 0 or grid.isFiltered or grid.noDataMessage is sameas(false) %}
     <form id="{{ grid.hash }}" action="{{ grid.routeUrl }}" method="post">
         <div class="grid_header">
         {% if grid.massActions|length > 0 %}
@@ -411,7 +411,7 @@ function {{ grid.hash }}_markAll(select)
 
     if (select) {
         document.getElementById('{{ grid.hash }}_mass_action_all').value = '1';
-        selected.innerHTML = '{{ 'Selected _s_ rows'|trans }}'.replace('_s_', '{{ grid.totalCount }}');
+        selected.innerHTML = '{{ 'Selected _s_ rows'|trans }}'.replace('_s_', '{{ grid.rows|length }}');
     } else {
         document.getElementById('{{ grid.hash }}_mass_action_all').value = '0';
         selected.innerHTML = '';
