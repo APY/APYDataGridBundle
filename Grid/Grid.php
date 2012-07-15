@@ -210,6 +210,13 @@ class Grid
     protected $defaultOrder;
 
     /**
+     * Default limit
+     *
+     * @var integer
+     */
+    protected $defaultLimit;
+
+    /**
      * Default page
      *
      * @var int
@@ -446,6 +453,20 @@ class Grid
             $column = $this->columns->getColumnById($columnId);
             if (in_array(strtolower($columnOrder), array('asc', 'desc'))) {
                 $this->set(self::REQUEST_QUERY_ORDER, $this->defaultOrder);
+            } else {
+                throw new \InvalidArgumentException($columnOrder . ' is not a valid order.');
+            }
+        }
+
+        if ($this->defaultLimit !== null) {
+            if ((int) $this->defaultLimit >= 0) {
+                if (isset($this->limits[$this->defaultLimit])) {
+                    $this->set(self::REQUEST_QUERY_LIMIT, $this->defaultLimit);
+                } else {
+                    throw new \InvalidArgumentException($this->defaultLimit. ' is not a valid limit.');
+                }
+            } else {
+                throw new \InvalidArgumentException('Limit must be a positive number');
             }
         }
     }
@@ -1036,14 +1057,11 @@ class Grid
         if (is_array($limits)) {
             if ( (int) key($limits) === 0) {
                 $this->limits = array_combine($limits, $limits);
-                $this->limit = current($this->limits);
             } else {
                 $this->limits = $limits;
-                $this->limit = (int) key($this->limits);
             }
         } elseif (is_int($limits)) {
             $this->limits = array($limits => (string)$limits);
-            $this->limit = $limits;
         } else {
             throw new \InvalidArgumentException('Limit has to be array or integer');
         }
@@ -1072,7 +1090,21 @@ class Grid
     }
 
     /**
-     * Sets current Page
+     * Sets default Limit
+     *
+     * @param $limit
+     *
+     * @return self
+     */
+    public function setDefaultLimit($limit)
+    {
+        $this->defaultLimit = (int) $limit;
+
+        return $this;
+    }
+
+    /**
+     * Sets default Page
      *
      * @param $page
      *
