@@ -137,7 +137,7 @@ abstract class Export implements ContainerAwareInterface
      */
     public function getContent()
     {
-        return $this->container;
+        return $this->content;
     }
 
     /**
@@ -245,8 +245,8 @@ abstract class Export implements ContainerAwareInterface
 
     protected function getGridTitles()
     {
-        $titlesHTML = $this->twig->loadTemplate($this->getTemplate())->renderBlock('grid_titles', array('grid' => $this->grid));
-
+        $titlesHTML = $this->renderBlock('grid_titles', array('grid' => $this->grid));
+        
         preg_match_all('#<th[^>]*?>(.*)?</th>#isU', $titlesHTML, $matches);
 
         if (empty($matches)) {
@@ -378,13 +378,15 @@ abstract class Export implements ContainerAwareInterface
 
         if (empty($this->templates)) {
             //get template name
-            if ($template instanceof \Twig_Template) {
-                $this->templates[] = $template;
-                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
-            } elseif (is_string($template)) {
-                $this->templates = $this->getTemplatesFromString($template);
+            if (is_string($template)) {
+                if (substr($template, 0, 8) === '__SELF__') {
+                    $this->templates = $this->getTemplatesFromString(substr($template, 8));
+                    $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+                } else {
+                    $this->templates = $this->getTemplatesFromString($template);
+                }
             } elseif ($this->template === null) {
-                $this->templates[] = $this->twig->loadTemplate($this::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
             } else {
                 throw new \Exception('Unable to load template');
             }
@@ -403,15 +405,11 @@ abstract class Export implements ContainerAwareInterface
             $template = $template->getParent(array());
         }
 
-        $templates[] = $this->twig->loadTemplate($theme);
-
         return $templates;
     }
 
     protected function cleanHTML($value)
     {
-        $value = trim($value);
-
         // Clean indent
         $value = preg_replace('/>[\s\n\t\r]*</', '><', $value);
 
@@ -420,6 +418,8 @@ abstract class Export implements ContainerAwareInterface
 
         // Convert Special Characters in HTML
         $value = html_entity_decode($value);
+        
+        $value = trim($value);
 
         return $value;
     }

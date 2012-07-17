@@ -40,19 +40,26 @@ class ActionsColumn extends Column
 
             foreach ($actionParameters as $name => $parameter) {
                 if(is_int($name)) {
-                    $routeParameters[$parameter] = $row->getField($parameter);
+                    $routeParameters[$this->getValidRouteParameters($parameter)] = $row->getField($parameter);
                 } else {
-                    $routeParameters[$name] = $parameter;
+                    $routeParameters[$this->getValidRouteParameters($name)] = $parameter;
                 }
             }
 
             return $routeParameters;
         }
 
-        return array_merge(
-            array($row->getPrimaryField() => $row->getPrimaryFieldValue()),
-            $action->getRouteParameters()
-        );
+        return array($row->getPrimaryField() => $row->getPrimaryFieldValue());
+    }
+
+    protected function getValidRouteParameters($name)
+    {
+        $pos = 0;
+        while (($pos = strpos($name, '.', ++$pos)) !== false) {
+            $name = substr($name, 0, $pos) . strtoupper(substr($name, $pos+1, 1)) . substr($name, $pos+2);
+        }
+
+        return $name;
     }
 
     public function getRowActions()

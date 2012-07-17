@@ -1,8 +1,10 @@
 Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid.  
 This bundle was initiated by Stanislav Turza (Sorien).
 
-**Version**: 2.0  
-**Compatibility**: Symfony >= 2.0.0
+**Version**: 2.1-dev  
+**Compatibility**: Symfony >= 2.0.0, Twig >= 1.5.0
+
+[![Build Status](https://secure.travis-ci.org/Abhoryo/APYDataGridBundle.png?branch=master)](http://travis-ci.org/Abhoryo/APYDataGridBundle)
 
 See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/Abhoryo/APYDataGridBundle/blob/master/UPGRADE-2.0.md)
 
@@ -19,7 +21,8 @@ See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGEL
 - Supports mapped fields with Entity source
 - Annotations and PHP configuration
 - External filters box
-- Pagination
+- Ajax loading
+- Pagination (You can also use Pagerfanta)
 - Column width and column align
 - Prefix tranlated titles
 - Grid manager for multi-grid on the same page

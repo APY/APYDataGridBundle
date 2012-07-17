@@ -4,128 +4,171 @@
         <body>
             <trans-unit id="1">
                 <source>Page</source>
-                <target>Seite</target>
+                <target>Página</target>
             </trans-unit>
             <trans-unit id="2">
                 <source>, Display</source>
-                <target>, Zeige</target>
+                <target>, Mostrar</target>
             </trans-unit>
             <trans-unit id="3">
                 <source>of %count%</source>
-                <target>von %count%</target>
+                <target>de %count%</target>
             </trans-unit>
             <trans-unit id="4">
                 <source>Items per page</source>
-                <target>Einträge pro Seite</target>
+                <target>Registros por página</target>
             </trans-unit>
             <trans-unit id="5">
                 <source>Select visible</source>
-                <target>Sichtbare auswählen</target>
+                <target>Seleccionar visible</target>
             </trans-unit>
             <trans-unit id="6">
                 <source>Select all</source>
-                <target>Alles auswählen</target>
+                <target>Seleccionar todo</target>
             </trans-unit>
             <trans-unit id="7">
                 <source>Deselect visible</source>
-                <target>Sichtbare aufheben</target>
+                <target>Deseleccionar visible</target>
             </trans-unit>
             <trans-unit id="8">
                 <source>Deselect all</source>
-                <target>Alles aufheben</target>
+                <target>Deseleccionar todo</target>
             </trans-unit>
             <trans-unit id="9">
                 <source>Action</source>
-                <target>Aktion</target>
+                <target>Acción</target>
             </trans-unit>
             <trans-unit id="10">
                 <source>Submit Action</source>
-                <target>Aktion ausführen</target>
+                <target>Enviar</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>From:</source>
-                <target>Von:</target>
+                <target>De:</target>
             </trans-unit>
             <trans-unit id="12">
                 <source>To:</source>
-                <target>Bis:</target>
+                <target>Para:</target>
             </trans-unit>
             <trans-unit id="13">
                 <source>eq</source>
-                <target>ist gleich</target>
+                <target>Igual a</target>
             </trans-unit>
             <trans-unit id="14">
                 <source>neq</source>
-                <target>ungleich</target>
+                <target>Distinto a</target>
             </trans-unit>
             <trans-unit id="15">
                 <source>lt</source>
-                <target>kleiner als</target>
+                <target>Menor que</target>
             </trans-unit>
             <trans-unit id="16">
                 <source>lte</source>
-                <target>kleiner gleich</target>
+                <target>Menor o igual que</target>
             </trans-unit>
             <trans-unit id="17">
                 <source>gt</source>
-                <target>größer als</target>
+                <target>Mayor que</target>
             </trans-unit>
             <trans-unit id="18">
                 <source>gte</source>
-                <target>größer gleich</target>
+                <target>Mayor o igual que</target>
             </trans-unit>
             <trans-unit id="19">
                 <source>req</source>
-                <target>Regulärer Ausdruck</target>
+                <target>Expresión regular</target>
             </trans-unit>
             <trans-unit id="20">
                 <source>like</source>
-                <target>enthält</target>
+                <target>Contiene</target>
             </trans-unit>
             <trans-unit id="21">
                 <source>nlike</source>
-                <target>enthält nicht</target>
+                <target>No contiene</target>
             </trans-unit>
             <trans-unit id="22">
                 <source>rlike</source>
-                <target>fängt an mit</target>
+                <target>Comienza con</target>
             </trans-unit>
             <trans-unit id="23">
                 <source>llike</source>
-                <target>endet mit</target>
+                <target>Termina con</target>
             </trans-unit>
             <trans-unit id="24">
                 <source>btw</source>
-                <target>zwischen (exklusiv)</target>
+                <target>Entre (exclusivo)</target>
             </trans-unit>
             <trans-unit id="25">
                 <source>btwe</source>
-                <target>zwischen (inklusiv)</target>
+                <target>Entre (inclusivo)</target>
             </trans-unit>
             <trans-unit id="26">
                 <source>isNull</source>
-                <target>ist nicht definiert</target>
+                <target>No está definido</target>
             </trans-unit>
             <trans-unit id="27">
                 <source>isNotNull</source>
-                <target>ist definiert</target>
+                <target>Está definido</target>
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>{0}Keine Ergebnisse, |{1}%count% Ergebnis, |[2, Inf]%count% Ergebnisse, </target>
+                <target>{0}%count% Registros, |{1}%count% Registro, |]1, Inf]%count% Registros, </target>
+            </trans-unit>
+
+
+    <!-- con simbolos -->
+            <!--trans-unit id="26">
+                <source>eqs</source>
+                <target>=</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>neqs</source>
+                <target>≠</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>lts</source>
+                <target>&lt;</target>
             </trans-unit>
             <trans-unit id="29">
-                <source>No result</source>
-                <target>Keine Ergebnisse</target>
+                <source>ltes</source>
+                <target>≤</target>
             </trans-unit>
             <trans-unit id="30">
-                <source>Export</source>
-                <target>Export</target>
+                <source>gts</source>
+                <target>&gt;</target>
             </trans-unit>
             <trans-unit id="31">
-                <source>Reset</source>
-                <target>Zurücksetzen</target>
+                <source>gtes</source>
+                <target>≥</target>
             </trans-unit>
+            <trans-unit id="32">
+                <source>reqs</source>
+                <target>^x$</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>likes</source>
+                <target>(x)</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>nlikes</source>
+                <target>()x</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>rlikes</source>
+                <target>x*</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>llikes</source>
+                <target>*x</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>btws</source>
+                <target>&lt;x&lt;</target>
+            </trans-unit>
+            <trans-unit id="38">
+                <source>btwes</source>
+                <target>&lt;=x&lt;<=/target>
+            </trans-unit-->
         </body>
     </file>
 </xliff>

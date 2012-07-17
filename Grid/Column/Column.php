@@ -80,11 +80,13 @@ abstract class Column
     protected $operatorsVisible;
     protected $operators;
     protected $defaultOperator;
-    protected $values;
+    protected $values = array();
     protected $selectFrom;
     protected $selectMulti;
+    protected $searchOnClick = false;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
+
 
     /**
      * Default Column constructor
@@ -135,6 +137,7 @@ abstract class Column
         )));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
         $this->setSelectMulti($this->getParam('selectMulti', false));
+        $this->setSearchOnClick($this->getParam('searchOnClick'), false);
     }
 
     protected function getParam($id, $default = null)
@@ -771,5 +774,17 @@ abstract class Column
     {
         if ($this->getSelectMulti()) return false;
         return true;
+    }
+
+    public function setSearchOnClick($searchOnClick)
+    {
+        $this->searchOnClick = $searchOnClick;
+
+        return $this;
+    }
+
+    public function getSearchOnClick()
+    {
+        return $this->searchOnClick;
     }
 }

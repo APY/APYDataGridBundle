@@ -56,3 +56,32 @@ $rowAction2->setRouteParameters(array('id', 'version' => 2));
 $grid->addRowAction($rowAction2);
 ...
 ```
+
+For mapped fields, you catch a parameter with its camelCase representation. e.g. `user.information.country` turn into `userInformationCountry`.
+
+## Exemple
+```php
+<?php
+use APY\DataGridBundle\Grid\Action\RowAction;
+...
+$rowAction2 = new RowAction('Edit', 'route_to_edit');
+$rowAction2->setRouteParameters(array('user.information.country'));
+$grid->addRowAction($rowAction2);
+...
+```
+
+```php
+<?php
+...
+/**
+ * @Route("/{userInformationCountry}", name="route_to_edit")
+ * @Template
+ */
+public function djettePlayListShowAction($userInformationCountry)
+{
+    ...
+}
+...
+```
+
+

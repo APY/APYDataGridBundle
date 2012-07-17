@@ -59,6 +59,29 @@ class DataGridExtension extends \Twig_Extension
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
+        
+        // Avoids the exception "Variable does not exist" with the _self template
+        $globals = $this->environment->getGlobals();
+
+        if (!isset($globals['grid'])) {
+            $this->environment->addGlobal('grid', null);
+        }
+
+        if (!isset($globals['column'])) {
+            $this->environment->addGlobal('column', null);
+        }
+
+        if (!isset($globals['row'])) {
+            $this->environment->addGlobal('row', null);
+        }
+
+        if (!isset($globals['value'])) {
+            $this->environment->addGlobal('value', null);
+        }
+
+        if (!isset($globals['submitOnChange'])) {
+            $this->environment->addGlobal('submitOnChange', null);
+        }
     }
 
     /**
@@ -70,23 +93,17 @@ class DataGridExtension extends \Twig_Extension
     {
         return array(
             'grid'              => new \Twig_Function_Method($this, 'getGrid', array('is_safe' => array('html'))),
-            'grid_titles'       => new \Twig_Function_Method($this, 'getGridTitles', array('is_safe' => array('html'))),
-            'grid_filters'      => new \Twig_Function_Method($this, 'getGridFilters', array('is_safe' => array('html'))),
-            'grid_rows'         => new \Twig_Function_Method($this, 'getGridRows', array('is_safe' => array('html'))),
-            'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
-            'grid_actions'      => new \Twig_Function_Method($this, 'getGridActions', array('is_safe' => array('html'))),
             'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl'),
             'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter'),
             'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
-            'grid_no_data'      => new \Twig_Function_Method($this, 'getGridNoData', array('is_safe' => array('html'))),
-            'grid_no_result'    => new \Twig_Function_Method($this, 'getGridNoResult', array('is_safe' => array('html'))),
-            'grid_exports'      => new \Twig_Function_Method($this, 'getGridExports', array('is_safe' => array('html'))),
             'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
             'grid_pagerfanta'   => new \Twig_Function_Method($this, 'getPagerfanta', array('is_safe' => array('html'))),
+            // Other methods with only the grid as input and output argument (Twig >= 1.5.0)
+            'grid_*'            => new \Twig_Function_Method($this, 'getGrid_', array('is_safe' => array('html')))
         );
     }
 
-    public function initGird($grid, $theme = null, $id = '', array $params = array())
+    public function initGrid($grid, $theme = null, $id = '', array $params = array())
     {
         $this->theme = $theme;
         $this->templates = array();
@@ -105,7 +122,7 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getGrid($grid, $theme = null, $id = '', array $params = array())
     {
-        $this->initGird($grid, $theme, $id, $params);
+        $this->initGrid($grid, $theme, $id, $params);
 
         // For export
         $grid->setTemplate($theme);
@@ -113,34 +130,9 @@ class DataGridExtension extends \Twig_Extension
         return $this->renderBlock('grid', array('grid' => $grid));
     }
 
-    public function getGridTitles($grid)
+    public function getGrid_($name, $grid)
     {
-        return $this->renderBlock('grid_titles', array('grid' => $grid));
-    }
-
-    public function getGridFilters($grid)
-    {
-        return $this->renderBlock('grid_filters', array('grid' => $grid));
-    }
-
-    public function getGridRows($grid)
-    {
-        return $this->renderBlock('grid_rows', array('grid' => $grid));
-    }
-
-    public function getGridPager($grid)
-    {
-        return $this->renderBlock('grid_pager', array('grid' => $grid));
-    }
-
-    public function getGridActions($grid)
-    {
-        return $this->renderBlock('grid_actions', array('grid' => $grid));
-    }
-
-    public function getGridExports($grid)
-    {
-        return $this->renderBlock('grid_exports', array('grid' => $grid));
+        return $this->renderBlock('grid_' . $name, array('grid' => $grid));
     }
 
     /**
@@ -165,10 +157,10 @@ class DataGridExtension extends \Twig_Extension
          || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
          || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
         {
-            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row, 'grid' => $grid));
+            return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'row' => $row, 'value' => $value));
         }
 
-        return $value;
+        return $this->renderBlock('grid_column_cell', array('grid' => $grid, 'column' => $column, 'row' => $row, 'value' => $value));
     }
 
     /**
@@ -192,7 +184,7 @@ class DataGridExtension extends \Twig_Extension
          || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType())
          || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter'))
         {
-            return $this->renderBlock($block, array('column' => $column, 'grid' => $grid, 'submitOnChange' => $column->isFilterSubmitOnChange()));
+            return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'submitOnChange' => $column->isFilterSubmitOnChange()));
         }
 
         return '';
@@ -224,27 +216,15 @@ class DataGridExtension extends \Twig_Extension
         }
     }
 
-    public function getGridNoData($grid)
-    {
-        return $this->renderBlock('grid_no_data', array('grid' => $grid));
-    }
-
-    public function getGridNoResult($grid)
-    {
-        return $this->renderBlock('grid_no_result', array('grid' => $grid));
-    }
-
     public function getGridSearch($grid, $theme = null, $id = '', array $params = array())
     {
-        $this->initGird($grid, $theme, $id, $params);
+        $this->initGrid($grid, $theme, $id, $params);
 
         return $this->renderBlock('grid_search', array('grid' => $grid));
     }
 
-    public function getPagerfanta($grid, $theme = null, $id = '', array $params = array())
+    public function getPagerfanta($grid)
     {
-        $this->initGird($grid, $theme, $id, $params);
-
         $adapter = new NullAdapter($grid->getTotalCount());
 
         $pagerfanta = new Pagerfanta($adapter);
@@ -307,11 +287,11 @@ class DataGridExtension extends \Twig_Extension
         if (empty($this->templates)) {
             if ($this->theme instanceof \Twig_Template) {
                 $this->templates[] = $this->theme;
-                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->environment->loadTemplate(static::DEFAULT_TEMPLATE);
             } elseif (is_string($this->theme)) {
                 $this->templates = $this->getTemplatesFromString($this->theme);
             } elseif ($this->theme === null) {
-                $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->environment->loadTemplate(static::DEFAULT_TEMPLATE);
             } else {
                 throw new \Exception('Unable to load template');
             }
@@ -329,8 +309,6 @@ class DataGridExtension extends \Twig_Extension
             $this->templates[] = $template;
             $template = $template->getParent(array());
         }
-
-        $this->templates[] = $this->environment->loadTemplate($theme);
 
         return $this->templates;
     }

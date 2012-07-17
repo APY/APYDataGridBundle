@@ -62,7 +62,10 @@
                 <source>isNotNull</source>
                 <target>Is defined</target>
             </trans-unit>
-
+            <trans-unit id="28">
+                <source>%count% Results, </source>
+                <target>{0,1}%count% Result, |[2, Inf]%count% Results, </target>
+            </trans-unit>
 
     <!-- with symbols -->
             <!--trans-unit id="26">

@@ -31,6 +31,8 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
                 ->booleanNode('persistence')->defaultFalse()->end()
+                ->scalarNode('no_data_message')->defaultValue('No data')->end()
+                ->scalarNode('no_result_message')->defaultValue('No result')->end()
             ->end()
         ;
         return $treeBuilder;

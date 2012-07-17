@@ -30,5 +30,7 @@ class APYDataGridExtension extends Extension
 
         $container->setParameter('apy_data_grid.limits', $config['limits']);
         $container->setParameter('apy_data_grid.persistence', $config['persistence']);
+        $container->setParameter('apy_data_grid.no_data_message', $config['no_data_message']);
+        $container->setParameter('apy_data_grid.no_result_message', $config['no_result_message']);
     }
 }
