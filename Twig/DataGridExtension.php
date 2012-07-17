@@ -179,7 +179,7 @@ class DataGridExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function getGridFilter($column, $grid, $submitOnChange = true)
+    public function getGridFilter($column, $grid)
     {
         $id = $this->names[$grid->getHash()];
 
@@ -192,7 +192,7 @@ class DataGridExtension extends \Twig_Extension
          || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType())
          || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter'))
         {
-            return $this->renderBlock($block, array('column' => $column, 'grid' => $grid, 'submitOnChange' => $submitOnChange));
+            return $this->renderBlock($block, array('column' => $column, 'grid' => $grid, 'submitOnChange' => $column->isFilterSubmitOnChange()));
         }
 
         return '';

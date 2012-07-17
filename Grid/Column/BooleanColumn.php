@@ -21,7 +21,7 @@ class BooleanColumn extends Column
         $params['operators'] = array(self::OPERATOR_EQ);
         $params['defaultOperator'] = self::OPERATOR_EQ;
         $params['operatorsVisible'] = false;
-        $params['multiFilter'] = false;
+        $params['selectMulti'] = false;
 
         parent::__initialize($params);
 

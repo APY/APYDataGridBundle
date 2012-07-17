@@ -81,9 +81,8 @@ abstract class Column
     protected $operators;
     protected $defaultOperator;
     protected $values;
-    protected $defaultValues;
     protected $selectFrom;
-    protected $multiFilter;
+    protected $selectMulti;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -116,7 +115,6 @@ abstract class Column
         $this->setFilterType($this->getParam('filter', 'input'));
         $this->setSelectFrom($this->getParam('selectFrom', 'query'));
         $this->setValues($this->getParam('values', array()));
-        $this->setDefaultValues($this->getParam('defaultValues', array()));
         $this->setOperatorsVisible($this->getParam('operatorsVisible', true));
         // Order is important for the order display
         $this->setOperators($this->getParam('operators', array(
@@ -136,7 +134,7 @@ abstract class Column
             self::OPERATOR_ISNOTNULL,
         )));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
-        $this->setMultiFilter($this->getParam('multiFilter', false));
+        $this->setSelectMulti($this->getParam('selectMulti', false));
     }
 
     protected function getParam($id, $default = null)
@@ -712,28 +710,6 @@ abstract class Column
         return $this->values;
     }
 
-    public function setDefaultValues(array $defaultValues)
-    {
-        $this->defaultValues = $defaultValues;
-
-        return $this;
-    }
-
-    public function getDefaultValues()
-    {
-        return $this->defaultValues;
-    }
-
-    public function applyDefaultValues()
-    {
-        $this->data = array('operator' => $this->getDefaultOperator(), 'from' => static::DEFAULT_VALUE, 'to' => static::DEFAULT_VALUE);
-        foreach ($this->getDefaultValues() as $defaultValue) {
-            if (in_array($defaultValue, $this->getValues())) {
-                $this->data['from'] = $defaultValue;
-            }
-        }
-    }
-
     public function setSelectFrom($selectFrom)
     {
         $this->selectFrom = $selectFrom;
@@ -746,14 +722,14 @@ abstract class Column
         return $this->selectFrom;
     }
 
-    public function getMultiFilter()
+    public function getSelectMulti()
     {
-        return $this->multiFilter;
+        return $this->selectMulti;
     }
 
-    public function setMultiFilter($multiFilter)
+    public function setSelectMulti($selectMulti)
     {
-        $this->multiFilter = $multiFilter;
+        $this->selectMulti = $selectMulti;
     }
 
     public function hasDQLFunction(&$matches = null)
@@ -783,5 +759,17 @@ abstract class Column
     public function getType()
     {
         return '';
+    }
+
+    /**
+     * By default all filers include a JavaScript onchange=submit block.  This
+     * does not make sense in some cases, such as with multi-select filters.
+     *
+     * @todo Eventaully make this configurable via annotations?
+     */
+    public function isFilterSubmitOnChange()
+    {
+        if ($this->getSelectMulti()) return false;
+        return true;
     }
 }
