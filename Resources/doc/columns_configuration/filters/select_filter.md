@@ -16,6 +16,7 @@ The two selectors are disabled if the `Is defined` operator or the  `Is not defi
 |Attribute|Type|Default value|Possible values|Description|
 |:--:|:--|:--|:--|:--|
 |selectFrom|string|query|query, source or values|Define this attribute if you want to force the format of the value.<br />(e.g. "Y-m-d H:i:s")|
+|selectMulti|boolean|false|true/false|Set to true for multiple select.
 |values|array|||Define the options values of the selector if selectFrom is set to `values`.<br />(e.g. "Y-m-d H:i:s")|
 
 ## selectFrom informations
