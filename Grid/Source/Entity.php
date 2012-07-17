@@ -472,6 +472,10 @@ class Entity extends Source
                     $column->setSelectFrom('source');
                     $this->populateSelectFilters($columns, true);
                 } else {
+                    if ($column->getType() == 'array') {
+                        natcasesort($values);
+                    }
+
                     $column->setValues($values);
                 }
             }

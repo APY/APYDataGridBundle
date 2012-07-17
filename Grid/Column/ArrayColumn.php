@@ -40,16 +40,23 @@ class ArrayColumn extends Column
 
         $filters = array();
         foreach($parentFilters as $filter) {
-            $len = strlen($filter->getValue());
-            $value = 's:'.$len.':"'.$filter->getValue().'";';
-
             switch ($filter->getOperator()) {
                 case self::OPERATOR_EQ:
                 case self::OPERATOR_NEQ:
-                    $filters[] =  new Filter($filter->getOperator(), 'a:1:{'.$value.'}');
+                    $filterValues = (array) $filter->getValue();
+                    $value = '';
+                    $counter = 1;
+                    foreach ($filterValues as $filterValue) {
+                        $len = strlen($filterValue);
+                        $value .= 'i:'.$counter++.';s:'.$len.':"'.$filterValue.'";';
+                    }
+
+                    $filters[] =  new Filter($filter->getOperator(), 'a:'.count($filterValues).':{'.$value.'}');
                     break;
                 case self::OPERATOR_LIKE:
                 case self::OPERATOR_NLIKE:
+                    $len = strlen($filter->getValue());
+                    $value = 's:'.$len.':"'.$filter->getValue().'";';
                     $filters[] =  new Filter($filter->getOperator(), $value);
                     break;
                 case self::OPERATOR_ISNULL:

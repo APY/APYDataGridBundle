@@ -16,21 +16,18 @@ class BooleanColumn extends Column
 {
     public function __initialize(array $params)
     {
+        $params['filter'] = 'select';
         $params['selectFrom'] = 'values';
-
-        if (!isset($params['values'])) {
-            $params['values'] = array(1 => 'true', 0 => 'false');
-        }
-
         $params['operators'] = array(self::OPERATOR_EQ);
         $params['defaultOperator'] = self::OPERATOR_EQ;
         $params['operatorsVisible'] = false;
-        $params['filter'] = 'select';
+        $params['selectMulti'] = false;
 
         parent::__initialize($params);
 
         $this->setAlign($this->getParam('align', 'center'));
         $this->setSize($this->getParam('size', '30'));
+        $this->setValues($this->getParam('values', array(1 => 'true', 0 => 'false')));
     }
 
     public function isQueryValid($query)
