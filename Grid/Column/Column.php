@@ -62,7 +62,7 @@ abstract class Column
     protected $filterable;
     protected $visible;
     protected $callback;
-    protected $order = '';
+    protected $order;
     protected $size;
     protected $visibleForSource;
     protected $primary;
@@ -70,34 +70,23 @@ abstract class Column
     protected $inputType;
     protected $field;
     protected $role;
-
     protected $filterType;
     protected $filter;
-
     protected $params;
     protected $isSorted = false;
     protected $orderUrl;
-
-    /**
-     * @var \Symfony\Component\Security\Core\SecurityContextInterface
-     */
     protected $securityContext;
-
     protected $data;
-
-    protected $operatorsVisible = true;
-
-    protected $operators = array();
-
-    protected $defaultOperator = true;
+    protected $operatorsVisible;
+    protected $operators;
+    protected $defaultOperator;
+    protected $values = array();
+    protected $selectFrom;
+    protected $selectMulti;
+    protected $searchOnClick = false;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
-    protected $values = array();
-
-    protected $selectFrom;
-
-    protected $searchOnClick = false;
 
     /**
      * Default Column constructor
@@ -147,6 +136,7 @@ abstract class Column
             self::OPERATOR_ISNOTNULL,
         )));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
+        $this->setSelectMulti($this->getParam('selectMulti', false));
         $this->setSearchOnClick($this->getParam('searchOnClick'), false);
     }
 
@@ -582,29 +572,44 @@ abstract class Column
         $filters = array();
 
         if ($this->hasOperator($this->data['operator'])) {
-            switch ($this->data['operator']) {
-                case self::OPERATOR_BTW:
-                    if ($this->data['from'] != static::DEFAULT_VALUE) {
-                        $filters[] = new Filter(self::OPERATOR_GT, $this->data['from']);
-                    }
-                    if ($this->data['to'] != static::DEFAULT_VALUE) {
-                            $filters[] = new Filter(self::OPERATOR_LT, $this->data['to']);
-                    }
-                    break;
-                case self::OPERATOR_BTWE:
-                    if ($this->data['from'] != static::DEFAULT_VALUE) {
-                        $filters[] = new Filter(self::OPERATOR_GTE, $this->data['from']);
-                    }
-                    if ($this->data['to'] != static::DEFAULT_VALUE) {
-                        $filters[] = new Filter(self::OPERATOR_LTE, $this->data['to']);
-                    }
-                    break;
-                case self::OPERATOR_ISNULL:
-                case self::OPERATOR_ISNOTNULL:
-                    $filters[] = new Filter($this->data['operator']);
-                    break;
-                default:
-                    $filters[] = new Filter($this->data['operator'], $this->data['from']);
+            if ($this instanceof ArrayColumn && in_array($this->data['operator'], array(self::OPERATOR_EQ, self::OPERATOR_NEQ))) {
+                $filters[] = new Filter($this->data['operator'], $this->data['from']);
+            } else {
+                switch ($this->data['operator']) {
+                    case self::OPERATOR_BTW:
+                        if ($this->data['from'] != static::DEFAULT_VALUE) {
+                            $filters[] = new Filter(self::OPERATOR_GT, $this->data['from']);
+                        }
+                        if ($this->data['to'] != static::DEFAULT_VALUE) {
+                                $filters[] = new Filter(self::OPERATOR_LT, $this->data['to']);
+                        }
+                        break;
+                    case self::OPERATOR_BTWE:
+                        if ($this->data['from'] != static::DEFAULT_VALUE) {
+                            $filters[] = new Filter(self::OPERATOR_GTE, $this->data['from']);
+                        }
+                        if ($this->data['to'] != static::DEFAULT_VALUE) {
+                            $filters[] = new Filter(self::OPERATOR_LTE, $this->data['to']);
+                        }
+                        break;
+                    case self::OPERATOR_ISNULL:
+                    case self::OPERATOR_ISNOTNULL:
+                        $filters[] = new Filter($this->data['operator']);
+                        break;
+                    case self::OPERATOR_EQ:
+                    case self::OPERATOR_LIKE:
+                    case self::OPERATOR_RLIKE:
+                    case self::OPERATOR_LLIKE:
+                        $this->setDataJunction(self::DATA_DISJUNCTION);
+                    case self::OPERATOR_NEQ:
+                    case self::OPERATOR_NLIKE:
+                        foreach ((array) $this->data['from'] as $value) {
+                            $filters[] = new Filter($this->data['operator'], $value);
+                        }
+                        break;
+                    default:
+                        $filters[] = new Filter($this->data['operator'], $this->data['from']);
+                }
             }
         }
 
@@ -720,6 +725,16 @@ abstract class Column
         return $this->selectFrom;
     }
 
+    public function getSelectMulti()
+    {
+        return $this->selectMulti;
+    }
+
+    public function setSelectMulti($selectMulti)
+    {
+        $this->selectMulti = $selectMulti;
+    }
+
     public function hasDQLFunction(&$matches = null)
     {
         $regex = '/.(?P<all>(?P<field>\w+):(?P<function>\w+)(:)?(?P<parameters>\w*))$/';
@@ -747,6 +762,18 @@ abstract class Column
     public function getType()
     {
         return '';
+    }
+
+    /**
+     * By default all filers include a JavaScript onchange=submit block.  This
+     * does not make sense in some cases, such as with multi-select filters.
+     *
+     * @todo Eventaully make this configurable via annotations?
+     */
+    public function isFilterSubmitOnChange()
+    {
+        if ($this->getSelectMulti()) return false;
+        return true;
     }
 
     public function setSearchOnClick($searchOnClick)

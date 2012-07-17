@@ -18,8 +18,9 @@ class TextColumn extends Column
 {
     public function isQueryValid($query)
     {
-        // Si select filter : if ((is_string($data) || is_integer($data)) && $data != $this::BLANK)
-        return is_string($query);
+        $result = array_filter((array) $query, "is_string");
+
+        return !empty($result);
     }
 
     public function getFilters($source)
