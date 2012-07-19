@@ -29,13 +29,19 @@ class BooleanColumn extends Column
         $this->setSize($this->getParam('size', '30'));
         $this->setValues($this->getParam('values', array(1 => 'true', 0 => 'false')));
     }
-
+    
     public function isQueryValid($query)
     {
-        if ($query === true || $query === false || $query == 1 || $query == 0) {
+        // Use the == operator instead of ===, the query will work either way and this is less code
+        if ($query == true || $query == false ) {
             return true;
         }
-
+        
+        // Not studied the internals too much but this needs to validate an array as well
+        if( is_array($query) && ( $query[0] == true || $query[0] == false ) ) { 
+            return true;
+        }
+        
         return false;
     }
 
