@@ -32,13 +32,8 @@ class BooleanColumn extends Column
     
     public function isQueryValid($query)
     {
-        // Use the == operator instead of ===, the query will work either way and this is less code
-        if ($query == true || $query == false ) {
-            return true;
-        }
-        
-        // Not studied the internals too much but this needs to validate an array as well
-        if( is_array($query) && ( $query[0] == true || $query[0] == false ) ) { 
+        $query = (array) $query;
+        if ($query[0] === true || $query[0] === false || $query[0] == 0 || $query[0] == 1 ) {
             return true;
         }
         
