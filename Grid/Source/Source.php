@@ -144,7 +144,7 @@ abstract class Source implements DriverInterface
     public function setData($data)
     {
         $this->data = $data;
-
+        
         return $this;
     }
 
@@ -169,22 +169,15 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * Find data from array|object
+     * Gets an array of data items for rows from the set data
      *
-     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int $page
-     * @param int $limit
-     * @return \APY\DataGridBundle\DataGrid\Rows
-     */
-    public function executeFromData($columns, $page = 0, $limit = 0, $maxResults = null)
+     * @return array
+     *//
+    protected function getItemsFromData($columns)
     {
-        // Populate from data
         $items = array();
-        $serializeColumns = array();
-
+        
         foreach ($this->data as $key => $item) {
-            $keep = true;
-
             foreach ($columns as $column) {
                 $fieldName = $column->getField();
 
@@ -219,14 +212,39 @@ abstract class Source implements DriverInterface
                     $fieldValue = $item[$fieldName];
                 }
 
-
                 $items[$key][$fieldName] = $fieldValue;
+            }
+        }
+        
+        return $items;
+        
+    }
+    
+    /**
+     * Find data from array|object
+     *
+     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
+     * @param int $page
+     * @param int $limit
+     * @return \APY\DataGridBundle\DataGrid\Rows
+     */
+    public function executeFromData($columns, $page = 0, $limit = 0, $maxResults = null)
+    {
+        // Populate from data
+        $items = $this->getItemsFromData($columns);
+        $serializeColumns = array();
 
+        foreach ($this->data as $key => $item) {
+            $keep = true;
+
+            foreach ($columns as $column) {
+                $fieldName = $column->getField();
+                $fieldValue = $items[$key][$fieldName];
                 // Filter
                 if ($column->isFiltered()) {
                     // Some attributes of the column can be changed in this function
                     $filters = $column->getFilters('vector');
-
+                    
                     if ($column->getDataJunction() === Column\Column::DATA_DISJUNCTION) {
                         $disjunction = true;
                         $keep = false;
@@ -240,6 +258,7 @@ abstract class Source implements DriverInterface
                         $operator = $filter->getOperator();
                         $value = $filter->getValue();
 
+                        
                         // Normalize value
                         switch ($operator) {
                             case Column\Column::OPERATOR_EQ:
@@ -317,7 +336,9 @@ abstract class Source implements DriverInterface
 
             if (!$keep) {
                 unset($items[$key]);
+                
             }
+            
         }
 
         // Order
@@ -408,13 +429,13 @@ abstract class Source implements DriverInterface
 
         return $rows;
     }
-
+        
     public function populateSelectFiltersFromData($columns, $loop = false)
     {
         /* @var $column Column */
         foreach ($columns as $column) {
             $selectFrom = $column->getSelectFrom();
-
+            
             if ($column->getFilterType() === 'select' && ($selectFrom === 'source' || $selectFrom === 'query')) {
 
                 // For negative operators, show all values
@@ -429,7 +450,7 @@ abstract class Source implements DriverInterface
 
                 // Dynamic from query or not ?
                 $item = ($selectFrom === 'source') ? $this->data : $this->items;
-
+                
                 $values = array();
                 foreach($item as $row) {
                     $value = $row[$column->getField()];
@@ -472,6 +493,7 @@ abstract class Source implements DriverInterface
                     if ($column->getType() == 'array') {
                         natcasesort($values);
                     }
+
                     $column->setValues(array_unique($values));
                 }
             }
