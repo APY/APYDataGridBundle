@@ -167,6 +167,11 @@ abstract class Source implements DriverInterface
         return $this->data !== null;
     }
 
+    /**
+     * Gets an array of data items for rows from the set data
+     *
+     * @return array
+     *//
     protected function getItemsFromData($columns)
     {
         $items = array();
