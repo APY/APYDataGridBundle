@@ -299,13 +299,13 @@ abstract class Source implements DriverInterface
                         // AND
                         if (!$found && !$disjunction) {
                             $keep = false;
-                            break 2;
+                            break;
                         }
 
                         // OR
                         if ($found && $disjunction) {
                             $keep = true;
-                            break 2;
+                            break;
                         }
                     }
                 }
