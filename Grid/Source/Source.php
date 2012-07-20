@@ -144,6 +144,7 @@ abstract class Source implements DriverInterface
     public function setData($data)
     {
         $this->data = $data;
+        
         return $this;
     }
 
@@ -415,9 +416,6 @@ abstract class Source implements DriverInterface
                     }
                 }
 
-                if( $fieldName === 'remainingCommitment') { 
-                    //echo 'blah';
-                }
                 $row->setField($fieldName, $fieldValue);
             }
 
@@ -495,7 +493,7 @@ abstract class Source implements DriverInterface
                     if ($column->getType() == 'array') {
                         natcasesort($values);
                     }
-                    print_r($values);
+
                     $column->setValues(array_unique($values));
                 }
             }
