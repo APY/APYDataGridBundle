@@ -172,7 +172,7 @@ abstract class Source implements DriverInterface
      * Gets an array of data items for rows from the set data
      *
      * @return array
-     *//
+     */
     protected function getItemsFromData($columns)
     {
         $items = array();
