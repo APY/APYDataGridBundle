@@ -351,7 +351,13 @@ function {{ grid.hash }}_nextPage()
 {% block grid_scripts_enter_page %}
 function {{ grid.hash }}_enterPage(event, page)
 {
-    if (event.which == 13) {
+    if (window.event) {
+        key = window.event.keyCode; //IE
+    } else {
+        key = event.which;
+    }
+
+    if (key == 13) {
         {{ grid.hash }}_goto('{{ grid_url('page', grid) }}' + page);
 
         return false;
