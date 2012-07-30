@@ -344,7 +344,7 @@ abstract class Source implements DriverInterface
         // Order
         foreach ($columns as $column) {
             if ($column->isSorted()) {
-                $sortTypes = array();
+                $sortType = SORT_REGULAR;
                 $sortedItems = array();
                 foreach ($items as $key => $item) {
                     $value = $item[$column->getField()];
@@ -383,7 +383,10 @@ abstract class Source implements DriverInterface
                     }
                 }
 
-                array_multisort($sortedItems, ($column->getOrder() == 'asc') ? SORT_ASC : SORT_DESC, $sortType, $items);
+                if (!empty($sortedItems)) {}
+                    array_multisort($sortedItems, ($column->getOrder() == 'asc') ? SORT_ASC : SORT_DESC, $sortType, $items);
+                }
+            
                 break;
             }
         }
