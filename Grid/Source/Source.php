@@ -383,7 +383,7 @@ abstract class Source implements DriverInterface
                     }
                 }
 
-                if (!empty($sortedItems)) {}
+                if (!empty($sortedItems)) {
                     array_multisort($sortedItems, ($column->getOrder() == 'asc') ? SORT_ASC : SORT_DESC, $sortType, $items);
                 }
             
