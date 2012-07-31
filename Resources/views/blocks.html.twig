@@ -351,10 +351,10 @@ function {{ grid.hash }}_nextPage()
 {% block grid_scripts_enter_page %}
 function {{ grid.hash }}_enterPage(event, page)
 {
+    key = event.which;
+
     if (window.event) {
         key = window.event.keyCode; //IE
-    } else {
-        key = event.which;
     }
 
     if (key == 13) {
@@ -461,7 +461,13 @@ function {{ grid.hash }}_switchOperator(elt, query_)
 {% block grid_scripts_submit_form %}
 function {{ grid.hash }}_submitForm(event, form)
 {
-    if (event.type != 'keypress' || event.which == 13) {
+    key = event.which;
+
+    if (window.event) {
+        key = window.event.keyCode; //IE
+    }
+
+    if (event.type != 'keypress' || key == 13) {
         form.submit();
     }
 
