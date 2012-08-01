@@ -84,14 +84,14 @@ In some cases, you want to render a grid without data (With the message No resul
 use APY\DataGridBundle\Grid\Column;
 ...
 $columns = array(
-    new Column\NumberColumn(array('id' => 'id', 'field' => 'id', source=true, 'primary' => true, 'title' => 'id')),
-    new Column\NumberColumn(array('id' => 'publisher_id', 'field' => 'publisher_id', source=true, 'title' => 'Publication id')),
-    new Column\TextColumn(array('id' => 'title', 'field' => 'title', source=true, 'title' => 'Title')),
-    new Column\ArrayColumn(array('id' => 'authors', 'field' => 'authors', source=true, 'title' => 'Authors')),
-    new Column\DateColumn(array('id' => 'publication', 'field' => 'publication', source=true, 'title' => 'Publication Date', 'format' => 'd/m/Y')),
-    new Column\DateTimeColumn(array('id' => 'createDate', 'field' => 'createDate', source=true, 'title' => 'Creation Date', 'format' => 'd/m/Y H:i:s')),
-    new Column\NumberColumn(array('id' => 'pages', 'field' => 'pages', source=true, 'title' => 'Number of pages')),
-    new Column\BooleanColumn(array('id' => 'multilanguage', 'field' => 'multilanguage', source=true, 'title' => 'Multilanguage')),
+    new Column\NumberColumn(array('id' => 'id', 'field' => 'id', 'source' => true, 'primary' => true, 'title' => 'id')),
+    new Column\NumberColumn(array('id' => 'publisher_id', 'field' => 'publisher_id', 'source' => true, 'title' => 'Publication id')),
+    new Column\TextColumn(array('id' => 'title', 'field' => 'title', 'source' => true, 'title' => 'Title')),
+    new Column\ArrayColumn(array('id' => 'authors', 'field' => 'authors', 'source' => true, 'title' => 'Authors')),
+    new Column\DateColumn(array('id' => 'publication', 'field' => 'publication', 'source' => true, 'title' => 'Publication Date', 'format' => 'd/m/Y')),
+    new Column\DateTimeColumn(array('id' => 'createDate', 'field' => 'createDate', 'source' => true, 'title' => 'Creation Date', 'format' => 'd/m/Y H:i:s')),
+    new Column\NumberColumn(array('id' => 'pages', 'field' => 'pages', 'source' => true, 'title' => 'Number of pages')),
+    new Column\BooleanColumn(array('id' => 'multilanguage', 'field' => 'multilanguage', 'source' => true, 'title' => 'Multilanguage')),
 );
 
 $source = new Vector(array(), $columns);
@@ -191,8 +191,8 @@ You can also do that using an array of Column:
 use APY\DataGridBundle\Grid\Column;
 ...
 $columns = array(
-    new Column\NumberColumn(array('id' => 'id', 'filterable' => true))
-    new Column\ArrayColumn(array('id' => 'authors', 'filter' => 'select', 'selectFrom' => 'query', 'sortable' => false))
+    new Column\NumberColumn(array('id' => 'id', 'field' => 'id', 'filterable' => true, 'source' => true))
+    new Column\ArrayColumn(array('id' => 'authors', 'field' => 'authors', 'source' => true, 'filter' => 'select', 'selectFrom' => 'query', 'sortable' => false))
 );
 
 $source = new Vector($books, $columns);
