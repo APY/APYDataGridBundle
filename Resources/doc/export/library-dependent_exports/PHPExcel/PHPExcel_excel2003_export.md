@@ -44,7 +44,7 @@ $grid->addExport(new PHPExcel2003Export('Excel 2003 Export'));
 
 ## Configure the export
 
-This export provide the object `objPHPExcel`. You can manipulate this PHPExcel object.  
+This export provides the object `objPHPExcel`. You can manipulate this PHPExcel object.  
 See the ducmentation `PHPExcel developer documentation.doc` on the [official website](http://phpexcel.codeplex.com/)
 
 
