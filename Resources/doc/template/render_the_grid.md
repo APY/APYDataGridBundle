@@ -67,16 +67,32 @@ if ($grid->isReadyForRedirect()) {
 
 **Note:** GridResponse parameters are useless in this case and exports are managed directly in the getGridResponse function.
 
-## _self template
+## Overriding blocks
+
+If you want to override blocks of the grid you can use a extended template of the grid template.
+
+```html
+<!-- MyProjectMyBundle::my_page.html.twig -->
+{{ grid(data, 'MyProjectMyBundle::my_page_grid.html.twig') }}
+```
+
+```html
+<!-- MyProjectMyBundle::my_page_grid.html.twig -->
+{% extends 'APYDataGridBundle::blocks.html.twig' %}
+
+{% block grid_pager %}{% endblock %}
+```
+
+#### _self template
 
 If you want to override blocks inside current template you can use `_self` parameter in grid template definition.  
 Current template will automatically extended from base block template
 
 ```html
 <!-- MyProjectMyBundle::my_grid.html.twig -->
-{{ grid(data, _self, 'custom_grid_id') }}
+{{ grid(data, _self) }}
 
-{% block grid_pager %}{% endblock grid_pager %}
+{% block grid_pager %}{% endblock %}
 ```
 
 **Note**: Blocks have to be define after the call of the grid.
