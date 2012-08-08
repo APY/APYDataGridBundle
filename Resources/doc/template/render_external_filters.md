@@ -37,8 +37,6 @@ And the template
 
 #### Exemple
 
-Disable the block grid_filters.
-
 ```janjo
 <!-- MyProjectMyBundle::grid.html.twig -->
 
@@ -48,4 +46,26 @@ Disable the block grid_filters.
 ...
 ```
 
-**Note**: You can use a different template for the external filters.
+**Note**: You can use a different template for the external filters but only the filters blocks can be useful.
+
+#### Hide the grid filters
+
+If you don't want to show the filter in the grid columns, you can disable the grid_filters blocks with an external template.
+
+`{{ grid(grid, 'MyProjectMyBundle::grid.html.twig') }}`
+
+And in your MyProjectMyBundle::grid.html.twig template
+
+```janjo
+{% block grid_filters %}{% endblock %}
+```
+
+Or directly use the same template :
+
+```janjo
+{{ grid_search(grid) }}
+
+{{ grid(grid, _self) }}
+
+{% block grid_filters %}{% endblock %}
+```
