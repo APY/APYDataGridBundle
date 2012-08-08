@@ -30,6 +30,12 @@
             <call method="setNoResultMessage">
                 <argument>%apy_data_grid.no_result_message%</argument>
             </call>
+            <call method="setActionsColumnSize">
+                <argument>%apy_data_grid.actions_columns_size%</argument>
+            </call>
+            <call method="setActionsColumnSeparator">
+                <argument>%apy_data_grid.actions_columns_separator%</argument>
+            </call>
         </service>
 
         <service id="grid.manager" class="%grid.manager.class%">

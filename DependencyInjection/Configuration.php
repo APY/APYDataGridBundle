@@ -33,6 +33,8 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('persistence')->defaultFalse()->end()
                 ->scalarNode('no_data_message')->defaultValue('No data')->end()
                 ->scalarNode('no_result_message')->defaultValue('No result')->end()
+                ->scalarNode('actions_columns_size')->defaultValue(-1)->end()
+                ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end()
             ->end()
         ;
         return $treeBuilder;

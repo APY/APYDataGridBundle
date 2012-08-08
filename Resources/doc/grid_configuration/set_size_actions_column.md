@@ -40,3 +40,9 @@ $rowAction3 = new RowAction('Delete', 'route_to_delete');
 $grid->addRowAction($rowAction3);
 ...
 ```
+
+## Set the default size of the actions column in your config.yml
+```yml
+apy_data_grid:
+    actions_columns_size: 50
+```
