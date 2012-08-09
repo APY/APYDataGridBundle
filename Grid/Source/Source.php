@@ -459,6 +459,8 @@ abstract class Source implements DriverInterface
 
                     switch ($column->getType()) {
                         case 'number':
+                            $values[$value] = $column->getDisplayedValue($value);
+                            break;
                         case 'datetime':
                         case 'date':
                         case 'time':
@@ -472,7 +474,8 @@ abstract class Source implements DriverInterface
                                 $value = $value['i'];
                             }
 
-                            $values[$value] = $column->getDisplayedValue($value);
+                            $displayedValue = $column->getDisplayedValue($value);
+                            $values[$displayedValue] = $displayedValue;
                             break;
                         case 'array':
                             if (is_string($value)) {

@@ -457,10 +457,13 @@ class Entity extends Source
                             }
                             break;
                         case 'number':
+                            $values[$value] = $column->getDisplayedValue($value);
+                            break;
                         case 'datetime':
                         case 'date':
                         case 'time':
-                            $values[$value] = $column->getDisplayedValue($value);
+                            $displayedValue = $column->getDisplayedValue($value);
+                            $values[$displayedValue] = $displayedValue;
                             break;
                         default:
                             $values[$value] = $value;

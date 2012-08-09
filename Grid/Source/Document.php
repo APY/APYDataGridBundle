@@ -332,6 +332,8 @@ class Document extends Source
 
                     switch ($column->getType()) {
                         case 'number':
+                            $values[$value] = $column->getDisplayedValue($value);
+                            break;
                         case 'datetime':
                         case 'date':
                         case 'time':
@@ -344,7 +346,8 @@ class Document extends Source
                                 $value = $value['i'];
                             }
 
-                            $values[$value] = $column->getDisplayedValue($value);
+                            $displayedValue = $column->getDisplayedValue($value);
+                            $values[$displayedValue] = $displayedValue;
                             break;
                         default:
                             $values[$value] = $value;
