@@ -93,8 +93,8 @@ class DataGridExtension extends \Twig_Extension
     {
         return array(
             'grid'              => new \Twig_Function_Method($this, 'getGrid', array('is_safe' => array('html'))),
-            'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl'),
-            'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter'),
+            'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl', array('is_safe' => array('html'))),
+            'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter', array('is_safe' => array('html'))),
             'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
             'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
             'grid_pagerfanta'   => new \Twig_Function_Method($this, 'getPagerfanta', array('is_safe' => array('html'))),
