@@ -40,6 +40,10 @@ class GridManager implements \IteratorAggregate, \Countable
        return $this->grids->count();
     }
 
+    /**
+     * @param mixed $id
+     * @return Grid
+     */
     public function createGrid($id = null)
     {
         $grid = $this->container->get('grid');
