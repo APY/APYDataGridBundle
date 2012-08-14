@@ -93,7 +93,7 @@ abstract class Export implements ContainerAwareInterface
         // Response
         if (function_exists('mb_strlen')) {
             $this->content = mb_convert_encoding($this->content, $this->charset, $this->container->getParameter('kernel.charset'));
-            $filesize = mb_strlen($this->content, $this->container->getParameter('kernel.charset'));
+            $filesize = mb_strlen($this->content, $this->charset);
         } else {
             $filesize = strlen($this->content);
             $this->charset = $this->container->getParameter('kernel.charset');
