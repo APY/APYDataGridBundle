@@ -79,7 +79,7 @@ abstract class Source implements DriverInterface
      * @param int $gridDataJunction Grid data junction
      * @return \APY\DataGridBundle\Grid\Rows
      */
-    abstract public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
+    abstract public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION);
 
     /**
      * Get Total count of data items
