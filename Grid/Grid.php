@@ -196,6 +196,13 @@ class Grid
     protected $items = array();
 
     /**
+     * Data junction of the grid
+     *
+     * @var int
+     */
+    protected $dataJunction = Column::DATA_CONJUNCTION;
+
+    /**
      * Default filters
      *
      * @var array
@@ -517,7 +524,7 @@ class Grid
         if ($this->source->isDataLoaded()) {
             $this->rows = $this->source->executeFromData($this->columns->getIterator(true), $this->page, $this->limit, $this->maxResults);
         } else {
-            $this->rows = $this->source->execute($this->columns->getIterator(true), $this->page, $this->limit, $this->maxResults);
+            $this->rows = $this->source->execute($this->columns->getIterator(true), $this->page, $this->limit, $this->maxResults, $this->dataJunction);
         }
 
         if(!$this->rows instanceof Rows) {
@@ -1043,6 +1050,18 @@ class Grid
     public function getPersistence()
     {
         return $this->persistence;
+    }
+
+    public function getDataJunction()
+    {
+        return $this->dataJunction;
+    }
+
+    public function setDataJunction($dataJunction)
+    {
+        $this->dataJunction = $dataJunction;
+
+        return $this;
     }
 
     /**

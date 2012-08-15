@@ -136,11 +136,12 @@ class Document extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int $page  Page Number
-     * @param int $limit  Rows Per Page
+     * @param int $page Page Number
+     * @param int $limit Rows Per Page
+     * @param int $gridDataJunction  Grid data junction
      * @return \APY\DataGridBundle\Grid\Rows
      */
-    public function execute($columns, $page = 0, $limit = 0, $maxResults = null)
+    public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
         $this->query = $this->manager->createQueryBuilder($this->documentName);
 

@@ -213,12 +213,13 @@ class Entity extends Source
     }
 
     /**
-     * @param $columns \APY\DataGridBundle\Grid\Column\Column[]
-     * @param $page int Page Number
-     * @param $limit int Rows Per Page
+     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
+     * @param int $page Page Number
+     * @param int $limit Rows Per Page
+     * @param int $gridDataJunction  Grid data junction
      * @return \APY\DataGridBundle\Grid\Rows
      */
-    public function execute($columns, $page = 0, $limit = 0, $maxResults = null)
+    public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
         $this->query = $this->manager->createQueryBuilder($this->class);
         $this->query->from($this->class, self::TABLE_ALIAS);
@@ -226,7 +227,7 @@ class Entity extends Source
 
         $bindIndex = 123;
         $serializeColumns = array();
-        $where = $this->query->expr()->andx();
+        $where = $gridDataJunction === Column::DATA_CONJUNCTION ? $this->query->expr()->andx() : $this->query->expr()->orx();
 
         foreach ($columns as $column) {
             $fieldName = $this->getFieldName($column, true);

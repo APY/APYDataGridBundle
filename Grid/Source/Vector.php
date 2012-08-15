@@ -178,12 +178,13 @@ class Vector extends Source
     }
 
     /**
-     * @param $columns \APY\DataGridBundle\Grid\Column\Column[]
-     * @param $page int Page Number
-     * @param $limit int Rows Per Page
+     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
+     * @param int $page Page Number
+     * @param int $limit Rows Per Page
+     * @param int $gridDataJunction  Grid data junction
      * @return \APY\DataGridBundle\Grid\Rows
      */
-    public function execute($columns, $page = 0, $limit = 0, $maxResults = null)
+    public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
         return $this->executeFromData($columns, $page, $limit, $maxResults);
     }
