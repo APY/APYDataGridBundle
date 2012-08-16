@@ -4,7 +4,6 @@ Add an export
 ## Usage
 ```php
 <?php
-use APY\DataGridBundle\Grid\Action\RowAction;
 ...
 $grid->setSource($source);
 
