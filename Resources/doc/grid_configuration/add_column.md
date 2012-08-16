@@ -36,7 +36,7 @@ See [column annotations for property](../columns_configuration/annotations/colum
 |column|instance of Column||BlankColumn(), TextColumn(), DateColumn(), BooleanColumn...||
 |position|integer|0|position >= 0|0 means last position|
 
-## Exemple
+## Example
 
 ```php
 <?php

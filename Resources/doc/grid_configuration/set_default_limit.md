@@ -4,7 +4,7 @@ Set the default items per page of the grid
 You can define a default limit. This limit will be used on each new session of the grid.  
 If no default limit is defined, the grid take the first limit found in the limits values.  
 
-## Exemple
+## Example
 ```php
 <?php
 ...

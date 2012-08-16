@@ -1,7 +1,7 @@
 Add a row action
 ================
 
-A row action is an action performed on the current row. It's represented by a route to a controller with the identifier of the row.  
+A row action is an action performed on the current row. It's represented by a route to a controller with the identifier of the row.
 Row actions are all put in the same new action column at the last position of the grid.
 
 ## Usage
@@ -11,7 +11,7 @@ use APY\DataGridBundle\Grid\Action\RowAction;
 ...
 $grid->setSource($source);
 
-$rowAction = new RowAction($title, $route, $confirm, $target, $attributes);
+$rowAction = new RowAction($title, $route, $confirm, $target, $attributes, $role);
 $grid->addRowAction($rowAction);
 ...
 ```
@@ -25,13 +25,14 @@ $grid->addRowAction($rowAction);
 |confirm|Boolean|false|true or false|Set to true to have a confirm message on click.|
 |target|string|_self|_self, _blank, _parent or _top|Set the target of this action|
 |attributes|array|array()||Add attributes to the anchor tag|
+|role|mixed|null|A symfony role|Don't add this mass action if the access isn't granted for the defined role(s)|
 
 **Note**: Every parameter have a setter and a getter method. and others options can be set too.
 
 
 ## Additionnal parameters
 
-These parameters have a setter and a getter method. 
+These parameters have a setter and a getter method.
 
 |parameter|Type|Default value|Possible values|Description|
 |:--:|:--|:--|:--|:--|
@@ -40,7 +41,7 @@ These parameters have a setter and a getter method.
 
 **Note**: For the route parameters, if you pass a column identifier instead of a key/value pair, the row action will use the value of the column of the selected row to generate its url.
 
-## Exemple
+## Example
 ```php
 <?php
 use APY\DataGridBundle\Grid\Action\RowAction;
@@ -59,7 +60,7 @@ $grid->addRowAction($rowAction2);
 
 For mapped fields, you catch a parameter with its camelCase representation. e.g. `user.information.country` turn into `userInformationCountry`.
 
-## Exemple
+## Example
 ```php
 <?php
 use APY\DataGridBundle\Grid\Action\RowAction;

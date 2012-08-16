@@ -19,7 +19,7 @@ $grid->setRouteUrl($routeUrl);
 |:--:|:--|:--|:--|
 |routeUrl|string|_none_|Url of the grid|
 
-## Exemple
+## Example
 
 ```php
 <?php

@@ -25,7 +25,7 @@ $grid->setId($id);
 |:--:|:--|:--|:--|:--|
 |id|string|_none_|Identifier of the grid|
 
-## Exemple
+## Example
 
 ```php
 <?php

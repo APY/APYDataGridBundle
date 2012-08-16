@@ -35,7 +35,7 @@ And the template
 
 **Note**: You have to define the same `id` in this function and in the grid function. Same thing with the `param` argument if you use additionnal parameters in the rendering of the filters.
 
-#### Exemple
+#### Example
 
 ```janjo
 <!-- MyProjectMyBundle::grid.html.twig -->

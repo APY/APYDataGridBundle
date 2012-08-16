@@ -52,6 +52,6 @@ class Sale
 **Note**: When a function notation is detected, a groupBy is automatically performed on the primary field of the parent entity if no groupBy attribute is defined in the Source annotation.
 
 **Warning**: Doctrine have a limitation. When you filter on a column with a DQL function, a HAVING clause is added to the query.  
-Exemple: `SELECT _p.member_id, COUNT(_p) FROM Photo _p GROUP BY _p.member_id HAVING COUNT(_p) > 3`  
+Example: `SELECT _p.member_id, COUNT(_p) FROM Photo _p GROUP BY _p.member_id HAVING COUNT(_p) > 3`  
 But the HAVING clause supports DQL function only with comparison operator (=, <, <=, <>, >, >=, !=).  
 Due to this limitation, the selector of operators will displayed with only the supported operators.

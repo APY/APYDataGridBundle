@@ -3,7 +3,7 @@ Column Annotation for a property
 
 The Column annotation for a property allows to add a mapped source column.
 
-#### Exemple
+#### Example
 ```php
 <?php
 ...
@@ -56,7 +56,7 @@ class Product
 |align|string|left|left, right or center|Sets the text alignment with a CSS class|
 |inputType|string|text|See [HTML5 input types](http://w3schools.com/html5/html5_form_input_types.asp)|Sets the type of the input filter field|
 |role|string||A symfony role|Sets the visiblity of the column to false if the access isn't granted for the defined role|
-|groups|string<br />or<br />array|Exemple: groups="group1",<br />groups={"group1"}, groups={"group1", "group2"}||Use this attribute to define more than one configuration for an Entity/Document. <br />If no groups is defined, the annotation is attributed for all groups.<br />$source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');|
+|groups|string<br />or<br />array|Example: groups="group1",<br />groups={"group1"}, groups={"group1", "group2"}||Use this attribute to define more than one configuration for an Entity/Document. <br />If no groups is defined, the annotation is attributed for all groups.<br />$source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');|
 |selectFrom|string|query|query, source, values|How to populate the selector of the select filters of the column.|
 |values|array|_none_||For select filters or replace values in the grid|
 |searchOnClick|boolean|false|true or false|Sets the possibility to perform a search on the clicked cell (filterable has to be true)|

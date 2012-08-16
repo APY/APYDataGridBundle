@@ -20,7 +20,7 @@ $grid->setNoResultMessage($noResultMessage);
 |:--:|:--|:--|:--|
 |noResultMessage|string|No result|No result message|
 
-## Exemple
+## Example
 
 ```php
 <?php

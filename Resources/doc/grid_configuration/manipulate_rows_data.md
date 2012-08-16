@@ -26,7 +26,7 @@ $grid->setSource($source);
 |:--:|:--|:--|:--|:--|
 |row|instance of Row|The current row to manipulate|
 
-## Exemples
+## Examples
 
 ```php
 <?php

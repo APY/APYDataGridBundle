@@ -18,6 +18,7 @@ class MassAction implements MassActionInterface
     protected $callback;
     protected $confirm;
     protected $parameters = array();
+    protected $role;
 
     /**
      * Default MassAction constructor
@@ -27,13 +28,14 @@ class MassAction implements MassActionInterface
      * @param boolean $confirm Show confirm message if true
      * @return \APY\DataGridBundle\Grid\Action\MassAction
      */
-    public function __construct($title, $callback = null, $confirm = false, $parameters = array())
+    public function __construct($title, $callback = null, $confirm = false, $parameters = array(), $role = null)
     {
         $this->title = $title;
         $this->callback = $callback;
         $this->confirm = $confirm;
         $this->confirmMessage = 'Do you want to '.strtolower($title).' the seleted rows?';
         $this->parameters = $parameters;
+        $this->role = $role;
     }
 
     /**
@@ -152,5 +154,29 @@ class MassAction implements MassActionInterface
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    /**
+     * set role
+     *
+     * @param mixed $role
+     *
+     * @return self
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return mixed
+     */
+    public function getRole()
+    {
+        return $this->role;
     }
 }

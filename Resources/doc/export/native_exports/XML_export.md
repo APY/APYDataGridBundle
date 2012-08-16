@@ -1,18 +1,18 @@
 XML export
 ==========
 
-File extension = `xml`  
+File extension = `xml`
 Mime type = `application/octet-stream`
 
 ## Usage
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\XMLExport; 
+use APY\DataGridBundle\Grid\Export\XMLExport;
 ...
 $grid->setSource($source);
 
-$grid->addExport(new XMLExport($title, $fileName, $params, $charset));
+$grid->addExport(new XMLExport($title, $fileName, $params, $charset, $role));
 ...
 ```
 
@@ -24,16 +24,17 @@ $grid->addExport(new XMLExport($title, $fileName, $params, $charset));
 |fileName|string|export|Name of the export file without the extension.|
 |params|array|array()|Additionnal parameters.|
 |charset|string|UTF-8|Charset to convert the ouput of the export.|
+|role|mixed|null|Don't add this export if the access isn't granted for the defined role(s)|
 
 ## Additional parameters for the export
 
 _None_
 
-## Exemple
+## Example
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\XMLExport; 
+use APY\DataGridBundle\Grid\Export\XMLExport;
 ...
 $grid->setSource($source);
 

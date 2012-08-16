@@ -1,7 +1,7 @@
 Handle multiple grids on the same page
 =========================================
 
-There is an exemple of how to fully manage grids in the same controller:
+There is an example of how to fully manage grids in the same controller:
 
 ```php
 <?php

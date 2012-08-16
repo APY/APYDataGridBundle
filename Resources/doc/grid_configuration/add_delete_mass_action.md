@@ -4,7 +4,7 @@ Add a native delete mass action
 This mass action calls the delete method of the source.
 It doesn't work with the `Select All` option, only the visible rows can be delete with this simple mass action.
 
-## Exemple
+## Example
 ```php
 <?php
 use APY\DataGridBundle\Grid\Action\DeleteMassAction;

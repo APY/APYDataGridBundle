@@ -3,7 +3,7 @@ Define the selector of the number of items per page
 
 Default limits = array(20 => '20', 50 => '50', 100 => '100')
 
-## Exemple
+## Example
 ```php
 <?php
 ...

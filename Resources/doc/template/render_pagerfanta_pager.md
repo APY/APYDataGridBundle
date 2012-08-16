@@ -45,7 +45,7 @@ And the template
 |:--:|:--|:--|:--|:--|
 |grid|APY/DataGridBundle/Grid/Grid||The grid object|
 
-## Exemple of css associated with this pager (from [Pagerfanta Github page](https://github.com/whiteoctober/Pagerfanta))
+## Example of css associated with this pager (from [Pagerfanta Github page](https://github.com/whiteoctober/Pagerfanta))
 
 ![Pagerfanta screenshot](../images/pagerfanta.png?raw=true)
 

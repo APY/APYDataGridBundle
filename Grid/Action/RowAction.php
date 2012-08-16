@@ -22,6 +22,7 @@ class RowAction implements RowActionInterface
     protected $column = '__actions';
     protected $routeParameters = array();
     protected $attributes = array();
+    protected $role;
 
     /**
      * Default RowAction constructor
@@ -34,7 +35,7 @@ class RowAction implements RowActionInterface
      *
      * @return \APY\DataGridBundle\Grid\Action\RowAction
      */
-    public function __construct($title, $route, $confirm = false, $target = '_self', $attributes = array())
+    public function __construct($title, $route, $confirm = false, $target = '_self', $attributes = array(), $role = null)
     {
         $this->title = $title;
         $this->route = $route;
@@ -42,6 +43,7 @@ class RowAction implements RowActionInterface
         $this->confirmMessage = 'Do you want to '.strtolower($title).' this row?';
         $this->target = $target;
         $this->attributes = $attributes;
+        $this->role = $role;
     }
 
     /**
@@ -270,5 +272,29 @@ class RowAction implements RowActionInterface
     public function getAttributes()
     {
         return $this->attributes;
+    }
+
+    /**
+     * set role
+     *
+     * @param mixed $role
+     *
+     * @return self
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return mixed
+     */
+    public function getRole()
+    {
+        return $this->role;
     }
 }

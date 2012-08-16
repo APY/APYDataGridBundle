@@ -29,7 +29,7 @@ $grid->setDefaultOrder($columnId, $order);
 |asc|Ascending|
 |desc|Descending|
 
-## Exemple
+## Example
 ```php
 <?php
 ...

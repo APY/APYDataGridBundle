@@ -34,7 +34,7 @@ And the template
 |id|string|_none_|Set the identifier of the grid.|
 |params|array|array()|Additional parameters passed to each block.|
 
-## Exemple
+## Example
 
 ```janjo
 <!-- MyProjectMyBundle::grid.html.twig -->

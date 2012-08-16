@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class Export implements ContainerAwareInterface
+abstract class Export implements ExportInterface, ContainerAwareInterface
 {
     const DEFAULT_TEMPLATE = 'APYDataGridBundle::blocks.html.twig';
 
@@ -46,12 +46,15 @@ abstract class Export implements ContainerAwareInterface
 
     protected $charset;
 
-    public function __construct($title, $fileName = 'export', $params = array(), $charset = 'UTF-8')
+    protected $role;
+
+    public function __construct($title, $fileName = 'export', $params = array(), $charset = 'UTF-8', $role = null)
     {
         $this->title = $title;
         $this->fileName = $fileName;
         $this->params = $params;
         $this->charset = $charset;
+        $this->role = $role;
     }
 
     /**
@@ -640,5 +643,29 @@ abstract class Export implements ContainerAwareInterface
     public function getTemplate()
     {
         return $this->template ?:$this::DEFAULT_TEMPLATE;
+    }
+
+    /**
+     * set role
+     *
+     * @param mixed $role
+     *
+     * @return self
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return mixed
+     */
+    public function getRole()
+    {
+        return $this->role;
     }
 }

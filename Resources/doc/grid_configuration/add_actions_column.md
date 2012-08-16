@@ -47,7 +47,7 @@ $grid->addColumn($actionsColumn2, $position2);
 |:--:|:--|:--|:--|
 |column|string||Identifier of the actions column|
 
-Exemple:
+Example:
 ```php
 <?php
 ...

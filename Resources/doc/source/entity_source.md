@@ -36,7 +36,7 @@ class DefaultController extends Controller
 |group|string|default|Group of annotations used. See [groups parameter in annotation](../columns_configuration/annotations/column_annotation_property.md#available-attributes)|
 |managerName|string|null|Set this value if you want to use another manager|
 
-## Exemple
+## Example
 
 ```php
 <?php

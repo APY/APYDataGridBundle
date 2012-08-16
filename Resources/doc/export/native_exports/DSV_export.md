@@ -1,19 +1,19 @@
 Delimiter-Separated Values export
 =================================
 
-File extension = _none_  
-Mime type = `application/octet-stream`  
+File extension = _none_
+Mime type = `application/octet-stream`
 Delimiter = _none_
 
 ## Usage
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\DSVExport; 
+use APY\DataGridBundle\Grid\Export\DSVExport;
 ...
 $grid->setSource($source);
 
-$grid->addExport(new DSVExport($title, $fileName, $params, $charset));
+$grid->addExport(new DSVExport($title, $fileName, $params, $charset, $role));
 ...
 ```
 
@@ -25,6 +25,7 @@ $grid->addExport(new DSVExport($title, $fileName, $params, $charset));
 |fileName|string|export|Name of the export file without the extension.|
 |params|array|array()|Additionnal parameters.|
 |charset|string|UTF-8|Charset to convert the ouput of the export.|
+|role|mixed|null|Don't add this export if the access isn't granted for the defined role(s)|
 
 ## Additional parameters for the export
 
@@ -32,11 +33,11 @@ $grid->addExport(new DSVExport($title, $fileName, $params, $charset));
 |:--:|:--|:--|:--|:--|
 |delimiter|string|__empty__|The delimiter of csv columns.|
 
-## Exemples
+## Examples
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\DSVExport; 
+use APY\DataGridBundle\Grid\Export\DSVExport;
 ...
 $grid->setSource($source);
 
@@ -51,7 +52,7 @@ OR
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\DSVExport; 
+use APY\DataGridBundle\Grid\Export\DSVExport;
 ...
 $grid->setSource($source);
 

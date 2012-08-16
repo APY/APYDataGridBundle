@@ -26,7 +26,7 @@ $grid->setSource($source);
 |:--:|:--|:--|:--|:--|
 |query|instance of QueryBuilder|The QueryBuilder instance before its execution|
 
-## Exemples
+## Examples
 
 ```php
 <?php

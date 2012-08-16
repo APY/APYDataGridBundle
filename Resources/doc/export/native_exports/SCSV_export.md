@@ -1,19 +1,19 @@
 Semi-Colon-Separated Values export
 =================================
 
-File extension = `csv`  
-Mime type = `text/comma-separated-values`  
+File extension = `csv`
+Mime type = `text/comma-separated-values`
 Delimiter = `;`
 
 ## Usage
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\SCSVExport; 
+use APY\DataGridBundle\Grid\Export\SCSVExport;
 ...
 $grid->setSource($source);
 
-$grid->addExport(new SCSVExport($title, $fileName, $params, $charset));
+$grid->addExport(new SCSVExport($title, $fileName, $params, $charset, $role));
 ...
 ```
 
@@ -25,6 +25,7 @@ $grid->addExport(new SCSVExport($title, $fileName, $params, $charset));
 |fileName|string|export|Name of the export file without the extension.|
 |params|array|array()|Additionnal parameters.|
 |charset|string|UTF-8|Charset to convert the ouput of the export.|
+|role|mixed|null|Don't add this export if the access isn't granted for the defined role(s)|
 
 ## Additional parameters for the export
 
@@ -32,11 +33,11 @@ $grid->addExport(new SCSVExport($title, $fileName, $params, $charset));
 |:--:|:--|:--|:--|:--|
 |delimiter|string|;|The delimiter of csv columns.|
 
-## Exemple
+## Example
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\SCSVExport; 
+use APY\DataGridBundle\Grid\Export\SCSVExport;
 ...
 $grid->setSource($source);
 

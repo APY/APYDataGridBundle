@@ -145,7 +145,7 @@ abstract class Source implements DriverInterface
     public function setData($data)
     {
         $this->data = $data;
-        
+
         return $this;
     }
 
@@ -177,7 +177,7 @@ abstract class Source implements DriverInterface
     protected function getItemsFromData($columns)
     {
         $items = array();
-        
+
         foreach ($this->data as $key => $item) {
             foreach ($columns as $column) {
                 $fieldName = $column->getField();
@@ -216,11 +216,11 @@ abstract class Source implements DriverInterface
                 $items[$key][$fieldName] = $fieldValue;
             }
         }
-        
+
         return $items;
-        
+
     }
-    
+
     /**
      * Find data from array|object
      *
@@ -245,7 +245,7 @@ abstract class Source implements DriverInterface
                 if ($column->isFiltered()) {
                     // Some attributes of the column can be changed in this function
                     $filters = $column->getFilters('vector');
-                    
+
                     if ($column->getDataJunction() === Column\Column::DATA_DISJUNCTION) {
                         $disjunction = true;
                         $keep = false;
@@ -258,7 +258,7 @@ abstract class Source implements DriverInterface
                     foreach ($filters as $filter) {
                         $operator = $filter->getOperator();
                         $value = $filter->getValue();
-                        
+
                         // Normalize value
                         switch ($operator) {
                             case Column\Column::OPERATOR_EQ:
@@ -336,9 +336,9 @@ abstract class Source implements DriverInterface
 
             if (!$keep) {
                 unset($items[$key]);
-                
+
             }
-            
+
         }
 
         // Order
@@ -386,7 +386,7 @@ abstract class Source implements DriverInterface
                 if (!empty($sortedItems)) {
                     array_multisort($sortedItems, ($column->getOrder() == 'asc') ? SORT_ASC : SORT_DESC, $sortType, $items);
                 }
-            
+
                 break;
             }
         }
@@ -432,13 +432,13 @@ abstract class Source implements DriverInterface
 
         return $rows;
     }
-        
+
     public function populateSelectFiltersFromData($columns, $loop = false)
     {
         /* @var $column Column */
         foreach ($columns as $column) {
             $selectFrom = $column->getSelectFrom();
-            
+
             if ($column->getFilterType() === 'select' && ($selectFrom === 'source' || $selectFrom === 'query')) {
 
                 // For negative operators, show all values
@@ -453,7 +453,7 @@ abstract class Source implements DriverInterface
 
                 // Dynamic from query or not ?
                 $item = ($selectFrom === 'source') ? $this->data : $this->items;
-                
+
                 $values = array();
                 foreach($item as $row) {
                     $value = $row[$column->getField()];

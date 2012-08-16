@@ -1,3 +1,52 @@
+`17 August 2012`
+ * Add role control on massAction, rowAction and Export
+ * Fix bug : grid not found when you export a grid with an searchOnClick column
+
+`14 August 2012`
+ * Add grid data conjunction setting
+ * Fix bug : wrong convert charset for exports
+
+`9 August 2012`
+ * Fix datetime select filter
+
+`8 August 2012`
+
+ * Add the default size and separator default config
+
+`31 July 2012`
+
+ * Fix javascript event for IE
+ * Fix Regular expresion for vector source and setData
+
+`31 July 2012`
+
+ * Fix data junction for vector source and setData
+
+`17 July 2012`
+
+ * Add multi select feature
+
+`15 July 2012`
+
+ * Add default limit (item per page) feature
+ * Fix total count for vector source and setData
+
+`12 July 2012`
+
+ * Trim export values
+
+`10 July 2012`
+
+ * Allow a default order on a non sortable column.
+
+`7 July 2012`
+
+ * Fix addRouteParameters and manage mapped fields in routeParameters of a rowAction
+
+`5 July 2012`
+
+ * Fix bug - Manage array values for select populated filter
+
 `4 July 2012`
 
  * Add searchOnClick parameter to Column class

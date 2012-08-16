@@ -20,7 +20,7 @@ $grid->setNoDataMessage($noDataMessage);
 |:--:|:--|:--|:--|
 |noDataMessage|string|No data|No data message|
 
-## Exemple
+## Example
 
 ```php
 <?php

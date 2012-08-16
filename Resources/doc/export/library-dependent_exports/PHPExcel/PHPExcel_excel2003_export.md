@@ -1,7 +1,7 @@
 PHPExcel Excel 2003 export
 =================================
 
-File extension = `xlsx`  
+File extension = `xlsx`
 Mime type = `application/vnd.ms-excel`
 
 **Note**: This export is limited to 52 columns.
@@ -10,11 +10,11 @@ Mime type = `application/vnd.ms-excel`
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\PHPExcel2003Export; 
+use APY\DataGridBundle\Grid\Export\PHPExcel2003Export;
 ...
 $grid->setSource($source);
 
-$grid->addExport(new PHPExcel2003Export($title, $fileName, $params, $charset));
+$grid->addExport(new PHPExcel2003Export($title, $fileName, $params, $charset, $role));
 ...
 ```
 
@@ -26,12 +26,13 @@ $grid->addExport(new PHPExcel2003Export($title, $fileName, $params, $charset));
 |fileName|string|export|Name of the export file without the extension.|
 |params|array|array()|Additionnal parameters.|
 |charset|string|UTF-8|Charset to convert the ouput of the export.|
+|role|mixed|null|Don't add this export if the access isn't granted for the defined role(s)|
 
 ## Additional parameters for the export
 
 _None_
 
-## Exemple
+## Example
 
 ```php
 <?php
@@ -44,7 +45,7 @@ $grid->addExport(new PHPExcel2003Export('Excel 2003 Export'));
 
 ## Configure the export
 
-This export provides the object `objPHPExcel`. You can manipulate this PHPExcel object.  
+This export provides the object `objPHPExcel`. You can manipulate this PHPExcel object.
 See the ducmentation `PHPExcel developer documentation.doc` on the [official website](http://phpexcel.codeplex.com/)
 
 

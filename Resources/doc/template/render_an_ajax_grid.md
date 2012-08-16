@@ -13,7 +13,7 @@ After: `{{ grid(data, 'APYDataGridBundle::blocks_js.jquery.html.twig') }}`
 
 **Note**: The grid_search twig function doesn't need to extend this same template because its script are already included in the grid template.
 
-#### Exemple
+#### Example
 
 ```django
 {{ grid_search(data, 'APYDataGridBundle::blocks.html.twig') }}

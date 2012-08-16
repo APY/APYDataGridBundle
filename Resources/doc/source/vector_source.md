@@ -15,7 +15,7 @@ Vector source
 The vector source come handy if you have to handle some data that doesn't match your bundle's entities
 or if you don't want to use entities at all because you are working with a lot of data.
 
-In our exemple we receive this array from a json source:
+In our example we receive this array from a json source:
 
 ```php
 <?php
@@ -107,7 +107,7 @@ Vector will use the first "column" found as the Primary Field of your grid.
 In our case it will be the column named "id". If you are using action columns, they will use this primary field.
 If you want to use a specific column or set columns as the primary field, use Vector::setId($id).
 
-In our exemple we could map our actions on the publisher_id.
+In our example we could map our actions on the publisher_id.
 
 ```php
 <?php

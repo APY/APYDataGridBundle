@@ -22,7 +22,7 @@ $grid->hideColumns($columnIds);
 |:--:|:--|:--|:--|:--|
 |columnIds|string or array||List of the identifier of the columns you want to show or hide.|
 
-## Exemple
+## Example
 
 ```php
 <?php 
@@ -47,7 +47,7 @@ $grid->hideColumns(array('column3', 'column4'));
 
 You can use a mask to set the visibility of your columns.
 
-#### Exemples
+#### Examples
 ```php
 <?php 
 ...

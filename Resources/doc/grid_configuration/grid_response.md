@@ -44,9 +44,9 @@ return $grid->getGridResponse($view, $parameters, $response);
 |parameters|array|array()|An array of parameters to pass to the view|
 |response|Response|null|A response instance|
 
-**Note**: If you use the @Template annotation, you can define the parameters parameter in the first position (See the third exemple).
+**Note**: If you use the @Template annotation, you can define the parameters parameter in the first position (See the third example).
 
-## Exemples
+## Examples
 
 #### With the @template annotation and without additionnal parameters
 

@@ -29,7 +29,7 @@ When you choose a select filter for a column, you have three way to populate you
 
 * `values` means that the selectors of the select filter will be populated by the values define in the `values` parameter.
 
-#### Exemples
+#### Examples
 
 From values:
 

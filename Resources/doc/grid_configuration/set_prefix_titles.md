@@ -3,7 +3,7 @@ Set a prefix titles
 
 You can define a prefix title for all columns of the grid.
 
-## Exemple
+## Example
 
 ```php
 <?php
@@ -20,7 +20,7 @@ $grid->setPrefixTitle($prefixTitle);
 |:--:|:--|:--|:--|:--|
 |prefixTitle|string|_none_|Prefix title of columns|
 
-## Exemple
+## Example
 
 ```php
 <?php

@@ -30,7 +30,7 @@ $grid->getColumn('my_column_id')->manipulateRenderCell($callback);
 |row|instance of Row|The current row|
 |router|instance of the router engine|The symfony router|
 
-## Exemples
+## Examples
 
 ```php
 <?php

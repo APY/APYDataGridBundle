@@ -18,7 +18,7 @@ $grid->setMaxResults($maxResults);
 |:--:|:--|:--|:--|:--|
 |maxResults|integer|null|Max items in the grid|
 
-## Exemple
+## Example
 
 ```php
 <?php

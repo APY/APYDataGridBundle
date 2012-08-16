@@ -58,6 +58,7 @@ SUMMARY
 	1. [Add multiple row actions columns](grid_configuration/add_actions_column.md)
 	1. [Add mass action](grid_configuration/add_mass_action.md)
 	1. [Add a native delete mass action](grid_configuration/add_delete_mass_action.md)
+	1. [Add export](grid_configuration/add_export.md)
 	1. [Manipulate rows data](grid_configuration/manipulate_rows_data.md)
 	1. [Manipulate column render cell](grid_configuration/manipulate_column_render_cell.md)
 	1. [Manipulate the source query](grid_configuration/manipulate_query.md)

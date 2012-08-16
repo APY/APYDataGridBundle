@@ -22,7 +22,7 @@ $grid->setPersistence($persistence);
 |:--:|:--|:--|:--|:--|
 |persistence|boolean|false|Persistence of the grid|
 
-## Exemple
+## Example
 
 ```php
 <?php
