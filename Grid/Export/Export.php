@@ -246,7 +246,7 @@ abstract class Export implements ContainerAwareInterface
     protected function getGridTitles()
     {
         $titlesHTML = $this->renderBlock('grid_titles', array('grid' => $this->grid));
-        
+
         preg_match_all('#<th[^>]*?>(.*)?</th>#isU', $titlesHTML, $matches);
 
         if (empty($matches)) {
@@ -325,7 +325,7 @@ abstract class Export implements ContainerAwareInterface
          || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
          || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell'))
         {
-            return $this->renderBlock($block, array('column' => $column, 'value' => $value, 'row' => $row));
+            return $this->renderBlock($block, array('grid' => $this->grid, 'column' => $column, 'value' => $value, 'row' => $row));
         }
 
         return $value;
@@ -418,7 +418,7 @@ abstract class Export implements ContainerAwareInterface
 
         // Convert Special Characters in HTML
         $value = html_entity_decode($value);
-        
+
         $value = trim($value);
 
         return $value;
