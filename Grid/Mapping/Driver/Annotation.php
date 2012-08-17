@@ -89,17 +89,13 @@ class Annotation implements DriverInterface
         if ($class instanceof Column) {
             $metadata = $class->getMetadata();
 
-            if (!isset($metadata['filterable'])) {
-                $metadata['filterable'] = isset($this->filterable[$className][$group]) ? $this->filterable[$className][$group] : true;
-            }
-
             if (isset($metadata['id']) && $name !== null) {
                 throw new \Exception(sprintf('Parameter `id` can\'t be used in annotations for property `%s`, please remove it from class %s', $name, $className));
             }
 
             if ($name === null) {
                 if (isset($metadata['id'])) {
-                    $this->fields[$className][$group][$metadata['id']]['source'] = false;
+                    $metadata['source'] = false;
                 } else {
                     throw new \Exception(sprintf('Missing parameter `id` in annotations for extra column of class %s', $className));
                 }
@@ -117,6 +113,16 @@ class Annotation implements DriverInterface
                 }
             }
 
+            // Check the group of the annotation and don't override if an annotation with the group have already been defined
+            if (isset($metadata['groups']) && !in_array($group, (array) $metadata['groups'])
+             || isset($this->fields[$className][$group][$metadata['id']]['groups'])) {
+                return;
+            }
+
+            if (!isset($metadata['filterable'])) {
+                $metadata['filterable'] = isset($this->filterable[$className][$group]) ? $this->filterable[$className][$group] : true;
+            }
+
             if (!isset($metadata['title'])) {
                 $metadata['title'] = $metadata['id'];
             }
@@ -125,9 +131,7 @@ class Annotation implements DriverInterface
                 $metadata['source'] = true;
             }
 
-            foreach ($metadata as $key => $value) {
-                $this->fields[$className][$group][$metadata['id']][$key] = $value;
-            }
+            $this->fields[$className][$group][$metadata['id']] = $metadata;
         }
     }
 

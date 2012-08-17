@@ -1,3 +1,6 @@
+`18 August 2012`
+ * Fix #227 - Bug with annotations config groups
+
 `17 August 2012`
  * Add role control on massAction, rowAction and Export
  * Fix bug : grid not found when you export a grid with an searchOnClick column
