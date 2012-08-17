@@ -1,6 +1,7 @@
 `17 August 2012`
  * Add role control on massAction, rowAction and Export
  * Fix bug : grid not found when you export a grid with an searchOnClick column
+ * Fix persistence with basic authentification
 
 `14 August 2012`
  * Add grid data conjunction setting

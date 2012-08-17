@@ -351,7 +351,7 @@ class Grid
         $referer = strtok($this->request->headers->get('referer'), '?');
 
         // Persistence or reset - kill previous session
-        if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $referer != $this->request->getUriForPath($this->request->getPathInfo()))
+        if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $referer != $this->getCurrentUri())
          || isset($this->requestData[self::REQUEST_QUERY_RESET])) {
             $this->session->remove($this->hash);
         }
@@ -359,6 +359,11 @@ class Grid
         if ($this->session->get($this->hash) === null) {
             $this->newSession = true;
         }
+    }
+
+    protected function getCurrentUri()
+    {
+        return $this->request->getScheme().'://'.$this->request->getHttpHost().$this->request->getBaseUrl().$this->request->getPathInfo();
     }
 
     protected function processLazyParameters()
