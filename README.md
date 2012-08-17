@@ -19,6 +19,7 @@ See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGEL
 - Mass actions
 - Row actions
 - Supports mapped fields with Entity source
+- Securing the columns, actions and export with security roles
 - Annotations and PHP configuration
 - External filters box
 - Ajax loading
