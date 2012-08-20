@@ -32,6 +32,7 @@ class RowAction implements RowActionInterface
      * @param boolean $confirm Show confirm message if true
      * @param string $target Set the target of this action (_self,_blank,_parent,_top)
      * @param array $attributes Attributes of the anchor tag
+     * @param string $role Security role
      *
      * @return \APY\DataGridBundle\Grid\Action\RowAction
      */

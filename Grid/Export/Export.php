@@ -48,6 +48,17 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected $role;
 
+    /**
+     * Default Export constructor
+     *
+     * @param string $title Title of the export
+     * @param string $fileName FileName of the export
+     * @param array $parameters Additionnal parameters for the export
+     * @param string $charset Charset of the exported data
+     * @param string $role Security role
+     *
+     * @return \APY\DataGridBundle\Grid\Export\Export
+     */
     public function __construct($title, $fileName = 'export', $params = array(), $charset = 'UTF-8', $role = null)
     {
         $this->title = $title;

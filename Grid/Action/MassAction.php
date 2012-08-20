@@ -26,6 +26,9 @@ class MassAction implements MassActionInterface
      * @param string $title Title of the mass action
      * @param string $callback Callback of the mass action
      * @param boolean $confirm Show confirm message if true
+     * @param array $parameters Additionnal parameters
+     * @param string $role Security role
+     *
      * @return \APY\DataGridBundle\Grid\Action\MassAction
      */
     public function __construct($title, $callback = null, $confirm = false, $parameters = array(), $role = null)
