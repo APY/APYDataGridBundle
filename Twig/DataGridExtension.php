@@ -231,8 +231,9 @@ class DataGridExtension extends \Twig_Extension
         $pagerfanta->setMaxPerPage($grid->getLimit());
         $pagerfanta->setCurrentPage($grid->getPage() + 1);
 
-        $routeGenerator = function($page) use ($grid) {
-            return $this->getGridUrl('page', $grid, $page - 1);
+        $url = $this->getGridUrl('page', $grid, '');
+        $routeGenerator = function($page) use ($url) {
+            return sprintf('%s%d', $url, $page - 1);
         };
 
         $view = new DefaultView();
