@@ -1,7 +1,9 @@
 Overriding internal blocks
 ==========================
 
-These following blocks are already defined. For others blocks, see [cell rendering](cell_rendering.md) and [filter rendering](filter_rendering.md)
+These following blocks are already defined and you have access to the grid object named `grid`.  
+For others blocks, see [cell rendering](cell_rendering.md) and [filter rendering](filter_rendering.md)
+
 
  * **grid**  
     This block manages the display of the grid.
