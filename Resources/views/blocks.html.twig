@@ -61,7 +61,10 @@
             {% if column.type == 'massaction' %}
                 <input type="checkbox" class="grid-mass-selector" onclick="{{ grid.hash }}_markVisible(this.checked);"/>
             {% else %}
-                {% set columnTitle = grid.prefixTitle ~ column.title %}
+                {% set columnTitle = grid.prefixTitle ~ column.title ~ '__abbr' %}
+                {% if columnTitle|trans == columnTitle %}
+                    {% set columnTitle = grid.prefixTitle ~ column.title %}
+                {% endif %}
                 {% if (column.sortable) %}
                     <a class="order" href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by'|trans }} {{ columnTitle|trans }}">{{ columnTitle|trans }}</a>
                     {% if column.order == 'asc' %}
