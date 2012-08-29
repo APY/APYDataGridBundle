@@ -9,13 +9,16 @@ The following parameters are passed to the block `grid_column_%column_type%_cell
 
 |Parameter|Type|Description|
 |:--|:--|:--|
+|grid|APY/DataGridBundle/Grid/Grid|The grid object|
 |column|APY/DataGridBundle/Grid/Column/Colomn|The column currently being rendered|
 |row|APY/DataGridBundle/Grid/Row|The row of the source being rendered|
 |value|mixed|The value of the cell|
-|hash|string|Hash of the grid|
 |params|array|Additional parameters passed to the grid|
 
-## Overriding block names  (ordered)
+## Overriding block names (ordered)
+
+You can override the default block `grid_column_%column_type%_cell` or use one of these following blocks.  
+They are called before the default block.
 
  * `grid_%id%_column_%column_id%_cell`
  * `grid_%id%_column_%column_type%_cell`
