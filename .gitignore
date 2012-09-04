@@ -1,2 +1,4 @@
 nbproject/
 catalog.xml
+/vendor
+/composer.lock
