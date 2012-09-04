@@ -64,3 +64,11 @@ class Product
 **Note 1**: Every attribute have a setter and a getter method.  
 **Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.  
 **Note 3**: If operators are not visible, filtering is performed with the default operator.
+
+## Translation title abbreviation
+
+You can use abbreviations to define different titles for the column title and the filter label in the external search box.
+
+Exemple with the $type variable.
+`type` will only be search for the label in the external search box.
+For the column title of the grid `type__abbr` will be search and `type` will be search if the abbrevation isn't defined.

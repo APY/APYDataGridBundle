@@ -1,3 +1,11 @@
+`4 September 2012`
+ * Fix #237 - Add distinct support for DQL aggregate function
+ * Add abbrevation support with __abbr in translation file
+ * Fix #236 See https://bugs.php.net/bug.php?id=62464
+
+`27 August 2012`
+ * Fix #229 - Fix pagerfanta with PHP < 5.4
+
 `18 August 2012`
  * Fix #227 - Bug with annotations config groups
 

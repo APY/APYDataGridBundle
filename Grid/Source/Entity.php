@@ -137,9 +137,15 @@ class Entity extends Source
         // Aggregate dql functions
         $matches = array();
         if ($column->hasDQLFunction($matches)) {
-            $parameter = '';
-            if ($matches['parameters'] !== '') {
-                $parameter = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'".$matches['parameters']."'");
+            if (strtolower($matches['parameters']) == 'distinct') {
+                $functionWithParameters = $matches['function'].'(DISTINCT '.$parent.'.'.$matches['field'].')';
+            } else {
+                $parameters = '';
+                if ($matches['parameters'] !== '') {
+                    $parameters = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'".$matches['parameters']."'");
+                }
+
+                $functionWithParameters = $matches['function'].'('.$parent.'.'.$matches['field'].$parameters.')';
             }
 
             if ($withAlias) {
@@ -147,11 +153,11 @@ class Entity extends Source
                 $this->query->addGroupBy($previousParent);
                 $this->querySelectfromSource->addGroupBy($previousParent);
 
-                return $matches['function'].'('.$parent.'.'.$matches['field'].$parameter.') as '.substr($parent, 1).'::'.$matches['all'];
+                return $functionWithParameters.' as '.substr($parent, 1).'::'.$matches['all'];
             }
 
             if ($forHavingClause) {
-                return $matches['function'].'('.$parent.'.'.$matches['field'].$parameter.')';
+                return $functionWithParameters;
             }
 
             return substr($parent, 1).'::'.$matches['all'];
