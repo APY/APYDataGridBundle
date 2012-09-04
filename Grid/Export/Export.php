@@ -91,13 +91,6 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * function call by the grid to fill the content of the export
-     *
-     * @param Grid $grid The grid
-     */
-    abstract public function computeData($grid);
-
-    /**
      * gets the export Response
      *
      * @return Response
