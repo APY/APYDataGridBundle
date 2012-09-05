@@ -1,2 +1,8 @@
 nbproject/
 catalog.xml
+/vendor
+/composer.lock
+/phpunit.xml
+/composer.phar
+*~
+*.orig
