@@ -241,6 +241,8 @@ abstract class Source implements DriverInterface
             foreach ($columns as $column) {
                 $fieldName = $column->getField();
                 $fieldValue = $items[$key][$fieldName];
+                $dataIsNumeric = ($column->getType() == 'number' || $column->getType() == 'boolean');
+
                 // Filter
                 if ($column->isFiltered()) {
                     // Some attributes of the column can be changed in this function
@@ -260,31 +262,41 @@ abstract class Source implements DriverInterface
                         $value = $filter->getValue();
 
                         // Normalize value
-                        switch ($operator) {
-                            case Column\Column::OPERATOR_EQ:
-                                $value = '/^{'.preg_quote($value, '/').'$/i';
-                                break;
-                            case Column\Column::OPERATOR_NEQ:
-                                $value = '/^(?!'.preg_quote($value, '/').'$).*$/i';
-                                break;
-                            case Column\Column::OPERATOR_LIKE:
-                                $value = '/'.preg_quote($value, '/').'/i';
-                                break;
-                            case Column\Column::OPERATOR_NLIKE:
-                                $value = '/^((?!'.preg_quote($value, '/').').)*$/i';
-                                break;
-                            case Column\Column::OPERATOR_LLIKE:
-                                $value = '/'.preg_quote($value, '/').'$/i';
-                                break;
-                            case Column\Column::OPERATOR_RLIKE:
-                                $value = '/^'.preg_quote($value, '/').'/i';
-                                break;
+                        if (!$dataIsNumeric) {
+                            switch ($operator) {
+                                case Column\Column::OPERATOR_EQ:
+                                    $value = '/^{'.preg_quote($value, '/').'$/i';
+                                    break;
+                                case Column\Column::OPERATOR_NEQ:
+                                    $value = '/^(?!'.preg_quote($value, '/').'$).*$/i';
+                                    break;
+                                case Column\Column::OPERATOR_LIKE:
+                                    $value = '/'.preg_quote($value, '/').'/i';
+                                    break;
+                                case Column\Column::OPERATOR_NLIKE:
+                                    $value = '/^((?!'.preg_quote($value, '/').').)*$/i';
+                                    break;
+                                case Column\Column::OPERATOR_LLIKE:
+                                    $value = '/'.preg_quote($value, '/').'$/i';
+                                    break;
+                                case Column\Column::OPERATOR_RLIKE:
+                                    $value = '/^'.preg_quote($value, '/').'/i';
+                                    break;
+                            }
                         }
 
                         // Test
                         switch ($operator) {
                             case Column\Column::OPERATOR_EQ:
+                                if ($dataIsNumeric) {
+                                    $found = abs($fieldValue-$value) < 0.00001;
+                                    break;
+                                }
                             case Column\Column::OPERATOR_NEQ:
+                                if ($dataIsNumeric) {
+                                    $found = abs($fieldValue-$value) > 0.00001;
+                                    break;
+                                }
                             case Column\Column::OPERATOR_LIKE:
                             case Column\Column::OPERATOR_NLIKE:
                             case Column\Column::OPERATOR_LLIKE:
@@ -336,7 +348,6 @@ abstract class Source implements DriverInterface
 
             if (!$keep) {
                 unset($items[$key]);
-
             }
 
         }

@@ -1,3 +1,6 @@
+`7 September 2012`
+ * Fix #241 - Numeric and boolean filter don't work with Vector source and setData function
+
 `4 September 2012`
  * Fix #237 - Add distinct support for DQL aggregate function
  * Add abbrevation support with __abbr in translation file
