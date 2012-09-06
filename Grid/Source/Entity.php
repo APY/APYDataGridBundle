@@ -119,18 +119,18 @@ class Entity extends Source
             return self::TABLE_ALIAS.'.'.$name;
         }
 
-        $parent = $previousParent = self::TABLE_ALIAS;
+        $parent = self::TABLE_ALIAS;
+        $previousParent = '';
 
         $elements = explode('.', $name);
 
         while ($element = array_shift($elements)) {
             if (count($elements) > 0) {
-                $this->joins['_' . $element] = $parent . '.' . $element;
-                $previousParent = $parent;
+                $previousParent .= $element;
+                $this->joins['_' . $previousParent] = $parent . '.' . $element;
                 $parent = '_' . $element;
-                $name = $element;
             } else {
-                $name .= '.'.$element;
+                $name = $previousParent . '.' . $element;
             }
         }
 
