@@ -596,11 +596,13 @@ abstract class Column
                     case self::OPERATOR_ISNOTNULL:
                         $filters[] = new Filter($this->data['operator']);
                         break;
-                    case self::OPERATOR_EQ:
                     case self::OPERATOR_LIKE:
                     case self::OPERATOR_RLIKE:
                     case self::OPERATOR_LLIKE:
-                        $this->setDataJunction(self::DATA_DISJUNCTION);
+                        if ($this->getSelectMulti()) {
+                            $this->setDataJunction(self::DATA_DISJUNCTION);
+                        }
+                    case self::OPERATOR_EQ:
                     case self::OPERATOR_NEQ:
                     case self::OPERATOR_NLIKE:
                         foreach ((array) $this->data['from'] as $value) {

@@ -1,5 +1,6 @@
 `7 September 2012`
  * Fix #241 - Numeric and boolean filter don't work with Vector source and setData function
+ * Fix #224 - Fix wrong default junction with multi select feature
 
 `4 September 2012`
  * Fix #237 - Add distinct support for DQL aggregate function
