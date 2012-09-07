@@ -111,7 +111,7 @@ class Entity extends Source
      * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @return string
      */
-        protected function getFieldName($column, $withAlias = false, $forHavingClause = false)
+    protected function getFieldName($column, $withAlias = false, $forHavingClause = false)
     {
         $name = $column->getField();
 
