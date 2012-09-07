@@ -111,7 +111,7 @@ class Entity extends Source
      * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @return string
      */
-    protected function getFieldName($column, $withAlias = false, $forHavingClause = false)
+        protected function getFieldName($column, $withAlias = false, $forHavingClause = false)
     {
         $name = $column->getField();
 
@@ -138,14 +138,14 @@ class Entity extends Source
         $matches = array();
         if ($column->hasDQLFunction($matches)) {
             if (strtolower($matches['parameters']) == 'distinct') {
-                $functionWithParameters = $matches['function'].'(DISTINCT '.$parent.'.'.$matches['field'].')';
+                $functionWithParameters = $matches['function'].'(DISTINCT '.$previousParent.'.'.$matches['field'].')';
             } else {
                 $parameters = '';
                 if ($matches['parameters'] !== '') {
                     $parameters = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'".$matches['parameters']."'");
                 }
 
-                $functionWithParameters = $matches['function'].'('.$parent.'.'.$matches['field'].$parameters.')';
+                $functionWithParameters = $matches['function'].'('.$previousParent.'.'.$matches['field'].$parameters.')';
             }
 
             if ($withAlias) {
@@ -164,10 +164,10 @@ class Entity extends Source
         }
 
         if ($withAlias) {
-            return '_' . $name.' as '.str_replace('.', '::', $column->getId());
+            return $name.' as '.str_replace('.', '::', $column->getId());
         }
 
-        return '_'.$name;
+        return $name;
     }
 
     /**
