@@ -134,6 +134,8 @@ class Entity extends Source
             }
         }
 
+        $alias = str_replace('.', '::', $column->getId());
+
         // Aggregate dql functions
         $matches = array();
         if ($column->hasDQLFunction($matches)) {
@@ -153,18 +155,18 @@ class Entity extends Source
                 $this->query->addGroupBy($previousParent);
                 $this->querySelectfromSource->addGroupBy($previousParent);
 
-                return $functionWithParameters.' as '.substr($parent, 1).'::'.$matches['all'];
+                return "$functionWithParameters as $alias";
             }
 
             if ($forHavingClause) {
                 return $functionWithParameters;
             }
 
-            return substr($parent, 1).'::'.$matches['all'];
+            return $alias;
         }
 
         if ($withAlias) {
-            return $name.' as '.str_replace('.', '::', $column->getId());
+            return "$name as $alias";
         }
 
         return $name;
