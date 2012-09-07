@@ -1558,4 +1558,38 @@ class Grid
             }
         }
     }
+
+    /**
+     * Extract raw data of columns
+     *
+     * @param string|array $columnNames The name of the extract columns. If null, all the columns are return.
+     * @param boolean $namedIndexes If sets to true, named indexes will be used
+     *
+     * @return array Raw data of columns
+     */
+    public function getRawData($columnNames = null, $namedIndexes = true)
+    {
+        if ($columnNames === null) {
+            foreach ($this->getColumns() as $column) {
+                $columnNames[] = $column->getId();
+            }
+        }
+
+        $columnNames = (array) $columnNames;
+        $result = array();
+        foreach ($this->rows as $row) {
+            $resultRow = array();
+            foreach ($columnNames as $columnName) {
+                if ($namedIndexes) {
+                    $resultRow[$columnName] = $row->getField($columnName);
+                } else {
+                    $resultRow[] = $row->getField($columnName);
+                }
+            }
+
+            $result[] = $resultRow;
+        }
+
+        return $result;
+    }
 }

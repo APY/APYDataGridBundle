@@ -4,6 +4,7 @@
  * Fix #239 - Fix complexes alias names conflict
  * Add #242 feature - Checkbox and radio filter with select filter and selectExpanded=true
  * Fix bug - Fix one of the problems of #181
+ * Add #244 helper - Grid data to array
 
 `4 September 2012`
  * Fix #237 - Add distinct support for DQL aggregate function
