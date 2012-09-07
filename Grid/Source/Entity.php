@@ -126,8 +126,8 @@ class Entity extends Source
 
         while ($element = array_shift($elements)) {
             if (count($elements) > 0) {
-                $previousParent .= $element;
-                $this->joins['_' . $previousParent] = $parent . '.' . $element;
+                $previousParent .= '_' . $element;
+                $this->joins[$previousParent] = $parent . '.' . $element;
                 $parent = '_' . $element;
             } else {
                 $name = $previousParent . '.' . $element;
