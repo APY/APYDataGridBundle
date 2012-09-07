@@ -2,6 +2,8 @@
  * Fix #241 - Numeric and boolean filter don't work with Vector source and setData function
  * Fix #224 - Fix wrong default junction with multi select feature
  * Fix #239 - Fix complexes alias names conflict
+ * Add #242 feature - Checkbox and radio filter with select filter and selectExpanded=true
+ * Fix bug - Fix one of the problems of #181
 
 `4 September 2012`
  * Fix #237 - Add distinct support for DQL aggregate function

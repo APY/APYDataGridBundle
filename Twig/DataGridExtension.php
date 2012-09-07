@@ -59,7 +59,7 @@ class DataGridExtension extends \Twig_Extension
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
-        
+
         // Avoids the exception "Variable does not exist" with the _self template
         $globals = $this->environment->getGlobals();
 
@@ -171,7 +171,7 @@ class DataGridExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function getGridFilter($column, $grid)
+    public function getGridFilter($column, $grid, $submitOnChange = true)
     {
         $id = $this->names[$grid->getHash()];
 
@@ -184,7 +184,7 @@ class DataGridExtension extends \Twig_Extension
          || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType())
          || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter'))
         {
-            return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'submitOnChange' => $column->isFilterSubmitOnChange()));
+            return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'submitOnChange' => $submitOnChange && $column->isFilterSubmitOnChange()));
         }
 
         return '';
