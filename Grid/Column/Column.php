@@ -751,7 +751,7 @@ abstract class Column
 
     public function hasDQLFunction(&$matches = null)
     {
-        $regex = '/.(?P<all>(?P<field>\w+):(?P<function>\w+)(:)?(?P<parameters>\w*))$/';
+        $regex = '/(?P<all>(?P<field>\w+):(?P<function>\w+)(:)?(?P<parameters>\w*))$/';
 
         return ($matches === null) ? preg_match($regex, $this->field) : preg_match($regex, $this->field, $matches);
     }

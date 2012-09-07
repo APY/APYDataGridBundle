@@ -5,6 +5,7 @@
  * Add #242 feature - Checkbox and radio filter with select filter and selectExpanded=true
  * Fix bug - Fix one of the problems of #181
  * Add #244 helper - Grid data to array
+ * Add DQL function support with non mapped fields 
 
 `4 September 2012`
  * Fix #237 - Add distinct support for DQL aggregate function
@@ -30,7 +31,6 @@
  * Fix datetime select filter
 
 `8 August 2012`
-
  * Add the default size and separator default config
 
 `31 July 2012`

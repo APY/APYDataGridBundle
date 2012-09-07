@@ -11,17 +11,18 @@ Example of an association with multi related fields on the same property.
  */
 class Product
 {
-	protected $id;
+    protected $id;
 
     protected $type;
 
     /**
      * @ORM\OneToMany(...)
      *
-	 * @GRID\Column(field="category.name", title="Category Name")
-	 * @GRID\Column(field="category.children", type="array", title="Category Children")
+     * @GRID\Column(field="category.name", title="Category Name")
+     * @GRID\Column(field="category.firstChild.name", title="Category first child")
+     * @GRID\Column(field="category.tags", type="array", title="Category tags")
      */
-    protected $category;	
+    protected $category;
 ...
 }
 ```
@@ -33,16 +34,21 @@ class Product
 ...
 class Category
 {
-	protected $id;
+    protected $id;
 
     protected $name;
-	
-	protected $children;
+
+    /**
+     * @ORM\OneToOne(...)
+     */
+    protected $firstChild;
+
+    protected $tags;
 
     /**
      * @ORM\ManyToOne(...)
      */
-    protected $product;	
+    protected $product;
 ...
 }
 ```

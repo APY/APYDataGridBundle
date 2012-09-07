@@ -115,26 +115,28 @@ class Entity extends Source
     {
         $name = $column->getField();
 
-        if (strpos($name, '.') === false) {
+        if (strpos($name, '.') !== false ) {
+            $parent = self::TABLE_ALIAS;
+            $previousParent = '';
+
+            $elements = explode('.', $name);
+            while ($element = array_shift($elements)) {
+                if (count($elements) > 0) {
+                    $previousParent .= '_' . $element;
+                    $this->joins[$previousParent] = $parent . '.' . $element;
+                    $parent = '_' . $element;
+                } else {
+                    $name = $previousParent . '.' . $element;
+                }
+            }
+
+            $alias = str_replace('.', '::', $column->getId());
+        } elseif (strpos($name, ':') !== false) {
+            $previousParent = self::TABLE_ALIAS;
+            $alias = $name;
+        } else {
             return self::TABLE_ALIAS.'.'.$name;
         }
-
-        $parent = self::TABLE_ALIAS;
-        $previousParent = '';
-
-        $elements = explode('.', $name);
-
-        while ($element = array_shift($elements)) {
-            if (count($elements) > 0) {
-                $previousParent .= '_' . $element;
-                $this->joins[$previousParent] = $parent . '.' . $element;
-                $parent = '_' . $element;
-            } else {
-                $name = $previousParent . '.' . $element;
-            }
-        }
-
-        $alias = str_replace('.', '::', $column->getId());
 
         // Aggregate dql functions
         $matches = array();
@@ -178,20 +180,23 @@ class Entity extends Source
      */
     protected function getGroupByFieldName($fieldName)
     {
-        if (strpos($fieldName, '.') === false) {
-            return self::TABLE_ALIAS.'.'.$fieldName;
-        }
+        if (strpos($fieldName, '.') !== false) {
+            $previousParent = '';
 
-        $previousParent = '';
-
-        $elements = explode('.', $fieldName);
-
-        while ($element = array_shift($elements)) {
-            if (count($elements) > 0) {
-                $previousParent .= '_' . $element;
-            } else {
-                $name = $previousParent . '.' . $element;
+            $elements = explode('.', $fieldName);
+            while ($element = array_shift($elements)) {
+                if (count($elements) > 0) {
+                    $previousParent .= '_' . $element;
+                } else {
+                    $name = $previousParent . '.' . $element;
+                }
             }
+        } else {
+            if (($pos = strpos($fieldName, ':')) !== false) {
+                $fieldName = substr($fieldName, 0, $pos);
+            }
+            
+            return self::TABLE_ALIAS.'.'.$fieldName;
         }
 
         return $name;
