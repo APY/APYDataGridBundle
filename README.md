@@ -14,7 +14,7 @@ See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGEL
 - Sortable and Filterable with operators (Comparison operators, range, starts/ends with, (not) contains, is (not) defined, regex)
 - Auto-typing columns (Text, Number, Boolean, Array, DateTime, Date, ...)
 - Locale support for DateTime, Date and Number columns (Decimal, Currency, Percent, Duration, Scientific, Spell out)
-- Input and Select filters filled with the data of the grid or an array of values
+- Input, Select, checkbox and radio button filters filled with the data of the grid or an array of values
 - Export (CSV, Excel, _PDF_, XML, JSON, HTML, ...)
 - Mass actions
 - Row actions
