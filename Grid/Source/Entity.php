@@ -182,7 +182,19 @@ class Entity extends Source
             return self::TABLE_ALIAS.'.'.$fieldName;
         }
 
-        return '_'.$fieldName;
+        $previousParent = '';
+
+        $elements = explode('.', $fieldName);
+
+        while ($element = array_shift($elements)) {
+            if (count($elements) > 0) {
+                $previousParent .= '_' . $element;
+            } else {
+                $name = $previousParent . '.' . $element;
+            }
+        }
+
+        return $name;
     }
 
     /**
