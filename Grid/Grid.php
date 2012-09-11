@@ -279,11 +279,13 @@ class Grid
     }
 
     
-    public function setOptions( $options){
+    public function setOptions(array $options)
+    {
         $this->options = $options;
     }
     
-    public function getOptions(){
+    public function getOptions()
+    {
         return $this->options;
     }
     
