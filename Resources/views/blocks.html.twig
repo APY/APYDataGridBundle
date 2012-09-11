@@ -126,11 +126,15 @@
 {% endblock grid_rows %}
 {# ---------------------------------------------------- grid_pager -------------------------------------------------- #}
 {% block grid_pager %}
-<div class="pager" style="float:left">
-    {{ grid_pager_totalcount(grid) }}
-    {{ grid_pager_selectpage(grid) }}
-    {{ grid_pager_results_perpage(grid) }}
-</div>
+    {% if options.pagerfanta.enable %}
+        {{ grid_pagerfanta(grid) }}
+    {% else %}
+        <div class="pager" style="float:left">
+            {{ grid_pager_totalcount(grid) }}
+            {{ grid_pager_selectpage(grid) }}
+            {{ grid_pager_results_perpage(grid) }}
+        </div>
+    {% endif %}
 {% endblock grid_pager %}
 {# ---------------------------------------------------- grid_pager_totalcount -------------------------------------------------- #}
 {% block grid_pager_totalcount %}

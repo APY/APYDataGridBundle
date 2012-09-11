@@ -18,7 +18,6 @@
             <argument type="service" id="router" />
             <call method="setPagerFantaView">
                 <argument>%grid.twig_extension.pagerfanta.view.class%</argument>
-                <argument>%apy_data_grid.pager_fanta_options%</argument>
             </call>
         </service>
 
@@ -41,6 +40,9 @@
             </call>
             <call method="setActionsColumnSeparator">
                 <argument>%apy_data_grid.actions_columns_separator%</argument>
+            </call>
+            <call method="setOptions">
+                <argument>%apy_data_grid.options%</argument>
             </call>
         </service>
 
