@@ -237,6 +237,11 @@ class Grid
      * @var int
      */
     protected $defaultPage;
+    
+    /**
+     * @var array
+     */
+    protected $options;
 
     // Lazy parameters
     protected $lazyAddColumn = array();
@@ -273,6 +278,15 @@ class Grid
         }
     }
 
+    
+    public function setOptions( $options){
+        $this->options = $options;
+    }
+    
+    public function getOptions(){
+        return $this->options;
+    }
+    
     /**
      * Sets Source to the Grid
      *
@@ -1548,9 +1562,9 @@ class Grid
                 $parameters = (array) $param2;
                 $view = $param1;
             }
-
+         
             $parameters = array_merge(array('grid' => $this), $parameters);
-
+            
             if ($view === null) {
                 return $parameters;
             } else {
