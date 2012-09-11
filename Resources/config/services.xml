@@ -9,16 +9,12 @@
         <parameter key="grid.twig_extension.pagerfanta.view.class">Pagerfanta\View\DefaultView</parameter>
         <parameter key="grid.class">APY\DataGridBundle\Grid\Grid</parameter>
         <parameter key="grid.manager.class">APY\DataGridBundle\Grid\GridManager</parameter>
-        <parameter key="grid.twig_extension.pagerfanta.view.class">Pagerfanta\View\DefaultView</parameter>
     </parameters>
 
     <services>
         <service id="grid.twig_extension" class="%grid.twig_extension.class%" public="false">
             <tag name="twig.extension" />
             <argument type="service" id="router" />
-            <call method="setPagerFantaView">
-                <argument>%grid.twig_extension.pagerfanta.view.class%</argument>
-            </call>
         </service>
 
         <service id="grid" class="%grid.class%" scope="prototype">
