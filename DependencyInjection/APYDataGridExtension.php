@@ -34,5 +34,6 @@ class APYDataGridExtension extends Extension
         $container->setParameter('apy_data_grid.no_result_message', $config['no_result_message']);
         $container->setParameter('apy_data_grid.actions_columns_size', $config['actions_columns_size']);
         $container->setParameter('apy_data_grid.actions_columns_separator', $config['actions_columns_separator']);
+        $container->setParameter('apy_data_grid.pager_fanta_options', $config['pager_fanta_options']);
     }
 }

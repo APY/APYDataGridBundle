@@ -35,6 +35,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('no_result_message')->defaultValue('No result')->end()
                 ->scalarNode('actions_columns_size')->defaultValue(-1)->end()
                 ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end()
+                ->scalarNode('pager_fanta_options')->defaultValue(array('prev_message' => '«', 'next_message' => '»'))->end()
             ->end()
         ;
         return $treeBuilder;

@@ -15,7 +15,6 @@ namespace APY\DataGridBundle\Twig;
 use APY\DataGridBundle\Grid\Grid;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\NullAdapter;
-use Pagerfanta\View\DefaultView;
 
 class DataGridExtension extends \Twig_Extension
 {
@@ -50,10 +49,28 @@ class DataGridExtension extends \Twig_Extension
      * @var array
      */
     protected $params = array();
+    
+    /**
+     * 
+     * @var string
+     */
+    protected $pagerFantaViewClass;
+    
+    /**
+     *
+     * @var array
+     */
+    protected $pagerFantaViewOptions;
+    
 
     public function __construct($router)
     {
         $this->router = $router;
+    }
+    
+    public function setPagerFantaView($viewClass, array $options){
+        $this->pagerFantaViewClass = $viewClass;
+        $this->pagerFantaViewOptions = $options;
     }
 
     public function initRuntime(\Twig_Environment $environment)
@@ -236,8 +253,9 @@ class DataGridExtension extends \Twig_Extension
             return sprintf('%s%d', $url, $page - 1);
         };
 
-        $view = new DefaultView();
-        $html = $view->render($pagerfanta, $routeGenerator);
+        
+        $view = new $this->pagerFantaViewClass;
+        $html = $view->render($pagerfanta, $routeGenerator, $this->pagerFantaViewOptions);
 
         return $html;
     }
