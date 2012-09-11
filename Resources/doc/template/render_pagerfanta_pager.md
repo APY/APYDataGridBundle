@@ -28,7 +28,7 @@ apy_data_grid:
   options:
     pagerfanta:
         enable: true    #default false
-	view_class: Pagerfanta\View\TwitterBootstrapView #default    Pagerfanta\View\DefaultView
+        view_class: Pagerfanta\View\TwitterBootstrapView #default    Pagerfanta\View\DefaultView
         options:            #all options of pager fanta view constructor
            prev_message : «
            next_message : »
