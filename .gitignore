@@ -6,3 +6,7 @@ catalog.xml
 /composer.phar
 *~
 *.orig
+.buildpath
+.project
+.settings/
+
