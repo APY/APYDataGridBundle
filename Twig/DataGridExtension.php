@@ -50,24 +50,11 @@ class DataGridExtension extends \Twig_Extension
      */
     protected $params = array();
     
-    /**
-     * 
-     * @var string
-     */
-    protected $pagerFantaViewClass;
-    
- 
-    
-
     public function __construct($router)
     {
         $this->router = $router;
     }
     
-    public function setPagerFantaView($viewClass){
-        $this->pagerFantaViewClass = $viewClass;
-    }
-
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
@@ -250,8 +237,9 @@ class DataGridExtension extends \Twig_Extension
 
         $gridOptions = $grid->getOptions();
         $pagerFantaViewOptions = $gridOptions['pagerfanta']['options'];
+        $pagerFantaViewClass = $gridOptions['pagerfanta']['view_class'];
         
-        $view = new $this->pagerFantaViewClass;
+        $view = new $pagerFantaViewClass;
         $html = $view->render($pagerfanta, $routeGenerator, $pagerFantaViewOptions);
 
         return $html;

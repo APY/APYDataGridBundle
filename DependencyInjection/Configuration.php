@@ -43,6 +43,7 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->booleanNode('enable')->defaultFalse()->end()
+                                ->scalarNode('view_class')->defaultValue('Pagerfanta\View\DefaultView')->end()
                                 ->arrayNode('options')
                                     ->defaultValue(array('prev_message' => '«', 'next_message' => '»'))
                                     ->useAttributeAsKey('options')
