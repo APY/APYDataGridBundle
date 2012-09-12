@@ -52,15 +52,10 @@ class DataGridExtension extends \Twig_Extension
     
     /**
      * 
-     * @var string
-     */
-    protected $pagerFantaView;
-    
-    /**
-     *
      * @var array
      */
-    protected $pagerFantaOptions;
+    protected $pagerFantaDefs;
+    
     
     public function __construct($router)
     {
@@ -69,8 +64,7 @@ class DataGridExtension extends \Twig_Extension
     
     public function setPagerFanta(array $def)
     {
-        $this->pagerFantaView=$def['view_class'];
-        $this->pagerFantaOptions=$def['options'];
+        $this->pagerFantaDefs=$def;
     }
     
     public function initRuntime(\Twig_Environment $environment)
@@ -153,10 +147,9 @@ class DataGridExtension extends \Twig_Extension
         return $this->renderBlock('grid_' . $name, array('grid' => $grid));
     }
 
-    public function getGridPager($name, $grid)
+    public function getGridPager($grid)
     {
-        $pagerfanta= $this->pagerFantaOptions['enable'];
-        return $this->renderBlock('grid_' . $name, array('grid' => $grid, 'pagerfanta' =>$pagerfanta));
+        return $this->renderBlock('grid_pager', array('grid' => $grid, 'pagerfanta' =>$this->pagerFantaDefs['enable']));
     }
     
     /**
@@ -260,8 +253,8 @@ class DataGridExtension extends \Twig_Extension
             return sprintf('%s%d', $url, $page - 1);
         };
 
-        $view = new $this->pagerFantaView;
-        $html = $view->render($pagerfanta, $routeGenerator, $this->pagerFantaOptions);
+        $view = new $this->pagerFantaDefs['view_class'];
+        $html = $view->render($pagerfanta, $routeGenerator,$this->pagerFantaDefs['options']);
 
         return $html;
     }

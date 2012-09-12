@@ -39,9 +39,6 @@
             <call method="setActionsColumnSeparator">
                 <argument>%apy_data_grid.actions_columns_separator%</argument>
             </call>
-            <call method="setOptions">
-                <argument>%apy_data_grid.options%</argument>
-            </call>
         </service>
 
         <service id="grid.manager" class="%grid.manager.class%">
