@@ -25,7 +25,6 @@ in config.yml:
 
 ```
 apy_data_grid:
-  options:
     pagerfanta:
         enable: true    #default false
         view_class: Pagerfanta\View\TwitterBootstrapView #default    Pagerfanta\View\DefaultView
