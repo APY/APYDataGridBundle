@@ -149,7 +149,7 @@ class DataGridExtension extends \Twig_Extension
 
     public function getGridPager($grid)
     {
-        return $this->renderBlock('grid_pager', array('grid' => $grid, 'pagerfanta' =>$this->pagerFantaDefs['enable']));
+        return $this->renderBlock('grid_pager', array('grid' => $grid, 'pagerfanta' => $this->pagerFantaDefs['enable']));
     }
     
     /**
