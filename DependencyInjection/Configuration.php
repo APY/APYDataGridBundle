@@ -35,7 +35,21 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('no_result_message')->defaultValue('No result')->end()
                 ->scalarNode('actions_columns_size')->defaultValue(-1)->end()
                 ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end()
-            ->end()
+                ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end()
+                ->arrayNode('pagerfanta')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enable')->defaultFalse()->end()
+                        ->scalarNode('view_class')->defaultValue('Pagerfanta\View\DefaultView')->end()
+                        ->arrayNode('options')
+                            ->defaultValue(array('prev_message' => '«', 'next_message' => '»'))
+                            ->useAttributeAsKey('options')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+             ->end()
+                
         ;
         return $treeBuilder;
     }
