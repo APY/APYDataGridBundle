@@ -126,7 +126,7 @@
 {% endblock grid_rows %}
 {# ---------------------------------------------------- grid_pager -------------------------------------------------- #}
 {% block grid_pager %}
-    {% if options.pagerfanta.enable %}
+    {% if pagerfanta %}
         {{ grid_pagerfanta(grid) }}
     {% else %}
         <div class="pager" style="float:left">

@@ -50,9 +50,27 @@ class DataGridExtension extends \Twig_Extension
      */
     protected $params = array();
     
+    /**
+     * 
+     * @var string
+     */
+    protected $pagerFantaView;
+    
+    /**
+     *
+     * @var array
+     */
+    protected $pagerFantaOptions;
+    
     public function __construct($router)
     {
         $this->router = $router;
+    }
+    
+    public function setPagerFanta(array $def)
+    {
+        $this->pagerFantaView=$def['view_class'];
+        $this->pagerFantaOptions=$def['options'];
     }
     
     public function initRuntime(\Twig_Environment $environment)
@@ -96,6 +114,7 @@ class DataGridExtension extends \Twig_Extension
             'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter', array('is_safe' => array('html'))),
             'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
             'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
+            'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
             'grid_pagerfanta'   => new \Twig_Function_Method($this, 'getPagerfanta', array('is_safe' => array('html'))),
             // Other methods with only the grid as input and output argument (Twig >= 1.5.0)
             'grid_*'            => new \Twig_Function_Method($this, 'getGrid_', array('is_safe' => array('html')))
@@ -126,14 +145,20 @@ class DataGridExtension extends \Twig_Extension
         // For export
         $grid->setTemplate($theme);
 
-        return $this->renderBlock('grid', array('grid' => $grid, 'options' => $grid->getOptions()));
+        return $this->renderBlock('grid', array('grid' => $grid));
     }
 
     public function getGrid_($name, $grid)
     {
-        return $this->renderBlock('grid_' . $name, array('grid' => $grid, 'options' => $grid->getOptions()));
+        return $this->renderBlock('grid_' . $name, array('grid' => $grid));
     }
 
+    public function getGridPager($name, $grid)
+    {
+        $pagerfanta= $this->pagerFantaOptions['enable'];
+        return $this->renderBlock('grid_' . $name, array('grid' => $grid, 'pagerfanta' =>$pagerfanta));
+    }
+    
     /**
      * Cell Drawing override
      *
@@ -235,12 +260,8 @@ class DataGridExtension extends \Twig_Extension
             return sprintf('%s%d', $url, $page - 1);
         };
 
-        $gridOptions = $grid->getOptions();
-        $pagerFantaViewOptions = $gridOptions['pagerfanta']['options'];
-        $pagerFantaViewClass = $gridOptions['pagerfanta']['view_class'];
-        
-        $view = new $pagerFantaViewClass;
-        $html = $view->render($pagerfanta, $routeGenerator, $pagerFantaViewOptions);
+        $view = new $this->pagerFantaView;
+        $html = $view->render($pagerfanta, $routeGenerator, $this->pagerFantaOptions);
 
         return $html;
     }

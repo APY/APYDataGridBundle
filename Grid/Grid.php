@@ -238,10 +238,6 @@ class Grid
      */
     protected $defaultPage;
     
-    /**
-     * @var array
-     */
-    protected $options;
 
     // Lazy parameters
     protected $lazyAddColumn = array();
@@ -278,17 +274,7 @@ class Grid
         }
     }
 
-    
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
-    }
-    
-    public function getOptions()
-    {
-        return $this->options;
-    }
-    
+        
     /**
      * Sets Source to the Grid
      *
