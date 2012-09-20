@@ -84,7 +84,11 @@ class ArrayColumn extends Column
 
         $return = array();
         foreach ($values as $key => $value) {
-            $return[$key] = (key_exists((string)$value, $this->values)) ? $value = $this->values[$value] : $value;
+            if (!is_array($value) && isset($this->values[(string)$value])) {
+                $value = $this->values[$value];
+            }
+
+            $return[$key] = $value;
         }
 
         return $return;
