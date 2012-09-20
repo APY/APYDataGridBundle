@@ -265,7 +265,7 @@ abstract class Source implements DriverInterface
                         if (!$dataIsNumeric) {
                             switch ($operator) {
                                 case Column\Column::OPERATOR_EQ:
-                                    $value = '/^{'.preg_quote($value, '/').'$/i';
+                                    $value = '/^'.preg_quote($value, '/').'$/i';
                                     break;
                                 case Column\Column::OPERATOR_NEQ:
                                     $value = '/^(?!'.preg_quote($value, '/').'$).*$/i';
