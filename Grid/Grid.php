@@ -801,6 +801,21 @@ class Grid
     }
 
     /**
+     * Sets order of Columns passing an array of column ids
+     * If the list of ids is uncomplete, the remaining columns will be
+     * placed after
+     *
+     * @param array $columnIds
+     *
+     * @return self
+     */
+    public function setColumnsOrder(array $columnIds)
+    {
+        $this->columns->setColumnsOrder($columnIds);
+        return $this;
+    }
+
+    /**
      * Adds Mass Action
      *
      * @param Action\MassActionInterface $action
