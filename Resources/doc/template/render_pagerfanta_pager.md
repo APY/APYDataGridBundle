@@ -20,23 +20,18 @@ $loader->registerNamespaces(array(
 
 ## Usage
 
-Override the pager block and call the pagerfanta pager
+in config.yml:
 
-```php
-<?php
-...
-$grid = $this->get('grid');
 
-return $grid->getGridResponse('MyProjectMyBundle::my_grid.html.twig');
-...
 ```
+apy_data_grid:
+    pagerfanta:
+        enable: true    #default false
+        view_class: Pagerfanta\View\TwitterBootstrapView #default    Pagerfanta\View\DefaultView
+        options:            #all options of pager fanta view constructor
+           prev_message : «
+           next_message : »
 
-And the template
-
-```janjo
-{% block grid_pager %}
-{{ grid_pagerfanta(grid) }}
-{% endblock grid_pager %}
 ```
 
 ## grid_pagerfanta function parameters

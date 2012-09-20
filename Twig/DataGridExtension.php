@@ -15,7 +15,6 @@ namespace APY\DataGridBundle\Twig;
 use APY\DataGridBundle\Grid\Grid;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\NullAdapter;
-use Pagerfanta\View\DefaultView;
 
 class DataGridExtension extends \Twig_Extension
 {
@@ -50,12 +49,24 @@ class DataGridExtension extends \Twig_Extension
      * @var array
      */
     protected $params = array();
-
+    
+    /**
+     * 
+     * @var array
+     */
+    protected $pagerFantaDefs;
+    
+    
     public function __construct($router)
     {
         $this->router = $router;
     }
-
+    
+    public function setPagerFanta(array $def)
+    {
+        $this->pagerFantaDefs=$def;
+    }
+    
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
@@ -97,6 +108,7 @@ class DataGridExtension extends \Twig_Extension
             'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter', array('is_safe' => array('html'))),
             'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
             'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
+            'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
             'grid_pagerfanta'   => new \Twig_Function_Method($this, 'getPagerfanta', array('is_safe' => array('html'))),
             // Other methods with only the grid as input and output argument (Twig >= 1.5.0)
             'grid_*'            => new \Twig_Function_Method($this, 'getGrid_', array('is_safe' => array('html')))
@@ -135,6 +147,11 @@ class DataGridExtension extends \Twig_Extension
         return $this->renderBlock('grid_' . $name, array('grid' => $grid));
     }
 
+    public function getGridPager($grid)
+    {
+        return $this->renderBlock('grid_pager', array('grid' => $grid, 'pagerfanta' => $this->pagerFantaDefs['enable']));
+    }
+    
     /**
      * Cell Drawing override
      *
@@ -236,8 +253,8 @@ class DataGridExtension extends \Twig_Extension
             return sprintf('%s%d', $url, $page - 1);
         };
 
-        $view = new DefaultView();
-        $html = $view->render($pagerfanta, $routeGenerator);
+        $view = new $this->pagerFantaDefs['view_class'];
+        $html = $view->render($pagerfanta, $routeGenerator,$this->pagerFantaDefs['options']);
 
         return $html;
     }
