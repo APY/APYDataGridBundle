@@ -56,7 +56,6 @@ class DataGridExtension extends \Twig_Extension
      */
     protected $pagerFantaDefs;
     
-    
     public function __construct($router)
     {
         $this->router = $router;
@@ -254,7 +253,7 @@ class DataGridExtension extends \Twig_Extension
         };
 
         $view = new $this->pagerFantaDefs['view_class'];
-        $html = $view->render($pagerfanta, $routeGenerator,$this->pagerFantaDefs['options']);
+        $html = $view->render($pagerfanta, $routeGenerator, $this->pagerFantaDefs['options']);
 
         return $html;
     }

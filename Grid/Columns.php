@@ -134,16 +134,20 @@ class Columns implements \IteratorAggregate, \Countable
     {
         $reorderedColumns = array();
         $columnsIndexedByIds = array();
+
         foreach ($this->columns as $column) {
             $columnsIndexedByIds[$column->getId()] = $column;
         }
+
         foreach ($columnIds as $columnId) {
             if (isset($columnsIndexedByIds[$columnId])) {
                 $reorderedColumns[] = $columnsIndexedByIds[$columnId];
                 unset($columnsIndexedByIds[$columnId]);
             }
         }
+
         $this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
+        
         return $this;
     }
 }

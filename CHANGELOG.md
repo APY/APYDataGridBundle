@@ -1,3 +1,9 @@
+`21 September 2012`
+ * Fix bug - Wrong regex for the eq operator for the vector source and the setData function
+ * Fix bug - Fix excpetion in ArrayColumn class
+ * Add pagerfanta to the configuration
+ * Add a columns order function
+
 `7 September 2012`
  * Fix #241 - Numeric and boolean filter don't work with Vector source and setData function
  * Fix #224 - Fix wrong default junction with multi select feature

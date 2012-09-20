@@ -237,7 +237,6 @@ class Grid
      * @var int
      */
     protected $defaultPage;
-    
 
     // Lazy parameters
     protected $lazyAddColumn = array();
@@ -274,7 +273,6 @@ class Grid
         }
     }
 
-        
     /**
      * Sets Source to the Grid
      *
@@ -300,6 +298,9 @@ class Grid
         return $this;
     }
 
+    /**
+     * Handle the grid redirection, export, etc..
+     */
     public function isReadyForRedirect()
     {
         if($this->source === null) {
@@ -814,6 +815,7 @@ class Grid
     public function setColumnsOrder(array $columnIds)
     {
         $this->columns->setColumnsOrder($columnIds);
+
         return $this;
     }
 
