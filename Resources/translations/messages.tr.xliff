@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="tr" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="13">
+                <source>eq</source>
+                <target>Eşittir</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>neq</source>
+                <target>Eşit değildir</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>lt</source>
+                <target>Küçüktür</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>lte</source>
+                <target>Küçük ya da eşittir</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>gt</source>
+                <target>Büyüktür</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>gte</source>
+                <target>Büyük ya da eşittir</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>req</source>
+                <target>Düzenli ifade</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>like</source>
+                <target>İçerir</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>nlike</source>
+                <target>İçermez</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>rlike</source>
+                <target>İle Başlar</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>llike</source>
+                <target>İle biter</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>btw</source>
+                <target>Bunları kapsamaz</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>btwe</source>
+                <target>Bunları kapsar</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>isNull</source>
+                <target>Tanımlanmamış</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>isNotNull</source>
+                <target>Tanımlanmış</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>%count% Results, </source>
+                <target>{0,1}%count% Sonuç, |[2, Inf]%count% Sonuç, </target>
+            </trans-unit>
+
+    <!-- with symbols -->
+            <!--trans-unit id="26">
+                <source>eqs</source>
+                <target>=</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>neqs</source>
+                <target>≠</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>lts</source>
+                <target>&lt;</target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>ltes</source>
+                <target>≤</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>gts</source>
+                <target>&gt;</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>gtes</source>
+                <target>≥</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>reqs</source>
+                <target>^x$</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>likes</source>
+                <target>(x)</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>nlikes</source>
+                <target>()x</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>rlikes</source>
+                <target>x*</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>llikes</source>
+                <target>*x</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>btws</source>
+                <target>&lt;x&lt;</target>
+            </trans-unit>
+            <trans-unit id="38">
+                <source>btwes</source>
+                <target>&lt;=x&lt;<=/target>
+            </trans-unit-->
+        </body>
+    </file>
+</xliff>
