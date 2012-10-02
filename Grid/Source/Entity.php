@@ -121,7 +121,7 @@ class Entity extends Source
             $elements = explode('.', $name);
             while ($element = array_shift($elements)) {
                 if (count($elements) > 0) {
-                    $parent = (previousParent == '') ? self::TABLE_ALIAS : previousParent;
+                    $parent = ($previousParent == '') ? self::TABLE_ALIAS : $previousParent;
                     $previousParent .= '_' . $element;
                     $this->joins[$previousParent] = $parent . '.' . $element;
                 } else {
