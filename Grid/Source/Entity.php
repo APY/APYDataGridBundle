@@ -116,15 +116,14 @@ class Entity extends Source
         $name = $column->getField();
 
         if (strpos($name, '.') !== false ) {
-            $parent = self::TABLE_ALIAS;
             $previousParent = '';
 
             $elements = explode('.', $name);
             while ($element = array_shift($elements)) {
                 if (count($elements) > 0) {
+                    $parent = (previousParent == '') ? self::TABLE_ALIAS : previousParent;
                     $previousParent .= '_' . $element;
                     $this->joins[$previousParent] = $parent . '.' . $element;
-                    $parent = '_' . $element;
                 } else {
                     $name = $previousParent . '.' . $element;
                 }
