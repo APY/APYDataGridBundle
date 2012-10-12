@@ -228,6 +228,12 @@
 {% if column.filterable and column.searchOnClick %}
     {% set sourceValue = sourceValue is defined ? sourceValue : row.field(column.id) %}
     <a href="?{{ grid.hash }}[{{ column.id }}][from]={{ sourceValue | url_encode() }}">{{ value }}</a>
+{% elseif column.safe is not null %}
+    {% if column.safe =="raw" %}
+        {{ value|raw }}
+    {% else %}
+        {{ value|escape(column.safe) }}
+    {% endif %}
 {% else %}
     {{ value }}
 {% endif %}
