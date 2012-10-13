@@ -228,8 +228,10 @@
 {% if column.filterable and column.searchOnClick %}
     {% set sourceValue = sourceValue is defined ? sourceValue : row.field(column.id) %}
     <a href="?{{ grid.hash }}[{{ column.id }}][from]={{ sourceValue | url_encode() }}">{{ value }}</a>
+{% elseif column.safe is sameas(false) %}
+    {{ value|raw }}
 {% else %}
-    {{ value }}
+    {{ value|escape(column.safe) }}
 {% endif %}
 {% endblock grid_column_cell %}
 {# -------------------------------------------- grid_column_operator --------------------------------------- #}
