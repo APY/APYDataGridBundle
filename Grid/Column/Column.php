@@ -805,7 +805,7 @@ abstract class Column
 
     /**
      * Allows to set twig escaping parameter (html, js, css, url, html_attr)
-     * or to display raw value if type is raw
+     * or to display raw value if type is false
      * @param type $safeOption can be one of raw, html, js, css, url, html_attr
      * @return \APY\DataGridBundle\Grid\Column\Column
      */
