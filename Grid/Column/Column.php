@@ -141,6 +141,7 @@ abstract class Column
         $this->setSelectMulti($this->getParam('selectMulti', false));
         $this->setSelectExpanded($this->getParam('selectExpanded', false));
         $this->setSearchOnClick($this->getParam('searchOnClick'), false);
+        $this->setSafe($this->getParam('safe'), 'html');
     }
 
     protected function getParam($id, $default = null)
