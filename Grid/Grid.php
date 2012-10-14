@@ -332,7 +332,9 @@ class Grid
             }
 
             $this->redirect = true;
-        } else {
+        }
+
+        if ($this->redirect === null || $this->request->isXmlHttpRequest()) {
             if ($this->newSession) {
                 $this->setDefaultSessionData();
 
@@ -1553,11 +1555,11 @@ class Grid
      */
     public function getGridResponse($param1 = null, $param2 = null, Response $response = null)
     {
+        if ($this->isReadyForExport()) {
+            return $this->getExportResponse();
+        }
+        
         if ($this->isReadyForRedirect()) {
-            if ($this->isReadyForExport()) {
-                return $this->getExportResponse();
-            }
-
             return new RedirectResponse($this->getRouteUrl());
         } else {
             if (is_array($param1) || $param1 === null) {

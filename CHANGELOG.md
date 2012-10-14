@@ -1,3 +1,16 @@
+`14 October 2012`
+ * Don't redirect with an  AJAX request
+ 
+`13 October 2012`
+ * Fix bug - Fixed errors with default values in Column __initialize.
+ * Add escape option for the value of a cell
+ 
+`7 October 2012`
+ * Fix bug - Fix file Content-Length calculation for export.
+ 
+`2 October 2012`
+ * Fix bug - Fix field name in DQL for multi level entities
+
 `21 September 2012`
  * Fix bug - Wrong regex for the eq operator for the vector source and the setData function
  * Fix bug - Fix excpetion in ArrayColumn class
