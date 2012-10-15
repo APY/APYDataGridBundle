@@ -1,5 +1,10 @@
 {# ------------------------------------------------------ grid ------------------------------------------------------ #}
 {% block grid %}
+
+{% if not withjs is defined  %}
+    {% set withjs = true %}
+{% endif %}
+
 <div class="grid">
 {% if grid.totalCount > 0 or grid.isFiltered or grid.noDataMessage is sameas(false) %}
     <form id="{{ grid.hash }}" action="{{ grid.routeUrl }}" method="post">
@@ -29,13 +34,19 @@
             {{ grid_exports(grid) }}
         {% endif %}
         </div>
-        {{ grid_scripts(grid) }}
+        {% if withjs %}
+            {{ grid_scripts(grid) }}
+        {% endif %}
     </form>
 {% else %}
     {{ grid_no_data(grid) }}
 {% endif %}
 </div>
 {% endblock grid %}
+{# ------------------------------------------------------ grid (html only)------------------------------------------------------ #}
+{% block grid_html %}
+    {{ grid(grid) }}
+{% endblock %}
 {# --------------------------------------------------- grid_no_data ------------------------------------------------- #}
 {% block grid_no_data %}<p class="no_data">{{ grid.noDataMessage|default('No data')|trans|raw }}</p>{% endblock grid_no_data %}
 {# --------------------------------------------------- grid_no_result ------------------------------------------------- #}
