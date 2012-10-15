@@ -29,7 +29,9 @@
             {{ grid_exports(grid) }}
         {% endif %}
         </div>
-        {{ grid_scripts(grid) }}
+        {% if withjs %}
+            {{ grid_scripts(grid) }}
+        {% endif %}
     </form>
 {% else %}
     {{ grid_no_data(grid) }}
