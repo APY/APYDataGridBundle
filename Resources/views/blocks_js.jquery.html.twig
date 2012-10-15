@@ -4,7 +4,13 @@
 function {{ grid.hash }}_goto(url, data, type)
 {
     type = type || 'GET';
-    data = data || [];
+ 
+    if (data) {
+        data = data + '&{{ grid.hash }}_ajax=true';
+    } else {
+        data = '{{ grid.hash }}[ajax]=true';
+    }
+ 
     $('#{{ grid.hash }}').parent().fadeTo("slow", 0.5);
     
     jQuery.ajax({
@@ -23,7 +29,6 @@ function {{ grid.hash }}_goto(url, data, type)
 			},
 			url : url
 		});
-
    
     return false;
 }
