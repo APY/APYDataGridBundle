@@ -1,10 +1,5 @@
 {# ------------------------------------------------------ grid ------------------------------------------------------ #}
 {% block grid %}
-
-{% if not withjs is defined  %}
-    {% set withjs = true %}
-{% endif %}
-
 <div class="grid">
 {% if grid.totalCount > 0 or grid.isFiltered or grid.noDataMessage is sameas(false) %}
     <form id="{{ grid.hash }}" action="{{ grid.routeUrl }}" method="post">
