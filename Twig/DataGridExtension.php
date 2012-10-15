@@ -139,7 +139,7 @@ class DataGridExtension extends \Twig_Extension
         // For export
         $grid->setTemplate($theme);
 
-        return $this->renderBlock('grid', array('grid' => $grid));
+        return $this->renderBlock('grid', array('grid' => $grid, 'withjs' => true));
     }
     
     /**
@@ -156,8 +156,8 @@ class DataGridExtension extends \Twig_Extension
     
         // For export
         $grid->setTemplate($theme);
-    
-        return $this->renderBlock('grid_html', array('grid' => $grid, 'withjs' => false));
+        
+        return $this->renderBlock('grid', array('grid' => $grid, 'withjs' => false));
     }
 
     public function getGrid_($name, $grid)
