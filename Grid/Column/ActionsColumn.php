@@ -111,7 +111,7 @@ class ActionsColumn extends Column
         $list = $this->rowActions;
         foreach($list as $i=>$action) {
             $list[$i] = $action->render($row);
-            if(false === $list[$i]) {
+            if(null === $list[$i]) {
                 unset($list[$i]);
             }
         }

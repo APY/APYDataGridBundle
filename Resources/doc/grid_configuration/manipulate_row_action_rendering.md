@@ -2,20 +2,16 @@ Manipulate row action rendering
 =============================
 
 You can set a callback to manipulate the rendering of an action.
-The callback **MUST** return the action or return false, to prevent the action from rendering.
+If the callback returns `null` or don't return the action, the action won't be displayed.
 
 ## Usage
 
 ```php
 <?php
 ...
-$rowAction->manipulateRender(function($action, $row) {
-    if($row->getField('id') == 10) {
-        return $action;
-    } else {
-        return false;
-    }
-});
+$rowAction->manipulateRender($callback);
+
+$grid->addRowAction($rowAction);
 ...
 ```
 
@@ -31,3 +27,27 @@ $rowAction->manipulateRender(function($action, $row) {
 |:--:|:--|:--|:--|:--|
 |action|instance of RowAction|The action|
 |row|instance of Row|The current row|
+
+## Example
+
+```php
+<?php
+...
+$rowAction->manipulateRender(
+    function ($action, $row)
+    {
+        if ($row->getField('quantity') == 0) {
+            $action->setTitle('Sold out');
+        }
+
+        if ($row->getField('price') > 20) {
+            return null;
+        }
+
+        return $action;
+    }
+);
+
+$grid->addRowAction($rowAction);
+...
+```

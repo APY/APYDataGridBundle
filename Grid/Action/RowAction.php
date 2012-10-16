@@ -317,7 +317,7 @@ class RowAction implements RowActionInterface
      * Render action for row
      *
      * @param \APY\DataGridBundle\Grid\Row $row
-     * @return boolean|RowAction
+     * @return null|RowAction
      */
     public function render($row)
     {
