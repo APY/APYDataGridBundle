@@ -100,6 +100,24 @@ class ActionsColumn extends Column
         return $this->getType();
     }
 
+    /**
+     * Get the list of actions to render
+     *
+     * @param $row
+     * @return array
+     */
+    public function getActionsToRender($row)
+    {
+        $list = $this->rowActions;
+        foreach($list AS $i=>$action) {
+            $list[$i] = $action->render($row);
+            if(false === $list[$i]) {
+                unset($list[$i]);
+            }
+        }
+        return $list;
+    }
+
     public function getType()
     {
         return 'actions';
