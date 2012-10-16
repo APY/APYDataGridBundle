@@ -109,12 +109,13 @@ class ActionsColumn extends Column
     public function getActionsToRender($row)
     {
         $list = $this->rowActions;
-        foreach($list AS $i=>$action) {
+        foreach($list as $i=>$action) {
             $list[$i] = $action->render($row);
             if(false === $list[$i]) {
                 unset($list[$i]);
             }
         }
+
         return $list;
     }
 
