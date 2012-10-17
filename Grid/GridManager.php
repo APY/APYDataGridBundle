@@ -132,11 +132,13 @@ class GridManager implements \IteratorAggregate, \Countable
      */
     public function getGridManagerResponse($param1 = null, $param2 = null,  Response $response = null)
     {
+        $isReadyForRedirect = $this->isReadyForRedirect();
+        
         if ($this->isReadyForExport()) {
             return $this->exportGrid->getExportResponse();
         }
         
-        if ($this->isReadyForRedirect()) {
+        if ($isReadyForRedirect) {
             return new RedirectResponse($this->getRouteUrl());
         } else {
             if (is_array($param1) || $param1 === null) {
