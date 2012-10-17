@@ -130,34 +130,31 @@ class DataGridExtension extends \Twig_Extension
      * @param \APY\DataGridBundle\Grid\Grid $grid
      * @param string $theme
      * @param string $id
+     *
      * @return string
      */
-    public function getGrid($grid, $theme = null, $id = '', array $params = array())
+    public function getGrid($grid, $theme = null, $id = '', array $params = array(), $withjs = true)
     {
         $this->initGrid($grid, $theme, $id, $params);
 
         // For export
         $grid->setTemplate($theme);
 
-        return $this->renderBlock('grid', array('grid' => $grid, 'withjs' => true));
+        return $this->renderBlock('grid', array('grid' => $grid, 'withjs' => $withjs));
     }
-    
+
     /**
      * Render grid block (html only)
      *
      * @param \APY\DataGridBundle\Grid\Grid $grid
      * @param string $theme
      * @param string $id
+     *
      * @return string
      */
     public function getGridHtml($grid, $theme = null, $id = '', array $params = array())
     {
-        $this->initGrid($grid, $theme, $id, $params);
-    
-        // For export
-        $grid->setTemplate($theme);
-        
-        return $this->renderBlock('grid', array('grid' => $grid, 'withjs' => false));
+        return getGrid($grid, $theme, $id, $params, false);
     }
 
     public function getGrid_($name, $grid)
