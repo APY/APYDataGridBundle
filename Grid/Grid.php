@@ -334,7 +334,7 @@ class Grid
             $this->redirect = true;
         }
 
-        if ($this->redirect === null || $this->request->isXmlHttpRequest()) {
+        if ($this->redirect === null || ($this->request->isXmlHttpRequest() && !$this->isReadyForExport)) {
             if ($this->newSession) {
                 $this->setDefaultSessionData();
 
