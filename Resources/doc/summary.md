@@ -63,6 +63,7 @@ SUMMARY
 	1. [Manipulate column render cell](grid_configuration/manipulate_column_render_cell.md)
 	1. [Manipulate the source query](grid_configuration/manipulate_query.md)
 	1. [Manipulate columns](grid_configuration/manipulate_column.md)
+	1. [Manipulate row action rendering](grid_configuration/manipulate_row_action_rendering.md)
 	1. [Hide or show columns](grid_configuration/hide_show_columns.md)
 	1. [Set a default page](grid_configuration/set_default_page.md)
 	1. [Set a default order](grid_configuration/set_default_order.md)
