@@ -285,7 +285,7 @@ class DataGridExtension extends \Twig_Extension
     {
         foreach ($this->getTemplates() as $template) {
             if ($template->hasBlock($name)) {
-                return $template->renderBlock($name, array_merge($parameters, $this->params));
+                return $template->renderBlock($name, array_merge($this->environment->getGlobals(), $parameters, $this->params));
             }
         }
 
