@@ -237,6 +237,12 @@ class Grid
      * @var int
      */
     protected $defaultPage;
+    
+    /**
+     * @var string
+     */
+    protected $actionsHeader='Actions';
+    
 
     // Lazy parameters
     protected $lazyAddColumn = array();
@@ -563,7 +569,7 @@ class Grid
                 if ($actionColumn = $this->columns->hasColumnById($column, true)) {
                     $actionColumn->setRowActions($rowActions);
                 } else {
-                    $actionColumn = new ActionsColumn($column, 'Actions', $rowActions);
+                    $actionColumn = new ActionsColumn($column, $this->actionsHeader, $rowActions);
                     if ($this->actionsColumnSize>-1) {
                         $actionColumn->setSize($this->actionsColumnSize);
                     }
@@ -1614,5 +1620,9 @@ class Grid
         }
 
         return $result;
+    }
+    
+    public function setActionsColumnHeader($title){
+        $this->actionsHeader = (string) $title;
     }
 }
