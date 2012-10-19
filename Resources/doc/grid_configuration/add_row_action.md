@@ -103,7 +103,7 @@ $grid->addRowAction($rowAction2);
 ...
 ```
 
-```
+```php
 <?php
 ...
 /**
