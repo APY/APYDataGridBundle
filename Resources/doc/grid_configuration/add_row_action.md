@@ -65,24 +65,6 @@ For mapped fields, you catch a parameter with its camelCase representation. e.g.
 <?php
 use APY\DataGridBundle\Grid\Action\RowAction;
 ...
-$grid->setSource($source);
-
-// Specify route parameters for the edit action
-$rowAction2 = new RowAction('Edit', 'route_to_edit');
-$rowAction2->setRouteParameters(array('user.information.country', 'version' => 2));
-$rowAction2->setParametersMapping(array('user.information.country' => 'countryId'));
-$grid->addRowAction($rowAction2);
-...
-```
-
-You can map mapped fields to appropriate route parameters with the setParametersMapping method.
-In this example the `user.information.country` field will be mapped to the `countryId` route parameter.
-
-## Example
-```php
-<?php
-use APY\DataGridBundle\Grid\Action\RowAction;
-...
 $rowAction2 = new RowAction('Edit', 'route_to_edit');
 $rowAction2->setRouteParameters(array('user.information.country'));
 $grid->addRowAction($rowAction2);
@@ -103,4 +85,34 @@ public function djettePlayListShowAction($userInformationCountry)
 ...
 ```
 
+You can map mapped fields to appropriate route parameters with the setParametersMapping method.
+In this example the `user.information.country` field will be mapped to the `countryId` route parameter.
 
+## Example
+```php
+<?php
+use APY\DataGridBundle\Grid\Action\RowAction;
+...
+$grid->setSource($source);
+
+// Specify route parameters for the edit action
+$rowAction2 = new RowAction('Edit', 'route_to_edit');
+$rowAction2->setRouteParameters(array('user.information.country', 'version' => 2));
+$rowAction2->setParametersMapping(array('user.information.country' => 'countryId'));
+$grid->addRowAction($rowAction2);
+...
+```
+
+```
+<?php
+...
+/**
+ * @Route("/{version}/{countryId}", name="route_to_edit")
+ * @Template
+ */
+public function showAction($version, $countryId)
+{
+    ...
+}
+...
+```
