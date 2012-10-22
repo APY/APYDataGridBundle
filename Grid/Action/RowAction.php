@@ -246,7 +246,8 @@ class RowAction implements RowActionInterface
      *
      * @return self
      */
-    public function setRouteParametersMapping($routeParametersMapping) {
+    public function setRouteParametersMapping($routeParametersMapping)
+    {
         $this->routeParametersMapping = (array) $routeParametersMapping;
 
         return $this;
@@ -258,7 +259,8 @@ class RowAction implements RowActionInterface
      * @param string $name parameter
      * @return null|string
      */
-    public function getRouteParametersMapping($name) {
+    public function getRouteParametersMapping($name)
+    {
         return (isset($this->routeParametersMapping[$name]) ? $this->routeParametersMapping[$name] : null);
     }
 
