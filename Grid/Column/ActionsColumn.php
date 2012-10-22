@@ -40,10 +40,10 @@ class ActionsColumn extends Column
 
             foreach ($actionParameters as $name => $parameter) {
                 if(is_int($name)) {
-                    if(($name = $action->mapRouteParameters($parameter)) === null) {
+                    if(($name = $action->getRouteParametersMapping($parameter)) === null) {
                         $name = $this->getValidRouteParameters($parameter);
                     }
-                    $routeParameters[ $name ] = $row->getField($parameter);
+                    $routeParameters[$name] = $row->getField($parameter);
                 } else {
                     $routeParameters[$this->getValidRouteParameters($name)] = $parameter;
                 }

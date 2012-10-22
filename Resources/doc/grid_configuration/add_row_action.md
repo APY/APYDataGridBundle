@@ -85,7 +85,7 @@ public function djettePlayListShowAction($userInformationCountry)
 ...
 ```
 
-You can map mapped fields to appropriate route parameters with the setParametersMapping method.
+You can map mapped fields to appropriate route parameters with the setRouteParametersMapping method.
 In this example the `user.information.country` field will be mapped to the `countryId` route parameter.
 
 ## Example
@@ -98,7 +98,7 @@ $grid->setSource($source);
 // Specify route parameters for the edit action
 $rowAction2 = new RowAction('Edit', 'route_to_edit');
 $rowAction2->setRouteParameters(array('user.information.country', 'version' => 2));
-$rowAction2->setParametersMapping(array('user.information.country' => 'countryId'));
+$rowAction2->setRouteParametersMapping(array('user.information.country' => 'countryId'));
 $grid->addRowAction($rowAction2);
 ...
 ```

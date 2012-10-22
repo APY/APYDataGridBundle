@@ -21,7 +21,7 @@ class RowAction implements RowActionInterface
     protected $target;
     protected $column = '__actions';
     protected $routeParameters = array();
-    protected $parametersMapping = array();
+    protected $routeParametersMapping = array();
     protected $attributes = array();
     protected $role;
     protected $callback;
@@ -242,12 +242,12 @@ class RowAction implements RowActionInterface
     /**
      * Set route parameters mapping
      *
-     * @param array|string $parametersMapping
+     * @param array|string $routeParametersMapping
      *
      * @return self
      */
-    public function setParametersMapping($parametersMapping) {
-        $this->parametersMapping = (array) $parametersMapping;
+    public function setRouteParametersMapping($routeParametersMapping) {
+        $this->routeParametersMapping = (array) $routeParametersMapping;
 
         return $this;
     }
@@ -258,8 +258,8 @@ class RowAction implements RowActionInterface
      * @param string $name parameter
      * @return null|string
      */
-    public function mapRouteParameters($name) {
-        return (isset($this->parametersMapping[$name]) ? $this->parametersMapping[$name] : null);
+    public function getRouteParametersMapping($name) {
+        return (isset($this->routeParametersMapping[$name]) ? $this->routeParametersMapping[$name] : null);
     }
 
     /**
