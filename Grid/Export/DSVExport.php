@@ -25,11 +25,11 @@ class DSVExport extends Export
 
     protected $delimiter = '';
 
-    public function __construct($tilte, $fileName = 'export', $params = array(), $charset = 'UTF-8')
+    public function __construct($title, $fileName = 'export', $params = array(), $charset = 'UTF-8')
     {
         $this->delimiter = isset($params['delimiter']) ? $params['delimiter'] : $this->delimiter;
 
-        parent::__construct($tilte, $fileName, $params, $charset);
+        parent::__construct($title, $fileName, $params, $charset);
     }
 
     public function computeData($grid)
