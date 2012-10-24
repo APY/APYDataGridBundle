@@ -234,7 +234,7 @@
 {% elseif column.safe is sameas(false) %}
     {{ value|raw }}
 {% else %}
-    {{ value|escape(column.safe) }}
+    {{ value|escape(column.safe)|raw }}
 {% endif %}
 {% endblock grid_column_cell %}
 {# -------------------------------------------- grid_column_operator --------------------------------------- #}
