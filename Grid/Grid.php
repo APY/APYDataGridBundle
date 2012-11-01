@@ -323,7 +323,7 @@ class Grid
 
         // isReadyForRedirect ?
         if (!empty($this->requestData)) {
-						$this->executeMassActions();
+            $this->executeMassActions();
 
             if (!$this->executeExports()) {
                 $this->processRequestData();
@@ -637,10 +637,10 @@ class Grid
 
                 if($actionAllKeys)
                 {
-                	$this->processSessionData();
-                	$this->page = 0;
-                	$this->limit = 0;
-                	$this->prepare();
+                    $this->processSessionData();
+                    $this->page = 0;
+                    $this->limit = 0;
+                    $this->prepare();
                 }
 
                 if (is_callable($action->getCallback())) {
