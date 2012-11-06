@@ -154,7 +154,7 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getGridHtml($grid, $theme = null, $id = '', array $params = array())
     {
-        return getGrid($grid, $theme, $id, $params, false);
+        return $this->getGrid($grid, $theme, $id, $params, false);
     }
 
     public function getGrid_($name, $grid)
