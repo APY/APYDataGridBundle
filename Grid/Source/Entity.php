@@ -76,6 +76,11 @@ class Entity extends Source
      */
     protected $groupBy;
 
+    /**
+     * @var array
+     */
+    protected $hints;
+
     const TABLE_ALIAS = '_a';
     const COUNT_ALIAS = '__count';
 
@@ -336,7 +341,11 @@ class Entity extends Source
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
 
-        $items = $this->query->getQuery()->getResult();
+        $query = $this->query->getQuery();
+        foreach ($this->hints as $hintKey => $hintValue) {
+            $query->setHint($hintKey, $hintValue);
+        }
+        $items = $query->getResult();
 
         // hydrate result
         $result = new Rows();
@@ -535,5 +544,15 @@ class Entity extends Source
     public function getHash()
     {
         return $this->entityName;
+    }
+
+    public function addHint($key, $value)
+    {
+        $this->hints[$key] = $value;
+    }
+    
+    public function clearHints()
+    {
+        $this->hints = array();
     }
 }
