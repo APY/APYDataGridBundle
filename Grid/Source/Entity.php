@@ -94,6 +94,7 @@ class Entity extends Source
         $this->managerName = $managerName;
         $this->joins = array();
         $this->group = $group;
+        $this->hints = array();
     }
 
     public function initialise($container)
