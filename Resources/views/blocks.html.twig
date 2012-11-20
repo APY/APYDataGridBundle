@@ -359,7 +359,7 @@ function {{ grid.hash }}_reset()
 {% block grid_scripts_previous_page %}
 function {{ grid.hash }}_previousPage()
 {
-    {{ grid.hash }}_goto('{{ grid_url('page', grid, grid.page - 1) }}');
+    {{ grid.hash }}_goto('{{ grid_url('page', grid, (grid.page - 1) ~ '&' ~ grid.hash ~ '[_order]=' ~ grid.order) }}');
 
     return false;
 }
@@ -368,7 +368,7 @@ function {{ grid.hash }}_previousPage()
 {% block grid_scripts_next_page %}
 function {{ grid.hash }}_nextPage()
 {
-    {{ grid.hash }}_goto('{{ grid_url('page', grid, grid.page + 1) }}');
+    {{ grid.hash }}_goto('{{ grid_url('page', grid, (grid.page + 1) ~ '&' ~ grid.hash ~ '[_order]=' ~ grid.order) }}');
 
     return false;
 }
