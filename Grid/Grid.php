@@ -99,6 +99,11 @@ class Grid
     protected $page = 0;
 
     /**
+     * @var string
+     */
+    protected $order = '';
+
+    /**
      * @var int
      */
     protected $limit;
@@ -428,9 +433,8 @@ class Grid
         }
 
         // Page
-        // Set to the first page if this is a request of order, limit, mass action or filtering
-        if ($this->getFromRequest(self::REQUEST_QUERY_ORDER) !== null
-         || $this->getFromRequest(self::REQUEST_QUERY_LIMIT) !== null
+        // Set to the first page if this is a request of limit or mass action
+        if ($this->getFromRequest(self::REQUEST_QUERY_LIMIT) !== null
          || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) !== null
          || $filtering) {
             $this->set(self::REQUEST_QUERY_PAGE, 0);
@@ -519,7 +523,7 @@ class Grid
         // Order
         if (($order = $this->get(self::REQUEST_QUERY_ORDER)) !== null) {
             list($columnId, $columnOrder) = explode('|', $order);
-
+	    $this->setOrder($order);
             $this->columns->getColumnById($columnId)->setOrder($columnOrder);
         }
 
@@ -1211,6 +1215,28 @@ class Grid
         return $this->page;
     }
 
+    /**
+     * Sets current Order (internal)
+     *
+     * @param $order
+     *
+     * @return self
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+	return $this;
+    }
+
+    /**
+     * Returns current order
+     *
+     * @return string
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
 
     /**
      * Returnd grid display data as rows - internal helper for templates
