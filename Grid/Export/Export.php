@@ -98,12 +98,13 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     public function getResponse()
     {
         // Response
-        if (function_exists('mb_strlen')) {
-            $this->content = mb_convert_encoding($this->content, $this->charset, $this->container->getParameter('kernel.charset'));
+        $kernelCharset = $this->container->getParameter('kernel.charset');
+        if ($this->charset != $kernelCharset && function_exists('mb_strlen')) {
+            $this->content = mb_convert_encoding($this->content, $this->charset, $kernelCharset);
             $filesize = mb_strlen($this->content, '8bit');
         } else {
             $filesize = strlen($this->content);
-            $this->charset = $this->container->getParameter('kernel.charset');
+            $this->charset = $kernelCharset;
         }
 
         $headers = array(
