@@ -74,7 +74,7 @@ class DataGridExtension extends \Twig_Extension
         $globals = $this->environment->getGlobals();
 
         if (!isset($globals['grid'])) {
-            $this->environment->addGlobal('grid', null);
+            //$this->environment->addGlobal('grid', null);
         }
 
         if (!isset($globals['column'])) {
