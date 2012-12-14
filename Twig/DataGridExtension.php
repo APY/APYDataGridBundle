@@ -245,6 +245,8 @@ class DataGridExtension extends \Twig_Extension
                 return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_LIMIT.']=';
             case 'reset':
                 return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_RESET.']=';
+            case 'export':
+                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_EXPORT.']='.$param;
         }
     }
 
