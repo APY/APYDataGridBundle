@@ -1327,9 +1327,8 @@ class Grid
      */
     public function isPagerSectionVisible()
     {
-        $limits = sizeof($this->getLimits());
-
-        return $limits > 1 || ($limits <= 1 && $this->getLimit() < $this->totalCount);
+        // true when totalCount rows exceed the minimum pager limit
+        return (min($this->getLimits()) <= $this->totalCount);
     }
 
     /**

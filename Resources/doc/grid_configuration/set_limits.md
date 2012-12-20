@@ -21,6 +21,10 @@ $grid->setLimits(array(5 => 'five', 10 => 'ten', 15 => 'fifteen'));
 ...
 ```
 
+Note that the selector and accompanying pager will not appear if the total number of rows in the grid is less than the
+minimum pager limit.  For example, if the minimum pager limit is 20 and the number of results in the grid is 10, then
+the the limit selector and pager will not be rendered.
+
 ## Method parameters
 
 |parameter|Type|Default value|Description|
