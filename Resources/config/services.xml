@@ -57,5 +57,9 @@
             </call>
         </service>
 
+        <service id="grid.translation_extractor" class="APY\DataGridBundle\Translation\ColumnTitleAnnotationTranslationExtractor" public="false">
+            <tag name="jms_translation.file_visitor" />
+        </service>
+
     </services>
 </container>
