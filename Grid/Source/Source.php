@@ -263,6 +263,7 @@ abstract class Source implements DriverInterface
 
                         // Normalize value
                         if (!$dataIsNumeric) {
+                            $value = $this->prepareStringForLikeCompare($value);
                             switch ($operator) {
                                 case Column\Column::OPERATOR_EQ:
                                     $value = '/^'.preg_quote($value, '/').'$/i';
@@ -301,9 +302,7 @@ abstract class Source implements DriverInterface
                             case Column\Column::OPERATOR_NLIKE:
                             case Column\Column::OPERATOR_LLIKE:
                             case Column\Column::OPERATOR_RLIKE:
-                                if ($column->getType() === 'array') {
-                                    $fieldValue = str_replace(':{i:0;', ':{', serialize($fieldValue));
-                                }
+                                $fieldValue = $this->prepareStringForLikeCompare($fieldValue, $column->getType());
 
                                 $found = preg_match($value, $fieldValue);
                                 break;
@@ -527,4 +526,30 @@ abstract class Source implements DriverInterface
     {
         return $maxResults === null ? $this->count : min($this->count, $maxResults);
     }
+    
+    /**
+     * Prepares string to have almost the same behaviour as with a database,
+     * removing accents and latin special chars
+     * @param mixed $inputString
+     * @param string $type for array type, will serialize datas
+     * @return string the input, serialized for arrays or without accents for strings
+     */
+    protected function prepareStringForLikeCompare($input, $type = null)
+    {
+        if ($type === 'array') {
+            $outputString = str_replace(':{i:0;', ':{', serialize($input));
+        } else {
+            $outputString = $this->removeAccents($input);
+        }
+        return $outputString;
+    }
+
+    private function removeAccents($str)
+    {
+        $entStr = htmlentities($str, ENT_NOQUOTES, "UTF-8");
+        $noaccentStr = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $entStr);
+
+        return preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $noaccentStr);
+    }
+
 }
