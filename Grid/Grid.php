@@ -1029,7 +1029,7 @@ class Grid
                 $value = array('from' => $ColumnValue);
             }
 
-            if (is_bool($value['from'])) {
+            if (array_key_exists('from', $value) && is_bool($value['from'])) {
                 $value['from'] = $value['from'] ? '1' : '0';
             }
 
