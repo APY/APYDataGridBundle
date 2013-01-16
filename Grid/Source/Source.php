@@ -181,6 +181,7 @@ abstract class Source implements DriverInterface
         foreach ($this->data as $key => $item) {
             foreach ($columns as $column) {
                 $fieldName = $column->getField();
+                $fieldValue = '';
 
                 if ($this instanceof Entity) {
                     // Mapped field
@@ -209,7 +210,7 @@ abstract class Source implements DriverInterface
                     } else {
                         throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
                     }
-                } else {
+                } elseif (array_key_exists($fieldName, $item)) {
                     $fieldValue = $item[$fieldName];
                 }
 
@@ -218,7 +219,6 @@ abstract class Source implements DriverInterface
         }
 
         return $items;
-
     }
 
     /**
