@@ -92,7 +92,7 @@ class Vector extends Source
             $fieldTypes = array();
 
             foreach ($this->data as $row) {
-                if (!array_key_exists($c->getId(), $row)) {
+                if (!isset($row[$c->getId()])) {
                     continue;
                 }
 
