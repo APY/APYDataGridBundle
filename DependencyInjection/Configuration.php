@@ -23,6 +23,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('limits')
+                    ->performNoDeepMerging()
                     ->beforeNormalization()
                         ->ifTrue(function($v) { return !is_array($v); })
                         ->then(function($v) { return array($v); })
@@ -34,7 +35,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('no_data_message')->defaultValue('No data')->end()
                 ->scalarNode('no_result_message')->defaultValue('No result')->end()
                 ->scalarNode('actions_columns_size')->defaultValue(-1)->end()
-                ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end()
                 ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end()
                 ->arrayNode('pagerfanta')
                     ->addDefaultsIfNotSet()
