@@ -210,7 +210,7 @@ abstract class Source implements DriverInterface
                     } else {
                         throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
                     }
-                } elseif (array_key_exists($fieldName, $item)) {
+                } elseif (isset($item[$fieldName])) {
                     $fieldValue = $item[$fieldName];
                 }
 
