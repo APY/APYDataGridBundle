@@ -241,7 +241,7 @@
 {% block grid_column_operator %}
 {% if column.operatorsVisible %}
 <span class="grid-filter-operator">
-    <select name="{{ grid.hash }}[{{ column.id }}][operator]" onchange="{{ grid.hash }}_switchOperator(this, '{{ grid.hash }}__{{ column.id }}__query__');">
+    <select name="{{ grid.hash }}[{{ column.id }}][operator]" onchange="{{ grid.hash }}_switchOperator(this, '{{ grid.hash }}__{{ column.id }}__query__'{% if submitOnChange is sameas(false) %}, false{% endif%});">
     {% for operator in column.operators %}
         <option value="{{ operator }}"{% if op == operator %} selected="selected"{% endif %}>{{ operator |trans }}</option>
     {% endfor %}
@@ -460,8 +460,9 @@ function {{ grid.hash }}_markAll(select)
 {% set btweOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_BTWE') %}
 {% set isNullOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_ISNULL') %}
 {% set isNotNullOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_ISNOTNULL') %}
-function {{ grid.hash }}_switchOperator(elt, query_)
+function {{ grid.hash }}_switchOperator(elt, query_, submitOnChange)
 {
+	submitOnChange = (typeof submitOnChange == 'undefined') ? true : submitOnChange;
     var inputFrom = document.getElementById(query_+'from');
     var inputTo = document.getElementById(query_+'to');
     if ((elt.options[elt.selectedIndex].value == '{{ btwOperator }}') || (elt.options[elt.selectedIndex].value == '{{ btweOperator }}')) {
@@ -474,7 +475,9 @@ function {{ grid.hash }}_switchOperator(elt, query_)
         inputFrom.disabled=true;
         inputTo.style.display = 'none';
         inputTo.disabled=true;
-        elt.form.submit();
+        if (submitOnChange) {
+            elt.form.submit();
+        }
     } else {
         inputFrom.style.display = '';
         inputFrom.disabled=false;
