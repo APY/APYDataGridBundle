@@ -35,7 +35,7 @@ function {{ grid.hash }}_submitForm(event, form, force)
                     }
                 } else {
                     var value = $(this).val() == null ? '' : $(this).val();
-                    data += '&' + $(this).attr('name') + '=' + value;
+                    data += '&' + name + '=' + value;
                 }
             }
         });
