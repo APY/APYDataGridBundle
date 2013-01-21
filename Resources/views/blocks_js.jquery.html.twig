@@ -40,7 +40,7 @@ function {{ grid.hash }}_submitForm(event, form, force)
 {% block grid_scripts_ajax %}
 $(function () {
     // Order and pagerfanta links
-    $('a.order, nav a', '#{{ grid.hash }}').click(function () {
+    $('a.order, nav a, a.searchOnClick', '#{{ grid.hash }}').click(function () {
         {{ grid.hash }}_goto(this.href);
 
         return false;
