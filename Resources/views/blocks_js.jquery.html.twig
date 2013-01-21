@@ -25,8 +25,18 @@ function {{ grid.hash }}_submitForm(event, form, force)
         var data = '';
         $('.grid-filter-operator select, .grid-filter-input-query-from, .grid-filter-input-query-to, .grid-filter-select-query-from, .grid-filter-select-query-to', form).each(function () {
             if ($(this).is(':disabled') == false) {
-                var value = $(this).val() == null ? '' : $(this).val();
-                data += '&' + $(this).attr('name') + '=' + value;
+                var name = $(this).attr('name');
+                if ($(this).attr('multiple') == 'multiple') {
+                    var multiples = $(this).val();
+                    for(var i= 0; i < multiples.length; i++)
+                    {
+                        var value = multiples[i] == null ? '' : multiples[i];
+                        data += '&' + name + '=' + value;
+                    }
+                } else {
+                    var value = $(this).val() == null ? '' : $(this).val();
+                    data += '&' + $(this).attr('name') + '=' + value;
+                }
             }
         });
 
