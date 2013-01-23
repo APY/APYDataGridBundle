@@ -26,16 +26,18 @@ function {{ grid.hash }}_submitForm(event, form, force)
         $('.grid-filter-operator select, .grid-filter-input-query-from, .grid-filter-input-query-to, .grid-filter-select-query-from, .grid-filter-select-query-to', form).each(function () {
             if ($(this).is(':disabled') == false) {
                 var name = $(this).attr('name');
-                if ($(this).attr('multiple') == 'multiple') {
-                    var multiples = $(this).val();
-                    for(var i= 0; i < multiples.length; i++)
-                    {
-                        var value = multiples[i] == null ? '' : multiples[i];
+                var value = $(this).val();
+                if (value != null) {
+                    if ($(this).attr('multiple') == 'multiple') {
+                        for(var i= 0; i < value.length; i++)
+                        {
+                            data += '&' + name + '=' + value[i];
+                        }
+                    } else {
                         data += '&' + name + '=' + value;
                     }
                 } else {
-                    var value = $(this).val() == null ? '' : $(this).val();
-                    data += '&' + name + '=' + value;
+                    data += '&' + name + '=';
                 }
             }
         });
