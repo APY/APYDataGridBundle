@@ -242,6 +242,10 @@ abstract class Source implements DriverInterface
                 $fieldName = $column->getField();
                 $fieldValue = $items[$key][$fieldName];
                 $dataIsNumeric = ($column->getType() == 'number' || $column->getType() == 'boolean');
+                
+                if ($column->getType() === 'array') {
+                    $serializeColumns[] = $column->getId();
+                }
 
                 // Filter
                 if ($column->isFiltered()) {
@@ -329,26 +333,22 @@ abstract class Source implements DriverInterface
                         // AND
                         if (!$found && !$disjunction) {
                             $keep = false;
-                            break 2;
+                            break;
                         }
 
                         // OR
                         if ($found && $disjunction) {
                             $keep = true;
-                            break 2;
+                            break;
                         }
                     }
-                }
-
-                if ($column->getType() === 'array') {
-                    $serializeColumns[] = $column->getId();
+                    
+                    if (!$keep) {
+                        unset($items[$key]);
+                        break;
+                    }
                 }
             }
-
-            if (!$keep) {
-                unset($items[$key]);
-            }
-
         }
 
         // Order
