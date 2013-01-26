@@ -69,6 +69,7 @@ SUMMARY
 	1. [Set a default order](grid_configuration/set_default_order.md)
 	1. [Set a default items per page](grid_configuration/set_default_limit.md)
 	1. [Set default filters](grid_configuration/set_default_filters.md)
+	1. [Set permanent filters](grid_configuration/set_permanent_filters.md)
 	1. [Set the no data message](grid_configuration/set_no_data_message.md)
 	1. [Set the no result message](grid_configuration/set_no_result_message.md)
 	1. [Always show the grid](grid_configuration/always_show_grid.md)

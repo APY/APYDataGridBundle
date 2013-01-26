@@ -211,6 +211,13 @@ class Grid
     protected $dataJunction = Column::DATA_CONJUNCTION;
 
     /**
+     * Permanent filters
+     *
+     * @var array
+     */
+    protected $permanentFilters = array();
+
+    /**
      * Default filters
      *
      * @var array
@@ -266,7 +273,7 @@ class Grid
         $this->columns = new Columns($this->securityContext);
 
         $this->routeParameters = $this->request->attributes->all();
-        foreach ($this->routeParameters as $key => $param) {
+        foreach (array_keys($this->routeParameters) as $key) {
             if (substr($key, 0, 1) == '_') {
                 unset($this->routeParameters[$key]);
             }
@@ -327,8 +334,6 @@ class Grid
 
             if (!$this->executeExports()) {
                 $this->processRequestData();
-
-                $this->saveSession();
             }
 
             $this->redirect = true;
@@ -337,9 +342,9 @@ class Grid
         if ($this->redirect === null || ($this->request->isXmlHttpRequest() && !$this->isReadyForExport)) {
             if ($this->newSession) {
                 $this->setDefaultSessionData();
-
-                $this->saveSession();
             }
+
+            $this->processPermanentFilters();
 
             //Configures the grid with the data read from the session.
             $this->processSessionData();
@@ -421,7 +426,7 @@ class Grid
                 $this->set($ColumnId, $data);
 
                 // Filtering ?
-                if ($data !== null) {
+                if (!$filtering && $data !== null) {
                     $filtering = true;
                 }
             }
@@ -453,15 +458,44 @@ class Grid
         if (isset($this->limits[$limit])) {
             $this->set(self::REQUEST_QUERY_LIMIT, $limit);
         }
+
+        $this->saveSession();
+    }
+
+     /**
+     * Store permanent filters to the session and disable the filter capability for the column if there are permanent filters
+     */
+    protected function processFilters($permanent = true)
+    {
+        foreach(($permanent ? $this->permanentFilters : $this->defaultFilters) as $columnId => $value) {
+            /* @var column Column */
+            $column = $this->columns->getColumnById($columnId);
+
+            if ($permanent) {
+                // Disable the filter capability for the column
+                $column->setFilterable(false);
+            }
+
+            // Store in the session
+            $this->set($columnId, $value);
+        }
+    }
+
+    protected function processPermanentFilters()
+    {
+        $this->processFilters();
+        $this->saveSession();
+    }
+
+    protected function processDefaultFilters()
+    {
+        $this->processFilters(false);
     }
 
     protected function setDefaultSessionData()
     {
         // Default filters
-        foreach($this->defaultFilters as $columnId => $value) {
-            $this->columns->getColumnById($columnId);
-            $this->set($columnId, $value);
-        }
+        $this->processDefaultFilters();
 
         // Default page
         if ($this->defaultPage !== null) {
@@ -476,7 +510,7 @@ class Grid
         if ($this->defaultOrder !== null) {
             list($columnId, $columnOrder) = explode('|', $this->defaultOrder);
 
-            $column = $this->columns->getColumnById($columnId);
+            $this->columns->getColumnById($columnId);
             if (in_array(strtolower($columnOrder), array('asc', 'desc'))) {
                 $this->set(self::REQUEST_QUERY_ORDER, $this->defaultOrder);
             } else {
@@ -495,6 +529,8 @@ class Grid
                 throw new \InvalidArgumentException('Limit must be a positive number');
             }
         }
+
+        $this->saveSession();
     }
 
     /**
@@ -560,7 +596,7 @@ class Grid
         //add row actions column
         if (count($this->rowActions) > 0) {
             foreach ($this->rowActions as $column => $rowActions) {
-                if ($actionColumn = $this->columns->hasColumnById($column, true)) {
+                if (($actionColumn = $this->columns->hasColumnById($column, true))) {
                     $actionColumn->setRowActions($rowActions);
                 } else {
                     $actionColumn = new ActionsColumn($column, 'Actions', $rowActions);
@@ -1014,13 +1050,14 @@ class Grid
     }
 
     /**
-     * Set default value for filters
+     * Set value for filters
      *
      * @param array Hash of columnName => initValue
+     * @param boolean permanent filters ?
      *
      * @return self
      */
-    public function setDefaultFilters(array $filters)
+    protected function setFilters(array $filters, $permanent = true)
     {
         foreach ($filters as $columnId => $ColumnValue) {
             if (is_array($ColumnValue)){
@@ -1033,10 +1070,39 @@ class Grid
                 $value['from'] = $value['from'] ? '1' : '0';
             }
 
-            $this->defaultFilters[$columnId] = $value;
+            if ($permanent) {
+                $this->permanentFilters[$columnId] = $value;
+            } else {
+                $this->defaultFilters[$columnId] = $value;
+            }
         }
 
         return $this;
+    }
+
+    /**
+     * Set permanent value for filters
+     *
+     * @param array Hash of columnName => initValue
+     * @param boolean fixed filters ?
+     *
+     * @return self
+     */
+    public function setPermanentFilters(array $filters)
+    {
+        return $this->setFilters($filters);
+    }
+
+    /**
+     * Set default value for filters
+     *
+     * @param array Hash of columnName => initValue
+     *
+     * @return self
+     */
+    public function setDefaultFilters(array $filters)
+    {
+        return $this->setFilters($filters, false);
     }
 
     /**
