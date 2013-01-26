@@ -143,6 +143,10 @@ public function myGridAction()
     ...
     $grid->setSource($source);
 
+    // Prepare data and the grid
+
+    $grid->isReadyForRedirect();
+
     // Configuration of the grid
 
     return $this->render('MyProjectMyBundle::grid.html.twig', array('grid' => $grid));
