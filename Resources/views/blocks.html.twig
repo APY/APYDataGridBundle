@@ -13,11 +13,9 @@
         {% if grid.isTitleSectionVisible %}
             {{ grid_titles(grid) }}
         {% endif %}
-
         {% if grid.isFilterSectionVisible %}
             {{ grid_filters(grid) }}
         {% endif %}
-
         {{ grid_rows(grid) }}
         </table>
         </div>
@@ -27,6 +25,9 @@
         {% endif %}
         {% if grid.exports|length > 0 %}
             {{ grid_exports(grid) }}
+        {% endif %}
+        {% if grid.tweaks|length > 0 %}
+            {{ grid_tweaks(grid) }}
         {% endif %}
         </div>
         {% if withjs %}
@@ -176,8 +177,8 @@
         <input type="hidden" id="{{ grid.hash }}_mass_action_all" name="{{ grid.hash }}[{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED') }}]" value="0"/>
         <select name="{{ grid.hash }}[{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_MASS_ACTION') }}]">
             <option value="-1"></option>
-            {% for key, value in grid.massActions %}
-            <option value="{{ key }}">{{ value.title|trans }}</option>
+            {% for key, massAction in grid.massActions %}
+            <option value="{{ key }}">{{ massAction.title|trans }}</option>
             {% endfor %}
         </select>
         <input type="submit"  value="{{ 'Submit Action'|trans }}"/>
@@ -192,14 +193,29 @@
         {{ 'Export'|trans }}
             <select name="{{grid.hash}}[{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_EXPORT') }}]">
             <option value="-1"></option>
-            {% for key, value in grid.exports %}
-            <option value="{{key}}">{{ value.title|trans }}</option>
+            {% for key, export in grid.exports %}
+            <option value="{{key}}">{{ export.title|trans }}</option>
             {% endfor %}
         </select>
         <input type="submit" value="{{ 'Export'|trans }}"/>
     {% endspaceless %}
 </div>
 {% endblock grid_exports %}
+{# --------------------------------------------------- grid_specificFilters ------------------------------------------------- #}
+{% block grid_tweaks %}
+<div class="tweaks" style="float:right">
+    {% spaceless %}
+        {{ 'Tweaks'|trans }}
+            <select name="{{grid.hash}}[{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_TWEAK') }}]">
+            <option value="-1"></option>
+            {% for key, tweak in grid.tweaks %}
+            <option value="{{key}}">{{ tweak.title|trans }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="{{ 'Tweak'|trans }}"/>
+    {% endspaceless %}
+</div>
+{% endblock grid_tweaks %}
 {# ------------------------------------------------ grid_column_actions_cell --------------------------------------------- #}
 {% block grid_column_actions_cell %}
     {% set actions = column.getActionsToRender(row) %}

@@ -98,7 +98,7 @@ public function myGridAction()
 {
     ...
     $grid = $this->get('grid');
-    
+
     $grid->setSource($source);
     ...
 }
@@ -112,7 +112,7 @@ public function myGridAction()
 {
     ...
     $grid->setSource($source);
-    
+
     // Set the identifier of the grid
     // Add a column
     // Show/Hide columns
