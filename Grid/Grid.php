@@ -247,6 +247,8 @@ class Grid
     protected $defaultPage;
 
     /**
+     * Tweaks
+     *
      * @var array
      */
     protected $tweaks = array();
