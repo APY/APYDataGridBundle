@@ -326,17 +326,35 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getGridCell($column, $row)
     {
-        $value = $column->renderCell($row->getField($column->getId()), $row, $this->container->get('router'));
-
-        if ($this->hasBlock($block = 'grid_'.$this->grid->getHash().'_column_'.$column->getRenderBlockId().'_cell')
-         || $this->hasBlock($block = 'grid_'.$this->grid->getHash().'_column_'.$column->getType().'_cell')
-         || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
-         || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell'))
-        {
-            return $this->renderBlock($block, array('grid' => $this->grid, 'column' => $column, 'value' => $value, 'row' => $row));
+        // Cast a datetime won't work.
+        if (!is_array($values = $row->getField($column->getId()))) {
+            $values = array($values);
         }
 
-        return $value;
+        $block = null;
+        $return = array();
+        foreach ($values as $sourceValue) {
+            $value = $column->renderCell($sourceValue, $row, $this->container->get('router'));
+
+            $id = $this->grid->getId();
+
+            if (($id != '' && ($block !== null
+             || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_cell')
+             || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getType().'_cell')
+             || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell')))
+             || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
+             || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
+             || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
+            {
+                $return[] = $this->renderBlock($block, array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
+            } else {
+                $return[] = $this->renderBlock('grid_column_cell', array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
+                $block = null;
+            }
+
+        }
+
+        return implode($column->getSeparator() , $return);
     }
 
     /**
@@ -382,9 +400,9 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      */
     protected function getTemplates()
     {
-        $template = $this->grid->getTemplate();
-
         if (empty($this->templates)) {
+            $template = $this->grid->getTemplate();
+
             //get template name
             if (is_string($template)) {
                 if (substr($template, 0, 8) === '__SELF__') {
@@ -418,6 +436,9 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function cleanHTML($value)
     {
+        // Handle image
+        $value = preg_replace('#<img[^>]*title="([^"]*)"[^>]*?/>#isU', '\1', $value);
+
         // Clean indent
         $value = preg_replace('/>[\s\n\t\r]*</', '><', $value);
 
@@ -427,6 +448,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         // Convert Special Characters in HTML
         $value = html_entity_decode($value);
 
+        // Trim
         $value = trim($value);
 
         return $value;
