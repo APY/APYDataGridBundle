@@ -556,4 +556,14 @@ class Entity extends Source
     {
         $this->hints = array();
     }
+    
+    /**
+     *  Set groupby column
+     *  @param string $groupBy GroupBy column
+     */
+    public function setGroupBy($groupBy)
+    {
+        $this->groupBy = $groupBy;
+    }
+    
 }
