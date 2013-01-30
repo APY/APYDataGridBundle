@@ -517,6 +517,7 @@ class Grid
                 $tweak = $this->tweaks[$tweakId];
 
                 if (isset($tweak['filters'])) {
+                    $this->defaultFilters = array();
                     $this->setDefaultFilters($tweak['filters']);
                     $this->processDefaultFilters();
                 }
