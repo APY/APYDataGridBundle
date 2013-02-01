@@ -272,7 +272,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         foreach ($this->grid->getColumns() as $column) {
             if ($column->isVisible(true)) {
                 if (!isset($titlesClean[$i])) {
-                    throw new \OutOfBoundsException('There are more more visible columns than titles found.');
+                    throw new \OutOfBoundsException('There are more visible columns than titles found.');
                 }
                 $titles[$column->getId()] = $titlesClean[$i++];
             }
