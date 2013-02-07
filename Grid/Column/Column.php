@@ -86,6 +86,7 @@ abstract class Column
     protected $selectExpanded;
     protected $searchOnClick = false;
     protected $safe;
+    protected $separator;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -142,6 +143,7 @@ abstract class Column
         $this->setSelectExpanded($this->getParam('selectExpanded', false));
         $this->setSearchOnClick($this->getParam('searchOnClick', false));
         $this->setSafe($this->getParam('safe', 'html'));
+        $this->setSeparator($this->getParam('separator', "<br />"));
     }
 
     protected function getParam($id, $default = null)
@@ -819,5 +821,17 @@ abstract class Column
     public function getSafe()
     {
         return $this->safe;
+    }
+    
+    public function setSeparator($separator)
+    {
+        $this->separator = $separator;
+
+        return $this;
+    }
+
+    public function getSeparator()
+    {
+        return $this->separator;
     }
 }

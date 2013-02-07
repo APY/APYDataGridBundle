@@ -16,13 +16,10 @@ use APY\DataGridBundle\Grid\Filter;
 
 class ArrayColumn extends Column
 {
-    protected $separator;
-
     public function __initialize(array $params)
     {
         parent::__initialize($params);
 
-        $this->setSeparator($this->getParam('separator', "<br />"));
         $this->setOperators($this->getParam('operators', array(
             self::OPERATOR_LIKE,
             self::OPERATOR_NLIKE,
@@ -92,18 +89,6 @@ class ArrayColumn extends Column
         }
 
         return $return;
-    }
-
-    public function setSeparator($separator)
-    {
-        $this->separator = $separator;
-
-        return $this;
-    }
-
-    public function getSeparator()
-    {
-        return $this->separator;
     }
 
     public function getType()
