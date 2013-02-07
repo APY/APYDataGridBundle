@@ -37,8 +37,6 @@ class PHPExcel5Export extends Export
     {
         $data = $this->getFlatGridData($grid);
 
-        $this->objPHPExcel->setActiveSheetIndex(0);
-
         $row = 1;
         foreach ($data as $line) {
             $column = 'A';
