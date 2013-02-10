@@ -17,6 +17,7 @@ use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Helper\ORMCountWalker;
 use Doctrine\ORM\Query;
+use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
 {
@@ -99,7 +100,9 @@ class Entity extends Source
 
     public function initialise($container)
     {
-        $this->manager = $container->get('doctrine')->getEntityManager($this->managerName);
+        $doctrine = $container->get('doctrine');
+
+        $this->manager = version_compare(Kernel::VERSION, '2.1.0', '>=') ? $doctrine->getManager($this->managerName) : $doctrine->getEntityManager($this->managerName);
         $this->ormMetadata = $this->manager->getClassMetadata($this->entityName);
 
         $this->class = $this->ormMetadata->getReflectionClass()->name;
@@ -200,7 +203,7 @@ class Entity extends Source
             if (($pos = strpos($fieldName, ':')) !== false) {
                 $fieldName = substr($fieldName, 0, $pos);
             }
-            
+
             return self::TABLE_ALIAS.'.'.$fieldName;
         }
 
@@ -551,12 +554,12 @@ class Entity extends Source
     {
         $this->hints[$key] = $value;
     }
-    
+
     public function clearHints()
     {
         $this->hints = array();
     }
-    
+
     /**
      *  Set groupby column
      *  @param string $groupBy GroupBy column
@@ -565,5 +568,5 @@ class Entity extends Source
     {
         $this->groupBy = $groupBy;
     }
-    
+
 }
