@@ -1580,7 +1580,6 @@ class Grid
 
             	return new Response($content);
             } else if ($view === null)
-                
                 return $parameters;
             } else {
                 return $this->container->get('templating')->renderResponse($view, $parameters, $response);
