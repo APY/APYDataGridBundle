@@ -1796,7 +1796,12 @@ class Grid
 
             $parameters = array_merge(array('grid' => $this), $parameters);
 
-            if ($view === null) {
+            if ($this->request->isXmlHttpRequest()) {
+                $parameters['withjs'] = false;
+            	$content = $this->container->get('twig')->loadTemplate($this->getTemplate())->renderBlock('grid', $parameters);
+
+            	return new Response($content);
+            } else if ($view === null)
                 return $parameters;
             } else {
                 return $this->container->get('templating')->renderResponse($view, $parameters, $response);
