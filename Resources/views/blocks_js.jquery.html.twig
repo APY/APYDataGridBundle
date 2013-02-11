@@ -4,28 +4,20 @@
 function {{ grid.hash }}_goto(url, data, type)
 {
     type = type || 'GET';
- 
-    if (data) {
-        data = data + '&{{ grid.hash }}_ajax=true';
-    } else {
-        data = '{{ grid.hash }}[ajax]=true';
-    }
- 
+    data = data || [];
+
     $('#{{ grid.hash }}').parent().fadeTo("slow", 0.5);
     
-    jQuery.ajax({
+    $.ajax({
 			type: type,
 			dataType : 'html',
 			data: data,
 			error : function(XMLHttpRequest, textStatus, errorThrown) {
 				alert(XMLHttpRequest.responseText);
 			},
-			complete : function(XMLHttpRequest, textStatus) {
-			     $('#{{ grid.hash }}').parent().fadeTo("slow", 1);
-			},
-			success : function(data, textStatus) {
+			success : function(data) {
 				$('#{{ grid.hash }}').parent().replaceWith(data);
-				{{ grid.hash }}_initGridEvents(url);
+				{{ grid.hash }}_initGridEvents();
 			},
 			url : url
 		});
@@ -66,7 +58,7 @@ function {{ grid.hash }}_submitForm(event, form)
 {% endblock grid_scripts_submit_form %}
 
 {% block grid_scripts_ajax %}
-function {{ grid.hash }}_initGridEvents(routeurl) {
+function {{ grid.hash }}_initGridEvents() {
     // Order and pagerfanta links
     $('.pagination li.disabled a', '#{{ grid.hash }}').click(function (e) {
         return false;
@@ -104,6 +96,6 @@ function {{ grid.hash }}_initGridEvents(routeurl) {
 };
 
 $(document).ready(function() {
-    {{ grid.hash }}_initGridEvents('{{ grid.routeUrl }}');
+    {{ grid.hash }}_initGridEvents();
 });
 {% endblock grid_scripts_ajax %}
