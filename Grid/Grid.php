@@ -1850,16 +1850,7 @@ class Grid
      */
     public function getGridResponse($param1 = null, $param2 = null, Response $response = null)
     {
-        
-        $this->createHash();
-        $this->requestData = (array) $this->request->get($this->hash);
-        
-        if ($this->request->isXmlHttpRequest() && array_key_exists('ajax', $this->requestData) &&  $this->requestData['ajax']) {
-            //ajax call
-            $this->ajax_call = true;
-        } else {
-            $this->ajax_call = false;
-        }
+        $isReadyForRedirect = $this->isReadyForRedirect();
         
         if ($this->isReadyForExport()) {
             return $this->getExportResponse();
@@ -1878,7 +1869,12 @@ class Grid
 
             $parameters = array_merge(array('grid' => $this), $parameters);
 
-            if ($view === null) {
+            if ($this->request->isXmlHttpRequest()) {
+                $parameters['withjs'] = false;
+            	$content = $this->container->get('twig')->loadTemplate($this->getTemplate())->renderBlock('grid', $parameters);
+
+            	return new Response($content);
+            } else if ($view === null) {
                 if ($this->ajax_call) {
                     $resp = new Response();
                     $parameters['withjs'] = false;
