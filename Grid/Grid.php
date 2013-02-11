@@ -1874,15 +1874,7 @@ class Grid
             	$content = $this->container->get('twig')->loadTemplate($this->getTemplate())->renderBlock('grid', $parameters);
 
             	return new Response($content);
-            } else if ($view === null) {
-                if ($this->ajax_call) {
-                    $resp = new Response();
-                    $parameters['withjs'] = false;
-                    $content = $this->container->get('twig')->loadTemplate($this->getTemplate())->renderBlock('grid', $parameters);
-                    $resp->setContent($content);
-
-                    return $resp;
-                }
+            } else if ($view === null)
                 
                 return $parameters;
             } else {
