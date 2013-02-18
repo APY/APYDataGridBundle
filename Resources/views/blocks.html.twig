@@ -100,9 +100,9 @@
     <div class="grid-search">
         <form id="{{ grid.hash }}_search" action="{{ grid.routeUrl }}" method="post">
         {% for column in grid.columns %}
-            {% if column.visible(true) and column.isFilterable %}
+            {% if column.visible(true) and column.isFilterable and column.type not in ['actions', 'massaction'] %}
                 {% set columnTitle = grid.prefixTitle ~ column.title %}
-                {% if column.filterable %}<div class="{{ cycle(['odd', 'even'], loop.index) }}"><label>{{ columnTitle|trans }}</label>{{ grid_filter(column, grid, false)|raw }}</div>{% endif %}
+                <div class="{{ cycle(['odd', 'even'], loop.index) }}"><label>{{ columnTitle|trans }}</label>{{ grid_filter(column, grid, false)|raw }}</div>
             {% endif %}
         {% endfor %}
             <div class="grid-search-action"><input type="submit" class="grid-search-submit" value="{{ 'Search'|trans }}"/><input type="button" class="grid-search-reset" value="{{ 'Reset'|trans }}" onclick="return {{ grid.hash }}_reset();"/></div>
