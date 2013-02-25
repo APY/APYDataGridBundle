@@ -313,6 +313,11 @@ class Grid
         return $this;
     }
 
+    public function getSource()
+    {
+        return $this->source;
+    }
+
     /**
      * Handle the grid redirection, export, etc..
      */
