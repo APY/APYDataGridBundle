@@ -64,8 +64,16 @@ class ORMCountWalker extends TreeWalkerAdapter
         );
         $pathExpression->type = PathExpression::TYPE_STATE_FIELD;
 
+        // Remove the variables which are not used by other clauses
+        foreach ($AST->selectClause->selectExpressions as $key => $selectExpressions) {
+            if ($selectExpressions->fieldIdentificationVariable == null) {
+                unset($AST->selectClause->selectExpressions[$key]);
+            }
+        }
+
+        // Put the count expression in the first position
         $distinct = $this->_getQuery()->getHint(self::HINT_DISTINCT);
-        $AST->selectClause->selectExpressions = array(
+        array_unshift($AST->selectClause->selectExpressions,
             new SelectExpression(
                 new AggregateExpression('count', $pathExpression, $distinct), null
             )

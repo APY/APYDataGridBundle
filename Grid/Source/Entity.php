@@ -120,7 +120,7 @@ class Entity extends Source
      * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @return string
      */
-    protected function getFieldName($column, $withAlias = false, $forHavingClause = false)
+    protected function getFieldName($column, $withAlias = false)
     {
         $name = $column->getField();
 
@@ -166,10 +166,6 @@ class Entity extends Source
                 $this->querySelectfromSource->addGroupBy($previousParent);
 
                 return "$functionWithParameters as $alias";
-            }
-
-            if ($forHavingClause) {
-                return $functionWithParameters;
             }
 
             return $alias;
@@ -284,7 +280,7 @@ class Entity extends Source
                 foreach ($filters as $filter) {
                     $operator = $this->normalizeOperator($filter->getOperator());
 
-                    $q = $this->query->expr()->$operator($this->getFieldName($column, false, $hasHavingClause), "?$bindIndex");
+                    $q = $this->query->expr()->$operator($this->getFieldName($column, false), "?$bindIndex");
 
                     if ($filter->getOperator() == Column::OPERATOR_NLIKE) {
                         $q = $this->query->expr()->not($q);
