@@ -32,8 +32,6 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected $container;
 
-    protected $template;
-
     protected $templates;
 
     protected $twig;
@@ -76,6 +74,8 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+
+        $this->twig = $this->container->get('twig');
 
         return $this;
     }
@@ -177,10 +177,6 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $result = array();
 
         $this->grid = $grid;
-
-        $this->twig = $this->container->get('twig');
-
-        $this->template = $this->grid->getTemplate();
 
         if ($this->grid->isTitleSectionVisible()) {
             $result['titles'] = $this->getGridTitles();
@@ -401,24 +397,35 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     protected function getTemplates()
     {
         if (empty($this->templates)) {
-            $template = $this->grid->getTemplate();
-
-            //get template name
-            if (is_string($template)) {
-                if (substr($template, 0, 8) === '__SELF__') {
-                    $this->templates = $this->getTemplatesFromString(substr($template, 8));
-                    $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
-                } else {
-                    $this->templates = $this->getTemplatesFromString($template);
-                }
-            } elseif ($this->template === null) {
-                $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
-            } else {
-                throw new \Exception('Unable to load template');
-            }
+            $this->setTemplate($this->grid->getTemplate());
         }
 
         return $this->templates;
+    }
+
+    /**
+     * set template
+     *
+     * @param \Twig_TemplateInterface|string $template
+     *
+     * @return self
+     */
+    public function setTemplate($template)
+    {
+        if (is_string($template)) {
+            if (substr($template, 0, 8) === '__SELF__') {
+                $this->templates = $this->getTemplatesFromString(substr($template, 8));
+                $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+            } else {
+                $this->templates = $this->getTemplatesFromString($template);
+            }
+        } elseif ($this->templates === null) {
+            $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+        } else {
+            throw new \Exception('Unable to load template');
+        }
+
+        return $this;
     }
 
     protected function getTemplatesFromString($theme)
@@ -525,8 +532,6 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     {
         return $this->fileExtension;
     }
-
-
 
     /**
      * get base name
@@ -646,30 +651,6 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         }
 
         return $this->parameters[$name];
-    }
-
-    /**
-     * set template
-     *
-     * @param string $template
-     *
-     * @return self
-     */
-    public function setTemplate($template)
-    {
-        $this->template = $template;
-
-        return $this;
-    }
-
-    /**
-     * get template
-     *
-     * @return boolean
-     */
-    public function getTemplate()
-    {
-        return $this->template ?:$this::DEFAULT_TEMPLATE;
     }
 
     /**

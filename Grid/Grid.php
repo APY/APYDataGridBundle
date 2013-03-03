@@ -1083,17 +1083,14 @@ class Grid
     public function setTemplate($template)
     {
         if ($template !== null) {
-            $storage = $this->session->get($this->getHash());
-
             if ($template instanceof \Twig_Template) {
                 $template = '__SELF__' . $template->getTemplateName();
             } elseif (!is_string($template) && $template === null) {
                 throw new \Exception('Unable to load template');
             }
 
-            $storage[self::REQUEST_QUERY_TEMPLATE] = $template;
-
-            $this->session->set($this->getHash(), $storage);
+            $this->set(self::REQUEST_QUERY_TEMPLATE, $template);
+            $this->saveSession();
         }
 
         return $this;
@@ -1140,7 +1137,7 @@ class Grid
      *
      * @return Export[]
      */
-    protected function getExportResponse()
+    public function getExportResponse()
     {
         return $this->exportResponse;
     }
