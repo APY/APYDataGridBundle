@@ -20,12 +20,12 @@ They are called before the default block.
 
  * `grid_%id%_column_%column_id%_filter`
  * `grid_%id%_column_type_%column_type%_filter`
- * `grid_%id%_column_filter_type_%column_filter_type%`
  * `grid_%id%_column_type_%column_parent_type%_filter`
+ * `grid_%id%_column_filter_type_%column_filter_type%`
  * `grid_column_%column_id%_filter`
  * `grid_column_type_%column_type%_filter`
- * `grid_column_filter_type_%column_filter_type%`
  * `grid_column_type_%column_parent_type%_filter`
+ * `grid_column_filter_type_%column_filter_type%`
 
 **Note**: `.` and `:` characters in mapped field with a DQL aggregate function are replaced by an underscore.
 

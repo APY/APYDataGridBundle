@@ -209,12 +209,12 @@ class DataGridExtension extends \Twig_Extension
 
         if (($id != '' && ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_filter')
                         || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getType().'_filter')
-                        || $this->hasBlock($block = 'grid_'.$id.'_column_filter_type_'.$column->getFilterType())
-                        || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getParentType().'_filter')))
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getParentType().'_filter'))
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_filter_type_'.$column->getFilterType()))
          || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_filter')
          || $this->hasBlock($block = 'grid_column_type_'.$column->getType().'_filter')
-         || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType())
-         || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter'))
+         || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter')
+         || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType()))
         {
             return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'submitOnChange' => $submitOnChange && $column->isFilterSubmitOnChange()));
         }
@@ -230,23 +230,21 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getGridUrl($section, $grid, $param = null)
     {
-        $separator =  strpos($grid->getRouteUrl(), '?') ? '&' : '?';
+        $prefix = $grid->getRouteUrl().(strpos($grid->getRouteUrl(), '?') ? '&' : '?').$grid->getHash().'[';
 
         switch ($section) {
             case 'order':
                 if ($param->isSorted()) {
-                    return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|'.($param->getOrder() == 'asc' ? 'desc' : 'asc');
+                    return $prefix.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|'.($param->getOrder() == 'asc' ? 'desc' : 'asc');
                 } else {
-                    return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|asc';
+                    return $prefix.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|asc';
                 }
             case 'page':
-                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_PAGE.']='.$param;
+                return $prefix.Grid::REQUEST_QUERY_PAGE.']='.$param;
             case 'limit':
-                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_LIMIT.']=';
+                return $prefix.Grid::REQUEST_QUERY_LIMIT.']=';
             case 'reset':
-                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_RESET.']=';
-            case 'export':
-                return $grid->getRouteUrl().$separator.$grid->getHash().'['.Grid::REQUEST_QUERY_EXPORT.']='.$param;
+                return $prefix.Grid::REQUEST_QUERY_RESET.']=';
         }
     }
 
