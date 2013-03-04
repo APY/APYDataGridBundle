@@ -268,7 +268,6 @@ class Grid
 
     // Lazy parameters for the action column
     protected $actionsColumnSize;
-    protected $actionsColumnSeparator;
 
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container
@@ -822,9 +821,6 @@ class Grid
                         $actionColumn->setSize($this->actionsColumnSize);
                     }
 
-                    if (isset($this->actionsColumnSeparator)) {
-                        $actionColumn->setSeparator($this->actionsColumnSeparator);
-                    }
                     $this->columns->addColumn($actionColumn);
                 }
             }
@@ -1818,20 +1814,6 @@ class Grid
     public function setActionsColumnSize($size)
     {
         $this->actionsColumnSize = $size;
-
-        return $this;
-    }
-
-    /**
-     * Sets the separator of the default action column
-     *
-     * @param type $separator
-     *
-     * @return self
-     */
-    public function setActionsColumnSeparator($separator)
-    {
-        $this->actionsColumnSeparator = $separator;
 
         return $this;
     }
