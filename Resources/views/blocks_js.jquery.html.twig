@@ -52,7 +52,7 @@ function {{ grid.hash }}_submitForm(event, form, force)
 {% block grid_scripts_ajax %}
 $(function () {
     // Order and pagerfanta links
-    $('.pagination li.disabled a').click(function (e) {
+    $('.pagination li.disabled a', '#{{ grid.hash }}').click(function (e) {
         return false;
     });
 
