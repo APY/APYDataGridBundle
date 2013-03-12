@@ -147,7 +147,7 @@ class NumberColumn extends Column
         $filters = array();
         foreach($parentFilters as $filter) {
             // Transforme in number for ODM
-            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue($filter->getValue() + 0);
+            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue(intval($filter->getValue()));
         }
 
         return $filters;
