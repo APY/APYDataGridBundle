@@ -48,11 +48,6 @@ class GridManager implements \IteratorAggregate, \Countable
     {
         $grid = $this->container->get('grid');
 
-        // Route url is the same for all grids
-        if ($this->routeUrl === null) {
-            $this->routeUrl = $grid->getRouteUrl();
-        }
-
         if ($id !== null) {
             $grid->setId($id);
         }
@@ -72,6 +67,13 @@ class GridManager implements \IteratorAggregate, \Countable
 
         $isReadyForRedirect = false;
         $this->grids->rewind();
+        
+        // Route url is the same for all grids
+        if ($this->routeUrl === null) {
+            $grid = $this->grids->current();
+            $this->routeUrl = $grid->getRouteUrl();
+        }
+
         while($this->grids->valid()) {
             $grid = $this->grids->current();
 
@@ -169,5 +171,10 @@ class GridManager implements \IteratorAggregate, \Countable
     public function getRouteUrl()
     {
         return $this->routeUrl;
+    }
+    
+    public function setRouteUrl($routeUrl)
+    {
+        $this->routeUrl = $routeUrl;
     }
 }
