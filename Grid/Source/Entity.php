@@ -294,7 +294,7 @@ class Entity extends Source
                 }
 
                 if ($hasHavingClause) {
-                    $this->query->having($sub);
+                    $this->query->andHaving($sub);
                 } elseif ($isDisjunction) {
                     $where->add($sub);
                 }
