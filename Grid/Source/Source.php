@@ -266,7 +266,7 @@ abstract class Source implements DriverInterface
                         $value = $filter->getValue();
 
                         // Normalize value
-                        if (!$dataIsNumeric) {
+                        if (!$dataIsNumeric && $column->getType() != 'datetime') {
                             $value = $this->prepareStringForLikeCompare($value);
                             switch ($operator) {
                                 case Column\Column::OPERATOR_EQ:
