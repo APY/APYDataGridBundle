@@ -107,8 +107,9 @@ class NumberColumn extends Column
             if ($this->ruleSet !== null) {
                 $formatter->setTextAttribute(\NumberFormatter::DEFAULT_RULESET, $this->ruleSet);
             }
+            
             if($this->maxFractionDigits !== null){
-              $formatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS,$this->maxFractionDigits);
+                $formatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS,$this->maxFractionDigits);
             }
 
             $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);
@@ -260,12 +261,12 @@ class NumberColumn extends Column
 
     public function setMaxFractionDigits($maxFractionDigits)
     {
-      $this->maxFractionDigits = $maxFractionDigits;
+       $this->maxFractionDigits = $maxFractionDigits;
     }
 
     public function getMaxFractionDigits()
     {
-      return $this->maxFractionDigits;
+        return $this->maxFractionDigits;
     }
 
     public function getType()
