@@ -131,7 +131,7 @@ class NumberColumn extends Column
             } else {
                 $value = $formatter->format($value);
             }
-            
+
             if (intl_is_failure($formatter->getErrorCode())) {
                 throw new TransformationFailedException($formatter->getErrorMessage());
             }
@@ -261,7 +261,7 @@ class NumberColumn extends Column
 
     public function setMaxFractionDigits($maxFractionDigits)
     {
-       $this->maxFractionDigits = $maxFractionDigits;
+        $this->maxFractionDigits = $maxFractionDigits;
     }
 
     public function getMaxFractionDigits()
