@@ -41,9 +41,11 @@ use APY\DataGridBundle\Grid\Export\DSVExport;
 ...
 $grid->setSource($source);
 
-$grid->addExport(new DSVExport('DSV Export with ,', 'export', array('delimiter' => ',')));
-$grid->setFileExtension('csv');
-$grid->setMimeType('text/comma-separated-values');
+$exporter = new DSVExport('DSV Export with ,', 'export', array('delimiter' => ','));
+$exporter->setFileExtension('csv');
+$exporter->setMimeType('text/comma-separated-values');
+
+$grid->addExport($exporter);
 ...
 ```
 
@@ -56,11 +58,13 @@ use APY\DataGridBundle\Grid\Export\DSVExport;
 ...
 $grid->setSource($source);
 
-$grid->addExport(new DSVExport('DSV Export with ,'));
-$grid->setDelimiter(',');
-$grid->setFileName('export');
-$grid->setFileExtension('csv');
-$grid->setMimeType('text/comma-separated-values');
+$exporter = new DSVExport('DSV Export with ,');
+$exporter->setDelimiter(',');
+$exporter->setFileName('export');
+$exporter->setFileExtension('csv');
+$exporter->setMimeType('text/comma-separated-values');
+
+$grid->addExport($exporter);
 ...
 ```
 
