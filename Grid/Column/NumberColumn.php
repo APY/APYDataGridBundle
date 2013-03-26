@@ -57,7 +57,7 @@ class NumberColumn extends Column
         $this->setRuleSet($this->getParam('ruleSet'));
         $this->setCurrencyCode($this->getParam('currencyCode'));
         $this->setFractional($this->getParam('fractional', false));
-        $this->setMaxFractionDigits($this->getParam('maxFractionDigits',null));
+        $this->setMaxFractionDigits($this->getParam('maxFractionDigits', null));
         if ($this->style === \NumberFormatter::DURATION) {
             $this->setLocale('en');
             $this->setRuleSet($this->getParam('ruleSet', '%in-numerals')); // or '%with-words'
@@ -109,7 +109,7 @@ class NumberColumn extends Column
             }
             
             if($this->maxFractionDigits !== null){
-                $formatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS,$this->maxFractionDigits);
+                $formatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $this->maxFractionDigits);
             }
 
             $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);
