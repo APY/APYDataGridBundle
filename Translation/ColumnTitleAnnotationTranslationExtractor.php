@@ -63,7 +63,7 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
             // Save messages for title
             foreach ($metadata->getFields() as $field) {
                 $mappedField = $metadata->getFieldMapping($field);
-                if (! isset($mappedField['visible']) && isset($mappedField['title'])) {
+                if ((! isset($mappedField['visible']) || $mappedField['visible']) && isset($mappedField['title'])) {
                     $message = new Message($mappedField['title']);
                     $message->addSource(new FileSource((string) $file));
                     $catalogue->add($message);
