@@ -44,11 +44,12 @@ class ActionsColumn extends Column
                         $name = $this->getValidRouteParameters($parameter);
                     }
                     $routeParameters[$name] = $row->getField($parameter);
+                } elseif( array_key_exists( $parameter, $row->getFields())) {
+                    $routeParameters[$this->getValidRouteParameters($name)] = $row->getField( $parameter );
                 } else {
                     $routeParameters[$this->getValidRouteParameters($name)] = $parameter;
                 }
             }
-
             return $routeParameters;
         }
 
