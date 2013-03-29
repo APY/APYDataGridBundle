@@ -209,7 +209,7 @@
     {% spaceless %}
         {{ 'Tweaks'|trans }}
             <select name="{{grid.hash}}[{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_TWEAK') }}]">
-            <option value="-1"></option>
+            <option value=""></option>
             {% for key, tweak in grid.tweaks %}
             <option value="{{key}}">{{ tweak.title|trans }}</option>
             {% endfor %}
