@@ -40,7 +40,7 @@ Current template will automatically extended from the base block template (APYDa
     {{ column.id }}
 {% endblock grid_column_address_filter %}
 ```
-**Note**: This trick works only with extended templates. Otherwises, blocks will be displayed twice.
+**Note**: This trick works only with extended templates. Otherwises, blocks will be displayed twice.  
 **Note²**: Blocks have to be define after the call of the grid and outside others blocks.
 
 ## Blocks list
