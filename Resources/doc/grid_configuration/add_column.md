@@ -3,6 +3,7 @@ Add a column
 
 You can add a column to the grid. You can fill it with the row manipulator, in your template or tell the grid what field the column will be mapped.  
 A column must be defined after the source otherwise it will always appear before the columns of the source.
+If negative column numbers are used, then the column is added that far from the last column.
 
 ## Usage
 
@@ -20,6 +21,9 @@ $grid->addColumn($MyColumn);
 
 // OR add this column to the third position
 $grid->addColumn($MyColumn, 3);
+
+// OR add this column to the next to last position
+$grid->addColumn($MyColumn, -1);
 ...
 ```
 
