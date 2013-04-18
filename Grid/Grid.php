@@ -90,6 +90,11 @@ class Grid
     protected $source;
 
     /**
+     * @var boolean
+     */
+     protected $prepared = false;
+
+    /**
      * @var int
      */
     protected $totalCount;
@@ -461,11 +466,12 @@ class Grid
 
                 if($actionAllKeys)
                 {
-                    $this->processSessionData();
                     $this->page = 0;
                     $this->limit = 0;
-                    $this->prepare();
+                    
                 }
+                $this->processSessionData();
+                $this->prepare();
 
                 if (is_callable($action->getCallback())) {
                     call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session, $action->getParameters());
@@ -793,6 +799,8 @@ class Grid
      */
     protected function prepare()
     {
+        if($this->prepared) return $this;
+        
         if ($this->source->isDataLoaded()) {
             $this->rows = $this->source->executeFromData($this->columns->getIterator(true), $this->page, $this->limit, $this->maxResults);
         } else {
@@ -865,6 +873,8 @@ class Grid
         if(!is_int($this->totalCount)) {
             throw new \Exception(sprintf('Source function getTotalCount need to return integer result, returned: %s', gettype($this->totalCount)));
         }
+
+        $this->prepared = true;
 
         return $this;
     }
