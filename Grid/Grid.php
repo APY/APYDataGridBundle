@@ -464,13 +464,13 @@ class Grid
                 $actionAllKeys = (boolean)$this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
                 $actionKeys = $actionAllKeys == false ? (array) $this->getFromRequest(MassActionColumn::ID) : array();
 
+                $this->processSessionData();
                 if($actionAllKeys)
                 {
                     $this->page = 0;
                     $this->limit = 0;
                     
-                }
-                $this->processSessionData();
+                }                
                 $this->prepare();
 
                 if (is_callable($action->getCallback())) {
