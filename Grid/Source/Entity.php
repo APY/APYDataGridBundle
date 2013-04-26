@@ -565,4 +565,8 @@ class Entity extends Source
         $this->groupBy = $groupBy;
     }
 
+    public function getEntityName()
+    {
+        return $this->entityName;
+    }
 }
