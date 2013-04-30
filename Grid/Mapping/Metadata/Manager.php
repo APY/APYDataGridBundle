@@ -44,9 +44,15 @@ class Manager
     {
         $metadata = new Metadata();
 
-        $columns = $fieldsMetadata = $groupBy = array();
+        $columns = $fieldsMetadata = $groupBy = $usedClassDrivers = array();
 
         foreach ($this->getDrivers() as $driver) {
+
+            if(in_array(get_class($driver),$usedClassDrivers))
+              continue;
+
+            $usedClassDrivers[]=get_class($driver);
+
             $columns = array_merge($columns, $driver->getClassColumns($className, $group));
             $fieldsMetadata[] = $driver->getFieldsMetadata($className, $group);
             $groupBy = array_merge($groupBy, $driver->getGroupBy($className, $group));
