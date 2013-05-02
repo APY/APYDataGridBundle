@@ -465,11 +465,9 @@ class Grid
                 $actionKeys = $actionAllKeys == false ? (array) $this->getFromRequest(MassActionColumn::ID) : array();
 
                 $this->processSessionData();
-                if($actionAllKeys)
-                {
+                if ($actionAllKeys) {
                     $this->page = 0;
                     $this->limit = 0;
-                    
                 }                
                 $this->prepare();
 
