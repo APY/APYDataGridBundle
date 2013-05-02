@@ -49,23 +49,28 @@ class DataGridExtension extends \Twig_Extension
      * @var array
      */
     protected $params = array();
-    
+
     /**
-     * 
+     *
      * @var array
      */
     protected $pagerFantaDefs;
-    
+
     public function __construct($router)
     {
         $this->router = $router;
     }
-    
+
     public function setPagerFanta(array $def)
     {
         $this->pagerFantaDefs=$def;
     }
-    
+
+    public function setTheme($theme)
+    {
+        $this->theme = $theme;
+    }
+
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
@@ -118,7 +123,7 @@ class DataGridExtension extends \Twig_Extension
 
     public function initGrid($grid, $theme = null, $id = '', array $params = array())
     {
-        $this->theme = $theme;
+        $this->theme = $theme ?: $this->theme;
         $this->templates = array();
 
         $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
@@ -139,7 +144,7 @@ class DataGridExtension extends \Twig_Extension
         $this->initGrid($grid, $theme, $id, $params);
 
         // For export
-        $grid->setTemplate($theme);
+        $grid->setTemplate($this->theme);
 
         return $this->renderBlock('grid', array('grid' => $grid, 'withjs' => $withjs));
     }
@@ -167,7 +172,7 @@ class DataGridExtension extends \Twig_Extension
     {
         return $this->renderBlock('grid_pager', array('grid' => $grid, 'pagerfanta' => $this->pagerFantaDefs['enable']));
     }
-    
+
     /**
      * Cell Drawing override
      *

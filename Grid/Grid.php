@@ -1859,12 +1859,12 @@ class Grid
     public function getGridResponse($param1 = null, $param2 = null, Response $response = null)
     {
         $isReadyForRedirect = $this->isReadyForRedirect();
-
+        
         if ($this->isReadyForExport()) {
             return $this->getExportResponse();
         }
-
-        if ($isReadyForRedirect) {
+        
+        if ($this->isReadyForRedirect()) {
             return new RedirectResponse($this->getRouteUrl());
         } else {
             if (is_array($param1) || $param1 === null) {
@@ -1877,7 +1877,12 @@ class Grid
 
             $parameters = array_merge(array('grid' => $this), $parameters);
 
-            if ($view === null) {
+            if ($this->request->isXmlHttpRequest()) {
+                $parameters['withjs'] = false;
+            	$content = $this->container->get('twig')->loadTemplate($this->getTemplate())->renderBlock('grid', $parameters);
+
+            	return new Response($content);
+            } else if ($view === null)
                 return $parameters;
             } else {
                 return $this->container->get('templating')->renderResponse($view, $parameters, $response);

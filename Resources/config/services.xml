@@ -17,6 +17,9 @@
             <call method="setPagerFanta">
                 <argument>%apy_data_grid.pagerfanta%</argument>
             </call>
+            <call method="setTheme">
+                <argument>%apy_data_grid.theme%</argument>
+            </call>
         </service>
 
         <service id="grid" class="%grid.class%" scope="prototype">

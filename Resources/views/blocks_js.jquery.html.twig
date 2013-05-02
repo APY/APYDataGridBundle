@@ -6,15 +6,23 @@ function {{ grid.hash }}_goto(url, data, type)
     type = type || 'GET';
     data = data || [];
 
+    $('#{{ grid.hash }}').parent().fadeTo("slow", 0.5);
+    
     $.ajax({
-        url: url,
-        data: data,
-        type: type
-    }).done(function( msg ) {
-        $('#{{ grid.hash }}').parent().replaceWith(msg);
-    });
-
-    return false
+			type: type,
+			dataType : 'html',
+			data: data,
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				alert(XMLHttpRequest.responseText);
+			},
+			success : function(data) {
+				$('#{{ grid.hash }}').parent().replaceWith(data);
+				{{ grid.hash }}_initGridEvents();
+			},
+			url : url
+		});
+   
+    return false;
 }
 {% endblock grid_scripts_goto %}
 
@@ -50,7 +58,7 @@ function {{ grid.hash }}_submitForm(event, form)
 {% endblock grid_scripts_submit_form %}
 
 {% block grid_scripts_ajax %}
-$(function () {
+function {{ grid.hash }}_initGridEvents() {
     // Order and pagerfanta links
     $('.pagination li.disabled a', '#{{ grid.hash }}').click(function (e) {
         return false;
@@ -85,5 +93,9 @@ $(function () {
 
         return false;
     });
+};
+
+$(document).ready(function() {
+    {{ grid.hash }}_initGridEvents();
 });
 {% endblock grid_scripts_ajax %}

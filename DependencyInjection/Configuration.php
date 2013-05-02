@@ -32,6 +32,7 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
                 ->booleanNode('persistence')->defaultFalse()->end()
+                ->scalarNode('theme')->defaultNull()->end()
                 ->scalarNode('no_data_message')->defaultValue('No data')->end()
                 ->scalarNode('no_result_message')->defaultValue('No result')->end()
                 ->scalarNode('actions_columns_size')->defaultValue(-1)->end()
@@ -49,7 +50,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
              ->end()
-                
+
         ;
         return $treeBuilder;
     }
