@@ -35,7 +35,8 @@ $source->manipulateRow(
     function ($row)
     {
         if ($row->getField('enabled') == '1') {
-            $row->setColor('#00ff00');
+            $row->setClass('border-enabled');  // add a css class to the <tr> tag
+            $row->setColor('#00ff00');  // set background-color as inline style
         }
         
         // Don't show the row if the price is greater than 10

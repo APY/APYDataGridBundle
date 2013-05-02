@@ -46,13 +46,18 @@ class Columns implements \IteratorAggregate, \Countable
     {
         $column->setSecurityContext($this->securityContext);
 
-        if ($position > 0) {
-            $position--;
+        if ($position == 0) {
+            $this->columns[] = $column;
+        } else {
+            if ($position > 0) {
+                $position--;
+            } else {
+                $position = max(0, count($this->columns) + $position);
+            }
+
             $head = array_slice($this->columns, 0, $position);
             $tail = array_slice($this->columns, $position);
             $this->columns = array_merge($head, array($column), $tail);
-        } else {
-            $this->columns[] = $column;
         }
 
         return $this;

@@ -134,6 +134,14 @@
                 <source>No result</source>
                 <target>Nenhum resultado</target>
             </trans-unit>
+            <trans-unit id="47">
+                <source>Do you want to %title% this row?</source>
+                <target>Deseja realmente %title% esta linha?</target>
+            </trans-unit>
+            <trans-unit id="48">
+                <source>No data</source>
+                <target>Nenhum dado</target>
+            </trans-unit>
 
     <!-- with symbols -->
             <!--trans-unit id="34">

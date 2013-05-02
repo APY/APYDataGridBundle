@@ -15,6 +15,7 @@ namespace APY\DataGridBundle\Grid;
 class Row
 {
     protected $fields;
+    protected $class;
     protected $color;
     protected $legend;
     protected $primaryField;
@@ -35,6 +36,18 @@ class Row
     public function getField($rowId)
     {
         return isset($this->fields[$rowId]) ? $this->fields[$rowId] : '';
+    }
+
+    public function setClass($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    public function getClass()
+    {
+        return $this->class;
     }
 
     public function setColor($color)

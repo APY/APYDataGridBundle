@@ -60,6 +60,7 @@ class Product
 |selectFrom|string|query|query, source, values|How to populate the selector of the select filters of the column.|
 |values|array|_none_||For select filters or replace values in the grid|
 |searchOnClick|boolean|false|true or false|Sets the possibility to perform a search on the clicked cell (filterable has to be true)|
+|safe|string or false|html|false<br />or<br />see [Escape filters](http://twig.sensiolabs.org/doc/filters/escape.html)|Sets the escape filter|
 
 **Note 1**: Every attribute have a setter and a getter method.  
 **Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.  

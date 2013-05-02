@@ -106,6 +106,7 @@ class DataGridExtension extends \Twig_Extension
             'grid_html'         => new \Twig_Function_Method($this, 'getGridHtml', array('is_safe' => array('html'))),
             'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl', array('is_safe' => array('html'))),
             'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter', array('is_safe' => array('html'))),
+            'grid_column_operator' => new \Twig_Function_Method($this, 'getGridColumnOperator', array('is_safe' => array('html'))),
             'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
             'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
             'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
@@ -220,6 +221,18 @@ class DataGridExtension extends \Twig_Extension
         }
 
         return '';
+    }
+    /**
+     * Column Operator Drawing override
+     *
+     * @param \APY\DataGridBundle\Grid\Column\Column $column
+     * @param \APY\DataGridBundle\Grid\Grid $grid
+     *
+     * @return string
+     */
+    public function getGridColumnOperator($column, $grid, $operator, $submitOnChange = true)
+    {
+        return $this->renderBlock('grid_column_operator', array('grid' => $grid, 'column' => $column, 'submitOnChange' => $submitOnChange, 'op' => $operator));
     }
 
     /**

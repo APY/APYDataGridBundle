@@ -80,12 +80,14 @@ class ArrayColumn extends Column
         }
 
         $return = array();
-        foreach ($values as $key => $value) {
-            if (!is_array($value) && isset($this->values[(string)$value])) {
-                $value = $this->values[$value];
+        if(is_array($values) || $values instanceof \Traversable) {
+            foreach ($values as $key => $value) {
+                if (!is_array($value) && isset($this->values[(string)$value])) {
+                    $value = $this->values[$value];
+                }
+                
+                $return[$key] = $value;
             }
-
-            $return[$key] = $value;
         }
 
         return $return;

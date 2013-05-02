@@ -19,6 +19,7 @@ class Annotation implements DriverInterface
 {
     protected $columns;
     protected $filterable;
+    protected $sortable;
     protected $fields;
     protected $loaded;
     protected $groupBy;
@@ -28,7 +29,7 @@ class Annotation implements DriverInterface
     public function __construct($reader)
     {
         $this->reader = $reader;
-        $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = array();
+        $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = $this->sortable = array();
     }
 
     public function getClassColumns($class, $group = 'default')
@@ -75,8 +76,13 @@ class Annotation implements DriverInterface
         } else {
             foreach ($this->columns[$className][$group] as $columnId) {
                 // Ignore mapped fields
-                if (!isset($this->fields[$className][$group][$columnId]['filterable']) && strpos($columnId, '.') === false) {
-                    $this->fields[$className][$group][$columnId]['filterable'] = $this->filterable[$className][$group];
+                if (strpos($columnId, '.') === false) {
+                    if (!isset($this->fields[$className][$group][$columnId]['filterable'])) {
+                        $this->fields[$className][$group][$columnId]['filterable'] = $this->filterable[$className][$group];
+                    }
+                    if (!isset($this->fields[$className][$group][$columnId]['sortable'])) {
+                        $this->fields[$className][$group][$columnId]['sortable'] = $this->sortable[$className][$group];
+                    }
                 }
             }
         }
@@ -123,6 +129,10 @@ class Annotation implements DriverInterface
                 $metadata['filterable'] = isset($this->filterable[$className][$group]) ? $this->filterable[$className][$group] : true;
             }
 
+            if (!isset($metadata['sortable'])) {
+                $metadata['sortable'] = isset($this->sortable[$className][$group]) ? $this->sortable[$className][$group] : true;
+            }
+
             if (!isset($metadata['title'])) {
                 $metadata['title'] = $metadata['id'];
             }
@@ -141,6 +151,7 @@ class Annotation implements DriverInterface
             foreach ($class->getGroups() as $group) {
                 $this->columns[$className][$group] = $class->getColumns();
                 $this->filterable[$className][$group] = $class->isFilterable();
+                $this->sortable[$className][$group] = $class->isSortable();
                 $this->groupBy[$className][$group] = $class->getGroupBy();
             }
         } elseif ($class instanceof Column) {

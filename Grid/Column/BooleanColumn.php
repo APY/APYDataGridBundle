@@ -40,6 +40,13 @@ class BooleanColumn extends Column
         return false;
     }
     
+    public function renderCell($value, $row, $router)
+    {
+        $value = parent::renderCell($value, $row, $router);
+
+        return $value ?: 'false';
+    }
+    
     public function getDisplayedValue($value)
     {
         return is_bool($value) ? ($value ? 1 : 0) : $value;

@@ -68,11 +68,11 @@ return $grid->getGridResponse();
 ...
 ```
 
-The Vector source treats this array and iterates the 10 first rows to guess the type of each columns.
-It uses the keys of your array to determine the name of the columns. In our case the columns will be: `id`, `publisher_id`, `title`, `authors`, `publication`, `createDate`, `pages` and `multilanguage`.
+The Vector source treats this array and iterates the 10 first rows to guess the type of each columns.  
+It uses the keys of your array to determine the name of the columns. In our case the columns will be: `id`, `publisher_id`, `title`, `authors`, `publication`, `createDate`, `pages` and `multilanguage`.  
 The columns can be filtered and ordered.
 
-**Note**: Each column have to be defined for each row.
+**Note**: Each column have to be defined for each row.  
 **Note²**: Operators `Equals` and `Contains` support regular expression.
 
 <a name="nodata"/>
@@ -103,8 +103,8 @@ $source = new Vector(array(), $columns);
 <a name="set_id"/>
 ## Set a primary field
 
-Vector will use the first "column" found as the Primary Field of your grid.
-In our case it will be the column named "id". If you are using action columns, they will use this primary field.
+Vector will use the first "column" found as the Primary Field of your grid.  
+In our case it will be the column named "id". If you are using action columns, they will use this primary field.  
 If you want to use a specific column or set columns as the primary field, use Vector::setId($id).
 
 In our example we could map our actions on the publisher_id.

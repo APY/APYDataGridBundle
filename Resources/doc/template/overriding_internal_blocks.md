@@ -5,12 +5,12 @@ Overriding internal blocks
 
 If you want to override blocks of the grid you can use a extended template of the grid template.
 
-```html
+```django
 <!-- MyProjectMyBundle::my_page.html.twig -->
 {{ grid(data, 'MyProjectMyBundle::my_page_grid.html.twig') }}
 ```
 
-```html
+```django
 <!-- MyProjectMyBundle::my_page_grid.html.twig -->
 {% extends 'APYDataGridBundle::blocks.html.twig' %}
 
@@ -26,7 +26,7 @@ If you want to override blocks of the grid you can use a extended template of th
 If you want to override blocks inside the current template you can use the `_self` parameter in grid template definition.  
 Current template will automatically extended from the base block template (APYDataGridBundle::blocks.html.twig)
 
-```html
+```django
 <!-- MyProjectMyBundle::my_grid.html.twig -->
 {% extends 'MyProjectMyBundle::layout.html.twig' %}
 
@@ -40,8 +40,8 @@ Current template will automatically extended from the base block template (APYDa
     {{ column.id }}
 {% endblock grid_column_address_filter %}
 ```
-
-**Note**: Blocks have to be define after the call of the grid and outside others blocks.
+**Note**: This trick works only with extended templates. Otherwises, blocks will be displayed twice.  
+**Note²**: Blocks have to be define after the call of the grid and outside others blocks.
 
 ## Blocks list
 

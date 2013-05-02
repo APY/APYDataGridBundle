@@ -19,9 +19,9 @@ function {{ grid.hash }}_goto(url, data, type)
 {% endblock grid_scripts_goto %}
 
 {% block grid_scripts_submit_form %}
-function {{ grid.hash }}_submitForm(event, form, force)
+function {{ grid.hash }}_submitForm(event, form)
 {
-    if (force || event.which == 13) {
+    if (event.type != 'keypress' || event.which == 13) {
         var data = '';
         $('.grid-filter-operator select, .grid-filter-input-query-from, .grid-filter-input-query-to, .grid-filter-select-query-from, .grid-filter-select-query-to', form).each(function () {
             if ($(this).is(':disabled') == false) {
@@ -81,7 +81,7 @@ $(function () {
 
     // Grid_search submit (load only one time)
     $('#{{ grid.hash }}_search').one('submit', function (event) {
-        {{ grid.hash }}_submitForm(event, this, true);
+        {{ grid.hash }}_submitForm(event, this);
 
         return false;
     });
