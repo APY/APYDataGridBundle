@@ -525,7 +525,9 @@ abstract class Column
 
     public function setInputType($inputType)
     {
-        return $this->inputType = $inputType;
+        $this->inputType = $inputType;
+        
+        return $this;
     }
 
     public function getInputType()
