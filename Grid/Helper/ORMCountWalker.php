@@ -64,10 +64,13 @@ class ORMCountWalker extends TreeWalkerAdapter
         );
         $pathExpression->type = PathExpression::TYPE_STATE_FIELD;
 
+
         // Remove the variables which are not used by other clauses
         foreach ($AST->selectClause->selectExpressions as $key => $selectExpressions) {
             if ($selectExpressions->fieldIdentificationVariable == null) {
                 unset($AST->selectClause->selectExpressions[$key]);
+            } else {
+              $groupByClause[] = $selectExpressions->expression;
             }
         }
 
@@ -78,6 +81,9 @@ class ORMCountWalker extends TreeWalkerAdapter
                 new AggregateExpression('count', $pathExpression, $distinct), null
             )
         );
+        
+        $groupByClause[] = $pathExpression;
+        $AST->groupByClause = new \Doctrine\ORM\Query\AST\GroupByClause($groupByClause);
 
         // ORDER BY is not needed, only increases query execution through unnecessary sorting.
         $AST->orderByClause = null;
