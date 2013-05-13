@@ -63,13 +63,13 @@ class Annotation implements DriverInterface
             $reflectionCollection[] = $reflection;
         }
 
-        foreach (array_reverse($reflectionCollection) as $reflection) {
+        while (!empty($reflectionCollection)) {
+            $reflection = array_pop($reflectionCollection);
+
             foreach ($this->reader->getClassAnnotations($reflection) as $class) {
                 $this->getMetadataFromClass($className, $class);
             }
-        }
 
-        foreach (array_reverse($reflectionCollection) as $reflection) {
             foreach ($reflection->getProperties() as $property) {
                 $this->fields[$className][$group][$property->getName()] = array();
 
