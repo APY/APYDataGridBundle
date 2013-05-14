@@ -55,19 +55,28 @@ class Annotation implements DriverInterface
     {
         if (isset($this->loaded[$className][$group])) return;
 
-        $reflection = new \ReflectionClass($className);
+        $reflectionCollection = array();
         $properties = array();
 
-        foreach ($this->reader->getClassAnnotations($reflection) as $class) {
-            $this->getMetadataFromClass($className, $class);
+        $reflectionCollection[] = $reflection = new \ReflectionClass($className);
+        while (false !== $reflection = $reflection->getParentClass()) {
+            $reflectionCollection[] = $reflection;
         }
 
-        foreach ($reflection->getProperties() as $property) {
-            $this->fields[$className][$group][$property->getName()] = array();
+        while (!empty($reflectionCollection)) {
+            $reflection = array_pop($reflectionCollection);
 
-            foreach ($this->reader->getPropertyAnnotations($property) as $class) {
-                $this->getMetadataFromClassProperty($className, $class, $property->getName(), $group);
-                $properties[] = $property->getName();
+            foreach ($this->reader->getClassAnnotations($reflection) as $class) {
+                $this->getMetadataFromClass($className, $class);
+            }
+
+            foreach ($reflection->getProperties() as $property) {
+                $this->fields[$className][$group][$property->getName()] = array();
+
+                foreach ($this->reader->getPropertyAnnotations($property) as $class) {
+                    $this->getMetadataFromClassProperty($className, $class, $property->getName(), $group);
+                    $properties[] = $property->getName();
+                }
             }
         }
 
