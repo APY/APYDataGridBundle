@@ -82,8 +82,18 @@ class Entity extends Source
      */
     protected $hints;
 
+    /**
+     * The table alias that will be used in the query to fetch actual data
+     * @var string
+     */
+    protected $tableAlias;
+
+    /**
+     * Legacy way of accessing the default alias (before it became possible to change it)
+     * Please use $entity->getTableAlias() now instead of $entity::TABLE_ALIAS
+     * @deprecated
+     */
     const TABLE_ALIAS = '_a';
-    const COUNT_ALIAS = '__count';
 
     /**
      * @param string $entityName e.g Cms:Page
@@ -96,6 +106,7 @@ class Entity extends Source
         $this->joins = array();
         $this->group = $group;
         $this->hints = array();
+        $this->setTableAlias(self::TABLE_ALIAS);
     }
 
     public function initialise($container)
@@ -130,7 +141,7 @@ class Entity extends Source
             $elements = explode('.', $name);
             while ($element = array_shift($elements)) {
                 if (count($elements) > 0) {
-                    $parent = ($previousParent == '') ? self::TABLE_ALIAS : $previousParent;
+                    $parent = ($previousParent == '') ? $this->getTableAlias() : $previousParent;
                     $previousParent .= '_' . $element;
                     $this->joins[$previousParent] = $parent . '.' . $element;
                 } else {
@@ -140,10 +151,10 @@ class Entity extends Source
 
             $alias = str_replace('.', '::', $column->getId());
         } elseif (strpos($name, ':') !== false) {
-            $previousParent = self::TABLE_ALIAS;
+            $previousParent = $this->getTableAlias();
             $alias = $name;
         } else {
-            return self::TABLE_ALIAS.'.'.$name;
+            return $this->getTableAlias().'.'.$name;
         }
 
         // Aggregate dql functions
@@ -200,7 +211,7 @@ class Entity extends Source
                 $fieldName = substr($fieldName, 0, $pos);
             }
 
-            return self::TABLE_ALIAS.'.'.$fieldName;
+            return $this->getTableAlias().'.'.$fieldName;
         }
 
         return $name;
@@ -251,7 +262,7 @@ class Entity extends Source
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
         $this->query = $this->manager->createQueryBuilder($this->class);
-        $this->query->from($this->class, self::TABLE_ALIAS);
+        $this->query->from($this->class, $this->getTableAlias());
         $this->querySelectfromSource = clone $this->query;
 
         $bindIndex = 123;
@@ -569,4 +580,22 @@ class Entity extends Source
     {
         return $this->entityName;
     }
+
+    /**
+     * @param string $tableAlias
+     */
+    public function setTableAlias($tableAlias)
+    {
+        $this->tableAlias = $tableAlias;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTableAlias()
+    {
+        return $this->tableAlias;
+    }
+
+
 }
