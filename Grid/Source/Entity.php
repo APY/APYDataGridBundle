@@ -17,6 +17,7 @@ use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Helper\ORMCountWalker;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
@@ -81,6 +82,16 @@ class Entity extends Source
      * @var array
      */
     protected $hints;
+
+    /**
+     * The QueryBuilder that will be used to start generating query for the DataGrid
+     * You can override this if the querybuilder is constructed in a business-specific way
+     * by an external controller/service/repository and you wish to re-use it for the datagrid.
+     * Typical use-case involves an external repository creating complex default restriction (i.e. multi-tenancy etc)
+     * which then will be expanded on by the datagrid
+     * @var QueryBuilder
+     */
+    protected $startingQb;
 
     /**
      * The table alias that will be used in the query to fetch actual data
@@ -253,6 +264,42 @@ class Entity extends Source
     }
 
     /**
+     * Sets the initial QueryBuilder for this DataGrid
+     * @param QueryBuilder $queryBuilder
+     */
+    public function setStartingQueryBuilder( QueryBuilder $queryBuilder )
+    {
+        $this->startingQb = $queryBuilder;
+
+        //Try to guess the new root alias and apply it to our queries
+        //as the external querybuilder almost certainly is not used our default alias
+        $externalTableAliases = $this->startingQb->getRootAliases();
+        if( count($externalTableAliases) )
+        {
+            $this->setTableAlias( $externalTableAliases[0] );
+        }
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    public function getStartingQueryBuilder()
+    {
+        //If a custom QB has been provided, use that
+        //Otherwise create our own basic one
+        if($this->startingQb instanceof QueryBuilder)
+        {
+            $qb = $this->startingQb;
+        }
+        else
+        {
+            $qb = $this->manager->createQueryBuilder($this->class);
+            $qb->from($this->class, $this->getTableAlias());
+        }
+
+        return $qb;
+    }
+    /**
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
      * @param int $page Page Number
      * @param int $limit Rows Per Page
@@ -261,8 +308,7 @@ class Entity extends Source
      */
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
-        $this->query = $this->manager->createQueryBuilder($this->class);
-        $this->query->from($this->class, $this->getTableAlias());
+        $this->query = $this->getStartingQueryBuilder();
         $this->querySelectfromSource = clone $this->query;
 
         $bindIndex = 123;
@@ -317,7 +363,9 @@ class Entity extends Source
         }
 
         if ($where->count()> 0) {
-            $this->query->where($where);
+            //Using ->andWhere here to make sure we preserve any other where clauses present in the query builder
+            //the other where clauses may have come from an external builder
+            $this->query->andWhere($where);
         }
 
         foreach ($this->joins as $alias => $field) {
@@ -358,6 +406,11 @@ class Entity extends Source
         }
         $items = $query->getResult();
 
+        return $this->hydrateRowsWithData( $items, $serializeColumns );
+    }
+
+    function hydrateRowsWithData( $items, $serializeColumns )
+    {
         // hydrate result
         $result = new Rows();
 
