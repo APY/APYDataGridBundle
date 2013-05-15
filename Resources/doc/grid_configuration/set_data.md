@@ -27,6 +27,7 @@ public function displayUserBookmarksAction()
 
     // Add a where condition to the query to get only bookmarks of the user
     $tableAlias = $source->getTableAlias();
+
     $source->manipulateQuery(function ($query) use ($tableAlias, $user) {
         $query->where($tableAlias . '.member = '.$user->getId());
     });
