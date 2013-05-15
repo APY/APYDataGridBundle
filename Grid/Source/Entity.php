@@ -270,7 +270,7 @@ class Entity extends Source
      */
     public function setStartingQueryBuilder(QueryBuilder $queryBuilder)
     {
-        $this->startingQb = $queryBuilder;
+        $this->startingQb = clone $queryBuilder;
 
         //Try to guess the new root alias and apply it to our queries+        //as the external querybuilder almost certainly is not used our default alias
         $externalTableAliases = $this->startingQb->getRootAliases();
@@ -362,7 +362,7 @@ class Entity extends Source
         if ($where->count()> 0) {
             //Using ->andWhere here to make sure we preserve any other where clauses present in the query builder
             //the other where clauses may have come from an external builder
-            $this->query->addWhere($where);
+            $this->query->andWhere($where);
         }
 
         foreach ($this->joins as $alias => $field) {
