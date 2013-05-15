@@ -406,11 +406,6 @@ class Entity extends Source
         }
         $items = $query->getResult();
 
-        return $this->hydrateRowsWithData( $items, $serializeColumns );
-    }
-
-    function hydrateRowsWithData( $items, $serializeColumns )
-    {
         // hydrate result
         $result = new Rows();
 
