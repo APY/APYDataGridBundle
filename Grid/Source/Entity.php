@@ -91,7 +91,7 @@ class Entity extends Source
      * which then will be expanded on by the datagrid
      * @var QueryBuilder
      */
-    protected $startingQb;
+    protected $queryBuilder;
 
 
     /**
@@ -268,12 +268,12 @@ class Entity extends Source
      * Sets the initial QueryBuilder for this DataGrid
      * @param QueryBuilder $queryBuilder
      */
-    public function setStartingQueryBuilder(QueryBuilder $queryBuilder)
+    public function initQueryBuilder(QueryBuilder $queryBuilder)
     {
-        $this->startingQb = clone $queryBuilder;
+        $this->queryBuilder = clone $queryBuilder;
 
         //Try to guess the new root alias and apply it to our queries+        //as the external querybuilder almost certainly is not used our default alias
-        $externalTableAliases = $this->startingQb->getRootAliases();
+        $externalTableAliases = $this->queryBuilder->getRootAliases();
         if (count($externalTableAliases)) {
             $this->setTableAlias($externalTableAliases[0]);
         }
@@ -282,12 +282,12 @@ class Entity extends Source
     /**
      * @return QueryBuilder
      */
-    public function getStartingQueryBuilder()
+    protected function getQueryBuilder()
     {
         //If a custom QB has been provided, use that
         //Otherwise create our own basic one
-        if ($this->startingQb instanceof QueryBuilder) {
-            $qb = $this->startingQb;
+        if ($this->queryBuilder instanceof QueryBuilder) {
+            $qb = $this->queryBuilder;
         } else {
             $qb = $this->manager->createQueryBuilder($this->class);
             $qb->from($this->class, $this->getTableAlias());
@@ -305,7 +305,7 @@ class Entity extends Source
      */
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
-        $this->query = $this->getStartingQueryBuilder();
+        $this->query = $this->getQueryBuilder();
         $this->querySelectfromSource = clone $this->query;
 
         $bindIndex = 123;
