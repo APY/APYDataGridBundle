@@ -52,7 +52,7 @@ If you want to pass some context parameters:
 ```php
 <?php
 ...
-$tableAlias = $source::TABLE_ALIAS;
+$tableAlias = $source->getTableAlias();
 
 $source->manipulateQuery(
     function ($query) use ($tableAlias)
