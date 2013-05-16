@@ -66,11 +66,11 @@ class ORMCountWalker extends TreeWalkerAdapter
 
 
         // Remove the variables which are not used by other clauses
-        foreach ($AST->selectClause->selectExpressions as $key => $selectExpressions) {
-            if ($selectExpressions->fieldIdentificationVariable == null) {
+        foreach ($AST->selectClause->selectExpressions as $key => $selectExpression) {
+            if ($selectExpression->fieldIdentificationVariable == null) {
                 unset($AST->selectClause->selectExpressions[$key]);
-            } else {
-              $groupByClause[] = $selectExpressions->expression;
+            } elseif ($selectExpression->expression instanceof PathExpression) {
+                $groupByClause[] = $selectExpression->expression;
             }
         }
 
