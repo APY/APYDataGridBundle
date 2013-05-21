@@ -54,7 +54,7 @@ $ git submodule add git://github.com/Abhoryo/APYDataGridBundle.git vendor/bundle
 $ git submodule update --init
 ```
 
-### Step 2: Configure the Autoloader
+### Step 2: Configure the Autoloader (not needed for composer)
 
 Add the `APY` namespace to your autoloader:
 
