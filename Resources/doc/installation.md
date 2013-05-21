@@ -9,6 +9,26 @@ Ultimately, the DataGridBundle files should be downloaded to the
 This can be done in several ways, depending on your preference. The first
 method is the standard Symfony2 method.
 
+**Using Composer**
+
+Add DataGridBundle in your composer.json:
+
+```js
+{
+    "require": {
+        "apy/datagrid-bundle": "dev-master"
+    }
+}
+```
+
+Now tell composer to download the bundle by running the command:
+
+``` bash
+$ php composer.phar update apy/datagrid-bundle
+```
+
+Composer will install the bundle to your project's `vendor/apy` directory.
+
 **Using the vendors script**
 
 Add the following lines in your `deps` file:
