@@ -87,6 +87,7 @@ abstract class Column
     protected $searchOnClick = false;
     protected $safe;
     protected $separator;
+    protected $joinType;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -117,6 +118,7 @@ abstract class Column
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
         $this->setOrder($this->getParam('order'));
+        $this->setJoinType($this->getParam('joinType'));
         $this->setFilterType($this->getParam('filter', 'input'));
         $this->setSelectFrom($this->getParam('selectFrom', 'query'));
         $this->setValues($this->getParam('values', array()));
@@ -835,5 +837,15 @@ abstract class Column
     public function getSeparator()
     {
         return $this->separator;
+    }
+
+    public function setJoinType($type)
+    {
+        $this->joinType = $type;
+    }
+
+    public function getJoinType()
+    {
+        return $this->joinType;
     }
 }

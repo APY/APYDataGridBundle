@@ -155,7 +155,7 @@ class Entity extends Source
                 if (count($elements) > 0) {
                     $parent = ($previousParent == '') ? $this->getTableAlias() : $previousParent;
                     $previousParent .= '_' . $element;
-                    $this->joins[$previousParent] = $parent . '.' . $element;
+                    $this->joins[$previousParent] = array('field' => $parent . '.' . $element, 'type' => $column->getJoinType());
                 } else {
                     $name = $previousParent . '.' . $element;
                 }
@@ -366,8 +366,14 @@ class Entity extends Source
         }
 
         foreach ($this->joins as $alias => $field) {
-            $this->query->leftJoin($field, $alias);
-            $this->querySelectfromSource->leftJoin($field, $alias);
+            if(null !== $field['type'] && strtolower($field['type']) === 'inner') {
+                $join = 'join';
+            } else {
+                $join = 'leftJoin';
+            }
+
+            $this->query->$join($field['field'], $alias);
+            $this->querySelectfromSource->$join($field['field'], $alias);
         }
 
         if ($page > 0) {
