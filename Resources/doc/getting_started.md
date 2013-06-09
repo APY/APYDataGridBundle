@@ -52,7 +52,7 @@ class DefaultController extends Controller
 // MyProject\MyBundle\DefaultController.php
 namespace MyProject\MyBundle\Controller;
 
-use APY\DataGridBundle\Grid\Source\Document;
+use APY\DataGridBundle\Grid\Source\Vector;
 
 class DefaultController extends Controller
 {
