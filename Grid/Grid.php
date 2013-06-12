@@ -738,6 +738,29 @@ class Grid
                 $column->setFilterable(false);
             }
 
+            // Convert simple value
+            if (is_array($value) && is_string(key($value))){
+                $value = $value;
+            } else {
+                $value = array('from' => $value);
+            }
+
+            // Convert boolean value
+            if (isset($value['from']) && is_bool($value['from'])) {
+                $value['from'] = $value['from'] ? '1' : '0';
+            }
+
+            // Convert simple value with select filter
+            if ($column->getFilterType() === 'select') {
+                if (isset($value['from']) && !is_array($value['from'])) {
+                    $value['from'] = array($value['from']);
+                }
+
+                if (isset($value['to']) && !is_array($value['to'])) {
+                    $value['to'] = array($value['to']);
+                }
+            }
+
             // Store in the session
             $this->set($columnId, $value);
         }
@@ -1289,17 +1312,7 @@ class Grid
      */
     protected function setFilters(array $filters, $permanent = true)
     {
-        foreach ($filters as $columnId => $ColumnValue) {
-            if (is_array($ColumnValue)){
-                $value = $ColumnValue;
-            } else {
-                $value = array('from' => $ColumnValue);
-            }
-
-            if (isset($value['from']) && is_bool($value['from'])) {
-                $value['from'] = $value['from'] ? '1' : '0';
-            }
-
+        foreach ($filters as $columnId => $value) {
             if ($permanent) {
                 $this->permanentFilters[$columnId] = $value;
             } else {
