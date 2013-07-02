@@ -64,7 +64,7 @@
             </trans-unit>
             <trans-unit id="16">
                 <source>%count% Results, </source>
-                <target>{0,1}%count% Resultado, |[2, Inf]%count% Resultados, </target>
+                <target>%count% Resultado, |%count% Resultados, </target>
             </trans-unit>
             <trans-unit id="17">
                 <source>Page</source>

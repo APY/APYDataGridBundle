@@ -112,7 +112,7 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>{0}%count% Registros, |{1}%count% Registro, |]1, Inf]%count% Registros, </target>
+                <target>%count% Registro, |%count% Registros, </target>
             </trans-unit>
 
 

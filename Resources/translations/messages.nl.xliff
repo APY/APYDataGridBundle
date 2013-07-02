@@ -64,7 +64,7 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>{0,1}%count% rijen, |[2, Inf]%count% rijen, </target>
+                <target>%count% rijen, |%count% rijen, </target>
             </trans-unit>
 
     <!-- with symbols -->
