@@ -112,7 +112,7 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>{0}%count% Записей, |{1}%count% Запись, |{2,3,4}%count% Записи, |[5, Inf]%count% Записей, </target>
+                <target>%count% Запись, |%count% Записи, |%count% Записей, </target>
             </trans-unit>
             <trans-unit id="29">
                 <source>No result</source>
