@@ -30,7 +30,7 @@ $grid->addRowAction($rowAction);
 **Note**: Every parameter have a setter and a getter method. and others options can be set too.
 
 
-## Additionnal parameters
+## Additional parameters
 
 These parameters have a setter and a getter method.
 
