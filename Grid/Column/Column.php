@@ -88,6 +88,7 @@ abstract class Column
     protected $safe;
     protected $separator;
     protected $joinType;
+    protected $export;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -146,6 +147,7 @@ abstract class Column
         $this->setSearchOnClick($this->getParam('searchOnClick', false));
         $this->setSafe($this->getParam('safe', 'html'));
         $this->setSeparator($this->getParam('separator', "<br />"));
+        $this->setExport($this->getParam('export'));
     }
 
     protected function getParam($id, $default = null)
@@ -262,13 +264,15 @@ abstract class Column
      *
      * @return bool return true when column is visible
      */
-    public function isVisible()
+    public function isVisible($isExported = false)
     {
-        if ($this->visible && $this->securityContext !== null && $this->getRole() != null) {
+        $visible = $isExported && $this->export !== null ? $this->export : $this->visible;
+
+        if ($visible && $this->securityContext !== null && $this->getRole() != null) {
             return $this->securityContext->isGranted($this->getRole());
         }
 
-        return $this->visible;
+        return $visible;
     }
 
     /**
@@ -528,7 +532,7 @@ abstract class Column
     public function setInputType($inputType)
     {
         $this->inputType = $inputType;
-        
+
         return $this;
     }
 
@@ -826,7 +830,7 @@ abstract class Column
     {
         return $this->safe;
     }
-    
+
     public function setSeparator($separator)
     {
         $this->separator = $separator;
@@ -842,10 +846,24 @@ abstract class Column
     public function setJoinType($type)
     {
         $this->joinType = $type;
+
+        return $this;
     }
 
     public function getJoinType()
     {
         return $this->joinType;
+    }
+
+    public function setExport($export)
+    {
+        $this->export = $export;
+
+        return $this;
+    }
+
+    public function getExport()
+    {
+        return $this->export;
     }
 }

@@ -74,9 +74,6 @@ class Product
 }
 ```
 
-**Important**: With mapped fields, the guess typing is not implemented, you need to explicitly define the type if it's not a text field.
-
-
 A column on a mapped field has the same attributes of a normal field and have two another attribute: `field` and `joinType`
 
 
