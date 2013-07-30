@@ -281,13 +281,14 @@ class RowAction implements RowActionInterface
     /**
      * Add attribute
      *
-     * @param array $attribute
+     * @param string $name
+     * @param string $value
      *
      * @return self
      */
-    public function addAttribute($attribute)
+    public function addAttribute($name, $value)
     {
-        $this->attributes[] = $attribute;
+        $this->attributes[$name] = $value;
 
         return $this;
     }
