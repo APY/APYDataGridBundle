@@ -114,6 +114,34 @@
                 <source>%count% Results, </source>
                 <target>%count% Résultat, |%count% Résultats, </target>
             </trans-unit>
+            <trans-unit id="29">
+                <source>Export</source>
+                <target>Exporter</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>Tweaks</source>
+                <target>todo_trans_tweaks</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>Search</source>
+                <target>Rechercher</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>Go</source>
+                <target>Rechercher</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>Reset</source>
+                <target>Réinitialiser</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>Order by</source>
+                <target>Classer par</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>Selected _s_ rows</source>
+                <target>todo_trans_selected</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
