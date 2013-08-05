@@ -31,7 +31,7 @@ class ExcelExport extends Export
         if (isset($data['titles'])) {
             $this->content .= '<tr>';
             foreach ($data['titles'] as $title) {
-                $this->content .= "<th>$title</th>";
+                $this->content .= sprintf("<th>%s</th>", htmlentities($title, ENT_QUOTES));
             }
             $this->content .= '</tr>';
         }
@@ -39,7 +39,7 @@ class ExcelExport extends Export
         foreach ($data['rows'] as $row) {
             $this->content .= '<tr>';
             foreach ($row as $cell) {
-                $this->content .= "<td>$cell</td>";
+                $this->content .= sprintf("<td>%s</td>", htmlentities($cell, ENT_QUOTES));
             }
             $this->content .= '</tr>';
         }
