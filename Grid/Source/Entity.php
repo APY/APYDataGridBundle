@@ -415,7 +415,17 @@ class Entity extends Source
         foreach ($items as $item) {
             $row = new Row();
 
+            $r = new \ReflectionClass($this -> class);
+            $entity = $r -> newInstance();  
+
             foreach ($item as $key => $value) {
+            	$methodSetName = 'set' . ucfirst($key);
+            	
+            	if($r -> hasMethod($methodSetName)){
+            		$parentFooReflection = $r -> getMethod($methodSetName);            		
+            		$parentFooReflection->invokeArgs($entity, array($value));
+            	}
+            	
                 $key = str_replace('::', '.', $key);
 
                 if (in_array($key, $serializeColumns) && is_string($value)) {
@@ -423,7 +433,9 @@ class Entity extends Source
                 }
 
                 $row->setField($key, $value);
-            }
+            }          
+            
+            $row -> setEntity($entity);
 
             //call overridden prepareRow or associated closure
             if (($modifiedRow = $this->prepareRow($row)) != null) {
