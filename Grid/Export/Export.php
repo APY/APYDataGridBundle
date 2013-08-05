@@ -453,7 +453,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $value = strip_tags($value);
 
         // Convert Special Characters in HTML
-        $value = html_entity_decode($value);
+        $value = html_entity_decode($value, ENT_QUOTES);
 
         // Trim
         $value = trim($value);
