@@ -428,10 +428,10 @@ class Entity extends Source
                 //Looking setter method for the field ($key) to fill the object instantiated
             	if($r -> hasMethod($methodSetName)){
 			//Retrieving the setter method (if any) by reflection
-            		$parentFooReflection = $r -> getMethod($methodSetName);
+            		$methodSetterReflection = $r -> getMethod($methodSetName);
 
 			//Running the method with the parameter value to populate the object with the field            		
-            		$parentFooReflection->invokeArgs($entity, array($value));
+            		$methodSetterReflection->invokeArgs($entity, array($value));
             	}
             	
                 $key = str_replace('::', '.', $key);
