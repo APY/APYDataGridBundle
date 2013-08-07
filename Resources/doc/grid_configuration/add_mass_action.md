@@ -23,7 +23,7 @@ $grid->addMassAction($massAction);
 |parameter|Type|Default value|Possible values|Description|
 |:--:|:--|:--|:--|:--|
 |title|string|||Title of the mass action|
-|callback|[\Closure](http://php.net/manual/en/functions.anonymous.php) or [callable](http://php.net/manual/en/language.types.callable.php)|null||Callback to the mass action|
+|callback|[\Closure](http://php.net/manual/en/functions.anonymous.php) or [callable](http://php.net/manual/en/language.types.callable.php) or a controller |null||Callback to the mass action|
 |confirm|Boolean|false|true or false|Set to true to have a confirm message on select. (Not implemented)|
 |parameters|array|array()||Add parameters for the mass action render|
 |role|mixed|null|A symfony role|Don't add this mass action if the access isn't granted for the defined role(s)|
@@ -48,5 +48,10 @@ $grid->addMassAction($yourMassAction);
 $yourMassAction2 = new MassAction('Action 2', array($obj,'myMethod'));
 
 $grid->addMassAction($yourMassAction2);
+
+// Controller call (Forwarding)
+$yourMassAction3 = new MassAction('Action 3', 'AcmeHelloBundle:Hello:fancy');
+
+$grid->addMassAction($yourMassAction3);
 ...
 ```
