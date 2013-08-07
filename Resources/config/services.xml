@@ -45,11 +45,14 @@
         <service id="grid.metadata.driver.annotation" class="APY\DataGridBundle\Grid\Mapping\Driver\Annotation">
             <argument type="service" id="annotation_reader" />
         </service>
+        <service id="grid.metadata.driver.yaml" class="APY\DataGridBundle\Grid\Mapping\Driver\Yaml">
+        </service>
 
         <service id="grid.mapping.manager" class="APY\DataGridBundle\Grid\Mapping\Metadata\Manager">
             <argument type="service" id="form.factory"/>
             <call method="addDriver">
-                <argument type="service" id="grid.metadata.driver.annotation" />
+                <!--<argument type="service" id="grid.metadata.driver.annotation" />-->
+                <argument type="service" id="grid.metadata.driver.yaml" />
                 <argument>1</argument>
             </call>
         </service>
