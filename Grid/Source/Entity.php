@@ -416,19 +416,19 @@ class Entity extends Source
             $row = new Row();
 
 	    //Create class ReflectionClass to perform reflection 
-            $r = new \ReflectionClass($this -> class);
+            $r = new \ReflectionClass($this->class);
 
 	    //Instantiate object representing the row, of the entity used in the grid 
-            $entity = $r -> newInstance();  
+            $entity = $r->newInstance();  
 
             foreach ($item as $key => $value) {
 		//Calculating the name of the setter method for the field ($key)
             	$methodSetName = 'set' . ucfirst($key);
             	
                 //Looking setter method for the field ($key) to fill the object instantiated
-            	if($r -> hasMethod($methodSetName)){
+            	if($r->hasMethod($methodSetName)){
 			//Retrieving the setter method (if any) by reflection
-            		$methodSetterReflection = $r -> getMethod($methodSetName);
+            		$methodSetterReflection = $r->getMethod($methodSetName);
 
 			//Running the method with the parameter value to populate the object with the field            		
             		$methodSetterReflection->invokeArgs($entity, array($value));
@@ -444,7 +444,7 @@ class Entity extends Source
             }          
             
             //Setting the representative instantiated object row to row
-            $row -> setEntity($entity);
+            $row->setEntity($entity);
 
             //call overridden prepareRow or associated closure
             if (($modifiedRow = $this->prepareRow($row)) != null) {
