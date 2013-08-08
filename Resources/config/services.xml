@@ -46,6 +46,7 @@
             <argument type="service" id="annotation_reader" />
         </service>
         <service id="grid.metadata.driver.yaml" class="APY\DataGridBundle\Grid\Mapping\Driver\Yaml">
+            <argument type="service" id="kernel" />
         </service>
 
         <service id="grid.mapping.manager" class="APY\DataGridBundle\Grid\Mapping\Metadata\Manager">
