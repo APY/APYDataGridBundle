@@ -28,6 +28,7 @@ class Yaml implements DriverInterface
     protected $groupBy;
 
     protected $kernel;
+    
     /**
      * File extension
      * @var string
