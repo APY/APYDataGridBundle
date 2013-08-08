@@ -28,7 +28,7 @@ class Yaml implements DriverInterface
     protected $groupBy;
 
     protected $kernel;
-	/**
+    /**
      * File extension
      * @var string
      */
@@ -42,16 +42,16 @@ class Yaml implements DriverInterface
     
     public function getClassColumns($class, $group = 'default')
     {
-		$this->loadMetadataFromReader($class, $group);
+        $this->loadMetadataFromReader($class, $group);
 
-        return $this->columns[$class][$group];
+        return isset($this->columns[$class][$group]) ? $this->columns[$class][$group] : array();        
     }
 
     public function getFieldsMetadata($class, $group = 'default')
     {
         $this->loadMetadataFromReader($class, $group);
 
-        return $this->fields[$class][$group];
+        return isset($this->fields[$class][$group]) ? $this->fields[$class][$group] : array();
     }
 
     public function getGroupBy($class, $group = 'default')
@@ -63,22 +63,24 @@ class Yaml implements DriverInterface
     {
         if (isset($this->loaded[$className][$group])) return;
 
-    	$instance = new \ReflectionClass($className);
+        $instance = new \ReflectionClass($className);
         $content = $this->getYamlContent($instance, $group);
-
+        if (!$content) {
+            return;
+        }
         // TODO valider la présence de ces clés
         // Peut être en passant par un TreeBuilder ?
         $class = $instance->getName();
         if (!isset($this->columns[$class])) {
-        	$this->columns[$class] = array();
+            $this->columns[$class] = array();
         }
 
         $columns = $content[$class]["Source"]["columns"];
         foreach ($columns as $colName => $properties) {
-    		if (!isset($this->columns[$class][$group])) {
-    			$this->columns[$class][$group] = array();
-    		}
-    		$this->columns[$class][$group][] = $colName;
+            if (!isset($this->columns[$class][$group])) {
+                $this->columns[$class][$group] = array();
+            }
+            $this->columns[$class][$group][] = $colName;
         }
 
         $fields = $content[$class]["Columns"];
@@ -109,13 +111,16 @@ class Yaml implements DriverInterface
      * @return array the parsed YAML file
      */
     private function getYamlContent($instance, $group)
-    {   	
+    {       
         $yamlFile = $this->locateYamlFile($instance, $group);
-		
-		$yamlParser = new Parser();
-	    $content = $yamlParser->parse(file_get_contents($yamlFile));
+        $content = false;
 
-		return $content;
+        if ($yamlFile) {
+            $yamlParser = new Parser();
+            $content = $yamlParser->parse(file_get_contents($yamlFile));
+        }
+        
+        return $content;
     }
 
     /**
@@ -133,7 +138,13 @@ class Yaml implements DriverInterface
             $group,
             $this->_extension );
 
-        return $this->kernel->locateResource($fileToLocate);
+        try {
+            return $this->kernel->locateResource($fileToLocate);
+        }
+        catch (\Exception $e) {
+            // The exception is silent
+            return false;
+        }
     }
 
     /**
