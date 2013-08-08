@@ -1,0 +1,17 @@
+{{ entityClass }}:
+    Source:
+        columns:
+            {% spaceless %}
+            {% for column in columns %}{{ column.getName() }}: ~
+            {% endfor %}
+            {% endspaceless %}
+        
+        groupBy: ~
+        filterable: ~
+    Columns:
+        {% for column in columns %}{{ column.getName() }}:
+            filterable: true
+            visible: true
+            id: {{ column.getName() }}
+            title: {{ column.getName() }}
+        {% endfor %}
