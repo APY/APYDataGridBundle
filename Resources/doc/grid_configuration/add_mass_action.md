@@ -30,7 +30,10 @@ $grid->addMassAction($massAction);
 
 **Note**: Every parameter have a setter and a getter method. and others options can be set too.
 
-## Example
+## Examples
+
+### Callback and closure
+
 ```php
 <?php
 use APY\DataGridBundle\Grid\Action\MassAction;
@@ -49,9 +52,84 @@ $yourMassAction2 = new MassAction('Action 2', array($obj,'myMethod'));
 
 $grid->addMassAction($yourMassAction2);
 
-// Controller call (Forwarding)
-$yourMassAction3 = new MassAction('Action 3', 'AcmeHelloBundle:Hello:fancy');
+// Closure
+$yourMassAction3 = new MassAction('Action 3', function($ids, $selectAll, $session, $parameters) { ... });
 
 $grid->addMassAction($yourMassAction3);
 ...
+```
+
+```
+// Your static method (DefaultController)
+function myStaticMethod($primaryKeys, $allPrimaryKeys, $session, $params)
+{
+
+}
+```
+
+#### With additionals parameters
+
+```php
+<?php
+use APY\DataGridBundle\Grid\Action\MassAction;
+...
+$grid->setSource($source);
+
+// Static class method call
+$yourMassAction = new MassAction('Action 1', 'MyProject\MyBundle\Controller\DefaultController::myStaticMethod');
+
+$yourMassAction->addParameters(array('param1' => $var1, 'param2' => $var2));
+
+$grid->addMassAction($yourMassAction);
+...
+```
+
+```
+// Your static method (DefaultController)
+function myStaticMethod($primaryKeys, $allPrimaryKeys, $session, $params)
+{
+    $param1 = params['param1'];
+    $param2 = params['param2'];
+}
+```
+
+### Controller 
+
+```php
+<?php
+use APY\DataGridBundle\Grid\Action\MassAction;
+...
+$grid->setSource($source);
+
+$yourMassAction4 = new MassAction('Action 4', 'AcmeHelloBundle:Hello:fancy');
+
+$grid->addMassAction($yourMassAction4);
+...
+```
+
+```
+// Your action controller (HelloController)
+function fancyAction($primaryKeys, $allPrimaryKeys)
+{
+
+}
+```
+
+#### With additionals parameters
+
+```php
+$yourMassAction5 = new MassAction('Action 5', 'AcmeHelloBundle:Hello:fancy');
+
+$yourMassAction5->addParameters(array('param1' => $var1, 'param2' => $var2));
+
+$grid->addMassAction($yourMassAction5);
+...
+```
+
+```
+// Your action controller (HelloController)
+function fancyAction($primaryKeys, $allPrimaryKeys, $param1, $param2)
+{
+
+}
 ```
