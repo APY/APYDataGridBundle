@@ -78,7 +78,7 @@ $grid->setSource($source);
 // Static class method call
 $yourMassAction = new MassAction('Action 1', 'MyProject\MyBundle\Controller\DefaultController::myStaticMethod');
 
-$yourMassAction->addParameters(array('param1' => $var1, 'param2' => $var2));
+$yourMassAction->setParameters(array('param1' => $var1, 'param2' => $var2));
 
 $grid->addMassAction($yourMassAction);
 ...
@@ -120,7 +120,7 @@ function fancyAction($primaryKeys, $allPrimaryKeys)
 ```php
 $yourMassAction5 = new MassAction('Action 5', 'AcmeHelloBundle:Hello:fancy');
 
-$yourMassAction5->addParameters(array('param1' => $var1, 'param2' => $var2));
+$yourMassAction5->setParameters(array('param1' => $var1, 'param2' => $var2));
 
 $grid->addMassAction($yourMassAction5);
 ...
