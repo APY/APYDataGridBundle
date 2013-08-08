@@ -32,19 +32,17 @@ class GridYamlGenerator extends Generator
 
     public function generate(BundleInterface $bundle, $entityClass, $entity, $group, $extension)
     {
-
         $this->setSkeletonDirs(__DIR__.'/../Resources/skeleton');
-
         $dir = sprintf("%s/Resources/config/grid",$bundle->getPath());
-		if (!file_exists($dir)) {
+        if (!file_exists($dir)) {
             $this->filesystem->mkdir($dir, 0777);
         }
 
         $gridFile = sprintf("%s/%s.%s%s", $dir, $entity, $group, $extension);
 
-		$instance = new \ReflectionClass($entityClass);
+        $instance = new \ReflectionClass($entityClass);
 
-		$parameters = array(
+        $parameters = array(
             'columns'  => $instance->getProperties(),
             'entityClass' => $entityClass
         );
