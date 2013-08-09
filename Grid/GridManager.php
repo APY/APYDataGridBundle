@@ -22,7 +22,9 @@ class GridManager implements \IteratorAggregate, \Countable
 
     protected $routeUrl = null;
 
-    private $exportGrid = null;
+    protected $exportGrid = null;
+    
+    protected $massActionGrid = null;
 
     public function __construct($container)
     {
@@ -122,6 +124,24 @@ class GridManager implements \IteratorAggregate, \Countable
 
         return false;
     }
+    
+    public function isMassActionRedirect()
+    {
+        $this->grids->rewind();
+        while($this->grids->valid()) {
+            $grid = $this->grids->current();
+
+            if ($grid->isMassActionRedirect()) {
+                $this->massActionGrid = $grid;
+
+                return true;
+            }
+
+            $this->grids->next();
+        }
+
+        return false;
+    }
 
     /**
      * Renders a view.
@@ -138,6 +158,10 @@ class GridManager implements \IteratorAggregate, \Countable
         
         if ($this->isReadyForExport()) {
             return $this->exportGrid->getExportResponse();
+        }
+        
+        if ($this->isMassActionRedirect()) {
+            return $this->massActionGrid->getMassActionResponse();
         }
         
         if ($isReadyForRedirect) {

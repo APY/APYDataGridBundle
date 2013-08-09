@@ -23,7 +23,7 @@ $grid->addMassAction($massAction);
 |parameter|Type|Default value|Possible values|Description|
 |:--:|:--|:--|:--|:--|
 |title|string|||Title of the mass action|
-|callback|[\Closure](http://php.net/manual/en/functions.anonymous.php) or [callable](http://php.net/manual/en/language.types.callable.php) or a controller |null||Callback to the mass action|
+|callback|[\Closure](http://php.net/manual/en/functions.anonymous.php) or [callable](http://php.net/manual/en/language.types.callable.php) or a controller |null||Callback to the mass action (see examples below)|
 |confirm|Boolean|false|true or false|Set to true to have a confirm message on select. (Not implemented)|
 |parameters|array|array()||Add parameters for the mass action render|
 |role|mixed|null|A symfony role|Don't add this mass action if the access isn't granted for the defined role(s)|
@@ -53,7 +53,7 @@ $yourMassAction2 = new MassAction('Action 2', array($obj,'myMethod'));
 $grid->addMassAction($yourMassAction2);
 
 // Closure
-$yourMassAction3 = new MassAction('Action 3', function($ids, $selectAll, $session, $parameters) { ... });
+$yourMassAction3 = new MassAction('Action 3', function($primaryKeys, $allPrimaryKeys, $session, $parameters) { ... });
 
 $grid->addMassAction($yourMassAction3);
 ...
@@ -61,13 +61,13 @@ $grid->addMassAction($yourMassAction3);
 
 ```
 // Your static method (DefaultController)
-function myStaticMethod($primaryKeys, $allPrimaryKeys, $session, $params)
+static public function myStaticMethod($primaryKeys, $allPrimaryKeys, $session, $parameters)
 {
 
 }
 ```
 
-#### With additionals parameters
+##### With additionals parameters
 
 ```php
 <?php
@@ -86,14 +86,32 @@ $grid->addMassAction($yourMassAction);
 
 ```
 // Your static method (DefaultController)
-function myStaticMethod($primaryKeys, $allPrimaryKeys, $session, $params)
+static public function myStaticMethod($primaryKeys, $allPrimaryKeys, $session, $parameters)
 {
-    $param1 = params['param1'];
-    $param2 = params['param2'];
+    $param1 = $parameters['param1'];
+    $param2 = $parameters['param2'];
 }
 ```
 
-### Controller 
+**Note:** A Callback or a closure will return to the grid display.
+
+##### Forwarding
+
+If the Callback or the closure return a Response object, this response will be displayed.
+
+```
+// Your static method (DefaultController)
+static public function myStaticMethod($primaryKeys, $allPrimaryKeys, $session, $parameters)
+{
+    return new Response(...);
+    // return new RedirectResponse($this->generateUrl('homepage'));
+}
+```
+
+
+### Controller
+
+**Note:** A controller callback will forward to the specified controller.
 
 ```php
 <?php
@@ -111,11 +129,11 @@ $grid->addMassAction($yourMassAction4);
 // Your action controller (HelloController)
 function fancyAction($primaryKeys, $allPrimaryKeys)
 {
-
+	return new Response(...);
 }
 ```
 
-#### With additionals parameters
+##### With additionals parameters
 
 ```php
 $yourMassAction5 = new MassAction('Action 5', 'AcmeHelloBundle:Hello:fancy');
@@ -130,6 +148,6 @@ $grid->addMassAction($yourMassAction5);
 // Your action controller (HelloController)
 function fancyAction($primaryKeys, $allPrimaryKeys, $param1, $param2)
 {
-
+	return new Response(...);
 }
 ```
