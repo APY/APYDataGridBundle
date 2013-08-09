@@ -19,7 +19,8 @@ class Row
     protected $color;
     protected $legend;
     protected $primaryField;
-    protected $entityRow;
+    protected $entity;
+    protected $repository;
 
     public function __construct()
     {
@@ -27,12 +28,16 @@ class Row
         $this->color = '';
     }
     
-    public function setEntity($e){
-    	$this -> entityRow = $e;
+    public function setRepository($repository)
+    {
+    	$this->repository = $repository;
     }
     
-    public function getEntity(){
-    	return $this -> entityRow;
+    public function getEntity()
+    {
+        $primaryKeyValue = $this->getPrimaryKeyValue();
+
+        return $this->repository->find($primaryKeyValue[0]);
     }
 
     public function setField($rowId, $value)

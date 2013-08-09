@@ -408,6 +408,8 @@ class Entity extends Source
             $query->setHint($hintKey, $hintValue);
         }
         $items = $query->getResult();
+        
+        $repository = $this->manager->getRepository($this->entityName);
 
         // hydrate result
         $result = new Rows();
@@ -424,10 +426,9 @@ class Entity extends Source
 
                 $row->setField($key, $value);
             }          
-            
-            //Setting the representative instantiated object row to row      
-            $entity = $this->manager->getRepository($this->entityName)->find($row->getField($this->ormMetadata->getIdentifier()[0]));
-            $row->setEntity($entity);
+
+            //Setting the representative repository for entity retrieving
+            $row->setRepository($repository);
 
             //call overridden prepareRow or associated closure
             if (($modifiedRow = $this->prepareRow($row)) != null) {
