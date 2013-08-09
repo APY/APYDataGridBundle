@@ -423,7 +423,11 @@ class Entity extends Source
                 }
 
                 $row->setField($key, $value);
-            }
+            }          
+            
+            //Setting the representative instantiated object row to row      
+            $entity = $this->manager->getRepository($this->entityName)->find($row->getField($this->ormMetadata->getIdentifier()[0]));
+            $row->setEntity($entity);
 
             //call overridden prepareRow or associated closure
             if (($modifiedRow = $this->prepareRow($row)) != null) {

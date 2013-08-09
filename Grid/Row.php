@@ -19,11 +19,20 @@ class Row
     protected $color;
     protected $legend;
     protected $primaryField;
+    protected $entityRow;
 
     public function __construct()
     {
         $this->fields = array();
         $this->color = '';
+    }
+    
+    public function setEntity($e){
+    	$this -> entityRow = $e;
+    }
+    
+    public function getEntity(){
+    	return $this -> entityRow;
     }
 
     public function setField($rowId, $value)
