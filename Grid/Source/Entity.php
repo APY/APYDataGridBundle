@@ -415,19 +415,7 @@ class Entity extends Source
         foreach ($items as $item) {
             $row = new Row();
 
-            //Instantiate object representing the row, of the entity used in the grid 
-            $entity = new $this->class;  
-
             foreach ($item as $key => $value) {
-                //Calculating the name of the setter method for the field ($key)
-                $methodSetName = 'set' . ucfirst($key);
-            	
-                //Looking setter method for the field ($key) to fill the object instantiated
-            	if(array_search($methodSetName, get_class_methods($entity)) != false) {
-                    //Running the method with the parameter value to populate the object with the field   
-                    call_user_func(array($entity, $methodSetName), $value);
-            	}
-            	
                 $key = str_replace('::', '.', $key);
 
                 if (in_array($key, $serializeColumns) && is_string($value)) {
@@ -437,7 +425,8 @@ class Entity extends Source
                 $row->setField($key, $value);
             }          
             
-            //Setting the representative instantiated object row to row
+            //Setting the representative instantiated object row to row      
+            $entity = $this->manager->getRepository($this->entityName)->find($row->getField($this->ormMetadata->getIdentifier()[0]));
             $row->setEntity($entity);
 
             //call overridden prepareRow or associated closure
