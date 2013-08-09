@@ -35,7 +35,8 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('no_data_message')->defaultValue('No data')->end()
                 ->scalarNode('no_result_message')->defaultValue('No result')->end()
                 ->scalarNode('actions_columns_size')->defaultValue(-1)->end()
-                ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end()
+                ->scalarNode('actions_columns_title')->defaultValue('Actions')->end()
+                ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end() // deprecated 
                 ->arrayNode('pagerfanta')
                     ->addDefaultsIfNotSet()
                     ->children()

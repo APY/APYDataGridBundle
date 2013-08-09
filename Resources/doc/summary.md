@@ -75,6 +75,7 @@ SUMMARY
 	1. [Always show the grid](grid_configuration/always_show_grid.md)
 	1. [Set a title prefix](grid_configuration/set_prefix_titles.md)
 	1. [Set the size of the actions colum](grid_configuration/set_size_actions_column.md)
+	1. [Set the title of the actions colum](grid_configuration/set_title_actions_column.md)
 	1. [Set data to avoid calling the database](grid_configuration/set_data.md)
 	1. [Grid Response helper](grid_configuration/grid_response.md)
 	1. [Multi Grid manager](grid_configuration/multi_grid_manager.md)

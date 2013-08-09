@@ -278,6 +278,7 @@ class Grid
 
     // Lazy parameters for the action column
     protected $actionsColumnSize;
+    protected $actionsColumnTitle;
 
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container
@@ -861,8 +862,8 @@ class Grid
                 if (($actionColumn = $this->columns->hasColumnById($column, true))) {
                     $actionColumn->setRowActions($rowActions);
                 } else {
-                    $actionColumn = new ActionsColumn($column, 'Actions', $rowActions);
-                    if ($this->actionsColumnSize>-1) {
+                    $actionColumn = new ActionsColumn($column, $this->actionsColumnTitle, $rowActions);
+                    if ($this->actionsColumnSize > -1) {
                         $actionColumn->setSize($this->actionsColumnSize);
                     }
 
@@ -1859,13 +1860,27 @@ class Grid
     /**
      * Sets the size of the default action column
      *
-     * @param type $size
+     * @param integer $size
      *
      * @return self
      */
     public function setActionsColumnSize($size)
     {
         $this->actionsColumnSize = $size;
+
+        return $this;
+    }
+    
+    /**
+     * Sets the title of the default action column
+     *
+     * @param string $title
+     *
+     * @return self
+     */
+    public function setActionsColumnTitle($title)
+    {
+        $this->actionsColumnTitle = (string) $title;
 
         return $this;
     }
