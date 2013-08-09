@@ -28,7 +28,7 @@ $grid->addMassAction($massAction);
 |parameters|array|array()||Add parameters for the mass action render|
 |role|mixed|null|A symfony role|Don't add this mass action if the access isn't granted for the defined role(s)|
 
-**Note**: Every parameter have a setter and a getter method. and others options can be set too.
+**Note**: Every parameter has a setter and a getter method. and others options can be set too.
 
 ## Examples
 

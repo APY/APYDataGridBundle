@@ -63,7 +63,7 @@ class Product
 |searchOnClick|boolean|false|true or false|Sets the possibility to perform a search on the clicked cell (filterable has to be true)|
 |safe|string or false|html|false<br />or<br />see [Escape filters](http://twig.sensiolabs.org/doc/filters/escape.html)|Sets the escape filter|
 
-**Note 1**: Every attribute have a setter and a getter method.
+**Note 1**: Every attribute has a setter and a getter method.
 **Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.
 **Note 3**: If operators are not visible, filtering is performed with the default operator.
 
