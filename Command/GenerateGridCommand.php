@@ -34,17 +34,15 @@ class GenerateGridCommand extends GenerateDoctrineCommand
         $this
             ->setName('apydatagrid:generate:grid')
             ->setDescription('Generate the grid configuration for an entity')
-            ->setDefinition(array(
-                new InputOption('entity', '', InputOption::VALUE_REQUIRED, 'The entity class name to initialize (shortcut notation)'),
-                new InputOption('group', '', InputOption::VALUE_REQUIRED, 'The group name'),                
-            ))
+            ->addArgument('entity', InputArgument::REQUIRED, 'The entity class name to initialize (shortcut notation)')
+            ->addArgument('group', InputArgument::REQUIRED, 'The group name')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {           
-        $entity = Validators::validateEntityName($input->getOption('entity'));
-        $group = $input->getOption('group', "default");
+        $entity = Validators::validateEntityName($input->getArgument('entity'));
+        $group = $input->getArgument('group', "default");
 
         list($bundle, $entity) = $this->parseShortcutNotation($entity);
 
