@@ -53,7 +53,8 @@ class DateTimeColumn extends Column
 
     protected function isDateTime($query)
     {
-        return strtotime($query) !== false;
+        $date = \DateTime::createFromFormat($this->format, $query);
+        return $date !== false;
     }
 
     public function getFilters($source)
@@ -62,7 +63,7 @@ class DateTimeColumn extends Column
 
         $filters = array();
         foreach($parentFilters as $filter) {
-            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue(new \DateTime($filter->getValue()));
+            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue(\DateTime::createFromFormat($this->format, $filter->getValue()));
         }
 
         return $filters;
