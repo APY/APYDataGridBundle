@@ -284,7 +284,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $titles = array();
         foreach ($this->grid->getColumns() as $column) {
             if ($column->isVisible(true)) {
-                $titles[] = utf8_decode($translator->trans($column->getTitle()));
+                $titles[] = utf8_decode($translator->trans(/** @Ignore */$column->getTitle()));
             }
         }
 
