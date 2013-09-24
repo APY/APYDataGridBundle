@@ -1826,7 +1826,7 @@ class Grid
     }
 
     /**
-     * Sets on the visiblilty of columns
+     * Sets on the visibility of columns
      *
      * @param string|array $columnIds
      *
