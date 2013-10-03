@@ -90,6 +90,11 @@ class Grid
     protected $source;
 
     /**
+     * @var boolean
+     */
+     protected $prepared = false;
+
+    /**
      * @var int
      */
     protected $totalCount;
@@ -193,6 +198,11 @@ class Grid
      * @var Response
      */
     protected $exportResponse;
+    
+    /**
+     * @var Response
+     */
+    protected $massActionResponse;
 
     /**
      * @var int
@@ -268,6 +278,7 @@ class Grid
 
     // Lazy parameters for the action column
     protected $actionsColumnSize;
+    protected $actionsColumnTitle;
 
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container
@@ -459,18 +470,28 @@ class Grid
                 $actionAllKeys = (boolean)$this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
                 $actionKeys = $actionAllKeys == false ? (array) $this->getFromRequest(MassActionColumn::ID) : array();
 
-                if($actionAllKeys)
-                {
-                    $this->processSessionData();
+                $this->processSessionData();
+                if ($actionAllKeys) {
                     $this->page = 0;
                     $this->limit = 0;
-                    $this->prepare();
-                }
+                }                
+                $this->prepare();
 
                 if (is_callable($action->getCallback())) {
-                    call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session, $action->getParameters());
+                    $this->massActionResponse = call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session, $action->getParameters());
                 } elseif (strpos($action->getCallback(), ':') !== false) {
-                    $this->container->get('http_kernel')->forward($action->getCallback(), array_merge(array('primaryKeys' => array_keys($actionKeys), 'allPrimaryKeys' => $actionAllKeys), $action->getParameters()));
+                    $path = array_merge(
+                        array(
+                            'primaryKeys'    => array_keys($actionKeys),
+                            'allPrimaryKeys' => $actionAllKeys,
+                            '_controller'    => $action->getCallback()
+                        ),
+                        $action->getParameters()
+                    );
+
+                    $subRequest = $this->container->get('request')->duplicate(array(), null, $path);
+
+                    $this->massActionResponse = $this->container->get('http_kernel')->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
                 } else {
                     throw new \RuntimeException(sprintf('Callback %s is not callable or Controller action', $action->getCallback()));
                 }
@@ -734,6 +755,29 @@ class Grid
                 $column->setFilterable(false);
             }
 
+            // Convert simple value
+            if (is_array($value) && is_string(key($value))){
+                $value = $value;
+            } else {
+                $value = array('from' => $value);
+            }
+
+            // Convert boolean value
+            if (isset($value['from']) && is_bool($value['from'])) {
+                $value['from'] = $value['from'] ? '1' : '0';
+            }
+
+            // Convert simple value with select filter
+            if ($column->getFilterType() === 'select') {
+                if (isset($value['from']) && !is_array($value['from'])) {
+                    $value['from'] = array($value['from']);
+                }
+
+                if (isset($value['to']) && !is_array($value['to'])) {
+                    $value['to'] = array($value['to']);
+                }
+            }
+
             // Store in the session
             $this->set($columnId, $value);
         }
@@ -793,6 +837,8 @@ class Grid
      */
     protected function prepare()
     {
+        if($this->prepared) return $this;
+        
         if ($this->source->isDataLoaded()) {
             $this->rows = $this->source->executeFromData($this->columns->getIterator(true), $this->page, $this->limit, $this->maxResults);
         } else {
@@ -816,8 +862,8 @@ class Grid
                 if (($actionColumn = $this->columns->hasColumnById($column, true))) {
                     $actionColumn->setRowActions($rowActions);
                 } else {
-                    $actionColumn = new ActionsColumn($column, 'Actions', $rowActions);
-                    if ($this->actionsColumnSize>-1) {
+                    $actionColumn = new ActionsColumn($column, $this->actionsColumnTitle, $rowActions);
+                    if ($this->actionsColumnSize > -1) {
                         $actionColumn->setSize($this->actionsColumnSize);
                     }
 
@@ -865,6 +911,8 @@ class Grid
         if(!is_int($this->totalCount)) {
             throw new \Exception(sprintf('Source function getTotalCount need to return integer result, returned: %s', gettype($this->totalCount)));
         }
+
+        $this->prepared = true;
 
         return $this;
     }
@@ -958,7 +1006,7 @@ class Grid
     {
         foreach ($this->lazyAddColumn as $column) {
             if ($column['column']->getId() == $columnId) {
-                return $column;
+                return $column['column'];
             }
         }
 
@@ -1212,6 +1260,16 @@ class Grid
     {
         return $this->exportResponse;
     }
+    
+    /**
+     * Returns the mass action response
+     *
+     * @return Export[]
+     */
+    public function getMassActionResponse()
+    {
+        return $this->massActionResponse;
+    }
 
     /**
      * Sets Route Parameters
@@ -1270,6 +1328,11 @@ class Grid
     {
         return $this->isReadyForExport;
     }
+    
+    public function isMassActionRedirect()
+    {
+        return $this->massActionResponse instanceof Response;
+    }
 
     /**
      * Set value for filters
@@ -1281,17 +1344,7 @@ class Grid
      */
     protected function setFilters(array $filters, $permanent = true)
     {
-        foreach ($filters as $columnId => $ColumnValue) {
-            if (is_array($ColumnValue)){
-                $value = $ColumnValue;
-            } else {
-                $value = array('from' => $ColumnValue);
-            }
-
-            if (isset($value['from']) && is_bool($value['from'])) {
-                $value['from'] = $value['from'] ? '1' : '0';
-            }
-
+        foreach ($filters as $columnId => $value) {
             if ($permanent) {
                 $this->permanentFilters[$columnId] = $value;
             } else {
@@ -1630,7 +1683,7 @@ class Grid
     public function isPagerSectionVisible()
     {
         // true when totalCount rows exceed the minimum pager limit
-        return (min($this->getLimits()) <= $this->totalCount);
+        return (min(array_keys($this->getLimits())) <= $this->totalCount);
     }
 
     /**
@@ -1773,7 +1826,7 @@ class Grid
     }
 
     /**
-     * Sets on the visiblilty of columns
+     * Sets on the visibility of columns
      *
      * @param string|array $columnIds
      *
@@ -1807,13 +1860,27 @@ class Grid
     /**
      * Sets the size of the default action column
      *
-     * @param type $size
+     * @param integer $size
      *
      * @return self
      */
     public function setActionsColumnSize($size)
     {
         $this->actionsColumnSize = $size;
+
+        return $this;
+    }
+    
+    /**
+     * Sets the title of the default action column
+     *
+     * @param string $title
+     *
+     * @return self
+     */
+    public function setActionsColumnTitle($title)
+    {
+        $this->actionsColumnTitle = (string) $title;
 
         return $this;
     }
@@ -1854,6 +1921,10 @@ class Grid
 
         if ($this->isReadyForExport()) {
             return $this->getExportResponse();
+        }
+        
+        if ($this->isMassActionRedirect()) {
+            return $this->getMassActionResponse();
         }
 
         if ($isReadyForRedirect) {

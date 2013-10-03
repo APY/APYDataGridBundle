@@ -43,12 +43,7 @@ class PHPExcel5Export extends Export
             foreach ($line as $cell) {
                 $this->objPHPExcel->getActiveSheet()->SetCellValue($column.$row, $cell);
 
-                // 52 columns maximum
-                if ($column == 'Z') {
-                    $column = 'AA';
-                } else {
-                    $column++;
-                }
+                $column++;
             }
             $row++;
         }

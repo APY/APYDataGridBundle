@@ -92,6 +92,18 @@ class DataGridExtension extends \Twig_Extension
         if (!isset($globals['submitOnChange'])) {
             $this->environment->addGlobal('submitOnChange', null);
         }
+
+        if (!isset($globals['withjs'])) {
+            $this->environment->addGlobal('withjs', true);
+        }
+
+        if (!isset($globals['pagerfanta'])) {
+            $this->environment->addGlobal('pagerfanta', false);
+        }
+
+        if (!isset($globals['op'])) {
+            $this->environment->addGlobal('op', 'eq');
+        }
     }
 
     /**

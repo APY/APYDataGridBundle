@@ -53,13 +53,36 @@ class Category
 }
 ```
 
-A column on a mapped field has the same attributes of a normal field and have one another attribute: `field`
+**Important** Fields are automitically joined with a leftJoin. If you want to use an inner join, you can specify the join type:
+
+```php
+<?php
+...
+class Product
+{
+    protected $id;
+
+    protected $type;
+
+    /**
+     * @ORM\OneToMany(...)
+     *
+     * @GRID\Column(field="category.name", title="Category Name", joinType="inner")
+     */
+    protected $category;
+...
+}
+```
+
+A column on a mapped field has the same attributes of a normal field and have two another attribute: `field` and `joinType`
+
 
 ### Additionnal Attribute:
 
 |Attribute|Type|Default value|Possible values|Description|
 |:--:|:--|:--|:--|:--|
 |field|string|||The name of the related field of the property|
+|joinType|string||inner|Specify the join type for the related records (E.G. 'inner' for an inner join|
 
 **Note**: The default title of a related field is the name of the field.
 `@Grid\Column(field="category.name") => title = "category.name"`

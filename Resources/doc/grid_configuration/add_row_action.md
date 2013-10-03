@@ -27,10 +27,10 @@ $grid->addRowAction($rowAction);
 |attributes|array|array()||Add attributes to the anchor tag|
 |role|mixed|null|A symfony role|Don't add this mass action if the access isn't granted for the defined role(s)|
 
-**Note**: Every parameter have a setter and a getter method. and others options can be set too.
+**Note**: Every parameter has a setter and a getter method. and others options can be set too.
 
 
-## Additionnal parameters
+## Additional parameters
 
 These parameters have a setter and a getter method.
 

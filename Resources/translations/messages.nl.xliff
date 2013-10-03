@@ -4,67 +4,67 @@
         <body>
             <trans-unit id="13">
                 <source>eq</source>
-                <target>Equals</target>
+                <target>Gelijk aan</target>
             </trans-unit>
             <trans-unit id="14">
                 <source>neq</source>
-                <target>Not equal to</target>
+                <target>Niet gelijk aan</target>
             </trans-unit>
             <trans-unit id="15">
                 <source>lt</source>
-                <target>Lower than</target>
+                <target>Lager dan</target>
             </trans-unit>
             <trans-unit id="16">
                 <source>lte</source>
-                <target>Lower than or equal to</target>
+                <target>Lager of gelijk aan</target>
             </trans-unit>
             <trans-unit id="17">
                 <source>gt</source>
-                <target>Greater than</target>
+                <target>Groter dan</target>
             </trans-unit>
             <trans-unit id="18">
                 <source>gte</source>
-                <target>Greater than or equal to</target>
+                <target>Groter of gelijk aan</target>
             </trans-unit>
             <trans-unit id="19">
                 <source>req</source>
-                <target>Regular expression</target>
+                <target>Reguliere expressie</target>
             </trans-unit>
             <trans-unit id="20">
                 <source>like</source>
-                <target>Contains</target>
+                <target>Bevat</target>
             </trans-unit>
             <trans-unit id="21">
                 <source>nlike</source>
-                <target>Not contains</target>
+                <target>Bevat niet</target>
             </trans-unit>
             <trans-unit id="22">
                 <source>rlike</source>
-                <target>Starts with</target>
+                <target>Start met</target>
             </trans-unit>
             <trans-unit id="23">
                 <source>llike</source>
-                <target>Ends with</target>
+                <target>Eindigt met</target>
             </trans-unit>
             <trans-unit id="24">
                 <source>btw</source>
-                <target>Between exclusive</target>
+                <target>Tussen (exclusief)</target>
             </trans-unit>
             <trans-unit id="25">
                 <source>btwe</source>
-                <target>Between inclusive</target>
+                <target>Tussen (inclusief)</target>
             </trans-unit>
             <trans-unit id="26">
                 <source>isNull</source>
-                <target>Is not defined</target>
+                <target>Is niet gedefinieerd</target>
             </trans-unit>
             <trans-unit id="27">
                 <source>isNotNull</source>
-                <target>Is defined</target>
+                <target>Is gedefinieerd</target>
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>%count% Result, |%count% Results, </target>
+                <target>%count% rijen, |%count% rijen, </target>
             </trans-unit>
 
     <!-- with symbols -->

@@ -49,6 +49,7 @@ class Product
 |sortable|boolean|true|true or false|Sets the possibility of sortering of the column|
 |filterable|boolean|true|true or false|Sets the possibility of filtering of the column|
 |visible|boolean|true|true or false|Sets the visibilty of the column|
+|export|boolean|null|null,<br />true or false|Forces the visibilty of the column for exports. A null value means that the defined visibility isn't forced to another value for exports|
 |operatorsVisible|boolean|true|true or false|Sets the visibilty of the operators filter|
 |operators|array|operators of the column|See [operators](../types/text_column.md#available_operators)|Sets the available operators of the column|
 |defaultOperator|string|default operator of the column|See [operators](../types/text_column.md#available_operators)|Sets the default operator of the column|
@@ -60,9 +61,10 @@ class Product
 |selectFrom|string|query|query, source, values|How to populate the selector of the select filters of the column.|
 |values|array|_none_||For select filters or replace values in the grid|
 |searchOnClick|boolean|false|true or false|Sets the possibility to perform a search on the clicked cell (filterable has to be true)|
+|safe|string or false|html|false<br />or<br />see [Escape filters](http://twig.sensiolabs.org/doc/filters/escape.html)|Sets the escape filter|
 
-**Note 1**: Every attribute have a setter and a getter method.  
-**Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.  
+**Note 1**: Every attribute has a setter and a getter method.
+**Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.
 **Note 3**: If operators are not visible, filtering is performed with the default operator.
 
 ## Title translation

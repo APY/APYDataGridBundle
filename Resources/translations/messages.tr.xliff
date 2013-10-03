@@ -64,7 +64,7 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>{0,1}%count% Sonuç, |[2, Inf]%count% Sonuç, </target>
+                <target>%count% Sonuç, </target>
             </trans-unit>
 
     <!-- with symbols -->

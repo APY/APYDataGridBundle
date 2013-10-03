@@ -19,6 +19,7 @@ class Source
 {
     protected $columns;
     protected $filterable;
+    protected $sortable;
     protected $groups;
     protected $groupBy;
 
@@ -26,6 +27,7 @@ class Source
     {
         $this->columns = (isset($metadata['columns']) && $metadata['columns'] != '') ? array_map('trim', explode(',', $metadata['columns'])) : array();
         $this->filterable = isset($metadata['filterable']) ? $metadata['filterable'] : true;
+        $this->sortable = isset($metadata['sortable']) ? $metadata['sortable'] : true;
         $this->groups = (isset($metadata['groups']) && $metadata['groups'] != '') ? (array) $metadata['groups'] : array('default');
         $this->groupBy = (isset($metadata['groupBy']) && $metadata['groupBy'] != '') ? (array) $metadata['groupBy'] : array();
     }
@@ -43,6 +45,11 @@ class Source
     public function isFilterable()
     {
         return $this->filterable;
+    }
+
+    public function isSortable()
+    {
+        return $this->sortable;
     }
 
     public function getGroups()

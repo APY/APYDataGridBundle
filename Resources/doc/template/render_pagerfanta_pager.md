@@ -3,9 +3,9 @@ Render a pagerfanta pager
 
 ## Installation
 
-You have to install the [pagerfanta librairy](https://github.com/whiteoctober/Pagerfanta) in the directory `vendor/pagerfanta/`.
+You have to install the [pagerfanta library](https://github.com/whiteoctober/Pagerfanta) in the directory `vendor/pagerfanta/`.
 
-Then add this new librairy to your autoload.php file.
+Then add this new library to your autoload.php file.
 
 ```php
 <?php
