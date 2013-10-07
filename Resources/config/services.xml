@@ -55,15 +55,10 @@
 
         <service id="grid.mapping.manager" class="APY\DataGridBundle\Grid\Mapping\Metadata\Manager">
             <argument type="service" id="form.factory"/>
-            <call method="addDriver">
-                <argument type="service" id="grid.metadata.driver.annotation" />
-                <argument>1</argument>
-            </call>
-            <call method="addDriver">
-                <argument type="service" id="grid.metadata.driver.yaml" />
-                <argument>2</argument>
-            </call>
-
+            <argument type="service" id="service_container" />
+            <call method="setDrivers">
+	        <argument>%apy_data_grid.drivers%</argument>
+	    </call>
         </service>
 
         <service id="grid.translation_extractor" class="APY\DataGridBundle\Translation\ColumnTitleAnnotationTranslationExtractor" public="false">

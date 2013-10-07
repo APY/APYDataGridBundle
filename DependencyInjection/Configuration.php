@@ -31,7 +31,18 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(array(20 => '20', 50 => '50', 100 => '100'))
                     ->prototype('scalar')->end()
                 ->end()
-                ->booleanNode('persistence')->defaultFalse()->end()
+
+		->arrayNode("drivers")
+		    ->validate()
+		        ->ifTrue(function($v) {
+			    return !in_array($v, array("yaml", "annotation"));
+			})
+			->thenInvalid("Some drivers are not known")
+		    ->end()
+                    ->defaultValue(array('annotation', 'yml'))
+                    ->prototype('scalar')->end()
+		->end()
+		->booleanNode('persistence')->defaultFalse()->end()
                 ->scalarNode('no_data_message')->defaultValue('No data')->end()
                 ->scalarNode('no_result_message')->defaultValue('No result')->end()
                 ->scalarNode('actions_columns_size')->defaultValue(-1)->end()

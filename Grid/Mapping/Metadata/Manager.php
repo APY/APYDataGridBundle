@@ -21,8 +21,11 @@ class Manager
      */
     protected $drivers;
 
-    public function __construct()
+    protected $container;
+    
+    public function __construct($container)
     {
+        $this->container = $container;
         $this->drivers = new DriverHeap();
     }
 
@@ -30,6 +33,28 @@ class Manager
     {
         $this->drivers->insert($driver, $priority);
     }
+
+    /**
+     * Add drivers to the driver list
+     */
+    public function setDrivers($driverList)
+    {
+        $priority = 1;
+        foreach ($driverList as $driverName) {
+            switch ($driverName) {
+                case "annotation" :
+                    $driver = $this->container->get("grid.metadata.driver.annotation");
+                    break;
+                case "yaml" :
+                    $driver = $this->container->get("grid.metadata.driver.yaml");
+                    break;
+                default :
+                    throw new \Exception("Driver $driverName not found");
+            }
+            $this->addDriver($service, $priority);
+            $priority++;    
+        }
+    } 
 
     /**
      * @todo remove this hack
