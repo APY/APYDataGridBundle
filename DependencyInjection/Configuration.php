@@ -33,12 +33,13 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
 		->arrayNode("drivers")
-		    ->validate()
+		 /*   ->validate()
 		        ->ifTrue(function($v) {
-			    return !in_array($v, array("yaml", "annotation"));
+			    return !in_array($v, array("yml", "annotation"));
 			})
 			->thenInvalid("Some drivers are not known")
 		    ->end()
+        */
                     ->defaultValue(array('annotation', 'yml'))
                     ->prototype('scalar')->end()
 		->end()
