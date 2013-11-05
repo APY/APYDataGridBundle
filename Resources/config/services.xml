@@ -54,7 +54,6 @@
         </service>
 
         <service id="grid.mapping.manager" class="APY\DataGridBundle\Grid\Mapping\Metadata\Manager">
-            <argument type="service" id="form.factory"/>
             <argument type="service" id="service_container" />
             <call method="setDrivers">
 	        <argument>%apy_data_grid.drivers%</argument>
