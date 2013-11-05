@@ -45,13 +45,13 @@ class Manager
                 case "annotation" :
                     $driver = $this->container->get("grid.metadata.driver.annotation");
                     break;
-                case "yaml" :
+                case "yml" :
                     $driver = $this->container->get("grid.metadata.driver.yaml");
                     break;
                 default :
                     throw new \Exception("Driver $driverName not found");
             }
-            $this->addDriver($service, $priority);
+            $this->addDriver($driver, $priority);
             $priority++;    
         }
     } 
