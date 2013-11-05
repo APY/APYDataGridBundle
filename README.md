@@ -25,7 +25,7 @@ See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGEL
 - Ajax loading
 - Pagination (You can also use Pagerfanta)
 - Column width and column align
-- Prefix tranlated titles
+- Prefix translated titles
 - Grid manager for multi-grid on the same page
 - Groups configuration for ORM and ODM sources
 - Easy templates overriding (twig)
