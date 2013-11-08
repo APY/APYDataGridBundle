@@ -89,6 +89,7 @@ abstract class Column
     protected $separator;
     protected $joinType;
     protected $export;
+    protected $class;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -865,5 +866,17 @@ abstract class Column
     public function getExport()
     {
         return $this->export;
+    }
+
+    public function setClass($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    public function getClass()
+    {
+        return $this->class;
     }
 }
