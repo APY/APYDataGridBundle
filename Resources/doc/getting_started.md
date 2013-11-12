@@ -3,9 +3,9 @@ Getting Started With APYDataGridBundle
 
 ## Choose your source of data
 
-You can choose between an [Entity (ORM)](source/entity.md), a [Document (ODM)](source/document.md) or a [Vector (Array)](source/source.md) source.
+You can choose between an [Entity (ORM)](source/entity_source.md), a [Document (ODM)](source/document_source.md) or a [Vector (Array)](source/vector_source.md) source.
 
-#### [Entity (ORM)](source/entity.md)
+#### [Entity (ORM)](source/entity_source.md)
 
 ```php
 <?php
@@ -25,7 +25,7 @@ class DefaultController extends Controller
 }
 ```
 
-#### [Document (ODM)](source/document.md)
+#### [Document (ODM)](source/document_source.md)
 
 ```php
 <?php
@@ -45,7 +45,7 @@ class DefaultController extends Controller
 }
 ```
 
-#### [Vector (Array)](source/source.md)
+#### [Vector (Array)](source/vector_source.md)
 
 ```php
 <?php
