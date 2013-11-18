@@ -60,7 +60,7 @@
     <tr class="grid-row-titles">
     {% for column in grid.columns %}
         {% if column.visible(grid.isReadyForExport) %}
-            <th class="{% if column.align != 'left'%}align-{{ column.align }}{% endif %}{% if loop.last %} last-column{% endif %}"{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>
+            <th class="{% if column.align != 'left'%}align-{{ column.align }}{% endif %}{% if column.class %} {{ column.class }}{% endif %}{% if loop.last %} last-column{% endif %}"{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>
             {%- spaceless %}
             {% if column.type == 'massaction' %}
                 <input type="checkbox" class="grid-mass-selector" onclick="{{ grid.hash }}_markVisible(this.checked);"/>
@@ -91,7 +91,7 @@
     <tr class="grid-row-filters">
     {% for column in grid.columns %}
         {% if column.visible(grid.isReadyForExport) %}
-        <th{% if loop.last %} class="last-column"{% endif %}{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>{% if column.filterable %}{{ grid_filter(column, grid)|raw }}{% endif %}</th>
+        <th class="{% if column.class %}{{ column.class }}{% endif %}{% if loop.last %} last-column{% endif %}"{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>{% if column.filterable %}{{ grid_filter(column, grid)|raw }}{% endif %}</th>
         {% endif %}
     {% endfor %}
     </tr>
