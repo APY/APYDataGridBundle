@@ -63,7 +63,7 @@ $grid->addColumn($actionsColumn, 1);
 
 // Attach a rowAction to the Actions Column
 $rowAction1 = new RowAction('Show', 'route_to_show');
-$rowAction1->setColumn('info_column');
+$rowAction1->setColumn('info_column_1');
 $grid->addRowAction($rowAction1);
 
 
