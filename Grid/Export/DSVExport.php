@@ -45,13 +45,13 @@ class DSVExport extends Export
 
         rewind($outstream);
 
-        $content = '';
+        //$content = '';
+        $content = "\xEF\xBB\xBF" ;
         while (($buffer = fgets($outstream)) !== false) {
             $content .= $buffer;
         }
 
         fclose($outstream);
-
         $this->content = $content;
     }
 
