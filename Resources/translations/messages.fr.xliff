@@ -122,6 +122,10 @@
                 <source>Reset</source>
                 <target>Réinitialiser</target>
             </trans-unit>
+            <trans-unit id="31">
+                <source>Order by</source>
+                <target>Trier par</target>
+            </trans-unit>            
         </body>
     </file>
 </xliff>
