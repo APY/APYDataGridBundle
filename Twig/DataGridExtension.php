@@ -270,6 +270,8 @@ class DataGridExtension extends \Twig_Extension
                 return $prefix.Grid::REQUEST_QUERY_LIMIT.']=';
             case 'reset':
                 return $prefix.Grid::REQUEST_QUERY_RESET.']=';
+            case 'export':
+                return $prefix.Grid::REQUEST_QUERY_EXPORT.']='.$param;
         }
     }
 
