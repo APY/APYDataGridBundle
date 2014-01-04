@@ -170,6 +170,7 @@ abstract class Column
             return call_user_func($this->callback, $value, $row, $router);
         }
 
+        $value = is_bool($value) ? (int)$value : $value;
         if (array_key_exists((string)$value, $this->values)) {
             $value = $this->values[$value];
         }
