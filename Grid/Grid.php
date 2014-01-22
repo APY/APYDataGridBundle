@@ -198,7 +198,7 @@ class Grid
      * @var Response
      */
     protected $exportResponse;
-    
+
     /**
      * @var Response
      */
@@ -459,12 +459,14 @@ class Grid
     /**
      * Process mass actions
      *
+     * @param int $actionId
+     *
      * @throws \RuntimeException
      * @throws \OutOfBoundsException
      */
     protected function processMassActions($actionId)
     {
-        if ($actionId > -1) {
+        if ($actionId > -1 && '' !== $actionId) {
             if (array_key_exists($actionId, $this->massActions)) {
                 $action = $this->massActions[$actionId];
                 $actionAllKeys = (boolean)$this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
@@ -474,7 +476,7 @@ class Grid
                 if ($actionAllKeys) {
                     $this->page = 0;
                     $this->limit = 0;
-                }                
+                }
                 $this->prepare();
 
                 if (is_callable($action->getCallback())) {
@@ -504,13 +506,15 @@ class Grid
     /**
      * Process exports
      *
+     * @param int $exportId
+     *
      * @return boolean
      *
      * @throws \OutOfBoundsException
      */
     protected function processExports($exportId)
     {
-        if ($exportId > -1) {
+        if ($exportId > -1 && '' !== $exportId) {
             if (array_key_exists($exportId, $this->exports)) {
                 $this->isReadyForExport = true;
 
@@ -538,6 +542,8 @@ class Grid
 
     /**
      * Process tweaks
+     *
+     * @param int $tweakId
      *
      * @return boolean
      *
@@ -838,7 +844,7 @@ class Grid
     protected function prepare()
     {
         if($this->prepared) return $this;
-        
+
         if ($this->source->isDataLoaded()) {
             $this->rows = $this->source->executeFromData($this->columns->getIterator(true), $this->page, $this->limit, $this->maxResults);
         } else {
@@ -1260,7 +1266,7 @@ class Grid
     {
         return $this->exportResponse;
     }
-    
+
     /**
      * Returns the mass action response
      *
@@ -1328,7 +1334,7 @@ class Grid
     {
         return $this->isReadyForExport;
     }
-    
+
     public function isMassActionRedirect()
     {
         return $this->massActionResponse instanceof Response;
@@ -1870,7 +1876,7 @@ class Grid
 
         return $this;
     }
-    
+
     /**
      * Sets the title of the default action column
      *
@@ -1922,7 +1928,7 @@ class Grid
         if ($this->isReadyForExport()) {
             return $this->getExportResponse();
         }
-        
+
         if ($this->isMassActionRedirect()) {
             return $this->getMassActionResponse();
         }
