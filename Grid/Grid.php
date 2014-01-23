@@ -17,8 +17,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
-use APY\DataGridBundle\Grid\Columns;
-use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Action\MassActionInterface;
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
 use APY\DataGridBundle\Grid\Column\Column;
@@ -50,7 +48,7 @@ class Grid
     protected $router;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Session;
+     * @var \Symfony\Component\HttpFoundation\Session\Session;
      */
     protected $session;
 
@@ -60,7 +58,7 @@ class Grid
     protected $request;
 
     /**
-     * @var Symfony\Component\Security\Core\SecurityContext
+     * @var \Symfony\Component\Security\Core\SecurityContext
      */
     protected $securityContext;
 
@@ -316,7 +314,7 @@ class Grid
      */
     public function setSource(Source $source)
     {
-        if($this->source !== null) {
+        if ($this->source !== null) {
             throw new \InvalidArgumentException('The source of the grid is already set.');
         }
 
@@ -340,7 +338,7 @@ class Grid
      */
     public function isReadyForRedirect()
     {
-        if($this->source === null) {
+        if ($this->source === null) {
             throw new \Exception('The source of the grid is not set.');
         }
 
@@ -649,8 +647,7 @@ class Grid
     protected function processRequestFilters()
     {
         $filtering = false;
-        foreach ($this->columns as $column)
-        {
+        foreach ($this->columns as $column) {
             if ($column->isFilterable()) {
                 $ColumnId = $column->getId();
 
@@ -752,7 +749,7 @@ class Grid
      */
     protected function processFilters($permanent = true)
     {
-        foreach(($permanent ? $this->permanentFilters : $this->defaultFilters) as $columnId => $value) {
+        foreach (($permanent ? $this->permanentFilters : $this->defaultFilters) as $columnId => $value) {
             /* @var $column Column */
             $column = $this->columns->getColumnById($columnId);
 
@@ -762,9 +759,7 @@ class Grid
             }
 
             // Convert simple value
-            if (is_array($value) && is_string(key($value))){
-                $value = $value;
-            } else {
+            if (!is_array($value) || !is_string(key($value))) {
                 $value = array('from' => $value);
             }
 
@@ -843,7 +838,9 @@ class Grid
      */
     protected function prepare()
     {
-        if($this->prepared) return $this;
+        if ($this->prepared) {
+            return $this;
+        }
 
         if ($this->source->isDataLoaded()) {
             $this->rows = $this->source->executeFromData($this->columns->getIterator(true), $this->page, $this->limit, $this->maxResults);
@@ -851,11 +848,11 @@ class Grid
             $this->rows = $this->source->execute($this->columns->getIterator(true), $this->page, $this->limit, $this->maxResults, $this->dataJunction);
         }
 
-        if(!$this->rows instanceof Rows) {
+        if (!$this->rows instanceof Rows) {
             throw new \Exception('Source have to return Rows object.');
         }
 
-        if (count($this->rows) == 0 && $this->page > 0){
+        if (count($this->rows) == 0 && $this->page > 0) {
             $this->page = 0;
             $this->prepare();
 
@@ -914,7 +911,7 @@ class Grid
             $this->totalCount = $this->source->getTotalCount($this->maxResults);
         }
 
-        if(!is_int($this->totalCount)) {
+        if (!is_int($this->totalCount)) {
             throw new \Exception(sprintf('Source function getTotalCount need to return integer result, returned: %s', gettype($this->totalCount)));
         }
 
@@ -1121,7 +1118,7 @@ class Grid
         $separator =  strpos($this->getRouteUrl(), '?') ? '&' : '?';
         $url = $this->getRouteUrl().$separator.$this->getHash().'['.Grid::REQUEST_QUERY_TWEAK.']=';
 
-        foreach($this->tweaks as $id => $tweak) {
+        foreach ($this->tweaks as $id => $tweak) {
             $this->tweaks[$id] = array_merge($tweak, array('url' => $url.$id));
         }
 
@@ -1154,9 +1151,9 @@ class Grid
      */
     public function getTweaksGroup($group)
     {
-        $tweaksGroup = $this->getTweaks();;
+        $tweaksGroup = $this->getTweaks();
 
-        foreach($tweaksGroup as $id => $tweak) {
+        foreach ($tweaksGroup as $id => $tweak) {
             if ($tweak['group'] != $group) {
                 unset($tweaksGroup[$id]);
             }
@@ -1474,7 +1471,7 @@ class Grid
     public function setLimits($limits)
     {
         if (is_array($limits)) {
-            if ( (int) key($limits) === 0) {
+            if ((int)key($limits) === 0) {
                 $this->limits = array_combine($limits, $limits);
             } else {
                 $this->limits = $limits;
@@ -1623,7 +1620,7 @@ class Grid
     public function setMaxResults($maxResults = null)
     {
         if ((is_int($maxResults) && $maxResults < 0) && $maxResults !== null) {
-           throw new \InvalidArgumentException('Max results must be a positive number.');
+            throw new \InvalidArgumentException('Max results must be a positive number.');
         }
 
         $this->maxResults = $maxResults;
@@ -1840,7 +1837,7 @@ class Grid
      */
     public function showColumns($columnIds)
     {
-        foreach((array) $columnIds as $columnId) {
+        foreach ((array) $columnIds as $columnId) {
             $this->lazyHideShowColumns[$columnId] = true;
         }
 
@@ -1856,7 +1853,7 @@ class Grid
      */
     public function hideColumns($columnIds)
     {
-        foreach((array) $columnIds as $columnId) {
+        foreach ((array) $columnIds as $columnId) {
             $this->lazyHideShowColumns[$columnId] = false;
         }
 

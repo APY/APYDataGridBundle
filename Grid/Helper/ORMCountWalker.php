@@ -81,7 +81,7 @@ class ORMCountWalker extends TreeWalkerAdapter
                 new AggregateExpression('count', $pathExpression, $distinct), null
             )
         );
-        
+
         $groupByClause[] = $pathExpression;
         $AST->groupByClause = new \Doctrine\ORM\Query\AST\GroupByClause($groupByClause);
 

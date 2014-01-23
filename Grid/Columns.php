@@ -152,7 +152,7 @@ class Columns implements \IteratorAggregate, \Countable
         }
 
         $this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
-        
+
         return $this;
     }
 }
