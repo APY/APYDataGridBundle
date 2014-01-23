@@ -351,7 +351,7 @@ class RowAction implements RowActionInterface
         if (is_callable($this->callback)) {
             return call_user_func($this->callback, $this, $row);
         }
-        
+
         return $this;
     }
 }

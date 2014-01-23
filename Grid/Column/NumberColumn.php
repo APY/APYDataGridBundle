@@ -41,7 +41,7 @@ class NumberColumn extends Column
     protected $currencyCode;
 
     protected $fractional;
-  
+
     protected $maxFractionDigits;
 
     public function __initialize(array $params)
@@ -107,7 +107,7 @@ class NumberColumn extends Column
             if ($this->ruleSet !== null) {
                 $formatter->setTextAttribute(\NumberFormatter::DEFAULT_RULESET, $this->ruleSet);
             }
-            
+
             if($this->maxFractionDigits !== null){
                 $formatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $this->maxFractionDigits);
             }

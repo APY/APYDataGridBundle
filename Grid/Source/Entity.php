@@ -147,7 +147,7 @@ class Entity extends Source
     {
         $name = $column->getField();
 
-        if (strpos($name, '.') !== false ) {
+        if (strpos($name, '.') !== false) {
             $previousParent = '';
 
             $elements = explode('.', $name);
@@ -247,8 +247,10 @@ class Entity extends Source
             case Column::OPERATOR_LIKE:
             case Column::OPERATOR_LLIKE:
             case Column::OPERATOR_RLIKE:
-            case Column::OPERATOR_NLIKE: return 'like';
-            default: return $operator;
+            case Column::OPERATOR_NLIKE:
+                return 'like';
+            default:
+                return $operator;
         }
     }
 
@@ -257,10 +259,14 @@ class Entity extends Source
         switch ($operator) {
             //case Column::OPERATOR_REGEXP:
             case Column::OPERATOR_LIKE:
-            case Column::OPERATOR_NLIKE: return "%$value%";
-            case Column::OPERATOR_LLIKE: return "%$value";
-            case Column::OPERATOR_RLIKE: return "$value%";
-            default: return $value;
+            case Column::OPERATOR_NLIKE:
+                return "%$value%";
+            case Column::OPERATOR_LLIKE:
+                return "%$value";
+            case Column::OPERATOR_RLIKE:
+                return "$value%";
+            default:
+                return $value;
         }
     }
 
@@ -366,7 +372,7 @@ class Entity extends Source
         }
 
         foreach ($this->joins as $alias => $field) {
-            if(null !== $field['type'] && strtolower($field['type']) === 'inner') {
+            if (null !== $field['type'] && strtolower($field['type']) === 'inner') {
                 $join = 'join';
             } else {
                 $join = 'leftJoin';
@@ -408,9 +414,9 @@ class Entity extends Source
             $query->setHint($hintKey, $hintValue);
         }
         $items = $query->getResult();
-        
+
         $repository = $this->manager->getRepository($this->entityName);
-        
+
         // Force the primary field to get the entity in the manipulatorRow
         $primaryColumnId = null;
         foreach ($columns as $column) {
@@ -435,10 +441,10 @@ class Entity extends Source
                 }
 
                 $row->setField($key, $value);
-            }          
+            }
 
             $row->setPrimaryField($primaryColumnId);
-            
+
             //Setting the representative repository for entity retrieving
             $row->setRepository($repository);
 
@@ -456,7 +462,7 @@ class Entity extends Source
         // From Doctrine\ORM\Tools\Pagination\Paginator::count()
         $countQuery = $this->query->getQuery();
 
-        if ( ! $countQuery->getHint(ORMCountWalker::HINT_DISTINCT)) {
+        if (! $countQuery->getHint(ORMCountWalker::HINT_DISTINCT)) {
             $countQuery->setHint(ORMCountWalker::HINT_DISTINCT, true);
         }
 
@@ -467,7 +473,7 @@ class Entity extends Source
             $data = $countQuery->getScalarResult();
             $data = array_map('current', $data);
             $count = array_sum($data);
-        } catch(NoResultException $e) {
+        } catch (NoResultException $e) {
             $count = 0;
         }
 
@@ -477,8 +483,7 @@ class Entity extends Source
     public function getFieldsMetadata($class, $group = 'default')
     {
         $result = array();
-        foreach ($this->ormMetadata->getFieldNames() as $name)
-        {
+        foreach ($this->ormMetadata->getFieldNames() as $name) {
             $mapping = $this->ormMetadata->getFieldMapping($name);
             $values = array('title' => $name, 'source' => true);
 
@@ -537,7 +542,7 @@ class Entity extends Source
 
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
-                    foreach($column->getFilters('entity') as $filter) {
+                    foreach ($column->getFilters('entity') as $filter) {
                         if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE))) {
                             $selectFrom = 'source';
                             break;
@@ -557,7 +562,7 @@ class Entity extends Source
                     ->getResult();
 
                 $values = array();
-                foreach($result as $row) {
+                foreach ($result as $row) {
                     $value = $row[str_replace('.', '::', $column->getId())];
 
                     switch ($column->getType()) {
@@ -664,6 +669,4 @@ class Entity extends Source
     {
         return $this->tableAlias;
     }
-
-
 }
