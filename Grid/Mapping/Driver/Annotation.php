@@ -69,7 +69,7 @@ class Annotation implements DriverInterface
             foreach ($this->reader->getClassAnnotations($reflection) as $class) {
                 $this->getMetadataFromClass($className, $class, $group);
             }
-            if(!array_key_exists($group, $this->columns[$className]))
+            if(array_key_exists($className, $this->columns) && !array_key_exists($group, $this->columns[$className]) && array_key_exists('default', $this->columns[$className]))
             {
                 $this->columns[$className][$group] = $this->columns[$className]['default'];
                 $this->filterable[$className][$group] = $this->filterable[$className]['default'];
