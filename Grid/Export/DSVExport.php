@@ -80,7 +80,7 @@ class DSVExport extends Export
     {
         $this->delimiter = $delimiter;
 
-        return $this
+        return $this;
     }
 
     /**
