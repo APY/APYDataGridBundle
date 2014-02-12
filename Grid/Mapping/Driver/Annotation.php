@@ -56,7 +56,6 @@ class Annotation implements DriverInterface
         if (isset($this->loaded[$className][$group])) return;
 
         $reflectionCollection = array();
-        $properties = array();
 
         $reflectionCollection[] = $reflection = new \ReflectionClass($className);
         while (false !== $reflection = $reflection->getParentClass()) {
@@ -67,7 +66,7 @@ class Annotation implements DriverInterface
             $reflection = array_pop($reflectionCollection);
 
             foreach ($this->reader->getClassAnnotations($reflection) as $class) {
-                $this->getMetadataFromClass($className, $class);
+                $this->getMetadataFromClass($className, $class, $group);
             }
 
             foreach ($reflection->getProperties() as $property) {
@@ -75,7 +74,6 @@ class Annotation implements DriverInterface
 
                 foreach ($this->reader->getPropertyAnnotations($property) as $class) {
                     $this->getMetadataFromClassProperty($className, $class, $property->getName(), $group);
-                    $properties[] = $property->getName();
                 }
             }
         }
@@ -108,13 +106,14 @@ class Annotation implements DriverInterface
                 throw new \Exception(sprintf('Parameter `id` can\'t be used in annotations for property `%s`, please remove it from class %s', $name, $className));
             }
 
-            if ($name === null) {
+            if ($name === null) { // Class Column annotation
                 if (isset($metadata['id'])) {
                     $metadata['source'] = false;
+                    $this->fields[$className][$group][$metadata['id']] = array();
                 } else {
                     throw new \Exception(sprintf('Missing parameter `id` in annotations for extra column of class %s', $className));
                 }
-            } else {
+            } else { // Property Column annotation
                 // Relationship handle
                 if (isset($metadata['field']) && (strpos($metadata['field'], '.') !== false || strpos($metadata['field'], ':') !== false)) {
                     $metadata['id'] = $metadata['field'];
@@ -154,19 +153,17 @@ class Annotation implements DriverInterface
         }
     }
 
-    protected function getMetadataFromClass($className, $class)
+    protected function getMetadataFromClass($className, $class, $group)
     {
         if ($class instanceof Source) {
-            foreach ($class->getGroups() as $group) {
-                $this->columns[$className][$group] = $class->getColumns();
-                $this->filterable[$className][$group] = $class->isFilterable();
-                $this->sortable[$className][$group] = $class->isSortable();
-                $this->groupBy[$className][$group] = $class->getGroupBy();
+            foreach ($class->getGroups() as $sourceGroup) {
+                $this->columns[$className][$sourceGroup] = $class->getColumns();
+                $this->filterable[$className][$sourceGroup] = $class->isFilterable();
+                $this->sortable[$className][$sourceGroup] = $class->isSortable();
+                $this->groupBy[$className][$sourceGroup] = $class->getGroupBy();
             }
         } elseif ($class instanceof Column) {
-            foreach ($class->getGroups() as $group) {
-                $this->getMetadataFromClassProperty($className, $class, null, $group);
-            }
+            $this->getMetadataFromClassProperty($className, $class, null, $group);
         }
     }
 }
