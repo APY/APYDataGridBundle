@@ -67,7 +67,14 @@ class Annotation implements DriverInterface
             $reflection = array_pop($reflectionCollection);
 
             foreach ($this->reader->getClassAnnotations($reflection) as $class) {
-                $this->getMetadataFromClass($className, $class);
+                $this->getMetadataFromClass($className, $class, $group);
+            }
+            if(array_key_exists($className, $this->columns) && !array_key_exists($group, $this->columns[$className]) && array_key_exists('default', $this->columns[$className]))
+            {
+                $this->columns[$className][$group] = $this->columns[$className]['default'];
+                $this->filterable[$className][$group] = $this->filterable[$className]['default'];
+                $this->sortable[$className][$group] = $this->sortable[$className]['default'];
+                $this->groupBy[$className][$group] = $this->groupBy[$className]['default'];
             }
 
             foreach ($reflection->getProperties() as $property) {
@@ -154,7 +161,7 @@ class Annotation implements DriverInterface
         }
     }
 
-    protected function getMetadataFromClass($className, $class)
+    protected function getMetadataFromClass($className, $class, $group = 'default')
     {
         if ($class instanceof Source) {
             foreach ($class->getGroups() as $group) {
@@ -164,9 +171,7 @@ class Annotation implements DriverInterface
                 $this->groupBy[$className][$group] = $class->getGroupBy();
             }
         } elseif ($class instanceof Column) {
-            foreach ($class->getGroups() as $group) {
-                $this->getMetadataFromClassProperty($className, $class, null, $group);
-            }
+            $this->getMetadataFromClassProperty($className, $class, null, $group);
         }
     }
 }
