@@ -69,4 +69,11 @@ interface RowActionInterface
      * @return array
      */
     public function getAttributes();
+
+    /**
+     * get action enabled
+     *
+     * @return boolean
+     */
+    public function getEnabled();
 }

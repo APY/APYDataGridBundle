@@ -25,6 +25,7 @@ class RowAction implements RowActionInterface
     protected $attributes = array();
     protected $role;
     protected $callback;
+    protected $enabled = true;
 
     /**
      * Default RowAction constructor
@@ -354,4 +355,29 @@ class RowAction implements RowActionInterface
 
         return $this;
     }
+
+    /**
+     * Get the enabled state of this action.
+     *
+     * @return boolean
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Set the enabled state of this action.
+     *
+     * @param boolean $enabled
+     * @return \APY\DataGridBundle\Grid\Action\RowAction
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+
 }
