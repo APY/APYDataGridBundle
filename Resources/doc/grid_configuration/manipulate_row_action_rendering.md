@@ -31,7 +31,7 @@ $grid->addRowAction($rowAction);
 ## Action disabling
 
 The action can be disabled using the manipulate render callback. See the example.
-If the action is disabled, only its title is displayed.
+If the action is disabled, only its title is displayed, with all additional attributes used.
 
 ## Example
 
