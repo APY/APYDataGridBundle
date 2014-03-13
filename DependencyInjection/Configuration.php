@@ -31,24 +31,24 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(array(20 => '20', 50 => '50', 100 => '100'))
                     ->prototype('scalar')->end()
                 ->end()
-
-		->arrayNode("drivers")
-		 /*   ->validate()
-		        ->ifTrue(function($v) {
-			    return !in_array($v, array("yml", "annotation"));
-			})
-			->thenInvalid("Some drivers are not known")
-		    ->end()
-        */
+                ->arrayNode("drivers")
+        		    /*->validate()
+        		        ->ifTrue(function($v) {
+        			    return !in_array($v, array("yml", "annotation"));
+        			})
+        			->thenInvalid("Some drivers are not known")
+        		    ->end()
+                     */
                     ->defaultValue(array('annotation', 'yml'))
                     ->prototype('scalar')->end()
-		->end()
-		->booleanNode('persistence')->defaultFalse()->end()
+		        ->end()
+                ->booleanNode('persistence')->defaultFalse()->end()
+                ->scalarNode('theme')->defaultValue('APYDataGridBundle::blocks.html.twig')->end()
                 ->scalarNode('no_data_message')->defaultValue('No data')->end()
                 ->scalarNode('no_result_message')->defaultValue('No result')->end()
                 ->scalarNode('actions_columns_size')->defaultValue(-1)->end()
                 ->scalarNode('actions_columns_title')->defaultValue('Actions')->end()
-                ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end() // deprecated 
+                ->scalarNode('actions_columns_separator')->defaultValue('<br />')->end() // deprecated
                 ->arrayNode('pagerfanta')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -62,7 +62,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
              ->end()
-                
+
         ;
         return $treeBuilder;
     }

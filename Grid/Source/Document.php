@@ -154,7 +154,7 @@ class Document extends Source
 
             if ($column->isPrimary()) {
                 $column->setFilterable(false);
-            } else if ($column->isFiltered()) {
+            } elseif ($column->isFiltered()) {
                 // Some attributes of the column can be changed in this function
                 $filters = $column->getFilters('document');
 
@@ -197,7 +197,7 @@ class Document extends Source
 
         $this->count = $cursor->count();
 
-        foreach($cursor as $resource) {
+        foreach ($cursor as $resource) {
             $row = new Row();
             $properties = $this->getClassProperties($resource);
 
@@ -309,7 +309,7 @@ class Document extends Source
 
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
-                    foreach($column->getFilters('document') as $filter) {
+                    foreach ($column->getFilters('document') as $filter) {
                         if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE))) {
                             $selectFrom = 'source';
                             break;
@@ -329,7 +329,7 @@ class Document extends Source
                     ->execute();
 
                 $values = array();
-                foreach($result as $value) {
+                foreach ($result as $value) {
 
                     switch ($column->getType()) {
                         case 'number':

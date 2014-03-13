@@ -25,9 +25,12 @@ class DSVExport extends Export
 
     protected $delimiter = '';
 
+    protected $withBOM = true;
+
     public function __construct($title, $fileName = 'export', $params = array(), $charset = 'UTF-8')
     {
         $this->delimiter = isset($params['delimiter']) ? $params['delimiter'] : $this->delimiter;
+        $this->withBOM = isset($params['withBOM']) ? $params['withBOM'] : $this->withBOM;
 
         parent::__construct($title, $fileName, $params, $charset);
     }
@@ -45,8 +48,8 @@ class DSVExport extends Export
 
         rewind($outstream);
 
-        //$content = '';
-        $content = "\xEF\xBB\xBF" ;
+        $content = $this->withBOM ? "\xEF\xBB\xBF" : '';
+
         while (($buffer = fgets($outstream)) !== false) {
             $content .= $buffer;
         }
@@ -74,6 +77,32 @@ class DSVExport extends Export
      */
     public function setDelimiter($delimiter)
     {
-        return $this->delimiter = $delimiter;
+        $this->delimiter = $delimiter;
+
+        return $this;
+    }
+
+    /**
+     * get BOM setting
+     *
+     * @return string
+     */
+    public function getWithBOM()
+    {
+        return $this->withBOM;
+    }
+
+    /**
+     * set BOM setting
+     *
+     * @param string $withBOM
+     *
+     * @return self
+     */
+    public function setWithBOM($withBOM)
+    {
+        $this->withBOM = $withBOM;
+
+        return $this;
     }
 }

@@ -16,7 +16,7 @@ $grid->getColumn('my_column_id')->manipulateRenderCell($callback);
 ...
 ```
 
-## Method Column::manipulateRender parameters
+## Method Column::manipulateRenderCell parameters
 
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|

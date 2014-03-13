@@ -85,7 +85,7 @@ class ArrayColumn extends Column
                 if (!is_array($value) && isset($this->values[(string)$value])) {
                     $value = $this->values[$value];
                 }
-                
+
                 $return[$key] = $value;
             }
         }

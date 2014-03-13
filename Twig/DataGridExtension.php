@@ -15,6 +15,7 @@ namespace APY\DataGridBundle\Twig;
 use APY\DataGridBundle\Grid\Grid;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\NullAdapter;
+use Symfony\Component\Routing\RouterInterface;
 
 class DataGridExtension extends \Twig_Extension
 {
@@ -36,7 +37,7 @@ class DataGridExtension extends \Twig_Extension
     protected $theme;
 
     /**
-    * @var \Symfony\Component\Routing\Router
+    * @var RouterInterface
     */
     protected $router;
 
@@ -49,23 +50,32 @@ class DataGridExtension extends \Twig_Extension
      * @var array
      */
     protected $params = array();
-    
+
     /**
-     * 
      * @var array
      */
     protected $pagerFantaDefs;
-    
-    public function __construct($router)
+
+    /**
+     * @var string
+     */
+    protected $defaultTemplate;
+
+    /**
+     * @param RouterInterface $router
+     * @param string $defaultTemplate
+     */
+    public function __construct($router, $defaultTemplate)
     {
         $this->router = $router;
+        $this->defaultTemplate = $defaultTemplate;
     }
-    
+
     public function setPagerFanta(array $def)
     {
         $this->pagerFantaDefs=$def;
     }
-    
+
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
@@ -179,7 +189,7 @@ class DataGridExtension extends \Twig_Extension
     {
         return $this->renderBlock('grid_pager', array('grid' => $grid, 'pagerfanta' => $this->pagerFantaDefs['enable']));
     }
-    
+
     /**
      * Cell Drawing override
      *
@@ -200,8 +210,8 @@ class DataGridExtension extends \Twig_Extension
                         || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell')))
          || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
          || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
-         || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
-        {
+         || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell')
+        ) {
             return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'row' => $row, 'value' => $value));
         }
 
@@ -227,8 +237,8 @@ class DataGridExtension extends \Twig_Extension
          || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_filter')
          || $this->hasBlock($block = 'grid_column_type_'.$column->getType().'_filter')
          || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter')
-         || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType()))
-        {
+         || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType())
+         ) {
             return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'submitOnChange' => $submitOnChange && $column->isFilterSubmitOnChange()));
         }
 
@@ -270,6 +280,8 @@ class DataGridExtension extends \Twig_Extension
                 return $prefix.Grid::REQUEST_QUERY_LIMIT.']=';
             case 'reset':
                 return $prefix.Grid::REQUEST_QUERY_RESET.']=';
+            case 'export':
+                return $prefix.Grid::REQUEST_QUERY_EXPORT.']='.$param;
         }
     }
 
@@ -289,7 +301,7 @@ class DataGridExtension extends \Twig_Extension
         $pagerfanta->setCurrentPage($grid->getPage() + 1);
 
         $url = $this->getGridUrl('page', $grid, '');
-        $routeGenerator = function($page) use ($url) {
+        $routeGenerator = function ($page) use ($url) {
             return sprintf('%s%d', $url, $page - 1);
         };
 
@@ -302,9 +314,12 @@ class DataGridExtension extends \Twig_Extension
     /**
      * Render block
      *
-     * @param $name string
-     * @param $parameters string
+     * @param string $name
+     * @param array  $parameters
+     *
      * @return string
+     *
+     * @throws \InvalidArgumentException If the block could not be found
      */
     protected function renderBlock($name, $parameters)
     {
@@ -321,6 +336,7 @@ class DataGridExtension extends \Twig_Extension
      * Has block
      *
      * @param $name string
+     *
      * @return boolean
      */
     protected function hasBlock($name)
@@ -337,7 +353,8 @@ class DataGridExtension extends \Twig_Extension
     /**
      * Template Loader
      *
-     * @return \Twig_TemplateInterface[]
+     * @return \Twig_Template[]
+     *
      * @throws \Exception
      */
     protected function getTemplates()
@@ -345,11 +362,11 @@ class DataGridExtension extends \Twig_Extension
         if (empty($this->templates)) {
             if ($this->theme instanceof \Twig_Template) {
                 $this->templates[] = $this->theme;
-                $this->templates[] = $this->environment->loadTemplate(static::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->environment->loadTemplate($this->defaultTemplate);
             } elseif (is_string($this->theme)) {
                 $this->templates = $this->getTemplatesFromString($this->theme);
             } elseif ($this->theme === null) {
-                $this->templates[] = $this->environment->loadTemplate(static::DEFAULT_TEMPLATE);
+                $this->templates = $this->getTemplatesFromString($this->defaultTemplate);
             } else {
                 throw new \Exception('Unable to load template');
             }

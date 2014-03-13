@@ -242,7 +242,7 @@ abstract class Source implements DriverInterface
                 $fieldName = $column->getField();
                 $fieldValue = $items[$key][$fieldName];
                 $dataIsNumeric = ($column->getType() == 'number' || $column->getType() == 'boolean');
-                
+
                 if ($column->getType() === 'array') {
                     $serializeColumns[] = $column->getId();
                 }
@@ -342,7 +342,7 @@ abstract class Source implements DriverInterface
                             break;
                         }
                     }
-                    
+
                     if (!$keep) {
                         unset($items[$key]);
                         break;
@@ -453,7 +453,7 @@ abstract class Source implements DriverInterface
 
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
-                    foreach($column->getFilters('vector') as $filter) {
+                    foreach ($column->getFilters('vector') as $filter) {
                         if (in_array($filter->getOperator(), array(Column\Column::OPERATOR_NEQ, Column\Column::OPERATOR_NLIKE))) {
                             $selectFrom = 'source';
                             break;
@@ -465,7 +465,7 @@ abstract class Source implements DriverInterface
                 $item = ($selectFrom === 'source') ? $this->data : $this->items;
 
                 $values = array();
-                foreach($item as $row) {
+                foreach ($item as $row) {
                     $value = $row[$column->getField()];
 
                     switch ($column->getType()) {
@@ -526,7 +526,7 @@ abstract class Source implements DriverInterface
     {
         return $maxResults === null ? $this->count : min($this->count, $maxResults);
     }
-    
+
     /**
      * Prepares string to have almost the same behaviour as with a database,
      * removing accents and latin special chars
@@ -551,5 +551,4 @@ abstract class Source implements DriverInterface
 
         return preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $noaccentStr);
     }
-
 }

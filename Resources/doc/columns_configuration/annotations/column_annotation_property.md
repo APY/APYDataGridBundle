@@ -40,6 +40,8 @@ class Product
 
 ## Available Attributes
 
+**If you use the `columns` attribute of the [source annotation](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/columns_configuration/annotations/source_annotation.md), only the columns defined in this attribute can use attributes `visible` and `export` but others attributes like `filterable` and `sortable` will work even if the visible attribute is set to `false`.**
+
 |Attribute|Type|Default value|Possible values|Description|
 |:--:|:--|:--|:--|:--|
 |title|string|The property name||Title of the column|

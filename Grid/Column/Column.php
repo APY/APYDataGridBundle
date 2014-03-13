@@ -89,6 +89,7 @@ abstract class Column
     protected $separator;
     protected $joinType;
     protected $export;
+    protected $class;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -169,6 +170,7 @@ abstract class Column
             return call_user_func($this->callback, $value, $row, $router);
         }
 
+        $value = is_bool($value) ? (int)$value : $value;
         if (array_key_exists((string)$value, $this->values)) {
             $value = $this->values[$value];
         }
@@ -816,7 +818,7 @@ abstract class Column
     /**
      * Allows to set twig escaping parameter (html, js, css, url, html_attr)
      * or to display raw value if type is false
-     * @param type $safeOption can be one of raw, html, js, css, url, html_attr
+     * @param string|bool $safeOption can be one of false, html, js, css, url, html_attr
      * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setSafe($safeOption)
@@ -865,5 +867,17 @@ abstract class Column
     public function getExport()
     {
         return $this->export;
+    }
+
+    public function setClass($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    public function getClass()
+    {
+        return $this->class;
     }
 }

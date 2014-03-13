@@ -56,7 +56,7 @@ $grid->setSource($source);
 |:--:|:--|:--|:--|:--|
 |data|array||Array of data compatible with the source.|
 
-## Exemple
+## Example
 ```php
 <?php
 ...

@@ -114,6 +114,18 @@
                 <source>%count% Results, </source>
                 <target>%count% Résultat, |%count% Résultats, </target>
             </trans-unit>
+            <trans-unit id="29">
+                <source>Search</source>
+                <target>Rechercher</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>Reset</source>
+                <target>Réinitialiser</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>Order by</source>
+                <target>Trier par</target>
+            </trans-unit>            
         </body>
     </file>
 </xliff>
