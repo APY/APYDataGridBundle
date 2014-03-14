@@ -12,6 +12,8 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use APY\DataGridBundle\Grid\Row;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use APY\DataGridBundle\Grid\Filter;
 
@@ -161,7 +163,7 @@ abstract class Column
      *
      * @param string $value
      * @param Row $row
-     * @param $router
+     * @param Router $router
      * @return string
      */
     public function renderCell($value, $row, $router)
