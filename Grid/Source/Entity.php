@@ -143,7 +143,7 @@ class Entity extends Source
      * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @return string
      */
-    protected function getFieldName($column, $withAlias = false)
+    protected function getFieldName($column, $withAlias = false, $withDQLFunction = true)
     {
         $name = $column->getField();
 
@@ -180,7 +180,11 @@ class Entity extends Source
                     $parameters = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'".$matches['parameters']."'");
                 }
 
-                $functionWithParameters = $matches['function'].'('.$previousParent.'.'.$matches['field'].$parameters.')';
+                if ($withDQLFunction) {
+                    $functionWithParameters = $matches['function'].'('.$previousParent.'.'.$matches['field'].$parameters.')';
+                } else {
+                    return explode(':',$name)[0];
+                }
             }
 
             if ($withAlias) {
@@ -327,14 +331,18 @@ class Entity extends Source
 
                 $isDisjunction = $column->getDataJunction() === Column::DATA_DISJUNCTION;
 
-                $hasHavingClause = $column->hasDQLFunction();
+                $matches = array();
+                $hasHavingClause = $column->hasDQLFunction($matches);
+                if ($matches['function'] == "GroupConcat") {
+                    $hasHavingClause = false;
+                }
 
                 $sub = $isDisjunction ? $this->query->expr()->orx() : ($hasHavingClause ? $this->query->expr()->andx() : $where);
 
                 foreach ($filters as $filter) {
                     $operator = $this->normalizeOperator($filter->getOperator());
 
-                    $q = $this->query->expr()->$operator($this->getFieldName($column, false), "?$bindIndex");
+                    $q = $this->query->expr()->$operator($this->getFieldName($column, false, $hasHavingClause), "?$bindIndex");
 
                     if ($filter->getOperator() == Column::OPERATOR_NLIKE) {
                         $q = $this->query->expr()->not($q);
