@@ -339,10 +339,10 @@ class Entity extends Source
                 $isDisjunction = $column->getDataJunction() === Column::DATA_DISJUNCTION;
 
                 $matches = array();
-                $hasHavingClause = $column->hasDQLFunction($matches);
-                if ($matches['function'] == "GroupConcat") {
-                    $hasHavingClause = false;
-                }
+                $hasHavingClause = $column->getUseHaving();
+                if ($hasHavingClause) {
+                    $hasHavingClause = $column->hasDQLFunction($matches);
+                    }
 
                 $sub = $isDisjunction ? $this->query->expr()->orx() : ($hasHavingClause ? $this->query->expr()->andx() : $where);
 
