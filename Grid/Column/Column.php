@@ -90,6 +90,7 @@ abstract class Column
     protected $joinType;
     protected $export;
     protected $class;
+    protected $useHaving = true;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -113,6 +114,7 @@ abstract class Column
         $this->setVisible($this->getParam('visible', true));
         $this->setSize($this->getParam('size', -1));
         $this->setFilterable($this->getParam('filterable', true));
+        $this->setUseHaving($this->getParam('useHaving', true));
         $this->setVisibleForSource($this->getParam('source', false));
         $this->setPrimary($this->getParam('primary', false));
         $this->setAlign($this->getParam('align', self::ALIGN_LEFT));
@@ -879,5 +881,16 @@ abstract class Column
     public function getClass()
     {
         return $this->class;
+    }
+
+    public function getUseHaving()
+    {
+        return $this->useHaving;
+    }
+
+    public function setUseHaving($useHaving)
+    {
+        $this->useHaving = $useHaving;
+        return $this;
     }
 }

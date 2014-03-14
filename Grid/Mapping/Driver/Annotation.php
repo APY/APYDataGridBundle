@@ -20,6 +20,7 @@ class Annotation implements DriverInterface
     protected $columns;
     protected $filterable;
     protected $sortable;
+    protected $useHaving;
     protected $fields;
     protected $loaded;
     protected $groupBy;
@@ -29,7 +30,7 @@ class Annotation implements DriverInterface
     public function __construct($reader)
     {
         $this->reader = $reader;
-        $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = $this->sortable = array();
+        $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = $this->sortable = $this->useHaving = array();
     }
 
     public function getClassColumns($class, $group = 'default')
@@ -147,6 +148,10 @@ class Annotation implements DriverInterface
 
             if (isset($metadata['field'])) {
                 $metadata['source'] = true;
+            }
+
+            if (isset($metadata['useHaving'])) {
+                $this->useHaving[$className][$group] = $metadata['useHaving'] == 'true';
             }
 
             $this->fields[$className][$group][$metadata['id']] = $metadata;
