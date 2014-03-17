@@ -141,6 +141,10 @@ class Annotation implements DriverInterface
                 $metadata['sortable'] = isset($this->sortable[$className][$group]) ? $this->sortable[$className][$group] : true;
             }
 
+	        if (!isset($metadata['translateValues'])) {
+                $metadata['translateValues'] = false;
+            }
+
             if (!isset($metadata['title'])) {
                 $metadata['title'] = $metadata['id'];
             }

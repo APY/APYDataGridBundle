@@ -92,6 +92,7 @@ abstract class Column
     protected $joinType;
     protected $export;
     protected $class;
+	protected $translateValues;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -151,6 +152,7 @@ abstract class Column
         $this->setSafe($this->getParam('safe', 'html'));
         $this->setSeparator($this->getParam('separator', "<br />"));
         $this->setExport($this->getParam('export'));
+        $this->setTranslateValues($this->getParam('translateValues', false));
     }
 
     protected function getParam($id, $default = null)
@@ -882,4 +884,20 @@ abstract class Column
     {
         return $this->class;
     }
+
+	/**
+	 * @param mixed $translateValues
+	 */
+	public function setTranslateValues($translateValues)
+	{
+		$this->translateValues = $translateValues;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getTranslateValues()
+	{
+		return $this->translateValues;
+	}
 }

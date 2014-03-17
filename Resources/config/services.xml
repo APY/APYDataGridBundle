@@ -18,6 +18,9 @@
             <call method="setPagerFanta">
                 <argument>%apy_data_grid.pagerfanta%</argument>
             </call>
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
         </service>
 
         <service id="grid" class="%grid.class%" scope="prototype">
