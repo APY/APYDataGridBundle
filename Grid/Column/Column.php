@@ -12,6 +12,8 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use APY\DataGridBundle\Grid\Row;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use APY\DataGridBundle\Grid\Filter;
 
@@ -90,6 +92,7 @@ abstract class Column
     protected $joinType;
     protected $export;
     protected $class;
+	protected $translateValues;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -149,6 +152,7 @@ abstract class Column
         $this->setSafe($this->getParam('safe', 'html'));
         $this->setSeparator($this->getParam('separator', "<br />"));
         $this->setExport($this->getParam('export'));
+        $this->setTranslateValues($this->getParam('translateValues', false));
     }
 
     protected function getParam($id, $default = null)
@@ -161,7 +165,7 @@ abstract class Column
      *
      * @param string $value
      * @param Row $row
-     * @param $router
+     * @param Router $router
      * @return string
      */
     public function renderCell($value, $row, $router)
@@ -880,4 +884,20 @@ abstract class Column
     {
         return $this->class;
     }
+
+	/**
+	 * @param mixed $translateValues
+	 */
+	public function setTranslateValues($translateValues)
+	{
+		$this->translateValues = $translateValues;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getTranslateValues()
+	{
+		return $this->translateValues;
+	}
 }

@@ -15,9 +15,11 @@ namespace APY\DataGridBundle\Twig;
 use APY\DataGridBundle\Grid\Grid;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\NullAdapter;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-class DataGridExtension extends \Twig_Extension
+class DataGridExtension extends \Twig_Extension implements ContainerAwareInterface
 {
     const DEFAULT_TEMPLATE = 'APYDataGridBundle::blocks.html.twig';
 
@@ -41,7 +43,12 @@ class DataGridExtension extends \Twig_Extension
     */
     protected $router;
 
-    /**
+	/**
+	 * @var ContainerInterface
+	 */
+	protected $container;
+
+	/**
      * @var array
      */
     protected $names;
@@ -202,6 +209,23 @@ class DataGridExtension extends \Twig_Extension
     public function getGridCell($column, $row, $grid)
     {
         $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
+	    if($this->container !== null && ($column->getTranslateValues() === true || is_string($column->getTranslateValues())))
+	    {
+		    /** @var $translator \Symfony\Bundle\FrameworkBundle\Translation\Translator */
+		    $translator = $this->container->get('translator');
+		    $domain = $column->getTranslateValues() === true ? null : $column->getTranslateValues();
+		    if(is_array($value))
+		    {
+			    $value = array_map(function($val) use ($translator, $column, $domain)
+			    {
+				    return $translator->trans($val, array(), $domain);
+			    }, $value);
+		    }
+		    else
+		    {
+			    $value = $translator->trans($value, array(), $domain);
+		    }
+	    }
 
         $id = $this->names[$grid->getHash()];
 
@@ -387,6 +411,18 @@ class DataGridExtension extends \Twig_Extension
 
         return $this->templates;
     }
+
+	/**
+	 * Sets the Container.
+	 *
+	 * @param ContainerInterface|null $container A ContainerInterface instance or null
+	 *
+	 * @api
+	 */
+	public function setContainer(ContainerInterface $container = null)
+	{
+		$this->container = $container;
+	}
 
     public function getName()
     {
