@@ -70,11 +70,13 @@ class DateTimeColumn extends Column
 
     public function renderCell($value, $row, $router)
     {
+        $value = $this->getDisplayedValue($value);
+        
         if (is_callable($this->callback)) {
             $value = call_user_func($this->callback, $value, $row, $router);
         }
 
-        return $this->getDisplayedValue($value);
+        return $value;
     }
 
     public function getDisplayedValue($value)
