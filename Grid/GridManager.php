@@ -13,6 +13,7 @@
 namespace APY\DataGridBundle\Grid;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class GridManager implements \IteratorAggregate, \Countable
 {
@@ -22,7 +23,9 @@ class GridManager implements \IteratorAggregate, \Countable
 
     protected $routeUrl = null;
 
-    private $exportGrid = null;
+    protected $exportGrid = null;
+
+    protected $massActionGrid = null;
 
     public function __construct($container)
     {
@@ -37,7 +40,7 @@ class GridManager implements \IteratorAggregate, \Countable
 
     public function count()
     {
-       return $this->grids->count();
+        return $this->grids->count();
     }
 
     /**
@@ -47,11 +50,6 @@ class GridManager implements \IteratorAggregate, \Countable
     public function createGrid($id = null)
     {
         $grid = $this->container->get('grid');
-
-        // Route url is the same for all grids
-        if ($this->routeUrl === null) {
-            $this->routeUrl = $grid->getRouteUrl();
-        }
 
         if ($id !== null) {
             $grid->setId($id);
@@ -72,7 +70,14 @@ class GridManager implements \IteratorAggregate, \Countable
 
         $isReadyForRedirect = false;
         $this->grids->rewind();
-        while($this->grids->valid()) {
+
+        // Route url is the same for all grids
+        if ($this->routeUrl === null) {
+            $grid = $this->grids->current();
+            $this->routeUrl = $grid->getRouteUrl();
+        }
+
+        while ($this->grids->valid()) {
             $grid = $this->grids->current();
 
             if ($grid->isReadyForRedirect()) {
@@ -100,7 +105,7 @@ class GridManager implements \IteratorAggregate, \Countable
         $checkHash = array();
 
         $this->grids->rewind();
-        while($this->grids->valid()) {
+        while ($this->grids->valid()) {
             $grid = $this->grids->current();
 
             if (in_array($grid->getHash(), $checkHash)) {
@@ -121,6 +126,24 @@ class GridManager implements \IteratorAggregate, \Countable
         return false;
     }
 
+    public function isMassActionRedirect()
+    {
+        $this->grids->rewind();
+        while ($this->grids->valid()) {
+            $grid = $this->grids->current();
+
+            if ($grid->isMassActionRedirect()) {
+                $this->massActionGrid = $grid;
+
+                return true;
+            }
+
+            $this->grids->next();
+        }
+
+        return false;
+    }
+
     /**
      * Renders a view.
      *
@@ -130,14 +153,18 @@ class GridManager implements \IteratorAggregate, \Countable
      *
      * @return Response A Response instance
      */
-    public function getGridManagerResponse($param1 = null, $param2 = null,  Response $response = null)
+    public function getGridManagerResponse($param1 = null, $param2 = null, Response $response = null)
     {
         $isReadyForRedirect = $this->isReadyForRedirect();
-        
+
         if ($this->isReadyForExport()) {
             return $this->exportGrid->getExportResponse();
         }
-        
+
+        if ($this->isMassActionRedirect()) {
+            return $this->massActionGrid->getMassActionResponse();
+        }
+
         if ($isReadyForRedirect) {
             return new RedirectResponse($this->getRouteUrl());
         } else {
@@ -151,7 +178,7 @@ class GridManager implements \IteratorAggregate, \Countable
 
             $i = 1;
             $this->grids->rewind();
-            while($this->grids->valid()) {
+            while ($this->grids->valid()) {
                 $parameters = array_merge(array('grid'.$i => $this->grids->current()), $parameters);
                 $this->grids->next();
                 $i++;
@@ -162,12 +189,16 @@ class GridManager implements \IteratorAggregate, \Countable
             }
 
             return $this->container->get('templating')->renderResponse($view, $parameters, $response);
-
         }
     }
 
     public function getRouteUrl()
     {
         return $this->routeUrl;
+    }
+
+    public function setRouteUrl($routeUrl)
+    {
+        $this->routeUrl = $routeUrl;
     }
 }

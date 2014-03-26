@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>eq</source>
+                <target>Igual</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>neq</source>
+                <target>Não igual</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>lt</source>
+                <target>Menor que</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>lte</source>
+                <target>Menor que ou igual a</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>gt</source>
+                <target>Maior que</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>gte</source>
+                <target>Maior que ou igual a</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>req</source>
+                <target>Expressão regular</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>like</source>
+                <target>Contem</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>nlike</source>
+                <target>Não contem</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>rlike</source>
+                <target>Inicia com</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>llike</source>
+                <target>Termina com</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>btw</source>
+                <target>Entre exclusivo</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>btwe</source>
+                <target>Entre inclusivo</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>isNull</source>
+                <target>Não está definido</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>isNotNull</source>
+                <target>Está definido</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>%count% Results, </source>
+                <target>%count% Resultado, |%count% Resultados, </target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>Page</source>
+                <target>Página</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>, Display</source>
+                <target>, Mostrar</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>of %count%</source>
+                <target>de %count%</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>Items per page</source>
+                <target>Registros por página</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>Select visible</source>
+                <target>Selecionar visível</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>Select all</source>
+                <target>Selecionar tudo</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>Deselect visible</source>
+                <target>Desmarcar visível</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>Deselect all</source>
+                <target>Desmarcar tudo</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>Action</source>
+                <target>Ação</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>Submit Action</source>
+                <target>Enviar</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>From:</source>
+                <target>De:</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>To:</source>
+                <target>Para:</target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>Reset</source>
+                <target>Resetar</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>Actions</source>
+                <target>Ações</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>Order by</source>
+                <target>Ordenar por</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>Export</source>
+                <target>Exportar</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>No result</source>
+                <target>Nenhum resultado</target>
+            </trans-unit>
+            <trans-unit id="47">
+                <source>Do you want to %title% this row?</source>
+                <target>Deseja realmente %title% esta linha?</target>
+            </trans-unit>
+            <trans-unit id="48">
+                <source>No data</source>
+                <target>Nenhum dado</target>
+            </trans-unit>
+
+    <!-- with symbols -->
+            <!--trans-unit id="34">
+                <source>eqs</source>
+                <target>=</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>neqs</source>
+                <target>≠</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>lts</source>
+                <target>&lt;</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>ltes</source>
+                <target>≤</target>
+            </trans-unit>
+            <trans-unit id="38">
+                <source>gts</source>
+                <target>&gt;</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>gtes</source>
+                <target>≥</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>reqs</source>
+                <target>^x$</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>likes</source>
+                <target>(x)</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>nlikes</source>
+                <target>()x</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>rlikes</source>
+                <target>x*</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>llikes</source>
+                <target>*x</target>
+            </trans-unit>
+            <trans-unit id="45">
+                <source>btws</source>
+                <target>&lt;x&lt;</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>btwes</source>
+                <target>&lt;=x&lt;<=/target>
+            </trans-unit-->
+        </body>
+    </file>
+</xliff>

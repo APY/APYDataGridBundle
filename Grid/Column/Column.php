@@ -86,6 +86,10 @@ abstract class Column
     protected $selectExpanded;
     protected $searchOnClick = false;
     protected $safe;
+    protected $separator;
+    protected $joinType;
+    protected $export;
+    protected $class;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -116,6 +120,7 @@ abstract class Column
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
         $this->setOrder($this->getParam('order'));
+        $this->setJoinType($this->getParam('joinType'));
         $this->setFilterType($this->getParam('filter', 'input'));
         $this->setSelectFrom($this->getParam('selectFrom', 'query'));
         $this->setValues($this->getParam('values', array()));
@@ -142,6 +147,8 @@ abstract class Column
         $this->setSelectExpanded($this->getParam('selectExpanded', false));
         $this->setSearchOnClick($this->getParam('searchOnClick', false));
         $this->setSafe($this->getParam('safe', 'html'));
+        $this->setSeparator($this->getParam('separator', "<br />"));
+        $this->setExport($this->getParam('export'));
     }
 
     protected function getParam($id, $default = null)
@@ -163,6 +170,7 @@ abstract class Column
             return call_user_func($this->callback, $value, $row, $router);
         }
 
+        $value = is_bool($value) ? (int)$value : $value;
         if (array_key_exists((string)$value, $this->values)) {
             $value = $this->values[$value];
         }
@@ -258,13 +266,15 @@ abstract class Column
      *
      * @return bool return true when column is visible
      */
-    public function isVisible()
+    public function isVisible($isExported = false)
     {
-        if ($this->visible && $this->securityContext !== null && $this->getRole() != null) {
+        $visible = $isExported && $this->export !== null ? $this->export : $this->visible;
+
+        if ($visible && $this->securityContext !== null && $this->getRole() != null) {
             return $this->securityContext->isGranted($this->getRole());
         }
 
-        return $this->visible;
+        return $visible;
     }
 
     /**
@@ -523,7 +533,9 @@ abstract class Column
 
     public function setInputType($inputType)
     {
-        return $this->inputType = $inputType;
+        $this->inputType = $inputType;
+
+        return $this;
     }
 
     public function getInputType()
@@ -806,7 +818,7 @@ abstract class Column
     /**
      * Allows to set twig escaping parameter (html, js, css, url, html_attr)
      * or to display raw value if type is false
-     * @param type $safeOption can be one of raw, html, js, css, url, html_attr
+     * @param string|bool $safeOption can be one of false, html, js, css, url, html_attr
      * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setSafe($safeOption)
@@ -819,5 +831,53 @@ abstract class Column
     public function getSafe()
     {
         return $this->safe;
+    }
+
+    public function setSeparator($separator)
+    {
+        $this->separator = $separator;
+
+        return $this;
+    }
+
+    public function getSeparator()
+    {
+        return $this->separator;
+    }
+
+    public function setJoinType($type)
+    {
+        $this->joinType = $type;
+
+        return $this;
+    }
+
+    public function getJoinType()
+    {
+        return $this->joinType;
+    }
+
+    public function setExport($export)
+    {
+        $this->export = $export;
+
+        return $this;
+    }
+
+    public function getExport()
+    {
+        return $this->export;
+    }
+
+    public function setClass($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    public function getClass()
+    {
+        return $this->class;
     }
 }

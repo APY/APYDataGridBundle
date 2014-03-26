@@ -13,14 +13,14 @@
 
 namespace APY\DataGridBundle\Grid\Helper;
 
-use Doctrine\ORM\Query\TreeWalkerAdapter,
-    Doctrine\ORM\Query\AST\SelectStatement,
-    Doctrine\ORM\Query\AST\SelectExpression,
-    Doctrine\ORM\Query\AST\PathExpression,
-    Doctrine\ORM\Query\AST\AggregateExpression;
+use Doctrine\ORM\Query\TreeWalkerAdapter;
+use Doctrine\ORM\Query\AST\SelectStatement;
+use Doctrine\ORM\Query\AST\SelectExpression;
+use Doctrine\ORM\Query\AST\PathExpression;
+use Doctrine\ORM\Query\AST\AggregateExpression;
 
 /**
- * Replaces the selectClause of the AST with a COUNT statement
+ * Replaces the selectClause of the AST with a COUNT statement.
  *
  * @category    DoctrineExtensions
  * @package     DoctrineExtensions\Paginate
@@ -31,15 +31,18 @@ use Doctrine\ORM\Query\TreeWalkerAdapter,
 class ORMCountWalker extends TreeWalkerAdapter
 {
     /**
-     * Distinct mode hint name
+     * Distinct mode hint name.
      */
     const HINT_DISTINCT = 'doctrine_paginator.distinct';
 
     /**
-     * Walks down a SelectStatement AST node, modifying it to retrieve a COUNT
+     * Walks down a SelectStatement AST node, modifying it to retrieve a COUNT.
      *
      * @param SelectStatement $AST
+     *
      * @return void
+     *
+     * @throws \RuntimeException
      */
     public function walkSelectStatement(SelectStatement $AST)
     {
@@ -64,12 +67,26 @@ class ORMCountWalker extends TreeWalkerAdapter
         );
         $pathExpression->type = PathExpression::TYPE_STATE_FIELD;
 
+
+        // Remove the variables which are not used by other clauses
+        foreach ($AST->selectClause->selectExpressions as $key => $selectExpression) {
+            if ($selectExpression->fieldIdentificationVariable == null) {
+                unset($AST->selectClause->selectExpressions[$key]);
+            } elseif ($selectExpression->expression instanceof PathExpression) {
+                $groupByClause[] = $selectExpression->expression;
+            }
+        }
+
+        // Put the count expression in the first position
         $distinct = $this->_getQuery()->getHint(self::HINT_DISTINCT);
-        $AST->selectClause->selectExpressions = array(
+        array_unshift($AST->selectClause->selectExpressions,
             new SelectExpression(
                 new AggregateExpression('count', $pathExpression, $distinct), null
             )
         );
+
+        $groupByClause[] = $pathExpression;
+        $AST->groupByClause = new \Doctrine\ORM\Query\AST\GroupByClause($groupByClause);
 
         // ORDER BY is not needed, only increases query execution through unnecessary sorting.
         $AST->orderByClause = null;

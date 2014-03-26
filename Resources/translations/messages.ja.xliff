@@ -50,6 +50,10 @@
                 <source>To:</source>
                 <target>まで:</target>
             </trans-unit>
+            <trans-unit id="39">
+                <source>Delete</source>
+                <target>削除</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

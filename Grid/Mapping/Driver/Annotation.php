@@ -19,6 +19,7 @@ class Annotation implements DriverInterface
 {
     protected $columns;
     protected $filterable;
+    protected $sortable;
     protected $fields;
     protected $loaded;
     protected $groupBy;
@@ -28,7 +29,7 @@ class Annotation implements DriverInterface
     public function __construct($reader)
     {
         $this->reader = $reader;
-        $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = array();
+        $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = $this->sortable = array();
     }
 
     public function getClassColumns($class, $group = 'default')
@@ -54,19 +55,26 @@ class Annotation implements DriverInterface
     {
         if (isset($this->loaded[$className][$group])) return;
 
-        $reflection = new \ReflectionClass($className);
-        $properties = array();
+        $reflectionCollection = array();
 
-        foreach ($this->reader->getClassAnnotations($reflection) as $class) {
-            $this->getMetadataFromClass($className, $class);
+        $reflectionCollection[] = $reflection = new \ReflectionClass($className);
+        while (false !== $reflection = $reflection->getParentClass()) {
+            $reflectionCollection[] = $reflection;
         }
 
-        foreach ($reflection->getProperties() as $property) {
-            $this->fields[$className][$group][$property->getName()] = array();
+        while (!empty($reflectionCollection)) {
+            $reflection = array_pop($reflectionCollection);
 
-            foreach ($this->reader->getPropertyAnnotations($property) as $class) {
-                $this->getMetadataFromClassProperty($className, $class, $property->getName(), $group);
-                $properties[] = $property->getName();
+            foreach ($this->reader->getClassAnnotations($reflection) as $class) {
+                $this->getMetadataFromClass($className, $class, $group);
+            }
+
+            foreach ($reflection->getProperties() as $property) {
+                $this->fields[$className][$group][$property->getName()] = array();
+
+                foreach ($this->reader->getPropertyAnnotations($property) as $class) {
+                    $this->getMetadataFromClassProperty($className, $class, $property->getName(), $group);
+                }
             }
         }
 
@@ -75,8 +83,13 @@ class Annotation implements DriverInterface
         } else {
             foreach ($this->columns[$className][$group] as $columnId) {
                 // Ignore mapped fields
-                if (!isset($this->fields[$className][$group][$columnId]['filterable']) && strpos($columnId, '.') === false) {
-                    $this->fields[$className][$group][$columnId]['filterable'] = $this->filterable[$className][$group];
+                if (strpos($columnId, '.') === false) {
+                    if (!isset($this->fields[$className][$group][$columnId]['filterable'])) {
+                        $this->fields[$className][$group][$columnId]['filterable'] = $this->filterable[$className][$group];
+                    }
+                    if (!isset($this->fields[$className][$group][$columnId]['sortable'])) {
+                        $this->fields[$className][$group][$columnId]['sortable'] = $this->sortable[$className][$group];
+                    }
                 }
             }
         }
@@ -93,13 +106,14 @@ class Annotation implements DriverInterface
                 throw new \Exception(sprintf('Parameter `id` can\'t be used in annotations for property `%s`, please remove it from class %s', $name, $className));
             }
 
-            if ($name === null) {
+            if ($name === null) { // Class Column annotation
                 if (isset($metadata['id'])) {
                     $metadata['source'] = false;
+                    $this->fields[$className][$group][$metadata['id']] = array();
                 } else {
                     throw new \Exception(sprintf('Missing parameter `id` in annotations for extra column of class %s', $className));
                 }
-            } else {
+            } else { // Property Column annotation
                 // Relationship handle
                 if (isset($metadata['field']) && (strpos($metadata['field'], '.') !== false || strpos($metadata['field'], ':') !== false)) {
                     $metadata['id'] = $metadata['field'];
@@ -123,6 +137,10 @@ class Annotation implements DriverInterface
                 $metadata['filterable'] = isset($this->filterable[$className][$group]) ? $this->filterable[$className][$group] : true;
             }
 
+            if (!isset($metadata['sortable'])) {
+                $metadata['sortable'] = isset($this->sortable[$className][$group]) ? $this->sortable[$className][$group] : true;
+            }
+
             if (!isset($metadata['title'])) {
                 $metadata['title'] = $metadata['id'];
             }
@@ -135,18 +153,17 @@ class Annotation implements DriverInterface
         }
     }
 
-    protected function getMetadataFromClass($className, $class)
+    protected function getMetadataFromClass($className, $class, $group)
     {
         if ($class instanceof Source) {
-            foreach ($class->getGroups() as $group) {
-                $this->columns[$className][$group] = $class->getColumns();
-                $this->filterable[$className][$group] = $class->isFilterable();
-                $this->groupBy[$className][$group] = $class->getGroupBy();
+            foreach ($class->getGroups() as $sourceGroup) {
+                $this->columns[$className][$sourceGroup] = $class->getColumns();
+                $this->filterable[$className][$sourceGroup] = $class->isFilterable();
+                $this->sortable[$className][$sourceGroup] = $class->isSortable();
+                $this->groupBy[$className][$sourceGroup] = $class->getGroupBy();
             }
         } elseif ($class instanceof Column) {
-            foreach ($class->getGroups() as $group) {
-                $this->getMetadataFromClassProperty($className, $class, null, $group);
-            }
+            $this->getMetadataFromClassProperty($className, $class, null, $group);
         }
     }
 }

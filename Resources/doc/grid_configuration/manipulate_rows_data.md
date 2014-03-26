@@ -35,7 +35,8 @@ $source->manipulateRow(
     function ($row)
     {
         if ($row->getField('enabled') == '1') {
-            $row->setColor('#00ff00');
+            $row->setClass('border-enabled');  // add a css class to the <tr> tag
+            $row->setColor('#00ff00');  // set background-color as inline style
         }
         
         // Don't show the row if the price is greater than 10
@@ -77,4 +78,36 @@ $source->manipulateRow(
 
 $grid->setSource($source);
 ...
+```
+
+Or if you want use the entity of the row:
+```php
+<?php
+class AnEntity{
+	private $price;
+	private $tax;
+	
+	...
+
+	public function getPriceWithTax(){
+		//Some code in the business layer of your entity
+
+		return $this->price * (1 + $this->tax);
+	}
+}
+?>
+
+<?php
+...
+
+$source->manipulateRow(
+    function ($row) 
+    {       
+        // Change the output of the new column with your own code at entity.
+        $row->setField('myNewColumn', $row->getEntity()->getPriceWithTax());
+    }
+);
+
+$grid->setSource($source);
+
 ```

@@ -92,6 +92,10 @@ class Vector extends Source
             $fieldTypes = array();
 
             foreach ($this->data as $row) {
+                if (!isset($row[$c->getId()])) {
+                    continue;
+                }
+
                 $fieldValue = $row[$c->getId()];
 
                 if ($fieldValue !== '' && $fieldValue !== null) {
@@ -118,7 +122,7 @@ class Vector extends Source
                 }
             }
 
-            if(count($fieldTypes) == 1) {
+            if (count($fieldTypes) == 1) {
                 $c->setType(key($fieldTypes));
             } elseif (isset($fieldTypes['boolean']) && isset($fieldTypes['number'])) {
                 $c->setType('number');
@@ -199,7 +203,7 @@ class Vector extends Source
 
     public function getHash()
     {
-        return __CLASS__.md5(implode('', array_map(function($c) { return $c->getId(); } , $this->columns)));
+        return __CLASS__.md5(implode('', array_map(function ($c) { return $c->getId(); }, $this->columns)));
     }
 
     /**
@@ -216,10 +220,11 @@ class Vector extends Source
      * @param array $data
      * @throws \InvalidArgumentException
      */
-    public function setData($data){
+    public function setData($data)
+    {
         $this->data = $data;
 
-        if(!is_array($this->data) || empty($this->data)){
+        if (!is_array($this->data) || empty($this->data)) {
             throw new \InvalidArgumentException('Data should be an array with content');
         }
 
@@ -230,12 +235,14 @@ class Vector extends Source
         }
 
         $firstRaw = reset($this->data);
-        if(!is_array($firstRaw) || empty($firstRaw)){
+        if (!is_array($firstRaw) || empty($firstRaw)) {
             throw new \InvalidArgumentException('Data should be a two-dimentional array');
         }
     }
 
-    public function delete(array $ids){}
+    public function delete(array $ids)
+    {
+    }
 
     protected function setColumns($columns)
     {
