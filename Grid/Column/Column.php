@@ -71,7 +71,6 @@ abstract class Column
     protected $field;
     protected $role;
     protected $filterType;
-    protected $filter;
     protected $params;
     protected $isSorted = false;
     protected $orderUrl;
@@ -149,6 +148,7 @@ abstract class Column
         $this->setSafe($this->getParam('safe', 'html'));
         $this->setSeparator($this->getParam('separator', "<br />"));
         $this->setExport($this->getParam('export'));
+        $this->setClass($this->getParam('class'));
     }
 
     protected function getParam($id, $default = null)
@@ -384,18 +384,6 @@ abstract class Column
     public function getSize()
     {
         return $this->size;
-    }
-
-    public function setOrderUrl($orderUrl)
-    {
-        $this->orderUrl = $orderUrl;
-
-        return $this;
-    }
-
-    public function getOrderUrl()
-    {
-        return $this->orderUrl;
     }
 
     /**
