@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="13">
+                <source>eq</source>
+                <target>Rovná se</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>neq</source>
+                <target>Nerovná se</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>lt</source>
+                <target>Menší než</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>lte</source>
+                <target>Menší nebo rovno než</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>gt</source>
+                <target>Větší než</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>gte</source>
+                <target>Větší nebo rovno než</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>req</source>
+                <target>Regulární výraz</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>like</source>
+                <target>Obsahuje</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>nlike</source>
+                <target>Neobsahuje</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>rlike</source>
+                <target>Začíná na</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>llike</source>
+                <target>Končí na</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>btw</source>
+                <target>Mezi</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>btwe</source>
+                <target>Mezi včetně</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>isNull</source>
+                <target>Není definováno</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>isNotNull</source>
+                <target>Je definováno</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>%count% Results, </source>
+                <target>%count% Výsledek, |%count% Výsledků, </target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
