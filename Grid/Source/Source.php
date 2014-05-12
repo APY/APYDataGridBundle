@@ -183,7 +183,7 @@ abstract class Source implements DriverInterface
                 $fieldName = $column->getField();
                 $fieldValue = '';
 
-                if ($this instanceof Entity) {
+                if ($this instanceof Entity || $this instanceof Document) {
                     // Mapped field
                     $itemEntity = $item;
                     if (strpos($fieldName, '.') === false) {
