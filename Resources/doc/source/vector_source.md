@@ -191,7 +191,7 @@ You can also do that using an array of Column:
 use APY\DataGridBundle\Grid\Column;
 ...
 $columns = array(
-    new Column\NumberColumn(array('id' => 'id', 'field' => 'id', 'filterable' => true, 'source' => true))
+    new Column\NumberColumn(array('id' => 'id', 'field' => 'id', 'filterable' => true, 'source' => true)),
     new Column\ArrayColumn(array('id' => 'authors', 'field' => 'authors', 'source' => true, 'filter' => 'select', 'selectFrom' => 'query', 'sortable' => false))
 );
 
