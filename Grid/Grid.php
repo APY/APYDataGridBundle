@@ -1027,6 +1027,23 @@ class Grid
     }
 
     /**
+     * Returns true if column exists in columns and lazyAddColumn properties
+     *
+     * @param $columnId
+     * @return boolean
+     */
+    public function hasColumn($columnId)
+    {
+        foreach ($this->lazyAddColumn as $column) {
+            if ($column['column']->getId() == $columnId) {
+                return true;
+            }
+        }
+
+        return $this->columns->hasColumnById($columnId);
+    }
+
+    /**
      * Sets Array of Columns to the grid
      *
      * @param $columns
