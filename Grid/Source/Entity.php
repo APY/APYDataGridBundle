@@ -149,7 +149,9 @@ class Entity extends Source
         $name = $column->getField();
 
         if($column->getIsManualField())
+        {
             return $column->getField();
+        }
 
         if (strpos($name, '.') !== false) {
             $previousParent = '';
