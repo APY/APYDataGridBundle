@@ -1,6 +1,14 @@
 Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid.  
 This bundle was initiated by Stanislav Turza (Sorien).
 
+<div style="padding: 8px 35px 8px 14px;margin-bottom: 20px;text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.5);background-color: #FCF8E3; color: #C09853;   border: 1px solid #FBEED5;    border-radius: 4px;">
+    <strong>NB: Use master-dev!</strong>
+    <p>
+    The stable tags are very old so to use this bundle, you'll need to follow the dev-master branch.
+    </p>
+</div>
+
+
 **Version**: 2.1-dev  
 **Compatibility**: Symfony >= 2.0.0, Twig >= 1.5.0
 
