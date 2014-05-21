@@ -148,8 +148,7 @@ class Entity extends Source
     {
         $name = $column->getField();
 
-        if($column->getIsManualField())
-        {
+        if($column->getIsManualField()) {
             return $column->getField();
         }
 
@@ -327,8 +326,7 @@ class Entity extends Source
         foreach ($columns as $column) {
 
             // If a column is a manual field, ie a.col*b.col as myfield, it is added to select from user.
-            if($column->getIsManualField()===false)
-            {
+            if($column->getIsManualField() === false) {
                 $fieldName = $this->getFieldName($column, true);
                 $this->query->addSelect($fieldName);
                 $this->querySelectfromSource->addSelect($fieldName);
