@@ -1,7 +1,7 @@
 Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid.  
 This bundle was initiated by Stanislav Turza (Sorien).
 
-**Version**: 2.1-dev  
+**Version**: 2.1-dev - master-dev (**this is the stable version**)  
 **Compatibility**: Symfony >= 2.0.0, Twig >= 1.5.0
 
 [![Build Status](https://secure.travis-ci.org/Abhoryo/APYDataGridBundle.png?branch=master)](http://travis-ci.org/Abhoryo/APYDataGridBundle)
