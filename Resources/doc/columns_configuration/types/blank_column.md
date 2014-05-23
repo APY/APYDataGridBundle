@@ -1,7 +1,7 @@
 Blank Column
 ==============
 
-This column isn't linked to any field of your data but can be filled for the render with the manipulator render or a template.  
+This column isn't linked to any field of your data but can be filled for the render with the render cell manipulator or a template.  
 This column isn't sortable and filterable.
 
 ## Annotation
