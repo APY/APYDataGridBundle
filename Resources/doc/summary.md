@@ -42,6 +42,8 @@ SUMMARY
 		1. [Date Column](columns_configuration/types/date_column.md)
 		1. [_Time_](columns_configuration/types/time_column.md)
 		1. [Array Column](columns_configuration/types/array_column.md)
+		1. [Blank Column](columns_configuration/types/blank_column.md)
+		1. [Rank Column](columns_configuration/types/rank_column.md)
 		1. [Create your column](columns_configuration/types/create_column.md)
 	1. [Filters](columns_configuration/filters/)
 		1. [Input Filter](columns_configuration/filters/input_filter.md)

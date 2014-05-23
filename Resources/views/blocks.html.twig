@@ -238,6 +238,10 @@
 {% block grid_column_boolean_cell %}
     <span class="grid_boolean_{{ value }}" title="{{ value }}">{{ block('grid_column_cell') }}</span>
 {% endblock grid_column_boolean_cell %}
+{# ------------------------------------------------ grid_column_rank_cell --------------------------------------------- #}
+{% block grid_column_rank_cell %}
+{{ grid.page * grid.limit + value }}
+{% endblock grid_column_rank_cell %}
 {# ------------------------------------------------ grid_array_columns --------------------------------------------- #}
 {% block grid_column_array_cell %}
 {% set sourceValues = row.field(column.id) %}
