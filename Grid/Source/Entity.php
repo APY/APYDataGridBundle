@@ -460,14 +460,43 @@ class Entity extends Source
 
     public function getTotalCount($maxResults = null)
     {
+        // Doctrine Bug Workaround: http://www.doctrine-project.org/jira/browse/DDC-1927
+        $countQueryBuilder = clone $this->query;
+        foreach ($countQueryBuilder->getRootAliases() as $alias) {
+            $countQueryBuilder->addSelect($alias);
+        }
+
         // From Doctrine\ORM\Tools\Pagination\Paginator::count()
-        $countQuery = $this->query->getQuery();
+        $countQuery = $countQueryBuilder->getQuery();
+
+        // Add hints from main query, if developer wants to use additional hints (ex. gedmo translations):
+        foreach ($this->hints as $hintName => $hintValue) {
+            $countQuery->setHint($hintName, $hintValue);
+        }
 
         if (! $countQuery->getHint(ORMCountWalker::HINT_DISTINCT)) {
             $countQuery->setHint(ORMCountWalker::HINT_DISTINCT, true);
         }
 
-        $countQuery->setHint(Query::HINT_CUSTOM_TREE_WALKERS, array('APY\DataGridBundle\Grid\Helper\ORMCountWalker'));
+        if ($countQuery->getHint(Query::HINT_CUSTOM_OUTPUT_WALKER) == false) {
+            $platform = $countQuery->getEntityManager()->getConnection()->getDatabasePlatform(); // law of demeter win
+
+            $rsm = new ResultSetMapping();
+            $rsm->addScalarResult($platform->getSQLResultCasing('dctrn_count'), 'count');
+
+            $countQuery->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, 'Doctrine\ORM\Tools\Pagination\CountOutputWalker');
+            $countQuery->setResultSetMapping($rsm);
+        } else {
+            $hints = $countQuery->getHint(Query::HINT_CUSTOM_TREE_WALKERS);
+
+            if ($hints === false) {
+                $hints = array();
+            }
+
+            $hints[] = 'Doctrine\ORM\Tools\Pagination\CountWalker';
+            //$hints[] = 'APY\DataGridBundle\Grid\Helper\ORMCountWalker';
+            $countQuery->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $hints);
+        }
         $countQuery->setFirstResult(null)->setMaxResults($maxResults);
 
         try {
