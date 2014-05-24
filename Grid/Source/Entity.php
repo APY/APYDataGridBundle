@@ -15,11 +15,12 @@ namespace APY\DataGridBundle\Grid\Source;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Row;
-use APY\DataGridBundle\Grid\Helper\ORMCountWalker;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpKernel\Kernel;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Tools\Pagination\CountWalker;
 
 class Entity extends Source
 {
@@ -474,8 +475,8 @@ class Entity extends Source
             $countQuery->setHint($hintName, $hintValue);
         }
 
-        if (! $countQuery->getHint(ORMCountWalker::HINT_DISTINCT)) {
-            $countQuery->setHint(ORMCountWalker::HINT_DISTINCT, true);
+        if (! $countQuery->getHint(CountWalker::HINT_DISTINCT)) {
+            $countQuery->setHint(CountWalker::HINT_DISTINCT, true);
         }
 
         if ($countQuery->getHint(Query::HINT_CUSTOM_OUTPUT_WALKER) == false) {
