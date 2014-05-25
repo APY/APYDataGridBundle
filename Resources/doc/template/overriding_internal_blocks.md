@@ -11,9 +11,9 @@ If you want to override blocks of the grid you can use a extended template of th
 
 {% block grid_pager %}{% endblock %}
 
-{% block grid_column_address_filter %}
+{% block grid_column_id_address_filter %}
     {{ column.id }}
-{% endblock grid_column_address_filter %}
+{% endblock grid_column_id_address_filter %}
 ```
 
 This template can then be passed to the grid twig function as second parameter
@@ -45,9 +45,9 @@ Current template will automatically extended from the base block template (APYDa
 
 {% block grid_pager %}{% endblock %}
 
-{% block grid_column_address_filter %}
+{% block grid_column_id_address_filter %}
     {{ column.id }}
-{% endblock grid_column_address_filter %}
+{% endblock grid_column_id_address_filter %}
 ```
 **Note**: This trick works only with extended templates. Otherwises, blocks will be displayed twice.
 **Note²**: Blocks have to be define after the call of the grid and outside others blocks.
@@ -87,9 +87,9 @@ For others blocks, see [cell rendering](cell_rendering.md) and [filter rendering
     This block manages the display of the row actions column cell.
  * **grid_column_massaction_cell**
     This block manages the display of the mass action column cell.
- * **grid_column_boolean_cell**
+ * **grid_column_type_boolean_cell** (or **grid_column_boolean_cell**)
     This block manages the display of the boolean column cell.
- * **grid_column_array_cell**
+ * **grid_column_type_array_cell** (or **grid_column_array_cell**)
     This block manages the display of the array column cell.
  * **grid_column_operator**
     This block manages the display of the operator of a filter.
