@@ -207,10 +207,16 @@ class DataGridExtension extends \Twig_Extension
 
         if (($id != '' && ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_cell')
                         || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getType().'_cell')
-                        || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell')))
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell')
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_id_'.$column->getRenderBlockId().'_cell')
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getType().'_cell')
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getParentType().'_cell')))
          || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
          || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
          || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell')
+         || $this->hasBlock($block = 'grid_column_id_'.$column->getRenderBlockId().'_cell')
+         || $this->hasBlock($block = 'grid_column_type_'.$column->getType().'_cell')
+         || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_cell')
         ) {
             return $this->renderBlock($block, array('grid' => $grid, 'column' => $column, 'row' => $row, 'value' => $value));
         }
@@ -231,10 +237,12 @@ class DataGridExtension extends \Twig_Extension
         $id = $this->names[$grid->getHash()];
 
         if (($id != '' && ($this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_filter')
+                        || $this->hasBlock($block = 'grid_'.$id.'_column_id_'.$column->getRenderBlockId().'_filter')
                         || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getType().'_filter')
                         || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getParentType().'_filter'))
                         || $this->hasBlock($block = 'grid_'.$id.'_column_filter_type_'.$column->getFilterType()))
          || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_filter')
+         || $this->hasBlock($block = 'grid_column_id_'.$column->getRenderBlockId().'_filter')
          || $this->hasBlock($block = 'grid_column_type_'.$column->getType().'_filter')
          || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_filter')
          || $this->hasBlock($block = 'grid_column_filter_type_'.$column->getFilterType())
