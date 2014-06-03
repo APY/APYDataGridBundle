@@ -89,6 +89,8 @@ abstract class Column
     protected $joinType;
     protected $export;
     protected $class;
+    protected $isManualField;
+    protected $isAggregate;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -124,6 +126,9 @@ abstract class Column
         $this->setSelectFrom($this->getParam('selectFrom', 'query'));
         $this->setValues($this->getParam('values', array()));
         $this->setOperatorsVisible($this->getParam('operatorsVisible', true));
+        $this->setIsManualField($this->getParam('isManualField', false));
+        $this->setIsAggregate($this->getParam('isAggregate', false));
+
         // Order is important for the order display
         $this->setOperators($this->getParam('operators', array(
             self::OPERATOR_EQ,
@@ -868,4 +873,26 @@ abstract class Column
     {
         return $this->class;
     }
+
+
+    public function setIsManualField($isManualField)
+    {
+        $this->isManualField = $isManualField;
+    }
+
+    public function getIsManualField()
+    {
+        return $this->isManualField;
+    }
+
+    public function setIsAggregate($isAggregate)
+    {
+        $this->isAggregate = $isAggregate;
+    }
+
+    public function getIsAggregate()
+    {
+        return $this->isAggregate;
+    }
+
 }
