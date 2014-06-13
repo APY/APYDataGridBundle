@@ -129,29 +129,32 @@ class Columns implements \IteratorAggregate, \Countable
     /**
      * Sets order of Columns passing an array of column ids
      * If the list of ids is uncomplete, the remaining columns will be
-     * placed after
+     * placed after if keepOtherColumns is true 
      *
      * @param array $columnIds
+     * @param boolean $keepOtherColumns
      *
      * @return self
      */
-    public function setColumnsOrder(array $columnIds)
+    public function setColumnsOrder(array $columnIds, $keepOtherColumns = true)
     {
-        $reorderedColumns = array();
         $columnsIndexedByIds = array();
 
         foreach ($this->columns as $column) {
             $columnsIndexedByIds[$column->getId()] = $column;
         }
 
+        $this->columns = array();
         foreach ($columnIds as $columnId) {
             if (isset($columnsIndexedByIds[$columnId])) {
-                $reorderedColumns[] = $columnsIndexedByIds[$columnId];
+                $this->columns[] = $columnsIndexedByIds[$columnId];
                 unset($columnsIndexedByIds[$columnId]);
             }
         }
 
-        $this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
+        if ($keepOtherColumns) {
+            $this->columns = array_merge($this->columns, array_values($columnsIndexedByIds));
+        }
 
         return $this;
     }

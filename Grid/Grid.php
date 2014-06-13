@@ -1063,12 +1063,13 @@ class Grid
      * placed after
      *
      * @param array $columnIds
+     * @param boolean $keepOtherColumns
      *
      * @return self
      */
-    public function setColumnsOrder(array $columnIds)
+    public function setColumnsOrder(array $columnIds, $keepOtherColumns = true)
     {
-        $this->columns->setColumnsOrder($columnIds);
+        $this->columns->setColumnsOrder($columnIds, $keepOtherColumns);
 
         return $this;
     }
