@@ -67,6 +67,7 @@ SUMMARY
 	1. [Manipulate columns](grid_configuration/manipulate_column.md)
 	1. [Manipulate row action rendering](grid_configuration/manipulate_row_action_rendering.md)
 	1. [Hide or show columns](grid_configuration/hide_show_columns.md)
+	1. [Set columns order](grid_configuration/set_columns_order.md)
 	1. [Set a default page](grid_configuration/set_default_page.md)
 	1. [Set a default order](grid_configuration/set_default_order.md)
 	1. [Set a default items per page](grid_configuration/set_default_limit.md)
