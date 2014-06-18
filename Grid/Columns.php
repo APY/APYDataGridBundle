@@ -138,24 +138,26 @@ class Columns implements \IteratorAggregate, \Countable
      */
     public function setColumnsOrder(array $columnIds, $keepOtherColumns = true)
     {
+        $reorderedColumns = array();
         $columnsIndexedByIds = array();
 
         foreach ($this->columns as $column) {
             $columnsIndexedByIds[$column->getId()] = $column;
         }
 
-        $this->columns = array();
         foreach ($columnIds as $columnId) {
             if (isset($columnsIndexedByIds[$columnId])) {
-                $this->columns[] = $columnsIndexedByIds[$columnId];
+                $reorderedColumns[] = $columnsIndexedByIds[$columnId];
                 unset($columnsIndexedByIds[$columnId]);
             }
         }
 
-        if ($keepOtherColumns) {
-            $this->columns = array_merge($this->columns, array_values($columnsIndexedByIds));
-        }
-
+		if ($keepOtherColumns) {
+			$this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
+		} else {
+			$this->columns = $reorderedColumns;
+		}
+        
         return $this;
     }
 }
