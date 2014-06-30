@@ -1,13 +1,13 @@
 {
     "name": "apy/datagrid-bundle",
-	"version": "2.1.13",
+    "version": "2.1.13",
     "description": "Symfony2 Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
     "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
-	"type": "symfony-bundle",
-	"license": "MIT",
+    "type": "symfony-bundle",
+    "license": "MIT",
     "authors": [
-	    {
+        {
             "name": "Yoann Petit",
             "email": "abhoryo@free.fr"
         },
