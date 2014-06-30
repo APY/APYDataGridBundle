@@ -41,9 +41,9 @@ $grid->addColumn($MyColumn);
 
 ```django
 {% block grid_column_informations_cell %}
-{{ grid.field('column4') }}
+{{ row.field('column4') }}
 <br />
-{{ grid.field('column5') }}
+{{ row.field('column5') }}
 {% endblock grid_column_informations_cell %}
 ```
 
