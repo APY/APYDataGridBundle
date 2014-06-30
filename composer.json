@@ -1,9 +1,10 @@
 {
     "name": "apy/datagrid-bundle",
-    "type": "symfony-bundle",
     "description": "Symfony2 Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
     "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
+	"type": "symfony-bundle",
+    "license": "MIT",
     "authors": [
 	    {
             "name": "Yoann Petit",
