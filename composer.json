@@ -1,9 +1,11 @@
 {
     "name": "apy/datagrid-bundle",
-    "type": "symfony-bundle",
+	"version": "2.1.13",
     "description": "Symfony2 Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
     "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
+	"type": "symfony-bundle",
+	"license": "MIT",
     "authors": [
 	    {
             "name": "Yoann Petit",
@@ -31,11 +33,5 @@
     "autoload": {
         "psr-0": { "APY\\DataGridBundle": "" }
     },
-    "target-dir": "APY/DataGridBundle",
-	"minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.1-dev"
-        }
-    }
+    "target-dir": "APY/DataGridBundle"
 }
