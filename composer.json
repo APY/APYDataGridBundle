@@ -3,10 +3,10 @@
     "description": "Symfony2 Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
     "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
-	"type": "symfony-bundle",
+    "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
-	    {
+        {
             "name": "Yoann Petit",
             "email": "abhoryo@free.fr"
         },
@@ -33,7 +33,7 @@
         "psr-0": { "APY\\DataGridBundle": "" }
     },
     "target-dir": "APY/DataGridBundle",
-	"minimum-stability": "dev",
+    "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
             "dev-master": "2.1-dev"
