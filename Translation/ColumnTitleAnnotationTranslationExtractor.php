@@ -6,6 +6,8 @@ use Doctrine\Common\Annotations\AnnotationReader as DoctrineAnnotationReader;
 
 use APY\DataGridBundle\Grid\Mapping\Driver\Annotation;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
+use APY\DataGridBundle\Grid\Mapping\Source;
+use APY\DataGridBundle\Grid\Mapping\Column;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
@@ -58,18 +60,60 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
             $annotationDriver = new Annotation(new DoctrineAnnotationReader());
             $manager = new Manager();
             $manager->addDriver($annotationDriver, -1);
-            $metadata = $manager->getMetadata($this->parsedClassName);
+            
+            // Get all available groups
+            $groups = $this->extractGroups();
+            foreach ($groups as $group) {
+                $metadata = $manager->getMetadata($this->parsedClassName, $group);
 
-            // Save messages for title
-            foreach ($metadata->getFields() as $field) {
-                $mappedField = $metadata->getFieldMapping($field);
-                if ((! isset($mappedField['visible']) || $mappedField['visible']) && isset($mappedField['title'])) {
-                    $message = new Message($mappedField['title']);
-                    $message->addSource(new FileSource((string) $file));
-                    $catalogue->add($message);
+                // Save messages for title
+                foreach ($metadata->getFields() as $field) {
+                    $mappedField = $metadata->getFieldMapping($field);
+                    if ((! isset($mappedField['visible']) || $mappedField['visible']) && isset($mappedField['title'])) {
+                        $message = new Message($mappedField['title']);
+                        $message->addSource(new FileSource((string) $file));
+                        $catalogue->add($message);
+                    }
                 }
             }
         }
+    }
+    
+    /**
+     * Extract available grid groups in the current class
+     * @return array
+     */
+    protected function extractGroups()
+    {
+        $reader = new DoctrineAnnotationReader();
+        $groups = array('default');
+        
+        $reflectionCollection = array();
+
+        $reflectionCollection[] = $reflection = new \ReflectionClass($this->parsedClassName);
+        while (false !== $reflection = $reflection->getParentClass()) {
+            $reflectionCollection[] = $reflection;
+        }
+        
+        while (!empty($reflectionCollection)) {
+            $reflection = array_pop($reflectionCollection);
+
+            foreach ($reader->getClassAnnotations($reflection) as $class) {
+                if ($class instanceof Source) {
+                    $groups = array_merge($groups, $class->getGroups());
+                }
+            }
+
+            foreach ($reflection->getProperties() as $property) {
+                foreach ($reader->getPropertyAnnotations($property) as $class) {
+                    if ($class instanceof Column) {
+                        $groups = array_merge($groups, $class->getGroups());
+                    }
+                }
+            }
+        }
+        
+        return $groups;
     }
 
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $node) { }
