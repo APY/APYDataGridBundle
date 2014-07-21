@@ -33,10 +33,6 @@ Wrong values are ignored.
 |lte|Lower than or equal to|
 |gt|Greater than|
 |gte|Greater than or equal to|
-|like|Contains|
-|nlike|Not contain|
-|rlike|Starts with|
-|llike|Ends with|
 |btw|Between exclusive|
 |btwe|Between inclusive|
 |isNull|Is not defined|
