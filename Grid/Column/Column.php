@@ -258,6 +258,7 @@ abstract class Column
      * Set column visibility
      *
      * @param boolean $visible
+     * @return $this
      */
     public function setVisible($visible)
     {
@@ -460,7 +461,7 @@ abstract class Column
 
     /**
      * Set column visibility for source class
-     * @param $value
+     * @param $visibleForSource
      * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setVisibleForSource($visibleForSource)
@@ -483,6 +484,7 @@ abstract class Column
      * Set column as primary
      *
      * @param boolean $primary
+     * @return $this
      */
     public function setPrimary($primary)
     {
@@ -503,6 +505,7 @@ abstract class Column
     /**
      * Set column align
      * @param string $align left/right/center
+     * @return $this
      */
     public function setAlign($align)
     {
@@ -767,6 +770,7 @@ abstract class Column
      * Internal function
      *
      * @param $securityContext
+     * @return $this
      */
     public function setSecurityContext(SecurityContextInterface $securityContext)
     {
@@ -894,5 +898,4 @@ abstract class Column
     {
         return $this->isAggregate;
     }
-
 }

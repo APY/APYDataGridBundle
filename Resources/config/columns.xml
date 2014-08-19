@@ -52,6 +52,5 @@
         <service id="grid.column.rank" class="%grid.column.rank.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
-
     </services>
 </container>

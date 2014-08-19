@@ -252,6 +252,7 @@ class DataGridExtension extends \Twig_Extension
 
         return '';
     }
+
     /**
      * Column Operator Drawing override
      *

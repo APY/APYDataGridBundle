@@ -1,15 +1,15 @@
 language: php
 
 php:
-  - 5.3
-  # - 5.4
+    - 5.3
+    - 5.5
 
 env:
-  - SYMFONY_VERSION=origin/master
+    - SYMFONY_VERSION=origin/master
 
 before_script:
-  - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install
+    - curl -s http://getcomposer.org/installer | php
+    - php composer.phar install
 
 script: phpunit
 
