@@ -9,6 +9,7 @@
         {% endif %}
         </div>
         <div class="grid_body">
+        {% block grid_table %}
         <table>
         {% if grid.isTitleSectionVisible %}
             {{ grid_titles(grid) }}
@@ -18,6 +19,7 @@
         {% endif %}
         {{ grid_rows(grid) }}
         </table>
+        {% endblock grid_table %}
         </div>
         <div class="grid_footer">
         {% if grid.isPagerSectionVisible %}
