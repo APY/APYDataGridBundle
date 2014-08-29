@@ -34,7 +34,7 @@ class MassAction implements MassActionInterface
         $this->title = $title;
         $this->callback = $callback;
         $this->confirm = $confirm;
-        $this->confirmMessage = 'Do you want to '.strtolower($title).' the seleted rows?';
+        $this->confirmMessage = 'Do you want to '.strtolower($title).' the selected rows?';
         $this->parameters = $parameters;
         $this->role = $role;
     }
