@@ -13,9 +13,7 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 /**
- *
  * Excel (This export produces a warning with new Office Excel)
- *
  */
 class ExcelExport extends Export
 {

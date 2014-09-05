@@ -185,6 +185,10 @@
                 <source>No data</source>
                 <target>Sin datos</target>
             </trans-unit>
+            <trans-unit id="43">
+                <source>Export</source>
+                <target>Exportar</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

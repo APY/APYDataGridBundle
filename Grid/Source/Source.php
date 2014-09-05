@@ -50,9 +50,10 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * @param \Closure $callback
+     * @param callable $callback
+     * @return $this
      */
-    public function manipulateQuery(\Closure $callback = null)
+    public function manipulateQuery($callback = null)
     {
         $this->prepareQueryCallback = $callback;
 

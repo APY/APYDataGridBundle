@@ -1027,6 +1027,23 @@ class Grid
     }
 
     /**
+     * Returns true if column exists in columns and lazyAddColumn properties
+     *
+     * @param $columnId
+     * @return boolean
+     */
+    public function hasColumn($columnId)
+    {
+        foreach ($this->lazyAddColumn as $column) {
+            if ($column['column']->getId() == $columnId) {
+                return true;
+            }
+        }
+
+        return $this->columns->hasColumnById($columnId);
+    }
+
+    /**
      * Sets Array of Columns to the grid
      *
      * @param $columns
@@ -1046,12 +1063,13 @@ class Grid
      * placed after
      *
      * @param array $columnIds
+     * @param boolean $keepOtherColumns
      *
      * @return self
      */
-    public function setColumnsOrder(array $columnIds)
+    public function setColumnsOrder(array $columnIds, $keepOtherColumns = true)
     {
-        $this->columns->setColumnsOrder($columnIds);
+        $this->columns->setColumnsOrder($columnIds, $keepOtherColumns);
 
         return $this;
     }

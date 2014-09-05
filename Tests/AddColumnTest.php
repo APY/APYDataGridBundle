@@ -1,4 +1,5 @@
 <?php
+
 namespace APY\DataGridBundle\Tests;
 
 use APY\DataGridBundle\Grid\Columns;

@@ -117,12 +117,15 @@
     {% for row in grid.rows %}
     {% set last_row = loop.last %}
     {% spaceless %}
+        {% set gridColumns %}
+            {% for column in grid.columns %}
+                {% if column.visible(grid.isReadyForExport) %}
+                    <td class="grid-column-{{ column.renderBlockId }}{% if column.class %} {{ column.class }}{% endif %}{% if column.align != 'left'%} align-{{ column.align }}{% endif %}{% if loop.last %} last-column{% endif %}{% if last_row %} last-row{% endif %}">{{ grid_cell(column, row, grid)|raw }}</td>
+                {% endif %}
+            {% endfor %}
+        {% endset %}
         <tr{% if row.color != '' %} style="background-color:{{ row.color }};"{% endif %} class="grid-row-cells {{ cycle(['odd', 'even'], loop.index) }}{% if row.class != '' %} {{ row.class }}{% endif %}">
-        {% for column in grid.columns %}
-            {% if column.visible(grid.isReadyForExport) %}
-                <td class="grid-column-{{ column.renderBlockId }}{% if column.class %} {{ column.class }}{% endif %}{% if column.align != 'left'%} align-{{ column.align }}{% endif %}{% if loop.last %} last-column{% endif %}{% if last_row %} last-row{% endif %}">{{ grid_cell(column, row, grid)|raw }}</td>
-            {% endif %}
-        {% endfor %}
+        {{ gridColumns }}
     {% endspaceless %}
     </tr>
     {% else %}
@@ -231,11 +234,21 @@
 {% block grid_column_massaction_cell %}
     <input type="checkbox" class="action" value="1" name="{{ grid.hash }}[{{ column.id }}][{{ row.primaryFieldValue }}]"/>
 {% endblock grid_column_massaction_cell %}
-{# ------------------------------------------------ grid_column_boolean_cell --------------------------------------------- #}
+{# ------------------------------------------------ grid_column_type_boolean_cell --------------------------------------------- #}
 {% block grid_column_boolean_cell %}
     <span class="grid_boolean_{{ value }}" title="{{ value }}">{{ block('grid_column_cell') }}</span>
 {% endblock grid_column_boolean_cell %}
-{# ------------------------------------------------ grid_array_columns --------------------------------------------- #}
+{% block grid_column_type_boolean_cell %}
+	{{ block('grid_column_boolean_cell') }}
+{% endblock grid_column_type_boolean_cell %}
+{# ------------------------------------------------ grid_column_type_rank_cell --------------------------------------------- #}
+{% block grid_column_rank_cell %}
+{{ grid.page * grid.limit + value }}
+{% endblock grid_column_rank_cell %}
+{% block grid_column_type_rank_cell %}
+	{{ block('grid_column_rank_cell') }}
+{% endblock grid_column_type_rank_cell %}
+{# ------------------------------------------------ grid_column_type_array_columns --------------------------------------------- #}
 {% block grid_column_array_cell %}
 {% set sourceValues = row.field(column.id) %}
 {% set values = value %}
@@ -245,6 +258,9 @@
     {{ block('grid_column_cell') | raw }}{{ column.separator | raw }}
 {%- endfor %}
 {% endblock grid_column_array_cell %}
+{% block grid_column_type_array_cell %}
+	{{ block('grid_column_array_cell') }}
+{% endblock grid_column_type_array_cell %}
 {# ------------------------------------------- grid_column_cell ---------------------------------------- #}
 {% block grid_column_cell %}
 {%- spaceless %}

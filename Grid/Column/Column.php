@@ -71,7 +71,6 @@ abstract class Column
     protected $field;
     protected $role;
     protected $filterType;
-    protected $filter;
     protected $params;
     protected $isSorted = false;
     protected $orderUrl;
@@ -90,6 +89,8 @@ abstract class Column
     protected $joinType;
     protected $export;
     protected $class;
+    protected $isManualField;
+    protected $isAggregate;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -125,6 +126,9 @@ abstract class Column
         $this->setSelectFrom($this->getParam('selectFrom', 'query'));
         $this->setValues($this->getParam('values', array()));
         $this->setOperatorsVisible($this->getParam('operatorsVisible', true));
+        $this->setIsManualField($this->getParam('isManualField', false));
+        $this->setIsAggregate($this->getParam('isAggregate', false));
+
         // Order is important for the order display
         $this->setOperators($this->getParam('operators', array(
             self::OPERATOR_EQ,
@@ -149,6 +153,7 @@ abstract class Column
         $this->setSafe($this->getParam('safe', 'html'));
         $this->setSeparator($this->getParam('separator', "<br />"));
         $this->setExport($this->getParam('export'));
+        $this->setClass($this->getParam('class'));
     }
 
     protected function getParam($id, $default = null)
@@ -253,6 +258,7 @@ abstract class Column
      * Set column visibility
      *
      * @param boolean $visible
+     * @return $this
      */
     public function setVisible($visible)
     {
@@ -386,18 +392,6 @@ abstract class Column
         return $this->size;
     }
 
-    public function setOrderUrl($orderUrl)
-    {
-        $this->orderUrl = $orderUrl;
-
-        return $this;
-    }
-
-    public function getOrderUrl()
-    {
-        return $this->orderUrl;
-    }
-
     /**
      * set filter data from session | request
      *
@@ -467,7 +461,7 @@ abstract class Column
 
     /**
      * Set column visibility for source class
-     * @param $value
+     * @param $visibleForSource
      * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setVisibleForSource($visibleForSource)
@@ -490,6 +484,7 @@ abstract class Column
      * Set column as primary
      *
      * @param boolean $primary
+     * @return $this
      */
     public function setPrimary($primary)
     {
@@ -510,6 +505,7 @@ abstract class Column
     /**
      * Set column align
      * @param string $align left/right/center
+     * @return $this
      */
     public function setAlign($align)
     {
@@ -774,6 +770,7 @@ abstract class Column
      * Internal function
      *
      * @param $securityContext
+     * @return $this
      */
     public function setSecurityContext(SecurityContextInterface $securityContext)
     {
@@ -879,5 +876,26 @@ abstract class Column
     public function getClass()
     {
         return $this->class;
+    }
+
+
+    public function setIsManualField($isManualField)
+    {
+        $this->isManualField = $isManualField;
+    }
+
+    public function getIsManualField()
+    {
+        return $this->isManualField;
+    }
+
+    public function setIsAggregate($isAggregate)
+    {
+        $this->isAggregate = $isAggregate;
+    }
+
+    public function getIsAggregate()
+    {
+        return $this->isAggregate;
     }
 }

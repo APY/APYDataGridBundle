@@ -17,9 +17,7 @@ use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 /**
- *
  * XML
- *
  */
 class XMLExport extends Export
 {

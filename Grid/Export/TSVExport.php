@@ -13,9 +13,7 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 /**
- *
  * Tab-Separated Values
- *
  */
 class TSVExport extends DSVExport
 {

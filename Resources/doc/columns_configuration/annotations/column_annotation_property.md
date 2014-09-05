@@ -57,7 +57,7 @@ class Product
 |defaultOperator|string|default operator of the column|See [operators](../types/text_column.md#available_operators)|Sets the default operator of the column|
 |primary|boolean|false|true or false|Sets the primary key of the source|
 |align|string|left|left, right or center|Sets the text alignment with a CSS class|
-|inputType|string|text|See [HTML5 input types](http://w3schools.com/html5/html5_form_input_types.asp)|Sets the type of the input filter field|
+|inputType|string|text|See [HTML5 input types](http://w3schools.com/html/html5_form_input_types.asp)|Sets the type of the input filter field|
 |role|string||A symfony role|Sets the visiblity of the column to false if the access isn't granted for the defined role|
 |groups|string<br />or<br />array|Example: groups="group1",<br />groups={"group1"}, groups={"group1", "group2"}||Use this attribute to define more than one configuration for an Entity/Document. <br />If no groups is defined, the annotation is attributed for all groups.<br />$source = new Entity('MyProjectMyBundle:MyEntity', 'my_group');|
 |selectFrom|string|query|query, source, values|How to populate the selector of the select filters of the column.|
@@ -65,8 +65,8 @@ class Product
 |searchOnClick|boolean|false|true or false|Sets the possibility to perform a search on the clicked cell (filterable has to be true)|
 |safe|string or false|html|false<br />or<br />see [Escape filters](http://twig.sensiolabs.org/doc/filters/escape.html)|Sets the escape filter|
 
-**Note 1**: Every attribute has a setter and a getter method.
-**Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.
+**Note 1**: Every attribute has a setter and a getter method.  
+**Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.  
 **Note 3**: If operators are not visible, filtering is performed with the default operator.
 
 ## Title translation

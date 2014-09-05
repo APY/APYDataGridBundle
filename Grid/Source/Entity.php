@@ -15,11 +15,12 @@ namespace APY\DataGridBundle\Grid\Source;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Row;
-use APY\DataGridBundle\Grid\Helper\ORMCountWalker;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpKernel\Kernel;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Tools\Pagination\CountWalker;
 
 class Entity extends Source
 {
@@ -147,6 +148,10 @@ class Entity extends Source
     protected function getFieldName($column, $withAlias = false)
     {
         $name = $column->getField();
+
+        if($column->getIsManualField()) {
+            return $column->getField();
+        }
 
         if (strpos($name, '.') !== false) {
             $previousParent = '';
@@ -320,9 +325,13 @@ class Entity extends Source
         $where = $gridDataJunction === Column::DATA_CONJUNCTION ? $this->query->expr()->andx() : $this->query->expr()->orx();
 
         foreach ($columns as $column) {
-            $fieldName = $this->getFieldName($column, true);
-            $this->query->addSelect($fieldName);
-            $this->querySelectfromSource->addSelect($fieldName);
+
+            // If a column is a manual field, ie a.col*b.col as myfield, it is added to select from user.
+            if($column->getIsManualField() === false) {
+                $fieldName = $this->getFieldName($column, true);
+                $this->query->addSelect($fieldName);
+                $this->querySelectfromSource->addSelect($fieldName);
+            }
 
             if ($column->isSorted()) {
                 $this->query->orderBy($this->getFieldName($column), $column->getOrder());
@@ -334,7 +343,7 @@ class Entity extends Source
 
                 $isDisjunction = $column->getDataJunction() === Column::DATA_DISJUNCTION;
 
-                $hasHavingClause = $column->hasDQLFunction();
+                $hasHavingClause = $column->hasDQLFunction() || $column->getIsAggregate();
 
                 $sub = $isDisjunction ? $this->query->expr()->orx() : ($hasHavingClause ? $this->query->expr()->andx() : $where);
 
@@ -460,14 +469,43 @@ class Entity extends Source
 
     public function getTotalCount($maxResults = null)
     {
-        // From Doctrine\ORM\Tools\Pagination\Paginator::count()
-        $countQuery = $this->query->getQuery();
-
-        if (! $countQuery->getHint(ORMCountWalker::HINT_DISTINCT)) {
-            $countQuery->setHint(ORMCountWalker::HINT_DISTINCT, true);
+        // Doctrine Bug Workaround: http://www.doctrine-project.org/jira/browse/DDC-1927
+        $countQueryBuilder = clone $this->query;
+        foreach ($countQueryBuilder->getRootAliases() as $alias) {
+            $countQueryBuilder->addSelect($alias);
         }
 
-        $countQuery->setHint(Query::HINT_CUSTOM_TREE_WALKERS, array('APY\DataGridBundle\Grid\Helper\ORMCountWalker'));
+        // From Doctrine\ORM\Tools\Pagination\Paginator::count()
+        $countQuery = $countQueryBuilder->getQuery();
+
+        // Add hints from main query, if developer wants to use additional hints (ex. gedmo translations):
+        foreach ($this->hints as $hintName => $hintValue) {
+            $countQuery->setHint($hintName, $hintValue);
+        }
+
+        if (! $countQuery->getHint(CountWalker::HINT_DISTINCT)) {
+            $countQuery->setHint(CountWalker::HINT_DISTINCT, true);
+        }
+
+        if ($countQuery->getHint(Query::HINT_CUSTOM_OUTPUT_WALKER) == false) {
+            $platform = $countQuery->getEntityManager()->getConnection()->getDatabasePlatform(); // law of demeter win
+
+            $rsm = new ResultSetMapping();
+            $rsm->addScalarResult($platform->getSQLResultCasing('dctrn_count'), 'count');
+
+            $countQuery->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, 'Doctrine\ORM\Tools\Pagination\CountOutputWalker');
+            $countQuery->setResultSetMapping($rsm);
+        } else {
+            $hints = $countQuery->getHint(Query::HINT_CUSTOM_TREE_WALKERS);
+
+            if ($hints === false) {
+                $hints = array();
+            }
+
+            $hints[] = 'Doctrine\ORM\Tools\Pagination\CountWalker';
+            //$hints[] = 'APY\DataGridBundle\Grid\Helper\ORMCountWalker';
+            $countQuery->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $hints);
+        }
         $countQuery->setFirstResult(null)->setMaxResults($maxResults);
 
         try {

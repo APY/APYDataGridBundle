@@ -1,11 +1,12 @@
 {
     "name": "apy/datagrid-bundle",
-    "type": "symfony-bundle",
     "description": "Symfony2 Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
     "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
     "authors": [
-	    {
+        {
             "name": "Yoann Petit",
             "email": "abhoryo@free.fr"
         },
@@ -29,10 +30,8 @@
         "PHPExcel": "Export the grid (Excel, HTML or PDF)"
     },
     "autoload": {
-        "psr-0": { "APY\\DataGridBundle": "" }
+        "psr-4": { "APY\\DataGridBundle\\": "" }
     },
-    "target-dir": "APY/DataGridBundle",
-	"minimum-stability": "dev",
     "extra": {
         "branch-alias": {
             "dev-master": "2.1-dev"

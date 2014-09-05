@@ -196,7 +196,7 @@ class RowAction implements RowActionInterface
     /**
      * Add route parameter
      *
-     * @param array|string $routeParameter
+     * @param array|string $routeParameters
      *
      * @return self
      */
