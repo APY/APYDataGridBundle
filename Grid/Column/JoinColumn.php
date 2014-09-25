@@ -24,6 +24,8 @@ class JoinColumn extends TextColumn
 
         $this->setJoinColumns($this->getParam('columns', array()));
         $this->setSeparator($this->getParam('separator', '&nbsp;'));
+
+        $this->setVisibleForSource(true);
         $this->setIsManualField(true);
     }
 
