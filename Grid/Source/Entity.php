@@ -334,7 +334,13 @@ class Entity extends Source
             }
 
             if ($column->isSorted()) {
-                $this->query->orderBy($this->getFieldName($column), $column->getOrder());
+                if ($column->getType() === 'join') {
+                    foreach($column->getJoinColumns() as $columnName) {
+                        $this->query->addOrderBy($this->getFieldName($this->getColumnById($columns, $columnName)), $column->getOrder());
+                    }
+                } else {
+                    $this->query->orderBy($this->getFieldName($column), $column->getOrder());
+                }
             }
 
             if ($column->isFiltered()) {
@@ -350,7 +356,9 @@ class Entity extends Source
                 foreach ($filters as $filter) {
                     $operator = $this->normalizeOperator($filter->getOperator());
 
-                    $q = $this->query->expr()->$operator($this->getFieldName($column, false), "?$bindIndex");
+                    $columnForFilter = ($column->getType() !== 'join') ? $column : $this->getColumnById($columns, $filter->getColumnName());
+
+                    $q = $this->query->expr()->$operator($this->getFieldName($columnForFilter, false), "?$bindIndex");
 
                     if ($filter->getOperator() == Column::OPERATOR_NLIKE) {
                         $q = $this->query->expr()->not($q);
@@ -707,5 +715,17 @@ class Entity extends Source
     public function getTableAlias()
     {
         return $this->tableAlias;
+    }
+    
+    private function getColumnById($columnsIterator, $columnId)
+    {
+        static $columns = null;
+
+        if ($columns === null) {
+            foreach($columnsIterator as $column) {
+                $columns[$column->getId()] = $column;
+            }
+        }
+        return $columns[$columnId];
     }
 }

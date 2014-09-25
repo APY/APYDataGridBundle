@@ -261,6 +261,17 @@
 {% block grid_column_type_array_cell %}
 	{{ block('grid_column_array_cell') }}
 {% endblock grid_column_type_array_cell %}
+{# ------------------------------------------------ grid_column_type_join_cell --------------------------------------------- #}
+{% block grid_column_join_cell %}
+{% for key, index in column.joinColumns -%}
+    {% set value = row.field(index) %}
+    {% set sourceValue = value %}
+    {{ block('grid_column_cell') | raw }}{{ column.separator | raw }}
+{%- endfor %}
+{% endblock grid_column_join_cell %}
+{% block grid_column_type_join_cell %}
+	{{ block('grid_column_join_cell') }}
+{% endblock grid_column_type_join_cell %}
 {# ------------------------------------------- grid_column_cell ---------------------------------------- #}
 {% block grid_column_cell %}
 {%- spaceless %}
