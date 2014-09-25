@@ -12,7 +12,7 @@ By default, a disjunction (OR operator) is performed with each column.
 
 See [Column annotation for properties](../annotations/column_annotation_property.md).
 
-**Note**: `id` attribute is required
+**Note**: `id` attribute is required.  
 **Note²**: The `source` and `isManuallyField` are forced to `true`.
 
 ### Additionnal attributes
