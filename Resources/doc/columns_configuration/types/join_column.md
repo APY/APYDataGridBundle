@@ -1,7 +1,7 @@
 Join Column
 ===========
 
-Render several **text** columns inside this join column.
+Render several **text** columns inside this join column.  
 This join column is sortable, filterable and you can also activate the 'search on click' feature.
 
 By default, a disjunction (OR operator) is performed with each column.
