@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>Page</source>
+                <target>Pagina</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>, Display</source>
+                <target>, Mostra</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>of %count%</source>
+                <target>di %count%</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Items per page</source>
+                <target>Elementi per pagina</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Select visible</source>
+                <target>Seleziona visibili</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Select all</source>
+                <target>Seleziona tutti</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Deselect visible</source>
+                <target>Deseleziona visibili</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Deselect all</source>
+                <target>Deseleziona tutti</target>
+            </trans-unit>
+<!-- FIX?: there's no string called Action in the html code, the right string is Actions which get translated
+     so i added final s to the string 
+-->
+            <trans-unit id="9">
+                <source>Actions</source>
+                <target>Azioni</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Submit Action</source>
+                <target>Esegui</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>From:</source>
+                <target>Da:</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>To:</source>
+                <target>A:</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>eq</source>
+                <target>Uguale a</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>neq</source>
+                <target>Diverso da</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>lt</source>
+                <target>Minore di</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>lte</source>
+                <target>Minore o uguale a</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>gt</source>
+                <target>Maggiore di</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>gte</source>
+                <target>Maggiore o uguale a</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>req</source>
+                <target>Espressione regolare</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>like</source>
+                <target>Contiene</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>nlike</source>
+                <target>Non contiene</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>rlike</source>
+                <target>Comincia per</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>llike</source>
+                <target>Finisce per</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>btw</source>
+                <target>Compreso tra esclusivo</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>btwe</source>
+                <target>Compreso tra inclusivo</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>isNull</source>
+                <target>Non è definito</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>isNotNull</source>
+                <target>E' definito</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>%count% Results, </source>
+                <target>%count% Risultato, |%count% Risultati, </target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>Search</source>
+                <target>Ricerca</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>Reset</source>
+                <target>Reimposta</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>Order by</source>
+                <target>Ordina per</target>
+            </trans-unit>            
+        </body>
+    </file>
+</xliff>
