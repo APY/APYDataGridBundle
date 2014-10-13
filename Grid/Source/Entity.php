@@ -324,6 +324,11 @@ class Entity extends Source
         $serializeColumns = array();
         $where = $gridDataJunction === Column::DATA_CONJUNCTION ? $this->query->expr()->andx() : $this->query->expr()->orx();
 
+        $columnsById = array();
+        foreach ($columns as $column) {
+            $columnsById[$column->getId()] = $column;
+        }
+
         foreach ($columns as $column) {
 
             // If a column is a manual field, ie a.col*b.col as myfield, it is added to select from user.
@@ -336,7 +341,7 @@ class Entity extends Source
             if ($column->isSorted()) {
                 if ($column->getType() === 'join') {
                     foreach($column->getJoinColumns() as $columnName) {
-                        $this->query->addOrderBy($this->getFieldName($this->getColumnById($columns, $columnName)), $column->getOrder());
+                        $this->query->addOrderBy($this->getFieldName($columnsById[$columnName]), $column->getOrder());
                     }
                 } else {
                     $this->query->orderBy($this->getFieldName($column), $column->getOrder());
@@ -356,7 +361,7 @@ class Entity extends Source
                 foreach ($filters as $filter) {
                     $operator = $this->normalizeOperator($filter->getOperator());
 
-                    $columnForFilter = ($column->getType() !== 'join') ? $column : $this->getColumnById($columns, $filter->getColumnName());
+                    $columnForFilter = ($column->getType() !== 'join') ? $column : $columnsById[$filter->getColumnName()];
 
                     $q = $this->query->expr()->$operator($this->getFieldName($columnForFilter, false), "?$bindIndex");
 
@@ -717,15 +722,4 @@ class Entity extends Source
         return $this->tableAlias;
     }
     
-    private function getColumnById($columnsIterator, $columnId)
-    {
-        static $columns = null;
-
-        if ($columns === null) {
-            foreach($columnsIterator as $column) {
-                $columns[$column->getId()] = $column;
-            }
-        }
-        return $columns[$columnId];
-    }
 }
