@@ -69,6 +69,36 @@ $grid->setSource($source);
 
 
 
+if you use [Gedmo\Translatable](https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/translatable.md) with default implementation. 
+```php
+<?php
+...
+use Gedmo\Mapping\Annotation as Gedmo;
+
+class Category implements Translatable
+{
+    ...
+    /**
+     * @var string
+     *
+     * @Gedmo\Translatable
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+...
+```
+You will notice that the grid does not show the good translation of entities( default locale / locale request ).
+For get the right translation of entities, please hint the query with :
+
+```php
+<?php
+...
+        $source = new Entity(AcmeCategoryBundle:Category);
+        $source->addHint(Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker');
+...
+```
+Now, the grid is loaded with the good translation/locale. Make sure you have a translation or you will have a empty string.
+
 
 ## 2. Injecting a custom QueryBuilder
 In rare situations, using the callback strategy is not possible because you do not have the full knowledge of how the query should be constructed (e.g. the business logic sits in an external repository/service). 
