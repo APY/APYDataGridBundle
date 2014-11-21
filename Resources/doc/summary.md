@@ -22,8 +22,9 @@ SUMMARY
 	1. [Display a pagerfanta pager](template/render_pagerfanta_pager.md)
 
 1. [Columns Configuration](columns_configuration/)
+	1. [YML](columns_configuration/yml/yml_configuration.yml)
 	1. [Annotations](columns_configuration/annotations/)
-		1. [Annotations]
+		1. [Annotations](columns_configuration/annotations/)
 			1. [Source Annotation](columns_configuration/annotations/source_annotation.md)
 			1. [Column Annotation for a property](columns_configuration/annotations/column_annotation_property.md)
 			1. [Column Annotation for a class](columns_configuration/annotations/column_annotation_class.md)
@@ -51,7 +52,6 @@ SUMMARY
 			1. [Input Filter](columns_configuration/filters/input_filter.md)
 			1. [Select Filter](columns_configuration/filters/select_filter.md)
 			1. [Create a filter](columns_configuration/filters/create_filter.md)
-	1. [YML](columns_configuration/yml/yml_configuration.yml)
 1. [Grid Configuration in PHP](grid_configuration/)
 	1. [Set the identifier of the grid](grid_configuration/set_grid_identifier.md)
 	1. [Set the persistence of the grid](grid_configuration/set_grid_persistence.md)
