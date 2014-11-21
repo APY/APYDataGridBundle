@@ -22,7 +22,7 @@ SUMMARY
 	1. [Display a pagerfanta pager](template/render_pagerfanta_pager.md)
 
 1. [Columns Configuration](columns_configuration/)
-	1. [YML](columns_configuration/yml/yml_configuration.yml)
+	1. [YML](columns_configuration/yml/yml_configuration.md)
 	1. [Annotations](columns_configuration/annotations/)
 		1. [Annotations](columns_configuration/annotations/)
 			1. [Source Annotation](columns_configuration/annotations/source_annotation.md)
