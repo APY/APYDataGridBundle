@@ -4,127 +4,130 @@
         <body>
             <trans-unit id="1">
                 <source>Page</source>
-                <target>Page</target>
+                <target>Pagina</target>
             </trans-unit>
             <trans-unit id="2">
                 <source>, Display</source>
-                <target>, Afficher</target>
+                <target>, Mostra</target>
             </trans-unit>
             <trans-unit id="3">
                 <source>of %count%</source>
-                <target>sur %count%</target>
+                <target>di %count%</target>
             </trans-unit>
             <trans-unit id="4">
                 <source>Items per page</source>
-                <target>Résultats par page</target>
+                <target>Elementi per pagina</target>
             </trans-unit>
             <trans-unit id="5">
                 <source>Select visible</source>
-                <target>Sélectionner visible</target>
+                <target>Seleziona visibili</target>
             </trans-unit>
             <trans-unit id="6">
                 <source>Select all</source>
-                <target>Sélectionner tout</target>
+                <target>Seleziona tutti</target>
             </trans-unit>
             <trans-unit id="7">
                 <source>Deselect visible</source>
-                <target>Désélectionner visible</target>
+                <target>Deseleziona visibili</target>
             </trans-unit>
             <trans-unit id="8">
                 <source>Deselect all</source>
-                <target>Désélectionner tout</target>
+                <target>Deseleziona tutti</target>
             </trans-unit>
+<!-- FIX?: there's no string called Action in the html code, the right string is Actions which get translated
+     so i added final s to the string 
+-->
             <trans-unit id="9">
-                <source>Action</source>
-                <target>Action</target>
+                <source>Actions</source>
+                <target>Azioni</target>
             </trans-unit>
             <trans-unit id="10">
                 <source>Submit Action</source>
-                <target>Exécuter</target>
+                <target>Esegui</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>From:</source>
-                <target>De:</target>
+                <target>Da:</target>
             </trans-unit>
             <trans-unit id="12">
                 <source>To:</source>
-                <target>À:</target>
+                <target>A:</target>
             </trans-unit>
             <trans-unit id="13">
                 <source>eq</source>
-                <target>Égal à</target>
+                <target>Uguale a</target>
             </trans-unit>
             <trans-unit id="14">
                 <source>neq</source>
-                <target>Différent de</target>
+                <target>Diverso da</target>
             </trans-unit>
             <trans-unit id="15">
                 <source>lt</source>
-                <target>Inférieur à</target>
+                <target>Minore di</target>
             </trans-unit>
             <trans-unit id="16">
                 <source>lte</source>
-                <target>Inférieur ou égal à</target>
+                <target>Minore o uguale a</target>
             </trans-unit>
             <trans-unit id="17">
                 <source>gt</source>
-                <target>Supérieur à</target>
+                <target>Maggiore di</target>
             </trans-unit>
             <trans-unit id="18">
                 <source>gte</source>
-                <target>Supérieur ou égal à</target>
+                <target>Maggiore o uguale a</target>
             </trans-unit>
             <trans-unit id="19">
                 <source>req</source>
-                <target>Expression régulière</target>
+                <target>Espressione regolare</target>
             </trans-unit>
             <trans-unit id="20">
                 <source>like</source>
-                <target>Contient</target>
+                <target>Contiene</target>
             </trans-unit>
             <trans-unit id="21">
                 <source>nlike</source>
-                <target>Ne contient pas</target>
+                <target>Non contiene</target>
             </trans-unit>
             <trans-unit id="22">
                 <source>rlike</source>
-                <target>Commence par</target>
+                <target>Comincia per</target>
             </trans-unit>
             <trans-unit id="23">
                 <source>llike</source>
-                <target>Finit par</target>
+                <target>Finisce per</target>
             </trans-unit>
             <trans-unit id="24">
                 <source>btw</source>
-                <target>Entre exclusif</target>
+                <target>Compreso tra esclusivo</target>
             </trans-unit>
             <trans-unit id="25">
                 <source>btwe</source>
-                <target>Entre inclusif</target>
+                <target>Compreso tra inclusivo</target>
             </trans-unit>
             <trans-unit id="26">
                 <source>isNull</source>
-                <target>N'est pas défini</target>
+                <target>Non è definito</target>
             </trans-unit>
             <trans-unit id="27">
                 <source>isNotNull</source>
-                <target>Est défini</target>
+                <target>E' definito</target>
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>%count% Résultat, |%count% Résultats, </target>
+                <target>%count% Risultato, |%count% Risultati, </target>
             </trans-unit>
             <trans-unit id="29">
                 <source>Search</source>
-                <target>Rechercher</target>
+                <target>Ricerca</target>
             </trans-unit>
             <trans-unit id="30">
                 <source>Reset</source>
-                <target>Réinitialiser</target>
+                <target>Reimposta</target>
             </trans-unit>
             <trans-unit id="31">
                 <source>Order by</source>
-                <target>Trier par</target>
+                <target>Ordina per</target>
             </trans-unit>            
         </body>
     </file>

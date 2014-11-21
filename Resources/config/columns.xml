@@ -14,6 +14,7 @@
         <parameter key="grid.column.array.class">APY\DataGridBundle\Grid\Column\ArrayColumn</parameter>
         <parameter key="grid.column.blank.class">APY\DataGridBundle\Grid\Column\BlankColumn</parameter>
         <parameter key="grid.column.rank.class">APY\DataGridBundle\Grid\Column\RankColumn</parameter>
+        <parameter key="grid.column.join.class">APY\DataGridBundle\Grid\Column\JoinColumn</parameter>
     </parameters>
 
     <services>
@@ -48,8 +49,12 @@
         <service id="grid.column.blank" class="%grid.column.blank.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
-		
+
         <service id="grid.column.rank" class="%grid.column.rank.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.join" class="%grid.column.join.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
     </services>

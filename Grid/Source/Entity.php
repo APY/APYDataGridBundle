@@ -324,6 +324,11 @@ class Entity extends Source
         $serializeColumns = array();
         $where = $gridDataJunction === Column::DATA_CONJUNCTION ? $this->query->expr()->andx() : $this->query->expr()->orx();
 
+        $columnsById = array();
+        foreach ($columns as $column) {
+            $columnsById[$column->getId()] = $column;
+        }
+
         foreach ($columns as $column) {
 
             // If a column is a manual field, ie a.col*b.col as myfield, it is added to select from user.
@@ -334,7 +339,13 @@ class Entity extends Source
             }
 
             if ($column->isSorted()) {
-                $this->query->orderBy($this->getFieldName($column), $column->getOrder());
+                if ($column->getType() === 'join') {
+                    foreach($column->getJoinColumns() as $columnName) {
+                        $this->query->addOrderBy($this->getFieldName($columnsById[$columnName]), $column->getOrder());
+                    }
+                } else {
+                    $this->query->orderBy($this->getFieldName($column), $column->getOrder());
+                }
             }
 
             if ($column->isFiltered()) {
@@ -350,7 +361,9 @@ class Entity extends Source
                 foreach ($filters as $filter) {
                     $operator = $this->normalizeOperator($filter->getOperator());
 
-                    $q = $this->query->expr()->$operator($this->getFieldName($column, false), "?$bindIndex");
+                    $columnForFilter = ($column->getType() !== 'join') ? $column : $columnsById[$filter->getColumnName()];
+
+                    $q = $this->query->expr()->$operator($this->getFieldName($columnForFilter, false), "?$bindIndex");
 
                     if ($filter->getOperator() == Column::OPERATOR_NLIKE) {
                         $q = $this->query->expr()->not($q);
@@ -708,4 +721,5 @@ class Entity extends Source
     {
         return $this->tableAlias;
     }
+    
 }
