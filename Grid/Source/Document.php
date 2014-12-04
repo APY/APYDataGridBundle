@@ -249,6 +249,7 @@ class Document extends Source
 
             if (isset($mapping['fieldName'])) {
                 $values['field'] = $mapping['fieldName'];
+                $values['id'] = $mapping['fieldName'];
             }
 
             if (isset($mapping['id']) && $mapping['id'] == 'id') {
@@ -280,6 +281,15 @@ class Document extends Source
                 case 'date':
                 case 'timestamp':
                     $values['type'] = 'date';
+                    break;
+                case 'collection':
+                    $values['type'] = 'array';
+                    break;
+                case 'one':
+                    $values['type'] = 'array';
+                    break;
+                case 'many':
+                    $values['type'] = 'array';
                     break;
                 default:
                     $values['type'] = 'text';
