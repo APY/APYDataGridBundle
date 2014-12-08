@@ -76,7 +76,7 @@ class Manager
             $fieldsMetadata[] = $driver->getFieldsMetadata($className, $group);
             $groupBy = array_merge($groupBy, $driver->getGroupBy($className, $group));
         }
-
+        
         $mappings = $cols = array();
 
         foreach ($columns as $fieldName) {
@@ -92,6 +92,10 @@ class Manager
                 $mappings[$fieldName] = $map;
                 $cols[] = $fieldName;
             }
+        }
+
+        if (empty($cols)) {
+            throw new \Exception(sprintf("No metadata information has been found for %s (group : %s)", $className, $group));
         }
 
         $metadata->setFields($cols);
