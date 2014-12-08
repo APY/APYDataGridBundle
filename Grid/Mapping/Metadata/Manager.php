@@ -76,7 +76,7 @@ class Manager
             $fieldsMetadata[] = $driver->getFieldsMetadata($className, $group);
             $groupBy = array_merge($groupBy, $driver->getGroupBy($className, $group));
         }
-        
+
         $mappings = $cols = array();
 
         foreach ($columns as $fieldName) {
