@@ -64,8 +64,8 @@
             {%- spaceless %}
             {% if column.type == 'massaction' %}
                 <input type="checkbox" class="grid-mass-selector" onclick="{{ grid.hash }}_markVisible(this.checked);"/>
-            {% else %}
-                {% if column.useGridPrefix == true %}
+            {% else %} 
+                {% if column.usePrefixTitle == true %}
                     {% set columnTitle = grid.prefixTitle ~ column.title ~ '__abbr' %}
                     {% if columnTitle|trans == columnTitle %}
                         {% set columnTitle = grid.prefixTitle ~ column.title %}
@@ -107,7 +107,7 @@
         <form id="{{ grid.hash }}_search" action="{{ grid.routeUrl }}" method="post">
         {% for column in grid.columns %}
             {% if column.isFilterable and column.type not in ['actions', 'massaction'] %}
-                {% if column.useGridPrefix == true %}
+                {% if column.usePrefixTitle == true %}
                     {% set columnTitle = grid.prefixTitle ~ column.title %}
                 {% else %}
                     {% set columnTitle = column.title %}

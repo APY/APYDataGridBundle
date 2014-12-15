@@ -91,7 +91,7 @@ abstract class Column
     protected $class;
     protected $isManualField;
     protected $isAggregate;
-    protected $useGridPrefix;
+    protected $usePrefixTitle;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -129,7 +129,7 @@ abstract class Column
         $this->setOperatorsVisible($this->getParam('operatorsVisible', true));
         $this->setIsManualField($this->getParam('isManualField', false));
         $this->setIsAggregate($this->getParam('isAggregate', false));
-        $this->setUseGridPrefix($this->getParam('useGridPrefix', true));
+        $this->setUsePrefixTitle($this->getParam('usePrefixTitle', true));
         
         // Order is important for the order display
         $this->setOperators($this->getParam('operators', array(
@@ -901,14 +901,14 @@ abstract class Column
         return $this->isAggregate;
     }
 
-    public function getUseGridPrefix()
+    public function getUsePrefixTitle()
     {
-        return $this->useGridPrefix;
+        return $this->usePrefixTitle;
     }
 
-    public function setUseGridPrefix($useGridPrefix)
+    public function setUsePrefixTitle($usePrefixTitle)
     {
-        $this->useGridPrefix = $useGridPrefix;
+        $this->usePrefixTitle = $usePrefixTitle;
         return $this;
     }
  
