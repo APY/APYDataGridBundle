@@ -21,6 +21,8 @@ See [Column annotation for properties](../annotations/column_annotation_property
 |:--:|:--|:--|:--|:--|
 |columns|array|empty|The name of the columns|Name of the columns you want to show in this column|
 
+**Note**: Columns listed in the `columns` attributes must be declared too.  
+
 ## Example
 
 ```php
