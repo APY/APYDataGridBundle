@@ -202,9 +202,16 @@ class Document extends Source
             $properties = $this->getClassProperties($resource);
 
             foreach ($columns as $column) {
-                if (isset($properties[$column->getId()])) {
-                    $row->setField($column->getId(), $properties[$column->getId()]);
+                $hierarchy = explode('.', $column->getId());
+                $length = count($hierarchy);
+                $node = $resource;
+                for ($i = 0; $i < $length; $i++) {
+                    if (isset($node)) {
+                        $node = $this->getClassProperties($node);
+                        $node = $node[strtolower($hierarchy[$i])];
+                    }
                 }
+                $row->setField($column->getId(), $node);
             }
 
             //call overridden prepareRow or associated closure
@@ -233,7 +240,7 @@ class Document extends Source
 
         foreach ($props as $property) {
             $property->setAccessible(true);
-            $result[$property->getName()] = $property->getValue($obj);
+            $result[strtolower($property->getName())] = $property->getValue($obj);
         }
 
         return $result;
