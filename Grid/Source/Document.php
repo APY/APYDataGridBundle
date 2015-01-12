@@ -156,7 +156,6 @@ class Document extends Source
         $this->query = $this->manager->createQueryBuilder($this->documentName);
 
         foreach ($columns as $column) {
-            $this->query->select($column->getField());
 
             //checks if exists '.' notation on referenced columns and build query if it's filtered
             $subColumn = explode('.', $column->getId());
@@ -167,6 +166,8 @@ class Document extends Source
 
                 continue;
             }
+
+            $this->query->select($column->getField());
 
             if ($column->isSorted()) {
                 $this->query->sort($column->getField(), $column->getOrder());
@@ -276,7 +277,7 @@ class Document extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Row    $row
-     * @param \stdClass $resource
+     * @param Document $resource
      * @throws \Exception if getter for field does not exists
      * @return \APY\DataGridBundle\Grid\Row $row with referenced fields
      */
