@@ -223,8 +223,8 @@ class Document extends Source
             $properties = $this->getClassProperties($resource);
 
             foreach ($columns as $column) {
-                if (isset($properties[$column->getId()])) {
-                    $row->setField($column->getId(), $properties[$column->getId()]);
+                if (isset(strtolower($properties[$column->getId())])) {
+                    $row->setField($column->getId(), $properties[strtolower($column->getId())]);
                 }
             }
 
