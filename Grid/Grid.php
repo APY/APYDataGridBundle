@@ -267,6 +267,12 @@ class Grid
      * @var string
      */
     protected $defaultTweak;
+    
+    /**
+     * Filters in session
+     * @var array
+     */
+    protected $sessionFilters;
 
     // Lazy parameters
     protected $lazyAddColumn = array();
