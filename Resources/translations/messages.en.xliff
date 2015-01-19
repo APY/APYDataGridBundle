@@ -67,6 +67,7 @@
                 <target>%count% Result, |%count% Results, </target>
             </trans-unit>
 
+
     <!-- with symbols -->
             <!--trans-unit id="26">
                 <source>eqs</source>
@@ -120,6 +121,23 @@
                 <source>btwes</source>
                 <target>&lt;=x&lt;<=/target>
             </trans-unit-->
+            
+            <trans-unit id="39">
+                <source>ilike</source>
+                <target>Contains (case insensitive)</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>nilike</source>
+                <target>Not contains (case insensitive)</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>rliike</source>
+                <target>Starts with (case insensitive)</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>lilike</source>
+                <target>Ends with (case insensitive)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

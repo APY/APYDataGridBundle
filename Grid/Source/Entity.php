@@ -254,7 +254,11 @@ class Entity extends Source
             case Column::OPERATOR_LLIKE:
             case Column::OPERATOR_RLIKE:
             case Column::OPERATOR_NLIKE:
-                return 'like';
+            case Column::OPERATOR_ILIKE:
+            case Column::OPERATOR_LILIKE:
+            case Column::OPERATOR_RILIKE:
+            case Column::OPERATOR_NILIKE:
+                             return 'like';
             default:
                 return $operator;
         }
@@ -266,9 +270,13 @@ class Entity extends Source
             //case Column::OPERATOR_REGEXP:
             case Column::OPERATOR_LIKE:
             case Column::OPERATOR_NLIKE:
+            case Column::OPERATOR_ILIKE:
+            case Column::OPERATOR_NILIKE:
                 return "%$value%";
             case Column::OPERATOR_LLIKE:
+            case Column::OPERATOR_LLIKE:
                 return "%$value";
+            case Column::OPERATOR_RLIKE:
             case Column::OPERATOR_RLIKE:
                 return "$value%";
             default:
@@ -363,9 +371,16 @@ class Entity extends Source
 
                     $columnForFilter = ($column->getType() !== 'join') ? $column : $columnsById[$filter->getColumnName()];
 
-                    $q = $this->query->expr()->$operator($this->getFieldName($columnForFilter, false), "?$bindIndex");
+                    $fieldName = $this->getFieldName($columnForFilter, false);
+                    $bindIndexPlaceholder = "?$bindIndex";
+                    if( in_array($filter->getOperator(), array(Column::OPERATOR_ILIKE,Column::OPERATOR_RILIKE,Column::OPERATOR_LILIKE,Column::OPERATOR_NILIKE,))){
+                        $fieldName = "LOWER($fieldName)";
+                        $bindIndexPlaceholder = "LOWER($bindIndexPlaceholder)";
+                    }
+                    
+                    $q = $this->query->expr()->$operator($fieldName, $bindIndexPlaceholder);
 
-                    if ($filter->getOperator() == Column::OPERATOR_NLIKE) {
+                    if ($filter->getOperator() == Column::OPERATOR_NLIKE || $filter->getOperator() == Column::OPERATOR_NILIKE) {
                         $q = $this->query->expr()->not($q);
                     }
 
@@ -595,7 +610,7 @@ class Entity extends Source
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('entity') as $filter) {
-                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE))) {
+                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE,Column::OPERATOR_NILIKE))) {
                             $selectFrom = 'source';
                             break;
                         }

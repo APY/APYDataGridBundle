@@ -125,7 +125,23 @@
             <trans-unit id="31">
                 <source>Order by</source>
                 <target>Trier par</target>
-            </trans-unit>            
+            </trans-unit>
+            <trans-unit id="32">
+                <source>ilike</source>
+                <target>Contient (insensible à la casse)</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>nilike</source>
+                <target>Ne contient pas (insensible à la casse)</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>rliike</source>
+                <target>Commence par (insensible à la casse)</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>lilike</source>
+                <target>Finit par (insensible à la casse)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

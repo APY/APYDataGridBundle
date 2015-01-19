@@ -100,6 +100,10 @@ class Document extends Source
             case Column::OPERATOR_NLIKE:
             case Column::OPERATOR_RLIKE:
             case Column::OPERATOR_LLIKE:
+            case Column::OPERATOR_ILIKE:
+            case Column::OPERATOR_NILIKE:
+            case Column::OPERATOR_RILIKE:
+            case Column::OPERATOR_LILIKE:
             case Column::OPERATOR_NEQ:
                 return 'equals';
             case Column::OPERATOR_ISNULL:
@@ -118,12 +122,20 @@ class Document extends Source
             case Column::OPERATOR_NEQ:
                 return new \MongoRegex('/^(?!'.$value.'$).*$/i');
             case Column::OPERATOR_LIKE:
-                return new \MongoRegex('/'.$value.'/i');
+                return new \MongoRegex('/'.$value.'/');
             case Column::OPERATOR_NLIKE:
-                return new \MongoRegex('/^((?!'.$value.').)*$/i');
+                return new \MongoRegex('/^((?!'.$value.').)*$/');
             case Column::OPERATOR_RLIKE:
-                return new \MongoRegex('/^'.$value.'/i');
+                return new \MongoRegex('/^'.$value.'/');
             case Column::OPERATOR_LLIKE:
+                return new \MongoRegex('/'.$value.'$/');
+            case Column::OPERATOR_ILIKE:
+                return new \MongoRegex('/'.$value.'/i');
+            case Column::OPERATOR_NILIKE:
+                return new \MongoRegex('/^((?!'.$value.').)*$/i');
+            case Column::OPERATOR_RILIKE:
+                return new \MongoRegex('/^'.$value.'/i');
+            case Column::OPERATOR_LILIKE:
                 return new \MongoRegex('/'.$value.'$/i');
             case Column::OPERATOR_ISNULL:
                 return false;
@@ -320,7 +332,7 @@ class Document extends Source
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('document') as $filter) {
-                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE))) {
+                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE,Column::OPERATOR_NILIKE))) {
                             $selectFrom = 'source';
                             break;
                         }
