@@ -14,9 +14,10 @@
 
 namespace APY\DataGridBundle\Grid\Source;
 
-use APY\DataGridBundle\Grid\Rows;
-use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Grid\Rows;
+use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
 
 class Document extends Source
 {
@@ -124,17 +125,17 @@ class Document extends Source
     {
         switch ($operator) {
             case Column::OPERATOR_EQ:
-                return new \MongoRegex('/^'.$value.'$/i');
+                return new \MongoRegex('/^' . $value . '$/i');
             case Column::OPERATOR_NEQ:
-                return new \MongoRegex('/^(?!'.$value.'$).*$/i');
+                return new \MongoRegex('/^(?!' . $value . '$).*$/i');
             case Column::OPERATOR_LIKE:
-                return new \MongoRegex('/'.$value.'/i');
+                return new \MongoRegex('/' . $value . '/i');
             case Column::OPERATOR_NLIKE:
-                return new \MongoRegex('/^((?!'.$value.').)*$/i');
+                return new \MongoRegex('/^((?!' . $value . ').)*$/i');
             case Column::OPERATOR_RLIKE:
-                return new \MongoRegex('/^'.$value.'/i');
+                return new \MongoRegex('/^' . $value . '/i');
             case Column::OPERATOR_LLIKE:
-                return new \MongoRegex('/'.$value.'$/i');
+                return new \MongoRegex('/' . $value . '$/i');
             case Column::OPERATOR_ISNULL:
                 return false;
             case Column::OPERATOR_ISNOTNULL:
@@ -142,6 +143,31 @@ class Document extends Source
             default:
                 return $value;
         }
+    }
+
+    /**
+     * Sets the initial QueryBuilder for this DataGrid
+     * @param QueryBuilder $queryBuilder
+     */
+    public function initQueryBuilder(QueryBuilder $queryBuilder)
+    {
+        $this->query = clone $queryBuilder;
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    protected function getQueryBuilder()
+    {
+        //If a custom QB has been provided, use that
+        //Otherwise create our own basic one
+        if ($this->query instanceof QueryBuilder) {
+            $qb = $this->query;
+        } else {
+            $qb = $this->query = $this->manager->createQueryBuilder($this->documentName);
+        }
+
+        return $qb;
     }
 
     /**
@@ -153,7 +179,7 @@ class Document extends Source
      */
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
-        $this->query = $this->manager->createQueryBuilder($this->documentName);
+        $this->query = $this->getQueryBuilder();
 
         foreach ($columns as $column) {
 
@@ -314,8 +340,8 @@ class Document extends Source
     protected function getClassProperties($obj)
     {
         $reflect = new \ReflectionClass($obj);
-        $props   = $reflect->getProperties();
-        $result  = array();
+        $props = $reflect->getProperties();
+        $result = array();
 
         foreach ($props as $property) {
             $property->setAccessible(true);
@@ -360,7 +386,7 @@ class Document extends Source
                     $values['type'] = 'number';
                     break;
                 /*case 'hash':
-                    $values['type'] = 'array';*/
+                $values['type'] = 'array';*/
                 case 'boolean':
                     $values['type'] = 'boolean';
                     break;
@@ -392,7 +418,7 @@ class Document extends Source
 
     public function populateSelectFilters($columns, $loop = false)
     {
-        $queryFromSource = $this->manager->createQueryBuilder($this->documentName);
+        $queryFromSource = $this->getQueryBuilder();
         $queryFromQuery = clone $this->query;
 
         // Clean the select fields from the query
@@ -420,12 +446,12 @@ class Document extends Source
                 $query = ($selectFrom === 'source') ? clone $queryFromSource : clone $queryFromQuery;
 
                 $result = $query->select($column->getField())
-                    ->distinct($column->getField())
-                    ->sort($column->getField(), 'asc')
-                    ->skip(null)
-                    ->limit(null)
-                    ->getQuery()
-                    ->execute();
+                                ->distinct($column->getField())
+                                ->sort($column->getField(), 'asc')
+                                ->skip(null)
+                                ->limit(null)
+                                ->getQuery()
+                                ->execute();
 
                 $values = array();
                 foreach ($result as $value) {
@@ -442,7 +468,7 @@ class Document extends Source
                             }
 
                             // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
-                            if (is_array($value) && array_keys($value) == array('t','i')) {
+                            if (is_array($value) && array_keys($value) == array('t', 'i')) {
                                 $value = $value['i'];
                             }
 
@@ -484,7 +510,7 @@ class Document extends Source
 
     public function getRepository()
     {
-        return$this->manager->getRepository($this->documentName);
+        return $this->manager->getRepository($this->documentName);
     }
 
     public function getHash()
