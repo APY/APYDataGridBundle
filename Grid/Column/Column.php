@@ -37,10 +37,10 @@ abstract class Column
     const OPERATOR_NLIKE  = 'nlike';
     const OPERATOR_RLIKE  = 'rlike';
     const OPERATOR_LLIKE  = 'llike';
-    const OPERATOR_ILIKE   = 'ilike'; //case insensitive
-    const OPERATOR_NILIKE  = 'nilike';
-    const OPERATOR_RILIKE  = 'rilike';
-    const OPERATOR_LILIKE  = 'lilike';
+    const OPERATOR_SLIKE   = 'slike'; //simple/strict LIKE
+    const OPERATOR_NSLIKE  = 'nslike';
+    const OPERATOR_RSLIKE  = 'rslike';
+    const OPERATOR_LSLIKE  = 'lslike';
     
     const OPERATOR_ISNULL  = 'isNull';
     const OPERATOR_ISNOTNULL  = 'isNotNull';
@@ -150,10 +150,10 @@ abstract class Column
             self::OPERATOR_NLIKE,
             self::OPERATOR_RLIKE,
             self::OPERATOR_LLIKE,
-            self::OPERATOR_ILIKE,
-            self::OPERATOR_NILIKE,
-            self::OPERATOR_RILIKE,
-            self::OPERATOR_LILIKE,
+            self::OPERATOR_SLIKE,
+            self::OPERATOR_NSLIKE,
+            self::OPERATOR_RSLIKE,
+            self::OPERATOR_LSLIKE,
             self::OPERATOR_ISNULL,
             self::OPERATOR_ISNOTNULL,
         )));
@@ -622,16 +622,16 @@ abstract class Column
                     case self::OPERATOR_LIKE:
                     case self::OPERATOR_RLIKE:
                     case self::OPERATOR_LLIKE:
-                    case self::OPERATOR_ILIKE:
-                    case self::OPERATOR_RILIKE:
-                    case self::OPERATOR_LILIKE:
+                    case self::OPERATOR_SLIKE:
+                    case self::OPERATOR_RSLIKE:
+                    case self::OPERATOR_LSLIKE:
                         if ($this->getSelectMulti()) {
                             $this->setDataJunction(self::DATA_DISJUNCTION);
                         }
                     case self::OPERATOR_EQ:
                     case self::OPERATOR_NEQ:
                     case self::OPERATOR_NLIKE:
-                    case self::OPERATOR_NILIKE:
+                    case self::OPERATOR_NSLIKE:
                         foreach ((array) $this->data['from'] as $value) {
                             $filters[] = new Filter($this->data['operator'], $value);
                         }

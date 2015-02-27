@@ -100,10 +100,10 @@ class Document extends Source
             case Column::OPERATOR_NLIKE:
             case Column::OPERATOR_RLIKE:
             case Column::OPERATOR_LLIKE:
-            case Column::OPERATOR_ILIKE:
-            case Column::OPERATOR_NILIKE:
-            case Column::OPERATOR_RILIKE:
-            case Column::OPERATOR_LILIKE:
+            case Column::OPERATOR_SLIKE:
+            case Column::OPERATOR_NSLIKE:
+            case Column::OPERATOR_RSLIKE:
+            case Column::OPERATOR_LSLIKE:
             case Column::OPERATOR_NEQ:
                 return 'equals';
             case Column::OPERATOR_ISNULL:
@@ -122,21 +122,21 @@ class Document extends Source
             case Column::OPERATOR_NEQ:
                 return new \MongoRegex('/^(?!'.$value.'$).*$/i');
             case Column::OPERATOR_LIKE:
-                return new \MongoRegex('/'.$value.'/');
-            case Column::OPERATOR_NLIKE:
-                return new \MongoRegex('/^((?!'.$value.').)*$/');
-            case Column::OPERATOR_RLIKE:
-                return new \MongoRegex('/^'.$value.'/');
-            case Column::OPERATOR_LLIKE:
-                return new \MongoRegex('/'.$value.'$/');
-            case Column::OPERATOR_ILIKE:
                 return new \MongoRegex('/'.$value.'/i');
-            case Column::OPERATOR_NILIKE:
+            case Column::OPERATOR_NLIKE:
                 return new \MongoRegex('/^((?!'.$value.').)*$/i');
-            case Column::OPERATOR_RILIKE:
+            case Column::OPERATOR_RLIKE:
                 return new \MongoRegex('/^'.$value.'/i');
-            case Column::OPERATOR_LILIKE:
+            case Column::OPERATOR_LLIKE:
                 return new \MongoRegex('/'.$value.'$/i');
+            case Column::OPERATOR_SLIKE:
+                return new \MongoRegex('/'.$value.'/');
+            case Column::OPERATOR_SLIKE:
+                return new \MongoRegex('/^((?!'.$value.').)*$/');
+            case Column::OPERATOR_RSLIKE:
+                return new \MongoRegex('/^'.$value.'/');
+            case Column::OPERATOR_LSLIKE:
+                return new \MongoRegex('/'.$value.'$/');
             case Column::OPERATOR_ISNULL:
                 return false;
             case Column::OPERATOR_ISNOTNULL:
@@ -332,7 +332,7 @@ class Document extends Source
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('document') as $filter) {
-                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE,Column::OPERATOR_NILIKE))) {
+                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE,Column::OPERATOR_NSLIKE))) {
                             $selectFrom = 'source';
                             break;
                         }

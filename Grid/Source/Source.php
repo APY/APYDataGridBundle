@@ -277,28 +277,28 @@ abstract class Source implements DriverInterface
                                     $value = '/^(?!'.preg_quote($value, '/').'$).*$/i';
                                     break;
                                 case Column\Column::OPERATOR_LIKE:
-                                    $value = '/'.preg_quote($value, '/').'/';
-                                    break;
-                                case Column\Column::OPERATOR_NLIKE:
-                                    $value = '/^((?!'.preg_quote($value, '/').').)*$/';
-                                    break;
-                                case Column\Column::OPERATOR_LLIKE:
-                                    $value = '/'.preg_quote($value, '/').'$/';
-                                    break;
-                                case Column\Column::OPERATOR_RLIKE:
-                                    $value = '/^'.preg_quote($value, '/').'/';
-                                    break;
-                                case Column\Column::OPERATOR_ILIKE:
                                     $value = '/'.preg_quote($value, '/').'/i';
                                     break;
-                                case Column\Column::OPERATOR_NILIKE:
+                                case Column\Column::OPERATOR_NLIKE:
                                     $value = '/^((?!'.preg_quote($value, '/').').)*$/i';
                                     break;
-                                case Column\Column::OPERATOR_LILIKE:
+                                case Column\Column::OPERATOR_LLIKE:
                                     $value = '/'.preg_quote($value, '/').'$/i';
                                     break;
-                                case Column\Column::OPERATOR_RILIKE:
+                                case Column\Column::OPERATOR_RLIKE:
                                     $value = '/^'.preg_quote($value, '/').'/i';
+                                    break;
+                                case Column\Column::OPERATOR_SLIKE:
+                                    $value = '/'.preg_quote($value, '/').'/';
+                                    break;
+                                case Column\Column::OPERATOR_NSLIKE:
+                                    $value = '/^((?!'.preg_quote($value, '/').').)*$/';
+                                    break;
+                                case Column\Column::OPERATOR_LSLIKE:
+                                    $value = '/'.preg_quote($value, '/').'$/';
+                                    break;
+                                case Column\Column::OPERATOR_RSLIKE:
+                                    $value = '/^'.preg_quote($value, '/').'/';
                                     break;
                             }
                         }
@@ -319,10 +319,10 @@ abstract class Source implements DriverInterface
                             case Column\Column::OPERATOR_NLIKE:
                             case Column\Column::OPERATOR_LLIKE:
                             case Column\Column::OPERATOR_RLIKE:
-                            case Column\Column::OPERATOR_ILIKE:
-                            case Column\Column::OPERATOR_NILIKE:
-                            case Column\Column::OPERATOR_LILIKE:
-                            case Column\Column::OPERATOR_RILIKE:
+                            case Column\Column::OPERATOR_SLIKE:
+                            case Column\Column::OPERATOR_NSLIKE:
+                            case Column\Column::OPERATOR_LSLIKE:
+                            case Column\Column::OPERATOR_RSLIKE:
                                 $fieldValue = $this->prepareStringForLikeCompare($fieldValue, $column->getType());
 
                                 $found = preg_match($value, $fieldValue);
@@ -471,7 +471,7 @@ abstract class Source implements DriverInterface
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('vector') as $filter) {
-                        if (in_array($filter->getOperator(), array(Column\Column::OPERATOR_NEQ, Column\Column::OPERATOR_NLIKE,Column\Column::OPERATOR_NILIKE))) {
+                        if (in_array($filter->getOperator(), array(Column\Column::OPERATOR_NEQ, Column\Column::OPERATOR_NLIKE,Column\Column::OPERATOR_NSLIKE))) {
                             $selectFrom = 'source';
                             break;
                         }

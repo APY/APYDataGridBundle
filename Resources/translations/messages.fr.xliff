@@ -127,20 +127,20 @@
                 <target>Trier par</target>
             </trans-unit>
             <trans-unit id="32">
-                <source>ilike</source>
-                <target>Contient (insensible à la casse)</target>
+                <source>slike</source>
+                <target>Contient</target>
             </trans-unit>
             <trans-unit id="33">
-                <source>nilike</source>
-                <target>Ne contient pas (insensible à la casse)</target>
+                <source>nslike</source>
+                <target>Ne contient pas</target>
             </trans-unit>
             <trans-unit id="34">
-                <source>rliike</source>
-                <target>Commence par (insensible à la casse)</target>
+                <source>rslike</source>
+                <target>Commence par</target>
             </trans-unit>
             <trans-unit id="35">
-                <source>lilike</source>
-                <target>Finit par (insensible à la casse)</target>
+                <source>lslike</source>
+                <target>Finit par</target>
             </trans-unit>
         </body>
     </file>

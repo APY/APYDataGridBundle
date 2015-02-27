@@ -123,20 +123,20 @@
             </trans-unit-->
             
             <trans-unit id="39">
-                <source>ilike</source>
-                <target>Contains (case insensitive)</target>
+                <source>slike</source>
+                <target>Contains</target>
             </trans-unit>
             <trans-unit id="40">
-                <source>nilike</source>
-                <target>Not contains (case insensitive)</target>
+                <source>nslike</source>
+                <target>Not contains</target>
             </trans-unit>
             <trans-unit id="41">
-                <source>rliike</source>
-                <target>Starts with (case insensitive)</target>
+                <source>rslike</source>
+                <target>Starts with</target>
             </trans-unit>
             <trans-unit id="42">
-                <source>lilike</source>
-                <target>Ends with (case insensitive)</target>
+                <source>lslike</source>
+                <target>Ends with</target>
             </trans-unit>
         </body>
     </file>
