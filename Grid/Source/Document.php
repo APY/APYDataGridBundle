@@ -100,6 +100,10 @@ class Document extends Source
             case Column::OPERATOR_NLIKE:
             case Column::OPERATOR_RLIKE:
             case Column::OPERATOR_LLIKE:
+            case Column::OPERATOR_SLIKE:
+            case Column::OPERATOR_NSLIKE:
+            case Column::OPERATOR_RSLIKE:
+            case Column::OPERATOR_LSLIKE:
             case Column::OPERATOR_NEQ:
                 return 'equals';
             case Column::OPERATOR_ISNULL:
@@ -125,6 +129,14 @@ class Document extends Source
                 return new \MongoRegex('/^'.$value.'/i');
             case Column::OPERATOR_LLIKE:
                 return new \MongoRegex('/'.$value.'$/i');
+            case Column::OPERATOR_SLIKE:
+                return new \MongoRegex('/'.$value.'/');
+            case Column::OPERATOR_SLIKE:
+                return new \MongoRegex('/^((?!'.$value.').)*$/');
+            case Column::OPERATOR_RSLIKE:
+                return new \MongoRegex('/^'.$value.'/');
+            case Column::OPERATOR_LSLIKE:
+                return new \MongoRegex('/'.$value.'$/');
             case Column::OPERATOR_ISNULL:
                 return false;
             case Column::OPERATOR_ISNOTNULL:
@@ -320,7 +332,7 @@ class Document extends Source
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('document') as $filter) {
-                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE))) {
+                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE,Column::OPERATOR_NSLIKE))) {
                             $selectFrom = 'source';
                             break;
                         }

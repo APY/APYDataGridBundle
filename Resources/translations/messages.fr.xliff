@@ -125,7 +125,23 @@
             <trans-unit id="31">
                 <source>Order by</source>
                 <target>Trier par</target>
-            </trans-unit>            
+            </trans-unit>
+            <trans-unit id="32">
+                <source>slike</source>
+                <target>Contient</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>nslike</source>
+                <target>Ne contient pas</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>rslike</source>
+                <target>Commence par</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>lslike</source>
+                <target>Finit par</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
