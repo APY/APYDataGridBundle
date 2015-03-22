@@ -64,10 +64,14 @@
             {%- spaceless %}
             {% if column.type == 'massaction' %}
                 <input type="checkbox" class="grid-mass-selector" onclick="{{ grid.hash }}_markVisible(this.checked);"/>
-            {% else %}
-                {% set columnTitle = grid.prefixTitle ~ column.title ~ '__abbr' %}
-                {% if columnTitle|trans == columnTitle %}
-                    {% set columnTitle = grid.prefixTitle ~ column.title %}
+            {% else %} 
+                {% if column.usePrefixTitle == true %}
+                    {% set columnTitle = grid.prefixTitle ~ column.title ~ '__abbr' %}
+                    {% if columnTitle|trans == columnTitle %}
+                        {% set columnTitle = grid.prefixTitle ~ column.title %}
+                    {% endif %}
+                {% else %}
+                    {% set columnTitle = column.title %}
                 {% endif %}
                 {% if (column.sortable) %}
                     <a class="order" href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by'|trans }} {{ columnTitle|trans }}">{{ columnTitle|trans }}</a>
@@ -103,7 +107,11 @@
         <form id="{{ grid.hash }}_search" action="{{ grid.routeUrl }}" method="post">
         {% for column in grid.columns %}
             {% if column.isFilterable and column.type not in ['actions', 'massaction'] %}
-                {% set columnTitle = grid.prefixTitle ~ column.title %}
+                {% if column.usePrefixTitle == true %}
+                    {% set columnTitle = grid.prefixTitle ~ column.title %}
+                {% else %}
+                    {% set columnTitle = column.title %}
+                {% endif %}
                 <div class="{{ cycle(['odd', 'even'], loop.index) }}"><label>{{ columnTitle|trans }}</label>{{ grid_filter(column, grid, false)|raw }}</div>
             {% endif %}
         {% endfor %}

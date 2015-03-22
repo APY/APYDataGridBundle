@@ -4,6 +4,8 @@ Create a filter
 If you want another filter than the input and the select filters you can create your own filter.  
 You just have to create your template for your filter and call it in the `filter` attribute of a column.
 
+**Note**: The name of your filter is converted to lowercase.
+
 ## Example with another input filter:
 
 #### Create the template

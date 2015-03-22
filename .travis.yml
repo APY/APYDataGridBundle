@@ -2,7 +2,13 @@ language: php
 
 php:
     - 5.3
+    - 5.4
     - 5.5
+    - 7.0
+
+matrix:
+    allow_failures:
+        - php: 7.0
 
 env:
     - SYMFONY_VERSION=origin/master
@@ -11,7 +17,8 @@ before_script:
     - curl -s http://getcomposer.org/installer | php
     - php composer.phar install
 
-script: phpunit
+script:
+    - phpunit
 
 notifications:
     email:

@@ -2,6 +2,54 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="1">
+                <source>Page</source>
+                <target>Pagina</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>, Display</source>
+                <target>, Toon</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>of %count%</source>
+                <target>van %count%</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Items per page</source>
+                <target>Items per pagina</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Select visible</source>
+                <target>Selecteer zichtbare</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Select all</source>
+                <target>Selecteer alle</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Deselect visible</source>
+                <target>Wis zichtbare</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Deselect all</source>
+                <target>Wis alle</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>Action</source>
+                <target>Actie</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Submit Action</source>
+                <target>Actie toepassen</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>From:</source>
+                <target>Van:</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>To:</source>
+                <target>Tot:</target>
+            </trans-unit>
             <trans-unit id="13">
                 <source>eq</source>
                 <target>Gelijk aan</target>

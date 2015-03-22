@@ -31,7 +31,7 @@ The new order will be : Column2, Column5, Column1, Column3, Column4
 
 ```php
 $userColumns = array('Column2', 'Column5', 'Column1');
-$grid->setColumnsOrder(userColumns, false);
+$grid->setColumnsOrder($userColumns, false);
 ```
 
 The new order will be : Column2, Column5, Column1
