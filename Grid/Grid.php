@@ -659,7 +659,19 @@ class Grid
 
                 // Get data from request
                 $data = $this->getFromRequest($ColumnId);
-
+                
+                //if no item is selectd in multi select filter : simulate empty first choice
+                if( $column->getFilterType() == 'select'
+                    && $column->getSelectMulti() == true
+                    && $data == null
+                    && $this->getFromRequest(self::REQUEST_QUERY_PAGE) == null
+                    && $this->getFromRequest(self::REQUEST_QUERY_ORDER) == null
+                    && $this->getFromRequest(self::REQUEST_QUERY_LIMIT) == null
+                    && ($this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == null || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == "-1")){
+                
+                    $data = array('from'=>'');
+                }
+                
                 // Store in the session
                 $this->set($ColumnId, $data);
 
