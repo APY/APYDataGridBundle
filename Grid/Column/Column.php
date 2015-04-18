@@ -625,10 +625,10 @@ abstract class Column
                     case self::OPERATOR_SLIKE:
                     case self::OPERATOR_RSLIKE:
                     case self::OPERATOR_LSLIKE:
+                    case self::OPERATOR_EQ:
                         if ($this->getSelectMulti()) {
                             $this->setDataJunction(self::DATA_DISJUNCTION);
                         }
-                    case self::OPERATOR_EQ:
                     case self::OPERATOR_NEQ:
                     case self::OPERATOR_NLIKE:
                     case self::OPERATOR_NSLIKE:
