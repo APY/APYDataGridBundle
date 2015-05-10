@@ -79,7 +79,9 @@ class Annotation implements DriverInterface
         }
 
         if (empty($this->columns[$className][$group])) {
-            $this->columns[$className][$group] = array_keys($this->fields[$className][$group]);
+            // Return empty array instead of array keys
+            $this->columns[$className][$group] = array();
+            //$this->columns[$className][$group] = array_keys($this->fields[$className][$group]);
         } else {
             foreach ($this->columns[$className][$group] as $columnId) {
                 // Ignore mapped fields

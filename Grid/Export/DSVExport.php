@@ -55,7 +55,6 @@ class DSVExport extends Export
         }
 
         fclose($outstream);
-
         $this->content = $content;
     }
 
