@@ -125,7 +125,7 @@ class Document extends Source
     {
         switch ($operator) {
             case Column::OPERATOR_EQ:
-                return new \MongoRegex('/^' . $value . '$/i');
+                return $value;
             case Column::OPERATOR_NEQ:
                 return new \MongoRegex('/^(?!' . $value . '$).*$/i');
             case Column::OPERATOR_LIKE:
