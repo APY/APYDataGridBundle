@@ -66,6 +66,18 @@
                 <source>%count% Results, </source>
                 <target>%count% Result, |%count% Results, </target>
             </trans-unit>
+            <trans-unit id="29">
+                <source>Search</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>Reset</source>
+                <target>Reset</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>Order by</source>
+                <target>Order by</target>
+            </trans-unit>
 
 
     <!-- with symbols -->
