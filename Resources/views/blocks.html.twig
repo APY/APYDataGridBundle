@@ -9,7 +9,7 @@
         {% endif %}
         </div>
         <div class="grid_body">
-        <table>
+        <table class-"{% block table_class %}{% endblock %}">
         {% if grid.isTitleSectionVisible %}
             {{ grid_titles(grid) }}
         {% endif %}
