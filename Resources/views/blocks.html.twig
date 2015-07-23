@@ -263,7 +263,10 @@
 {% for key, index in values -%}
     {% set value = index %}
     {% set sourceValue = sourceValues[key] %}
-    {{ block('grid_column_cell') | raw }}{{ column.separator | raw }}
+    {{ block('grid_column_cell') | raw }}
+    {% if not loop.last %}
+      {{ column.separator | raw }}
+    {% endif %}
 {%- endfor %}
 {% endblock grid_column_array_cell %}
 {% block grid_column_type_array_cell %}
