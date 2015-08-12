@@ -620,13 +620,18 @@ class Entity extends Source
                 // Dynamic from query or not ?
                 $query = ($selectFrom === 'source') ? clone $this->querySelectfromSource : clone $this->query;
 
-                $result = $query->select($this->getFieldName($column, true))
+                $query = $query->select($this->getFieldName($column, true))
                     ->distinct()
                     ->orderBy($this->getFieldName($column), 'asc')
                     ->setFirstResult(null)
                     ->setMaxResults(null)
-                    ->getQuery()
-                    ->getResult();
+                    ->getQuery();
+                if ($selectFrom === 'query') {
+                    foreach ($this->hints as $hintKey => $hintValue) {
+                        $query->setHint($hintKey, $hintValue);
+                    }
+                }
+                $result = $query->getResult();
 
                 $values = array();
                 foreach ($result as $row) {
