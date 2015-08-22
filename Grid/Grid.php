@@ -1619,7 +1619,11 @@ class Grid
      */
     public function getPageCount()
     {
-        return ceil($this->getTotalCount() / $this->getLimit());
+        $pageCount = 1;
+        if ($this->getLimit() > 0) {
+            $pageCount = ceil($this->getTotalCount() / $this->getLimit());
+        }
+        return $pageCount;        
     }
 
     /**
