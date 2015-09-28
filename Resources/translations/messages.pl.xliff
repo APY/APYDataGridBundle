@@ -64,7 +64,7 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>%count% Wynik, |%count% Wyników, </target>
+                <target>{0} %count% Wyników|{1} %count% Wynik|]1,Inf[ %count% Wyników, </target>
             </trans-unit>
 
             <trans-unit id="1">
