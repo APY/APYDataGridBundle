@@ -267,6 +267,12 @@ class Grid
      */
     protected $defaultTweak;
 
+    /**
+     * Filters in session
+     * @var array
+     */
+    protected $sessionFilters;
+
     // Lazy parameters
     protected $lazyAddColumn = array();
     protected $lazyHiddenColumns = array();
@@ -1999,5 +2005,92 @@ class Grid
         }
 
         return $result;
+    }
+
+    /**
+     * Returns an array of the active filters of the grid stored in session
+     *
+     * @return Filter[]
+     * @throws \Exception
+     */
+    public function getFilters()
+    {
+        if ($this->hash === null) {
+            throw new \Exception('getFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.');
+        }
+
+        if ($this->sessionFilters === null) {
+            $this->sessionFilters = array();
+            $session = $this->sessionData;
+
+            $requestQueries = array(
+                self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED,
+                self::REQUEST_QUERY_MASS_ACTION,
+                self::REQUEST_QUERY_EXPORT,
+                self::REQUEST_QUERY_PAGE,
+                self::REQUEST_QUERY_LIMIT,
+                self::REQUEST_QUERY_ORDER,
+                self::REQUEST_QUERY_TEMPLATE,
+                self::REQUEST_QUERY_RESET,
+                MassActionColumn::ID,
+            );
+
+            foreach ($requestQueries as $request_query) {
+                unset($session[$request_query]);
+            }
+
+            foreach ($session as $columnId => $sessionFilter) {
+                if (isset($sessionFilter['operator'])) {
+                    $operator = $sessionFilter['operator'];
+                    unset($sessionFilter['operator']);
+                } else {
+                    $operator = $this->getColumn($columnId)->getDefaultOperator();
+                }
+
+                if (! isset($sessionFilter['to'])) {
+                    $sessionFilter = $sessionFilter['from'];
+                }
+
+                $this->sessionFilters[$columnId] = new Filter($operator, $sessionFilter);
+            }
+        }
+
+        return $this->sessionFilters;
+    }
+
+    /**
+     * Returns the filter of a column stored in session
+     *
+     * @param string $columnId
+     *            Id of the column
+     * @return Filter
+     * @throws \Exception
+     */
+    public function getFilter($columnId)
+    {
+        if ($this->hash === null) {
+            throw new \Exception('getFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.');
+        }
+
+        $sessionFilters = $this->getFilters();
+
+        return isset($sessionFilters[$columnId]) ? $sessionFilters[$columnId] : null;
+    }
+
+    /**
+     * A filter of the column is stored in session ?
+     *
+     * @param string $columnId
+     *            Id of the column
+     * @return boolean
+     * @throws \Exception
+     */
+    public function hasFilter($columnId)
+    {
+        if ($this->hash === null) {
+            throw new \Exception('hasFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.');
+        }
+
+        return getFilter($columnId) !== null;
     }
 }
