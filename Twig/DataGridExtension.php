@@ -201,7 +201,7 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getGridCell($column, $row, $grid)
     {
-        $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
+        $value = $column->renderCell($row->getField($column->getField()), $row, $this->router);
 
         $id = $this->names[$grid->getHash()];
 
