@@ -13,18 +13,22 @@
 
 namespace APY\DataGridBundle\Grid;
 
+use APY\DataGridBundle\Grid\Source\Entity;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+
 use APY\DataGridBundle\Grid\Action\MassActionInterface;
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
 use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
-use APY\DataGridBundle\Grid\Export\ExportInterface;
 use APY\DataGridBundle\Grid\Source\Source;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
+use APY\DataGridBundle\Grid\Export\ExportInterface;
 
-class Grid
+class Grid implements GridInterface
 {
     const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
     const REQUEST_QUERY_MASS_ACTION = '__action_id';
@@ -284,12 +288,23 @@ class Grid
     protected $actionsColumnTitle;
 
     /**
-     * @param \Symfony\Component\DependencyInjection\Container $container
-     * @param string $id set if you are using more then one grid inside controller
+     * The grid configuration.
+     *
+     * @var GridConfigInterface
      */
-    public function __construct($container, $id = '')
+    private $config;
+
+    /**
+     * Constructor
+     *
+     * @param Container $container
+     * @param string    $id set if you are using more then one grid inside controller
+     * @param GridConfigInterface $config The grid configuration.
+     */
+    public function __construct($container, $id = '', GridConfigInterface $config)
     {
         $this->container = $container;
+        $this->config = $config;
 
         $this->router = $container->get('router');
         $this->request = $container->get('request');
@@ -306,6 +321,91 @@ class Grid
                 unset($this->routeParameters[$key]);
             }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function initialize()
+    {
+        $config = $this->config;
+
+        $this->setPersistence($config->isPersisted());
+
+        // Route
+        if (null != $config->getRoute()) {
+            $this->setRouteUrl($this->router->generate($config->getRoute()));
+        }
+
+        // Route parameters
+        if (!empty($config->getRouteParameters())) {
+            foreach ($config->getRouteParameters() as $parameter => $value) {
+                $this->setRouteParameter($parameter, $value);
+            }
+        }
+
+        // Columns
+        foreach ($this->lazyAddColumn as $columnInfo) {
+            /** @var Column $column */
+            $column = $columnInfo['column'];
+
+            if (!$config->isFilterable()) {
+                $column->setFilterable(false);
+            }
+
+            if (!$config->isSortable()) {
+                $column->setSortable(false);
+            }
+        }
+
+        // Source
+        $source = $config->getSource();
+
+        if (null != $source) {
+
+            $this->setSource($source);
+
+            if ($source instanceof Entity) {
+                $groupBy = $config->getGroupBy();
+                if (null != $groupBy) {
+                    if (!is_array($groupBy)) {
+                        $groupBy = [$groupBy];
+                    }
+
+                    // Must be set after source because initialize method reset groupBy property
+                    $source->setGroupBy($groupBy);
+                }
+            }
+        }
+
+        // Order
+        if (null != $config->getSortBy()) {
+            $this->setDefaultOrder($config->getSortBy(), $config->getOrder());
+        }
+
+        if (null != $config->getMaxPerPage()) {
+            $this->setLimits($config->getMaxPerPage());
+        }
+
+        $this
+            ->setMaxResults($config->getMaxResults())
+            ->setPage($config->getPage());
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handleRequest(Request $request)
+    {
+        $this->request = $request;
+
+        $this->isReadyForRedirect();
+
+        $this->prepare();
+
+        return $this;
     }
 
     /**
@@ -659,7 +759,7 @@ class Grid
 
                 // Get data from request
                 $data = $this->getFromRequest($ColumnId);
-                
+
                 //if no item is selectd in multi select filter : simulate empty first choice
                 if( $column->getFilterType() == 'select'
                     && $column->getSelectMulti() == true
@@ -668,10 +768,10 @@ class Grid
                     && $this->getFromRequest(self::REQUEST_QUERY_ORDER) == null
                     && $this->getFromRequest(self::REQUEST_QUERY_LIMIT) == null
                     && ($this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == null || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == "-1")){
-                
+
                     $data = array('from'=>'');
                 }
-                
+
                 // Store in the session
                 $this->set($ColumnId, $data);
 
@@ -1633,7 +1733,7 @@ class Grid
         if ($this->getLimit() > 0) {
             $pageCount = ceil($this->getTotalCount() / $this->getLimit());
         }
-        return $pageCount;        
+        return $pageCount;
     }
 
     /**
@@ -1723,8 +1823,14 @@ class Grid
      */
     public function isPagerSectionVisible()
     {
+        $limits = $this->getLimits();
+
+        if (empty($limits)) {
+            return false;
+        }
+
         // true when totalCount rows exceed the minimum pager limit
-        return (min(array_keys($this->getLimits())) <= $this->totalCount);
+        return min(array_keys($limits)) < $this->totalCount;
     }
 
     /**
