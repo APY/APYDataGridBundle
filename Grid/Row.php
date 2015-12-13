@@ -52,6 +52,11 @@ class Row
         return isset($this->fields[$rowId]) ? $this->fields[$rowId] : '';
     }
 
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
     public function setClass($class)
     {
         $this->class = $class;
