@@ -123,19 +123,35 @@ class DataGridExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            'grid'              => new \Twig_Function_Method($this, 'getGrid', array('is_safe' => array('html'))),
-            'grid_html'         => new \Twig_Function_Method($this, 'getGridHtml', array('is_safe' => array('html'))),
-            'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl', array('is_safe' => array('html'))),
-            'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter', array('is_safe' => array('html'))),
-            'grid_column_operator' => new \Twig_Function_Method($this, 'getGridColumnOperator', array('is_safe' => array('html'))),
-            'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
-            'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
-            'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
-            'grid_pagerfanta'   => new \Twig_Function_Method($this, 'getPagerfanta', array('is_safe' => array('html'))),
-            // Other methods with only the grid as input and output argument (Twig >= 1.5.0)
-            'grid_*'            => new \Twig_Function_Method($this, 'getGrid_', array('is_safe' => array('html')))
-        );
+        if (class_exists('\Twig_SimpleFunction')) {
+            return array(
+                new \Twig_SimpleFunction('grid', [$this, 'getGrid'], array('is_safe' => array('html'))),
+                new \Twig_SimpleFunction('grid_html', [$this, 'getGridHtml'], array('is_safe' => array('html'))),
+                new \Twig_SimpleFunction('grid_url', [$this, 'getGridUrl'], array('is_safe' => array('html'))),
+                new \Twig_SimpleFunction('grid_filter', [$this, 'getGridFilter'], array('is_safe' => array('html'))),
+                new \Twig_SimpleFunction('grid_column_operator', [$this, 'getGridColumnOperator'], array('is_safe' => array('html'))),
+                new \Twig_SimpleFunction('grid_cell', [$this, 'getGridCell'], array('is_safe' => array('html'))),
+                new \Twig_SimpleFunction('grid_search', [$this, 'getGridSearch'], array('is_safe' => array('html'))),
+                new \Twig_SimpleFunction('grid_pager', [$this, 'getGridPager'], array('is_safe' => array('html'))),
+                new \Twig_SimpleFunction('grid_pagerfanta', [$this, 'getPagerfanta'], array('is_safe' => array('html'))),
+                // Other methods with only the grid as input and output argument (Twig >= 1.5.0)
+                new \Twig_SimpleFunction('grid_*', [$this, 'getGrid_'], array('is_safe' => array('html')))
+            );
+        } else {
+            return array(
+                'grid'              => new \Twig_Function_Method($this, 'getGrid', array('is_safe' => array('html'))),
+                'grid_html'         => new \Twig_Function_Method($this, 'getGridHtml', array('is_safe' => array('html'))),
+                'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl', array('is_safe' => array('html'))),
+                'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter', array('is_safe' => array('html'))),
+                'grid_column_operator' => new \Twig_Function_Method($this, 'getGridColumnOperator', array('is_safe' => array('html'))),
+                'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
+                'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
+                'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
+                'grid_pagerfanta'   => new \Twig_Function_Method($this, 'getPagerfanta', array('is_safe' => array('html'))),
+                // Other methods with only the grid as input and output argument (Twig >= 1.5.0)
+                'grid_*'            => new \Twig_Function_Method($this, 'getGrid_', array('is_safe' => array('html')))
+            );
+        }
     }
 
     public function initGrid($grid, $theme = null, $id = '', array $params = array())
