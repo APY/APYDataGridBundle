@@ -76,44 +76,26 @@ class DataGridExtension extends \Twig_Extension
         $this->pagerFantaDefs=$def;
     }
 
+    /**
+     * @see Twig_Extension::getGlobals()
+     */
+    public function getGlobals()
+    {
+        return array(
+            'grid' => null,
+            'column' => null,
+            'row' => null,
+            'value' => null,
+            'submitOnChange' => null,
+            'withjs' => true,
+            'pagerfanta' => false,
+            'op' => 'eq',
+        );
+    }
+
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
-
-        // Avoids the exception "Variable does not exist" with the _self template
-        $globals = $this->environment->getGlobals();
-
-        if (!isset($globals['grid'])) {
-            $this->environment->addGlobal('grid', null);
-        }
-
-        if (!isset($globals['column'])) {
-            $this->environment->addGlobal('column', null);
-        }
-
-        if (!isset($globals['row'])) {
-            $this->environment->addGlobal('row', null);
-        }
-
-        if (!isset($globals['value'])) {
-            $this->environment->addGlobal('value', null);
-        }
-
-        if (!isset($globals['submitOnChange'])) {
-            $this->environment->addGlobal('submitOnChange', null);
-        }
-
-        if (!isset($globals['withjs'])) {
-            $this->environment->addGlobal('withjs', true);
-        }
-
-        if (!isset($globals['pagerfanta'])) {
-            $this->environment->addGlobal('pagerfanta', false);
-        }
-
-        if (!isset($globals['op'])) {
-            $this->environment->addGlobal('op', 'eq');
-        }
     }
 
     /**
