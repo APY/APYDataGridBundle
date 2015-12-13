@@ -4,9 +4,9 @@ This bundle was initiated by Stanislav Turza (Sorien).
 **Version**: 2.1-dev - master-dev
 **Compatibility**: Symfony >= 2.0.0, Twig >= 1.5.0
 
-[![Build Status](https://secure.travis-ci.org/Abhoryo/APYDataGridBundle.png?branch=master)](http://travis-ci.org/Abhoryo/APYDataGridBundle)
+[![Build Status](https://secure.travis-ci.org/APY/APYDataGridBundle.png?branch=master)](http://travis-ci.org/APY/APYDataGridBundle)
 
-See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/Abhoryo/APYDataGridBundle/blob/master/UPGRADE-2.0.md)
+See [CHANGELOG](https://github.com/APY/APYDataGridBundle/blob/master/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/APY/APYDataGridBundle/blob/master/UPGRADE-2.0.md)
 
 ## Features
 
@@ -34,25 +34,25 @@ See [CHANGELOG](https://github.com/Abhoryo/APYDataGridBundle/blob/master/CHANGEL
 
 ## Documentation
 
-See the [summary](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/summary.md).
+See the [summary](https://github.com/APY/APYDataGridBundle/blob/master/Resources/doc/summary.md).
 
 ## Screenshot
 
-Full example with this [CSS style file](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/grid_configuration/working_example.css):
+Full example with this [CSS style file](https://github.com/APY/APYDataGridBundle/blob/master/Resources/doc/grid_configuration/working_example.css):
 
-![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_full.png?raw=true)
+![test](https://github.com/APY/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_full.png?raw=true)
 
 Simple example with the external filter box in english:
 
-![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_en.png?raw=true)
+![test](https://github.com/APY/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_en.png?raw=true)
 
 Same example in french:
 
-![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_fr.png?raw=true)
+![test](https://github.com/APY/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_fr.png?raw=true)
 
 Data used in these screenshots (this is a phpMyAdmin screenshot):
 
-![test](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_database.png?raw=true)
+![test](https://github.com/APY/APYDataGridBundle/blob/master/Resources/doc/images/screenshot_database.png?raw=true)
 
 ## Simple grid with an ORM source
 
@@ -124,4 +124,4 @@ Abhoryo, golovanov, touchdesign, Spea, nurikabe, print, Gregory McLean, centove,
 
 ## Todo list
 
-See this [Pull Request](https://github.com/Abhoryo/APYDataGridBundle/issues/121)
+See this [Pull Request](https://github.com/APY/APYDataGridBundle/issues/121)
