@@ -79,41 +79,23 @@ class DataGridExtension extends \Twig_Extension
     public function initRuntime(\Twig_Environment $environment)
     {
         $this->environment = $environment;
+    }
 
-        // Avoids the exception "Variable does not exist" with the _self template
-        $globals = $this->environment->getGlobals();
-
-        if (!isset($globals['grid'])) {
-            $this->environment->addGlobal('grid', null);
-        }
-
-        if (!isset($globals['column'])) {
-            $this->environment->addGlobal('column', null);
-        }
-
-        if (!isset($globals['row'])) {
-            $this->environment->addGlobal('row', null);
-        }
-
-        if (!isset($globals['value'])) {
-            $this->environment->addGlobal('value', null);
-        }
-
-        if (!isset($globals['submitOnChange'])) {
-            $this->environment->addGlobal('submitOnChange', null);
-        }
-
-        if (!isset($globals['withjs'])) {
-            $this->environment->addGlobal('withjs', true);
-        }
-
-        if (!isset($globals['pagerfanta'])) {
-            $this->environment->addGlobal('pagerfanta', false);
-        }
-
-        if (!isset($globals['op'])) {
-            $this->environment->addGlobal('op', 'eq');
-        }
+    /**
+     * @return array
+     */
+    public function getGlobals()
+    {
+        return array(
+            'grid' => null,
+            'column' => null,
+            'row' => null,
+            'value' => null,
+            'submitOnChange' => null,
+            'withjs' => true,
+            'pagerfanta' => false,
+            'op' => 'eq'
+        );
     }
 
     /**
@@ -124,17 +106,16 @@ class DataGridExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'grid'              => new \Twig_Function_Method($this, 'getGrid', array('is_safe' => array('html'))),
-            'grid_html'         => new \Twig_Function_Method($this, 'getGridHtml', array('is_safe' => array('html'))),
-            'grid_url'          => new \Twig_Function_Method($this, 'getGridUrl', array('is_safe' => array('html'))),
-            'grid_filter'       => new \Twig_Function_Method($this, 'getGridFilter', array('is_safe' => array('html'))),
-            'grid_column_operator' => new \Twig_Function_Method($this, 'getGridColumnOperator', array('is_safe' => array('html'))),
-            'grid_cell'         => new \Twig_Function_Method($this, 'getGridCell', array('is_safe' => array('html'))),
-            'grid_search'       => new \Twig_Function_Method($this, 'getGridSearch', array('is_safe' => array('html'))),
-            'grid_pager'        => new \Twig_Function_Method($this, 'getGridPager', array('is_safe' => array('html'))),
-            'grid_pagerfanta'   => new \Twig_Function_Method($this, 'getPagerfanta', array('is_safe' => array('html'))),
-            // Other methods with only the grid as input and output argument (Twig >= 1.5.0)
-            'grid_*'            => new \Twig_Function_Method($this, 'getGrid_', array('is_safe' => array('html')))
+            new \Twig_SimpleFunction('grid', array($this, 'getGrid'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('grid_html', array($this, 'getGridHtml'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('grid_url', array($this, 'getGridUrl'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('grid_filter', array($this, 'getGridFilter'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('grid_column_operator', array($this, 'getGridColumnOperator'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('grid_cell', array($this, 'getGridCell'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('grid_search', array($this, 'getGridSearch'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('grid_pager', array($this, 'getGridPager'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('grid_pagerfanta', array($this, 'getPagerfanta'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('grid_*', array($this, 'getGrid_'), array('is_safe' => array('html')))
         );
     }
 
