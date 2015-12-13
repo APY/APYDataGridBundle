@@ -64,7 +64,7 @@
             {%- spaceless %}
             {% if column.type == 'massaction' %}
                 <input type="checkbox" class="grid-mass-selector" onclick="{{ grid.hash }}_markVisible(this.checked);"/>
-            {% else %} 
+            {% else %}
                 {% if column.usePrefixTitle == true %}
                     {% set columnTitle = grid.prefixTitle ~ column.title ~ '__abbr' %}
                     {% if columnTitle|trans == columnTitle %}
@@ -280,6 +280,10 @@
 {% block grid_column_type_join_cell %}
 	{{ block('grid_column_join_cell') }}
 {% endblock grid_column_type_join_cell %}
+{# ------------------------------------------------ grid_column_type_simple_array_columns --------------------------------------------- #}
+{% block grid_column_type_simple_array_cell %}
+    {{ block('grid_column_array_cell') }}
+{% endblock grid_column_type_simple_array_cell %}
 {# ------------------------------------------- grid_column_cell ---------------------------------------- #}
 {% block grid_column_cell %}
 {%- spaceless %}
