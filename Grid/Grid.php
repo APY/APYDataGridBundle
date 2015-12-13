@@ -13,17 +13,16 @@
 
 namespace APY\DataGridBundle\Grid;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-
 use APY\DataGridBundle\Grid\Action\MassActionInterface;
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
+use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
-use APY\DataGridBundle\Grid\Column\ActionsColumn;
-use APY\DataGridBundle\Grid\Source\Source;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
+use APY\DataGridBundle\Grid\Source\Source;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class Grid
 {
@@ -90,7 +89,7 @@ class Grid
     /**
      * @var boolean
      */
-     protected $prepared = false;
+    protected $prepared = false;
 
     /**
      * @var int
@@ -344,6 +343,7 @@ class Grid
      */
     public function isReadyForRedirect()
     {
+
         if ($this->source === null) {
             throw new \Exception('The source of the grid is not set.');
         }
@@ -389,7 +389,7 @@ class Grid
 
     protected function getCurrentUri()
     {
-        return $this->request->getScheme().'://'.$this->request->getHttpHost().$this->request->getBaseUrl().$this->request->getPathInfo();
+        return $this->request->getScheme() . '://' . $this->request->getHttpHost() . $this->request->getBaseUrl() . $this->request->getPathInfo();
     }
 
     protected function processPersistence()
@@ -398,7 +398,7 @@ class Grid
 
         // Persistence or reset - kill previous session
         if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $referer != $this->getCurrentUri())
-         || isset($this->requestData[self::REQUEST_QUERY_RESET])) {
+            || isset($this->requestData[self::REQUEST_QUERY_RESET])) {
             $this->session->remove($this->hash);
         }
 
@@ -473,13 +473,13 @@ class Grid
         if ($actionId > -1 && '' !== $actionId) {
             if (array_key_exists($actionId, $this->massActions)) {
                 $action = $this->massActions[$actionId];
-                $actionAllKeys = (boolean)$this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
+                $actionAllKeys = (boolean) $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
                 $actionKeys = $actionAllKeys == false ? (array) $this->getFromRequest(MassActionColumn::ID) : array();
 
                 $this->processSessionData();
                 if ($actionAllKeys) {
                     $this->page = 0;
-                    $this->limit = 0;
+                    $this->limit = 1;
                 }
                 $this->prepare();
 
@@ -488,9 +488,9 @@ class Grid
                 } elseif (strpos($action->getCallback(), ':') !== false) {
                     $path = array_merge(
                         array(
-                            'primaryKeys'    => array_keys($actionKeys),
+                            'primaryKeys' => array_keys($actionKeys),
                             'allPrimaryKeys' => $actionAllKeys,
-                            '_controller'    => $action->getCallback()
+                            '_controller' => $action->getCallback(),
                         ),
                         $action->getParameters()
                     );
@@ -689,9 +689,9 @@ class Grid
     {
         // Set to the first page if this is a request of order, limit, mass action or filtering
         if ($this->getFromRequest(self::REQUEST_QUERY_ORDER) !== null
-         || $this->getFromRequest(self::REQUEST_QUERY_LIMIT) !== null
-         || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) !== null
-         || $filtering) {
+            || $this->getFromRequest(self::REQUEST_QUERY_LIMIT) !== null
+            || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) !== null
+            || $filtering) {
             $this->set(self::REQUEST_QUERY_PAGE, 0);
         } else {
             $this->set(self::REQUEST_QUERY_PAGE, $page);
@@ -762,7 +762,7 @@ class Grid
         $this->saveSession();
     }
 
-     /**
+    /**
      * Store permanent filters to the session and disable the filter capability for the column if there are permanent filters
      */
     protected function processFilters($permanent = true)
@@ -993,7 +993,7 @@ class Grid
 
     protected function createHash()
     {
-        $this->hash = 'grid_'. (empty($this->id) ? md5($this->request->get('_controller').$this->columns->getHash().$this->source->getHash()) : $this->getId());
+        $this->hash = 'grid_' . (empty($this->id) ? md5($this->request->get('_controller') . $this->columns->getHash() . $this->source->getHash()) : $this->getId());
     }
 
     public function getHash()
@@ -1151,11 +1151,11 @@ class Grid
      */
     public function getTweaks()
     {
-        $separator =  strpos($this->getRouteUrl(), '?') ? '&' : '?';
-        $url = $this->getRouteUrl().$separator.$this->getHash().'['.Grid::REQUEST_QUERY_TWEAK.']=';
+        $separator = strpos($this->getRouteUrl(), '?') ? '&' : '?';
+        $url = $this->getRouteUrl() . $separator . $this->getHash() . '[' . Grid::REQUEST_QUERY_TWEAK . ']=';
 
         foreach ($this->tweaks as $id => $tweak) {
-            $this->tweaks[$id] = array_merge($tweak, array('url' => $url.$id));
+            $this->tweaks[$id] = array_merge($tweak, array('url' => $url . $id));
         }
 
         return $this->tweaks;
@@ -1458,7 +1458,6 @@ class Grid
         return $this->id;
     }
 
-
     /**
      * Sets persistence
      *
@@ -1507,13 +1506,13 @@ class Grid
     public function setLimits($limits)
     {
         if (is_array($limits)) {
-            if ((int)key($limits) === 0) {
+            if ((int) key($limits) === 0) {
                 $this->limits = array_combine($limits, $limits);
             } else {
                 $this->limits = $limits;
             }
         } elseif (is_int($limits)) {
-            $this->limits = array($limits => (string)$limits);
+            $this->limits = array($limits => (string) $limits);
         } else {
             throw new \InvalidArgumentException('Limit has to be array or integer');
         }
@@ -1594,7 +1593,7 @@ class Grid
      */
     public function setPage($page)
     {
-        if ((int)$page >= 0) {
+        if ((int) $page >= 0) {
             $this->page = (int) $page;
         } else {
             throw new \InvalidArgumentException('Page must be a positive number');
@@ -1612,7 +1611,6 @@ class Grid
     {
         return $this->page;
     }
-
 
     /**
      * Returnd grid display data as rows - internal helper for templates

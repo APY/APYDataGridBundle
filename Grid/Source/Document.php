@@ -14,9 +14,10 @@
 
 namespace APY\DataGridBundle\Grid\Source;
 
-use APY\DataGridBundle\Grid\Rows;
-use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Grid\Rows;
+use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
 
 class Document extends Source
 {
@@ -59,6 +60,16 @@ class Document extends Source
      * @var string
      */
     protected $group;
+
+    /**
+     * @var array
+     */
+    protected $referencedColumns = array();
+
+    /**
+     * @var array
+     */
+    protected $referencedMappings = array();
 
     /**
      * @param string $documentName e.g. "Cms:Page"
@@ -118,21 +129,21 @@ class Document extends Source
     {
         switch ($operator) {
             case Column::OPERATOR_EQ:
-                return new \MongoRegex('/^'.$value.'$/i');
+                return $value;
             case Column::OPERATOR_NEQ:
-                return new \MongoRegex('/^(?!'.$value.'$).*$/i');
+                return new \MongoRegex('/^(?!' . $value . '$).*$/i');
             case Column::OPERATOR_LIKE:
-                return new \MongoRegex('/'.$value.'/i');
+                return new \MongoRegex('/' . $value . '/i');
             case Column::OPERATOR_NLIKE:
-                return new \MongoRegex('/^((?!'.$value.').)*$/i');
+                return new \MongoRegex('/^((?!' . $value . ').)*$/i');
             case Column::OPERATOR_RLIKE:
-                return new \MongoRegex('/^'.$value.'/i');
+                return new \MongoRegex('/^' . $value . '/i');
             case Column::OPERATOR_LLIKE:
                 return new \MongoRegex('/'.$value.'$/i');
             case Column::OPERATOR_SLIKE:
                 return new \MongoRegex('/'.$value.'/');
             case Column::OPERATOR_SLIKE:
-                return new \MongoRegex('/^((?!'.$value.').)*$/');
+               return new \MongoRegex('/^((?!'.$value.').)*$/');
             case Column::OPERATOR_RSLIKE:
                 return new \MongoRegex('/^'.$value.'/');
             case Column::OPERATOR_LSLIKE:
@@ -147,6 +158,31 @@ class Document extends Source
     }
 
     /**
+     * Sets the initial QueryBuilder for this DataGrid
+     * @param QueryBuilder $queryBuilder
+     */
+    public function initQueryBuilder(QueryBuilder $queryBuilder)
+    {
+        $this->query = clone $queryBuilder;
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    protected function getQueryBuilder()
+    {
+        //If a custom QB has been provided, use that
+        //Otherwise create our own basic one
+        if ($this->query instanceof QueryBuilder) {
+            $qb = $this->query;
+        } else {
+            $qb = $this->query = $this->manager->createQueryBuilder($this->documentName);
+        }
+
+        return $qb;
+    }
+
+    /**
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
      * @param int $page Page Number
      * @param int $limit Rows Per Page
@@ -155,9 +191,20 @@ class Document extends Source
      */
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
-        $this->query = $this->manager->createQueryBuilder($this->documentName);
+        $this->query = $this->getQueryBuilder();
 
         foreach ($columns as $column) {
+
+            //checks if exists '.' notation on referenced columns and build query if it's filtered
+            $subColumn = explode('.', $column->getId());
+            if (count($subColumn) > 1 && isset($this->referencedMappings[$subColumn[0]])) {
+                $this->addReferencedColumnn($subColumn, $column);
+                //must remove this referenced subColumn from processing
+                $columns->offsetUnset($columns->key());
+
+                continue;
+            }
+
             $this->query->select($column->getField());
 
             if ($column->isSorted()) {
@@ -214,10 +261,12 @@ class Document extends Source
             $properties = $this->getClassProperties($resource);
 
             foreach ($columns as $column) {
-                if (isset($properties[$column->getId()])) {
-                    $row->setField($column->getId(), $properties[$column->getId()]);
+                if (isset($properties[strtolower($column->getId())])) {
+                    $row->setField($column->getId(), $properties[strtolower($column->getId())]);
                 }
             }
+
+            $this->addReferencedFields($row, $resource);
 
             //call overridden prepareRow or associated closure
             if (($modifiedRow = $this->prepareRow($row)) != null) {
@@ -226,6 +275,69 @@ class Document extends Source
         }
 
         return $result;
+    }
+
+    /**
+     * @param array  $subColumn
+     * @param Column \APY\DataGridBundle\Grid\Column\Column
+     */
+    protected function addReferencedColumnn(array $subColumn, Column $column)
+    {
+        $this->referencedColumns[$subColumn[0]][] = $subColumn[1];
+
+        if ($column->isFiltered()) {
+            $helperQuery = $this->manager->createQueryBuilder($this->referencedMappings[$subColumn[0]]);
+            $filters = $column->getFilters('document');
+            foreach ($filters as $filter) {
+                $operator = $this->normalizeOperator($filter->getOperator());
+                $value = $this->normalizeValue($filter->getOperator(), $filter->getValue());
+
+                $helperQuery->field($subColumn[1])->$operator($value);
+                $this->prepareQuery($this->query);
+
+                $cursor = $helperQuery->getQuery()->execute();
+
+                foreach ($cursor as $resource) {
+                    if ($cursor->count() > 0) {
+                        $this->query->select($subColumn[0]);
+                    }
+
+                    if ($cursor->count() == 1) {
+                        $this->query->field($subColumn[0])->references($resource);
+                    } else {
+                        $this->query->addOr($this->query->expr()->field($subColumn[0])->references($resource));
+                    }
+                }
+
+            }
+        }
+    }
+
+    /**
+     * @param \APY\DataGridBundle\Grid\Row    $row
+     * @param Document $resource
+     * @throws \Exception if getter for field does not exists
+     * @return \APY\DataGridBundle\Grid\Row $row with referenced fields
+     */
+    protected function addReferencedFields(Row $row, $resource)
+    {
+        foreach ($this->referencedColumns as $parent => $subColumns) {
+            $node = $this->getClassProperties($resource);
+            if (isset($node[strtolower($parent)])) {
+                $node = $node[strtolower($parent)];
+
+                foreach ($subColumns as $field) {
+                    $getter = 'get' . ucfirst($field);
+                    if (method_exists($node, $getter)) {
+                        $row->setField($parent . '.' . $field, $node->$getter());
+                    } else {
+                        throw new \Exception(sprintf('Method %s for Document %s not exists', $getter, $this->referencedMappings[$parent]));
+                    }
+                }
+            }
+        }
+
+        return $row;
     }
 
     public function getTotalCount($maxResults = null)
@@ -240,12 +352,12 @@ class Document extends Source
     protected function getClassProperties($obj)
     {
         $reflect = new \ReflectionClass($obj);
-        $props   = $reflect->getProperties();
-        $result  = array();
+        $props = $reflect->getProperties();
+        $result = array();
 
         foreach ($props as $property) {
             $property->setAccessible(true);
-            $result[$property->getName()] = $property->getValue($obj);
+            $result[strtolower($property->getName())] = $property->getValue($obj);
         }
 
         return $result;
@@ -286,7 +398,7 @@ class Document extends Source
                     $values['type'] = 'number';
                     break;
                 /*case 'hash':
-                    $values['type'] = 'array';*/
+                $values['type'] = 'array';*/
                 case 'boolean':
                     $values['type'] = 'boolean';
                     break;
@@ -299,6 +411,9 @@ class Document extends Source
                     break;
                 case 'one':
                     $values['type'] = 'array';
+                    if (isset($mapping['reference']) && $mapping['reference'] === true) {
+                        $this->referencedMappings[$name] = $mapping['targetDocument'];
+                    }
                     break;
                 case 'many':
                     $values['type'] = 'array';
@@ -315,7 +430,7 @@ class Document extends Source
 
     public function populateSelectFilters($columns, $loop = false)
     {
-        $queryFromSource = $this->manager->createQueryBuilder($this->documentName);
+        $queryFromSource = $this->getQueryBuilder();
         $queryFromQuery = clone $this->query;
 
         // Clean the select fields from the query
@@ -343,12 +458,12 @@ class Document extends Source
                 $query = ($selectFrom === 'source') ? clone $queryFromSource : clone $queryFromQuery;
 
                 $result = $query->select($column->getField())
-                    ->distinct($column->getField())
-                    ->sort($column->getField(), 'asc')
-                    ->skip(null)
-                    ->limit(null)
-                    ->getQuery()
-                    ->execute();
+                                ->distinct($column->getField())
+                                ->sort($column->getField(), 'asc')
+                                ->skip(null)
+                                ->limit(null)
+                                ->getQuery()
+                                ->execute();
 
                 $values = array();
                 foreach ($result as $value) {
@@ -365,7 +480,7 @@ class Document extends Source
                             }
 
                             // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
-                            if (is_array($value) && array_keys($value) == array('t','i')) {
+                            if (is_array($value) && array_keys($value) == array('t', 'i')) {
                                 $value = $value['i'];
                             }
 
@@ -407,7 +522,7 @@ class Document extends Source
 
     public function getRepository()
     {
-        return$this->manager->getRepository($this->documentName);
+        return $this->manager->getRepository($this->documentName);
     }
 
     public function getHash()
