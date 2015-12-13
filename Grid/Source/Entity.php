@@ -646,6 +646,14 @@ class Entity extends Source
                                 $values[$val] = $val;
                             }
                             break;
+                        case 'simple_array':
+                            if (is_string($value)) {
+                                $value = explode(',', $value);
+                            }
+                            foreach ($value as $val) {
+                                $values[$val] = $val;
+                            }
+                            break;
                         case 'number':
                             $values[$value] = $column->getDisplayedValue($value);
                             break;
