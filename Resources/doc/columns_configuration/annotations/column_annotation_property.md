@@ -32,7 +32,6 @@ class Product
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      *
      * @GRID\Column(field="category.name", title="Category Name")
-     * @GRID\Column(field="category.children.name", type="array", title="Category Children")
      */
     protected $category;
 }
