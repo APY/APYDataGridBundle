@@ -652,7 +652,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      */
     public function getParameter($name)
     {
-        if (!hasParameter($name)) {
+        if (!$this->hasParameter($name)) {
             throw new \InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
         }
 
