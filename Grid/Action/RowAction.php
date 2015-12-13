@@ -25,6 +25,7 @@ class RowAction implements RowActionInterface
     protected $attributes = array();
     protected $role;
     protected $callback;
+    protected $template = 'APYDataGridBundle::row_action.html.twig';
 
     /**
      * Default RowAction constructor
@@ -301,6 +302,25 @@ class RowAction implements RowActionInterface
     public function getAttributes()
     {
         return $this->attributes;
+    }
+
+    /**
+     * Get the template responsible of rendering th row action
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * Set the row action template
+     * @param string $template
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+        return $this;
     }
 
     /**

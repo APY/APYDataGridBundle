@@ -69,4 +69,10 @@ interface RowActionInterface
      * @return array
      */
     public function getAttributes();
+
+    /**
+     * Get the row action template
+     * @return string
+     */
+    public function getTemplate();
 }
