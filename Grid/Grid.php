@@ -578,22 +578,29 @@ class Grid implements GridInterface
         if ($actionId > -1 && '' !== $actionId) {
             if (array_key_exists($actionId, $this->massActions)) {
                 $action = $this->massActions[$actionId];
-                $actionAllKeys = (boolean) $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
-                $actionKeys = $actionAllKeys == false ? (array) $this->getFromRequest(MassActionColumn::ID) : array();
+                $actionAllKeys = (boolean)$this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
+                $actionKeys = $actionAllKeys == false ? array_keys((array) $this->getFromRequest(MassActionColumn::ID)) : array();
 
                 $this->processSessionData();
                 if ($actionAllKeys) {
                     $this->page = 0;
-                    $this->limit = 1;
+                    $this->limit = 0;
                 }
+                
                 $this->prepare();
+                
+                if($actionAllKeys == true){
+                    foreach($this->rows as $row){
+                        $actionKeys[]=$row->getPrimaryFieldValue();
+                    }
+                }
 
                 if (is_callable($action->getCallback())) {
-                    $this->massActionResponse = call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session, $action->getParameters());
+                    $this->massActionResponse = call_user_func($action->getCallback(), $actionKeys, $actionAllKeys, $this->session, $action->getParameters());
                 } elseif (strpos($action->getCallback(), ':') !== false) {
                     $path = array_merge(
                         array(
-                            'primaryKeys' => array_keys($actionKeys),
+                            'primaryKeys'    => $actionKeys,
                             'allPrimaryKeys' => $actionAllKeys,
                             '_controller' => $action->getCallback(),
                         ),
