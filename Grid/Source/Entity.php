@@ -54,7 +54,6 @@ class Entity extends Source
      */
     protected $managerName;
 
-
     /**
      * @var \APY\DataGridBundle\Grid\Mapping\Metadata\Metadata
      */
@@ -94,7 +93,6 @@ class Entity extends Source
      * @var QueryBuilder
      */
     protected $queryBuilder;
-
 
     /**
      * The table alias that will be used in the query to fetch actual data
@@ -149,7 +147,7 @@ class Entity extends Source
     {
         $name = $column->getField();
 
-        if($column->getIsManualField()) {
+        if ($column->getIsManualField()) {
             return $column->getField();
         }
 
@@ -258,7 +256,7 @@ class Entity extends Source
             case Column::OPERATOR_LSLIKE:
             case Column::OPERATOR_RSLIKE:
             case Column::OPERATOR_NSLIKE:
-                             return 'like';
+                return 'like';
             default:
                 return $operator;
         }
@@ -292,7 +290,8 @@ class Entity extends Source
     {
         $this->queryBuilder = clone $queryBuilder;
 
-        //Try to guess the new root alias and apply it to our queries+        //as the external querybuilder almost certainly is not used our default alias
+        //Try to guess the new root alias and apply it to our queries+
+        //as the external querybuilder almost certainly is not used our default alias
         $externalTableAliases = $this->queryBuilder->getRootAliases();
         if (count($externalTableAliases)) {
             $this->setTableAlias($externalTableAliases[0]);
@@ -338,7 +337,6 @@ class Entity extends Source
         }
 
         foreach ($columns as $column) {
-
             // If a column is a manual field, ie a.col*b.col as myfield, it is added to select from user.
             if($column->getIsManualField() === false) {
                 $fieldName = $this->getFieldName($column, true);
@@ -348,6 +346,7 @@ class Entity extends Source
 
             if ($column->isSorted()) {
                 if ($column->getType() === 'join') {
+                    $this->query->resetDQLPart('orderBy');
                     foreach($column->getJoinColumns() as $columnName) {
                         $this->query->addOrderBy($this->getFieldName($columnsById[$columnName]), $column->getOrder());
                     }
@@ -373,7 +372,7 @@ class Entity extends Source
 
                     $fieldName = $this->getFieldName($columnForFilter, false);
                     $bindIndexPlaceholder = "?$bindIndex";
-                    if( in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))){
+                    if (in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))) {
                         $fieldName = "LOWER($fieldName)";
                         $bindIndexPlaceholder = "LOWER($bindIndexPlaceholder)";
                     }
@@ -749,5 +748,4 @@ class Entity extends Source
     {
         return $this->tableAlias;
     }
-    
 }
