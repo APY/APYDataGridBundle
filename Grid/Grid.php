@@ -299,9 +299,9 @@ class Grid implements GridInterface
      *
      * @param Container $container
      * @param string    $id set if you are using more then one grid inside controller
-     * @param GridConfigInterface $config The grid configuration.
+     * @param GridConfigInterface|null $config The grid configuration.
      */
-    public function __construct($container, $id = '', GridConfigInterface $config)
+    public function __construct($container, $id = '', GridConfigInterface $config = null)
     {
         $this->container = $container;
         $this->config = $config;
@@ -329,6 +329,10 @@ class Grid implements GridInterface
     public function initialize()
     {
         $config = $this->config;
+
+        if (!$config) {
+            return $this;
+        }
 
         $this->setPersistence($config->isPersisted());
 
