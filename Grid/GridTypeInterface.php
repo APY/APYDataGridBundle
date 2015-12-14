@@ -19,7 +19,7 @@ interface GridTypeInterface
      *
      * @return void
      */
-    public function buildGrid(GridBuilder $builder, array $options = []);
+    public function buildGrid(GridBuilder $builder, array $options = array());
 
     /**
      * Configures the options for this type.

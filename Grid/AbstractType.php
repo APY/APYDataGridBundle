@@ -14,7 +14,7 @@ abstract class AbstractType implements GridTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildGrid(GridBuilder $builder, array $options = [])
+    public function buildGrid(GridBuilder $builder, array $options = array())
     {
     }
 

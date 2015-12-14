@@ -20,7 +20,7 @@ interface GridBuilderInterface
      *
      * @return GridBuilderInterface
      */
-    public function add($name, $type, array $options = []);
+    public function add($name, $type, array $options = array());
 
     /**
      * Returns a column.

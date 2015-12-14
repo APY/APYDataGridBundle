@@ -35,7 +35,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * @var array
      */
-    protected $routeParameters = [];
+    protected $routeParameters = array();
 
     /**
      * @var bool
@@ -98,7 +98,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
      * @param string $name    The grid name
      * @param array  $options The grid options
      */
-    public function __construct($name, array $options = [])
+    public function __construct($name, array $options = array())
     {
         $this->name    = $name;
         $this->options = $options;
