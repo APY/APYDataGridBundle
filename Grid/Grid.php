@@ -338,8 +338,9 @@ class Grid implements GridInterface
         }
 
         // Route parameters
-        if (!empty($config->getRouteParameters())) {
-            foreach ($config->getRouteParameters() as $parameter => $value) {
+        $routeParameters = $config->getRouteParameters();
+        if (!empty($routeParameters)) {
+            foreach ($routeParameters as $parameter => $value) {
                 $this->setRouteParameter($parameter, $value);
             }
         }
