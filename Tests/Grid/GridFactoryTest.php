@@ -40,7 +40,7 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('APY\DataGridBundle\Grid\Exception\UnexpectedTypeException');
         $this->factory->create(1234);
-        $this->factory->create(['foo']);
+        $this->factory->create(array('foo'));
         $this->factory->create(new \stdClass());
     }
 
@@ -77,8 +77,8 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateBuilder()
     {
-        $givenOptions    = ['a' => 1, 'b' => 2];
-        $resolvedOptions = ['a' => 1, 'b' => 2, 'c' => 3];
+        $givenOptions    = array('a' => 1, 'b' => 2);
+        $resolvedOptions = array('a' => 1, 'b' => 2, 'c' => 3);
 
         $type = $this->getMock('APY\DataGridBundle\Grid\GridTypeInterface');
 
@@ -128,7 +128,7 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
                        ->with('text')
                        ->willReturn($expectedColumn);
 
-        $column = $this->factory->createColumn('foo', 'text', ['title' => 'bar']);
+        $column = $this->factory->createColumn('foo', 'text', array('title' => 'bar'));
 
         $this->assertInstanceOf('APY\DataGridBundle\Grid\Column\TextColumn', $column);
         $this->assertEquals('text', $column->getType());
@@ -140,7 +140,7 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateColumnWithObject()
     {
-        $column = $this->factory->createColumn('foo', new TextColumn(), ['title' => 'bar']);
+        $column = $this->factory->createColumn('foo', new TextColumn(), array('title' => 'bar'));
 
         $this->assertInstanceOf('APY\DataGridBundle\Grid\Column\TextColumn', $column);
         $this->assertEquals('text', $column->getType());
@@ -152,21 +152,22 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $self = $this;
         $this->container = $this->getMock('Symfony\Component\DependencyInjection\Container');
         $this->container->expects($this->any())
                         ->method('get')
-                        ->will($this->returnCallback(function ($param) {
+                        ->will($this->returnCallback(function ($param) use($self) {
                             switch ($param) {
                                 case 'router':
-                                    return $this->getMock('Symfony\Component\Routing\RouterInterface');
+                                    return $self->getMock('Symfony\Component\Routing\RouterInterface');
                                     break;
                                 case 'request':
-                                    $request = new Request([], [], ['key' => 'value']);
+                                    $request = new Request(array(), array(), array('key' => 'value'));
 
                                     return $request;
                                     break;
                                 case 'security.context':
-                                    return $this->getMock('Symfony\Component\Security\Core\SecurityContextInterface');
+                                    return $self->getMock('Symfony\Component\Security\Core\SecurityContextInterface');
                                     break;
                             }
                         }));

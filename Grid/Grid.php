@@ -370,7 +370,7 @@ class Grid implements GridInterface
                 $groupBy = $config->getGroupBy();
                 if (null != $groupBy) {
                     if (!is_array($groupBy)) {
-                        $groupBy = [$groupBy];
+                        $groupBy = array($groupBy);
                     }
 
                     // Must be set after source because initialize method reset groupBy property

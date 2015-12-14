@@ -33,7 +33,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
      *
      * @var Column[]
      */
-    private $columns = [];
+    private $columns = array();
 
     /**
      * Constructor
@@ -43,7 +43,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
      * @param string               $name      The name of the grid
      * @param array                $options   The options of the grid
      */
-    public function __construct(Container $container, GridFactoryInterface $factory, $name, array $options = [])
+    public function __construct(Container $container, GridFactoryInterface $factory, $name, array $options = array())
     {
         parent::__construct($name, $options);
 
@@ -54,7 +54,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function add($name, $type, array $options = [])
+    public function add($name, $type, array $options = array())
     {
         if (!$type instanceof Column) {
             if (!is_string($type)) {
