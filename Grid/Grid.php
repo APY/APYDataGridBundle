@@ -2225,6 +2225,6 @@ class Grid implements GridInterface
             throw new \Exception('hasFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.');
         }
 
-        return getFilter($columnId) !== null;
+        return $this->getFilter($columnId) !== null;
     }
 }
