@@ -17,7 +17,7 @@ use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\NullAdapter;
 use Symfony\Component\Routing\RouterInterface;
 
-class DataGridExtension extends \Twig_Extension
+class DataGridExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
     const DEFAULT_TEMPLATE = 'APYDataGridBundle::blocks.html.twig';
 
