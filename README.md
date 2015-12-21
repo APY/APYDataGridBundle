@@ -10,6 +10,8 @@ See [CHANGELOG](https://github.com/APY/APYDataGridBundle/blob/master/CHANGELOG.m
 
 ## Features
 
+[![Join the chat at https://gitter.im/APY/APYDataGridBundle](https://badges.gitter.im/APY/APYDataGridBundle.svg)](https://gitter.im/APY/APYDataGridBundle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 - Supports Entity (ORM), Document (ODM) and Vector (Array) sources
 - Sortable and Filterable with operators (Comparison operators, range, starts/ends with, (not) contains, is (not) defined, regex)
 - Auto-typing columns (Text, Number, Boolean, Array, DateTime, Date, ...)
