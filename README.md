@@ -1,10 +1,9 @@
 Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid.  
 This bundle was initiated by Stanislav Turza (Sorien).
 
-**Version**: 2.1-dev - master-dev
-**Compatibility**: Symfony >= 2.0.0, Twig >= 1.5.0
-
-[![Build Status](https://secure.travis-ci.org/APY/APYDataGridBundle.png?branch=master)](http://travis-ci.org/APY/APYDataGridBundle)
+[![Build Status](https://secure.travis-ci.org/APY/APYDataGridBundle.png?branch=master)](http://travis-ci.org/APY/APYDataGridBundle) 
+[![Stories in Ready](https://badge.waffle.io/APY/APYDataGridBundle.svg?label=ready&title=Ready)](http://waffle.io/APY/APYDataGridBundle)
+[![Gitter](https://badges.gitter.im/APY/APYDataGridBundle.svg)](https://gitter.im/APY/APYDataGridBundle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 See [CHANGELOG](https://github.com/APY/APYDataGridBundle/blob/master/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/APY/APYDataGridBundle/blob/master/UPGRADE-2.0.md)
 
@@ -118,10 +117,3 @@ class MyEntity
 
 And clear your cache.
 
-## Special thanks to all contributors
-
-Abhoryo, golovanov, touchdesign, Spea, nurikabe, print, Gregory McLean, centove, lstrojny, Benedikt Wolters, Martin Parsiegla, evan and all bug reporters
-
-## Todo list
-
-See this [Pull Request](https://github.com/APY/APYDataGridBundle/issues/121)
