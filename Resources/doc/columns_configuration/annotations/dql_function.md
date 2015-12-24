@@ -5,7 +5,7 @@ You can perform some aggregate DQL functions on any field.
 
 Notation: `<field_id>:<aggregate_function>:<parameters>`
 
-You have 5 basic aggregate functions: `count`, `avg`, `min`, `max` and `sum` but you can also use other DQL defined functions like the `GroupConcat` or `CountIf` DQL function if you install it. ([Source](https://github.com/beberlei/DoctrineExtensions/blob/master/lib/DoctrineExtensions/Query/Mysql/))
+You have 5 basic aggregate functions: `count`, `avg`, `min`, `max` and `sum` but you can also use other DQL defined functions like the `GroupConcat` or `CountIf` DQL function if you install it. ([Source](https://github.com/beberlei/DoctrineExtensions))
 
 
 ```php
