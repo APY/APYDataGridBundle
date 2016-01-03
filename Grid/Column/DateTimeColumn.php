@@ -159,10 +159,16 @@ class DateTimeColumn extends Column
         return $this->format;
     }
 
+    public function getTimezone()
+    {
+        return $this->timezone;
+    }
+
     public function setTimezone($timezone)
     {
         $this->timezone = $timezone;
     }
+
 
     public function getType()
     {
