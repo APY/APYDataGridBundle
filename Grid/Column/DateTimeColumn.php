@@ -24,6 +24,8 @@ class DateTimeColumn extends Column
 
     protected $fallbackFormat = 'Y-m-d H:i:s';
 
+    protected $timezone;
+
     public function __initialize(array $params)
     {
         parent::__initialize($params);
@@ -42,6 +44,7 @@ class DateTimeColumn extends Column
             self::OPERATOR_ISNOTNULL,
         )));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_EQ));
+        $this->setTimezone($this->getParam('timezone',date_default_timezone_get()));
     }
 
     public function isQueryValid($query)
@@ -82,13 +85,13 @@ class DateTimeColumn extends Column
     public function getDisplayedValue($value)
     {
         if (!empty($value)) {
-            $dateTime = $this->getDatetime($value, new \DateTimeZone(date_default_timezone_get()));
+            $dateTime = $this->getDatetime($value, new \DateTimeZone($this->getTimezone()));
 
             if (isset($this->format)) {
                 $value = $dateTime->format($this->format);
             } else {
                 try {
-                    $transformer = new DateTimeToLocalizedStringTransformer(null, null, $this->dateFormat, $this->timeFormat);
+                    $transformer = new DateTimeToLocalizedStringTransformer(null, $this->getTimezone(), $this->dateFormat, $this->timeFormat);
                     $value = $transformer->transform($dateTime);
                 } catch (\Exception $e) {
                     $value = $dateTime->format($this->fallbackFormat);
@@ -155,6 +158,17 @@ class DateTimeColumn extends Column
     {
         return $this->format;
     }
+
+    public function getTimezone()
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone($timezone)
+    {
+        $this->timezone = $timezone;
+    }
+
 
     public function getType()
     {
