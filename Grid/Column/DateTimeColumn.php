@@ -85,13 +85,13 @@ class DateTimeColumn extends Column
     public function getDisplayedValue($value)
     {
         if (!empty($value)) {
-            $dateTime = $this->getDatetime($value, new \DateTimeZone($this->timezone));
+            $dateTime = $this->getDatetime($value, new \DateTimeZone($this->getTimezone()));
 
             if (isset($this->format)) {
                 $value = $dateTime->format($this->format);
             } else {
                 try {
-                    $transformer = new DateTimeToLocalizedStringTransformer(null, $this->timezone, $this->dateFormat, $this->timeFormat);
+                    $transformer = new DateTimeToLocalizedStringTransformer(null, $this->getTimezone(), $this->dateFormat, $this->timeFormat);
                     $value = $transformer->transform($dateTime);
                 } catch (\Exception $e) {
                     $value = $dateTime->format($this->fallbackFormat);
