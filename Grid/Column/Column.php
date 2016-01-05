@@ -157,6 +157,7 @@ abstract class Column
             self::OPERATOR_ISNULL,
             self::OPERATOR_ISNOTNULL,
         )));
+        $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
         $this->setSelectMulti($this->getParam('selectMulti', false));
         $this->setSelectExpanded($this->getParam('selectExpanded', false));
         $this->setSearchOnClick($this->getParam('searchOnClick', false));
