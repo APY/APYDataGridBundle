@@ -101,6 +101,11 @@ class Entity extends Source
     protected $tableAlias;
 
     /**
+     * @var null
+     */
+    protected $prepareCountQueryCallback = null;
+
+    /**
      * Legacy way of accessing the default alias (before it became possible to change it)
      * Please use $entity->getTableAlias() now instead of $entity::TABLE_ALIAS
      * @deprecated
@@ -498,6 +503,9 @@ class Entity extends Source
     {
         // Doctrine Bug Workaround: http://www.doctrine-project.org/jira/browse/DDC-1927
         $countQueryBuilder = clone $this->query;
+
+        $this->prepareCountQuery($countQueryBuilder);
+
         foreach ($countQueryBuilder->getRootAliases() as $alias) {
             $countQueryBuilder->addSelect($alias);
         }
@@ -680,6 +688,27 @@ class Entity extends Source
                 }
             }
         }
+    }
+
+    /**
+     * @param QueryBuilder $countQueryBuilder
+     */
+    public function prepareCountQuery(QueryBuilder $countQueryBuilder)
+    {
+        if (is_callable($this->prepareCountQueryCallback)) {
+            call_user_func($this->prepareCountQueryCallback, $countQueryBuilder);
+        }
+    }
+
+    /**
+     * @param callable $callback
+     * @return $this
+     */
+    public function manipulateCountQuery($callback = null)
+    {
+        $this->prepareCountQueryCallback = $callback;
+
+        return $this;
     }
 
     public function delete(array $ids)
