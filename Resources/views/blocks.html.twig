@@ -410,7 +410,14 @@
 {% block grid_scripts_goto %}
 function {{ grid.hash }}_goto(url)
 {
-    window.location.href = url;
+    if (/MSIE (8\.\d+);/.test(navigator.userAgent)) {
+        var referLink = document.createElement('a');
+        referLink.href = url;
+        document.body.appendChild(referLink);
+        referLink.click();
+    } else {
+        window.location.href = url;
+    }
 
     return false;
 }
