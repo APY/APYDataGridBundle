@@ -4,8 +4,14 @@ CHANGELOG
 2.3 (WIP)
 ---------
 
+### New feature
+
 * Add `GridBuilder`, `GridConfig` and `GridFactory` to make easier the grid constructor.
-* Add `GridType`, `GridRegistry` for build the grid in a separate class, which can then be reused. 
+* Add `GridType`, `GridRegistry` for build the grid in a separate class, which can then be reused.
+
+### Bugfix
+
+- Fix #739 - Fix filters with undefined index error 
 
 2.2 or earlier
 --------------

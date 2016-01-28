@@ -2181,7 +2181,7 @@ class Grid implements GridInterface
                     $operator = $this->getColumn($columnId)->getDefaultOperator();
                 }
 
-                if (! isset($sessionFilter['to'])) {
+                if (!isset($sessionFilter['to']) && isset($sessionFilter['from'])) {
                     $sessionFilter = $sessionFilter['from'];
                 }
 
