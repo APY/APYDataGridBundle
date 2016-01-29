@@ -367,8 +367,9 @@ class Grid implements GridInterface
         $source = $config->getSource();
 
         if (null != $source) {
+            $this->source = $source;
 
-            $this->setSource($source);
+            $source->initialise($this->container);
 
             if ($source instanceof Entity) {
                 $groupBy = $config->getGroupBy();
@@ -404,9 +405,34 @@ class Grid implements GridInterface
      */
     public function handleRequest(Request $request)
     {
-        $this->request = $request;
+        if (null === $this->source) {
+            throw new \LogicException('The source of the grid must be set.');
+        }
 
-        $this->isReadyForRedirect();
+        $this->request = $request;
+        $this->session = $request->getSession();
+
+        $this->createHash();
+
+        $this->requestData = $request->get($this->hash);
+
+        $this->processPersistence();
+
+        $this->sessionData = $this->session->get($this->hash);
+
+        $this->processLazyParameters();
+
+        if (!empty($this->requestData)) {
+            $this->processRequestData();
+        }
+
+        if ($this->newSession) {
+            $this->setDefaultSessionData();
+        }
+
+        $this->processPermanentFilters();
+
+        $this->processSessionData();
 
         $this->prepare();
 
