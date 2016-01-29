@@ -106,7 +106,9 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
      */
     public function getGrid()
     {
-        $grid = new Grid($this->container, '', $this->getGridConfig());
+        $config = $this->getGridConfig();
+
+        $grid = new Grid($this->container, $config->getName(), $config);
 
         foreach ($this->columns as $column) {
             $grid->addColumn($column);
