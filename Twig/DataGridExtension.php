@@ -255,23 +255,30 @@ class DataGridExtension extends \Twig_Extension implements \Twig_Extension_Globa
      */
     public function getGridUrl($section, $grid, $param = null)
     {
-        $prefix = $grid->getRouteUrl().(strpos($grid->getRouteUrl(), '?') ? '&' : '?').$grid->getHash().'[';
+        preg_match("/(.*)(#\w*$)/", $grid->getRouteUrl(), $routeParts);
+        if(isset($routeParts[2])){
+            $prefix = $routeParts[1].(strpos($routeParts[1], '?') ? '&' : '?').$grid->getHash().'[';
+            $suffix = $routeParts[2];
+        } else {
+            $prefix = $grid->getRouteUrl().(strpos($grid->getRouteUrl(), '?') ? '&' : '?').$grid->getHash().'[';
+            $suffix = null;
+        }
 
         switch ($section) {
             case 'order':
                 if ($param->isSorted()) {
-                    return $prefix.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|'.($param->getOrder() == 'asc' ? 'desc' : 'asc');
+                    return $prefix.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|'.($param->getOrder() == 'asc' ? 'desc' : 'asc').$suffix;
                 } else {
-                    return $prefix.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|asc';
+                    return $prefix.Grid::REQUEST_QUERY_ORDER.']='.$param->getId().'|asc'.$suffix;
                 }
             case 'page':
-                return $prefix.Grid::REQUEST_QUERY_PAGE.']='.$param;
+                return $prefix.Grid::REQUEST_QUERY_PAGE.']='.$param.$suffix;
             case 'limit':
-                return $prefix.Grid::REQUEST_QUERY_LIMIT.']=';
+                return $prefix.Grid::REQUEST_QUERY_LIMIT.']='.$suffix;
             case 'reset':
-                return $prefix.Grid::REQUEST_QUERY_RESET.']=';
+                return $prefix.Grid::REQUEST_QUERY_RESET.']='.$suffix;
             case 'export':
-                return $prefix.Grid::REQUEST_QUERY_EXPORT.']='.$param;
+                return $prefix.Grid::REQUEST_QUERY_EXPORT.']='.$param.$suffix;
         }
     }
 
