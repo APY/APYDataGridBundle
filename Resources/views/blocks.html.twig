@@ -460,7 +460,7 @@ function {{ grid.hash }}_enterPage(event, page)
     }
 
     if (key == 13) {
-        {{ grid.hash }}_goto('{{ grid_url('page', grid) }}' + page);
+        {{ grid.hash }}_goto('{{ grid_url('page', grid, "' + page +'") }}');
 
         return false;
     }
@@ -470,7 +470,7 @@ function {{ grid.hash }}_enterPage(event, page)
 {% block grid_scripts_results_per_page %}
 function {{ grid.hash }}_resultsPerPage(limit)
 {
-    {{ grid.hash }}_goto('{{ grid_url('limit', grid) }}' + limit);
+    {{ grid.hash }}_goto('{{ grid_url('limit', grid, "' + limit +'") }}');
 
     return true;
 }
