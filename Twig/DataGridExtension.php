@@ -274,7 +274,7 @@ class DataGridExtension extends \Twig_Extension implements \Twig_Extension_Globa
             case 'page':
                 return $prefix.Grid::REQUEST_QUERY_PAGE.']='.$param.$suffix;
             case 'limit':
-                return $prefix.Grid::REQUEST_QUERY_LIMIT.']='.$suffix;
+                return $prefix.Grid::REQUEST_QUERY_LIMIT.']='.$param.$suffix;
             case 'reset':
                 return $prefix.Grid::REQUEST_QUERY_RESET.']='.$suffix;
             case 'export':
