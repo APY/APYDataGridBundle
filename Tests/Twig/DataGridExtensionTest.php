@@ -31,7 +31,7 @@ class DataGridExtensionTest extends \PHPUnit_Framework_TestCase
         $gridHash = 'my_grid';
 
         // Creates grid
-        $grid = $this->getMock('APY\DataGridBundle\Grid\Grid', [], [], '', false);
+        $grid = $this->getMock('APY\DataGridBundle\Grid\Grid', array(), array(), '', false);
         $grid->expects($this->any())->method('getRouteUrl')->willReturn($baseUrl);
         $grid->expects($this->any())->method('getHash')->willReturn($gridHash);
 
