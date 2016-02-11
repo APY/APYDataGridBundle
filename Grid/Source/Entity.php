@@ -21,6 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class Entity extends Source
 {
@@ -450,12 +451,13 @@ class Entity extends Source
 
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
+        $hasJoin = !empty($this->query->getDqlPart('join'));
 
         $query = $this->query->getQuery();
         foreach ($this->hints as $hintKey => $hintValue) {
             $query->setHint($hintKey, $hintValue);
         }
-        $items = $query->getResult();
+        $items = new Paginator($query, $hasJoin);
 
         $repository = $this->manager->getRepository($this->entityName);
 
