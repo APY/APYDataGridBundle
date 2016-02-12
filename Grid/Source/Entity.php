@@ -5,6 +5,7 @@
  *
  * (c) Abhoryo <abhoryo@free.fr>
  * (c) Stanislav Turza
+ * (c) Patryk Grudniewski <patgrudniewski@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,6 +20,7 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpKernel\Kernel;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -451,7 +453,7 @@ class Entity extends Source
 
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
-        $hasJoin = !empty($this->query->getDqlPart('join'));
+        $hasJoin = $this->checkIfQueryHasFetchJoin($this->query);
 
         $query = $this->query->getQuery();
         foreach ($this->hints as $hintKey => $hintValue) {
@@ -778,5 +780,21 @@ class Entity extends Source
     public function getTableAlias()
     {
         return $this->tableAlias;
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @return boolean
+     */
+    protected function checkIfQueryHasFetchJoin(QueryBuilder $qb)
+    {
+        $join = $qb->getDqlPart('join');
+        foreach ($join[$this->getTableAlias()] as $join) {
+            if ($join->getJoinType() === Join::INNER_JOIN) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
