@@ -789,6 +789,10 @@ class Entity extends Source
     protected function checkIfQueryHasFetchJoin(QueryBuilder $qb)
     {
         $join = $qb->getDqlPart('join');
+        if (empty($join)) {
+            return false;
+        }
+
         foreach ($join[$this->getTableAlias()] as $join) {
             if ($join->getJoinType() === Join::INNER_JOIN) {
                 return true;
