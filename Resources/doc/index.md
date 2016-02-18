@@ -152,5 +152,5 @@ Now you have completed the basic installation and configuration of the APYDataGr
 
 The following documents are available :
 
-* [Getting Started With APYDataGridBundle](getting_start.md)
+* [Getting Started With APYDataGridBundle](getting_started.md)
 * [APYDataGridBundle Configuration Reference](configuration.md)
