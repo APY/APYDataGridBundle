@@ -156,6 +156,6 @@ The following documents are available :
 * [Setting the Grid Source](source/index.md)
 * [Display the Grid (Twig template)](template/index.md)
 * [Columns Configuration with Annotations](columns_configuration/index.md)
-* [Grid Configuration with PHP](grid_configuration)
+* [Grid Configuration with PHP](grid_configuration/index.md)
 * [Export](export/index.md)
 * [APYDataGridBundle Configuration Reference](configuration.md)
