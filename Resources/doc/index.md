@@ -154,4 +154,8 @@ The following documents are available :
 
 * [Getting Started With APYDataGridBundle](getting_started.md)
 * [Setting the Grid Source](source/index.md)
+* [Setting the Grid template](template/index.md)
+* [Columns Configuration with Annotations](columns_configuration/index.md)
+* [Grid Configuration with PHP](grid_configuration)
+* [Export](export/index.md)
 * [APYDataGridBundle Configuration Reference](configuration.md)
