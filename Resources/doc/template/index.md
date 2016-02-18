@@ -1,5 +1,4 @@
-Render the grid
-================
+# Display the Grid (Twig template)
 
 ## Usage
 
@@ -19,13 +18,13 @@ return $grid->getGridResponse('MyProjectMyBundle::my_grid.html.twig');
 
 And the template
 
-```janjo
+```djanjo
 <!-- MyProjectMyBundle::grid.html.twig -->
 
 {{ grid(grid, theme, id, params) }}
 ```
 
-## grid function parameters
+## Grid Function Parameters
 
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|
@@ -34,16 +33,7 @@ And the template
 |id|string|_none_|Set the identifier of the grid.|
 |params|array|array()|Additional parameters passed to each block.|
 
-## Example
-
-```janjo
-<!-- MyProjectMyBundle::grid.html.twig -->
-
-{{ grid(grid) }}
-...
-```
-
-## Override the getGridResponse function
+## Overriding the getGridResponse function
 
 See [Grid Response helper](../grid_configuration/grid_response.md) for a detailed outline of ```getGridResponse```.
 
@@ -66,3 +56,12 @@ if ($grid->isReadyForRedirect()) {
 ```
 
 **Note:** GridResponse parameters are useless in this case and exports are managed directly in the getGridResponse function.
+
+## Learn more about advanced features and usages
+
+* [Display an ajax grid](render_an_ajax_grid.md)
+* [Cell rendering](cell_rendering.md)
+* [Filter rendering](filter_rendering.md)
+* [Overriding internal blocks](overriding_internal_blocks.md)
+* [Display an external filters box](render_external_filters.md)
+* [Display a pagerfanta pager](render_pagerfanta_pager.md)
