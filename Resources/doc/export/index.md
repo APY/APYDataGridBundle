@@ -4,7 +4,7 @@ APYDataGrid bundle provides different ways for export your datas. This bundle pr
 
 > Note: An export don't export mass action and row actions columns.
 
-## [Native Exports](native_exports/)
+## Native Exports
 
 * [CSV Export](native_exports/CSV_export.md)
 * [DSV Export](native_exports/DSV_export.md)
@@ -14,7 +14,7 @@ APYDataGrid bundle provides different ways for export your datas. This bundle pr
 * [TSV Export](native_exports/TSV_export.md)
 * [XML Export](native_exports/XML_export.md)
 
-## [External Library Exports](library-dependent_exports/)
+## External Library Exports
 
 ### With PHPExcel
 
