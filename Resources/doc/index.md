@@ -1,6 +1,6 @@
 # APY DataGrid Bundle
 
-APYDataGridBundle is a Symfony bundle for create grids for list your entities. [APYDataGridBundle](https://github.com/APY/APYDataGridBundle) was initiated by **Stanislav Turza (Sorien)** and inspired by **Zfdatagrid and Magento Grid**.
+APYDataGridBundle is a Symfony bundle for create grids for list your Entity (ORM), Document (ODM) and Vector (Array) sources. [APYDataGridBundle](https://github.com/APY/APYDataGridBundle) was initiated by **Stanislav Turza (Sorien)** and inspired by **Zfdatagrid and Magento Grid**.
 
 > IMPORTANT NOTICE : this is a fork repository of [APYDataGridBundle](https://github.com/APY/APYDataGridBundle). But the current version of [APYDataGridBundle](https://github.com/APY/APYDataGridBundle) is not compatible with Symfony 3+ framework. So, I fork this repository for make a APYDataGrid bundle compatible with Symfony3+. If you want to use it for Symfony2, please use the original repository [APYDataGridBundle](https://github.com/APY/APYDataGridBundle).
 
