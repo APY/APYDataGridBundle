@@ -7,16 +7,22 @@ Twig variable ```grid```.
 
 ```php
 <?php
-...
-$grid = $this->get('grid');
+class DefaultController extends Controller
+{
+	public function myGridAction()
+	{
+		// [...]
+		$grid = $this->get('grid');
 
-$grid->setSource($source);
+		$grid->setSource($source);
 
-return $grid->getGridResponse('MyProjectMyBundle::my_grid.html.twig');
-...
+		return $grid->getGridResponse('MyProjectMyBundle::my_grid.html.twig');
+	}
+	// [...]
+}
 ```
 
-And the template
+And the Twig template
 
 ```djanjo
 <!-- MyProjectMyBundle::grid.html.twig -->
@@ -24,7 +30,7 @@ And the template
 {{ grid(grid, theme, id, params) }}
 ```
 
-## Grid Function Parameters
+## Grid Function Parameters Reference
 
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|
