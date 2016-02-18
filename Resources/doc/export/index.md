@@ -30,6 +30,6 @@ $ composer require phpoffice/phpexcel "dev-master"
 * [PHPExcel Simple HTML Export](library-dependent_exports/PHPExcel/PHPExcel_HTML_export.md)
 * [PHPExcel simple PDF export](library-dependent_exports/PHPExcel/PHPExcel_PDF_export.md)
 
-## [Cook Book]
+## Cook Book
 
 * [How to create your custom export](create_export.md)
