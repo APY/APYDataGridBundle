@@ -84,7 +84,7 @@ public function registerBundles()
 
 ### Step 3 : Quick start with APYDataGridBundle
 
-#### Create simple gird with an ORM source
+#### Create simple grid with an ORM source in your controller
 
 ```php
 <?php
