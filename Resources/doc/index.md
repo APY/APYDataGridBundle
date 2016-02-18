@@ -153,4 +153,5 @@ Now you have completed the basic installation and configuration of the APYDataGr
 The following documents are available :
 
 * [Getting Started With APYDataGridBundle](getting_started.md)
+* [Setting the Grid Source](source/index.md)
 * [APYDataGridBundle Configuration Reference](configuration.md)
