@@ -10,7 +10,7 @@ APYDataGridBundle is a Symfony bundle for create grids for list your entities. [
 
 The bulk of the documentation is stored in the Resources/docs/index.md file in bundle :
 
-[Read the documentation for master](https://github.com/artscorestudio/core-bundle/blob/master/Resources/doc/index.md).
+[Read the documentation for master](https://github.com/artscorestudio/APYDataGridBundle/blob/master/Resources/doc/index.md).
 
 ## Installation
 
@@ -42,7 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ## About
 
 This forked Bundle is an [Artscore Studio](http://www.artscore-studio.fr) initiative.
-[APYDataGridBundle](https://github.com/APY/APYDataGridBundle) was initiated by **Stanislav Turza (Sorien)**
+[APYDataGridBundle](https://github.com/APY/APYDataGridBundle) was initiated by **Stanislav Turza (Sorien)**.
 
 ## Reporting an issue or a feature request
 
