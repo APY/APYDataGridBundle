@@ -1,8 +1,14 @@
 # Grid Configuration with PHP
 
-* [Set the identifier of the grid](set_grid_identifier.md)
-* [Set the persistence of the grid](set_grid_persistence.md)
-* [Pagination](set_limits.md)
+#### [Set the identifier of the grid](set_grid_identifier.md)
+You can set the identifier of a grid to manage easily the grid with css and javascript for instance.
+
+#### [Set the persistence of the grid](set_grid_persistence.md)
+By default, filters, page and order are reset when you quit the page where your grid is. If you set to true the persistence, its parameters are kept until you close your web browser or you kill the session cookie yourself.
+
+#### [Pagination](set_limits.md)
+Define the selector of the number of items per page
+
 * [Set max results](set_max_results.md)
 * [Add column](add_column.md)
 * [Add row action](add_row_action.md)
