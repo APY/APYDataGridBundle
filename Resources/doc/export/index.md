@@ -14,7 +14,7 @@ APYDataGrid bundle provides different ways for export your datas. This bundle pr
 * [TSV Export](native_exports/TSV_export.md)
 * [XML Export](native_exports/XML_export.md)
 
-## [External Libray Exports](library-dependent_exports/)
+## [External Library Exports](library-dependent_exports/)
 
 ### With PHPExcel
 
