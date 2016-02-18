@@ -100,4 +100,3 @@ Handle multiple grids on the same page.
 The route of a grid is automatically retrieved from the request. But when you render a controller which contains a grid from twig, the route cannot be retrieved so you have to define it.
 
 #### [Working Example](working_example.md)
-Complete example.
