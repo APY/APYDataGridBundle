@@ -1,3 +1,5 @@
+# APY Datagrid Bundle
+
 Datagrid for Symfony2 inspired by Zfdatagrid and Magento Grid.  
 This bundle was initiated by Stanislav Turza (Sorien).
 
