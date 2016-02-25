@@ -12,8 +12,8 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
-use Symfony\Component\Security\Core\SecurityContextInterface;
 use APY\DataGridBundle\Grid\Filter;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 abstract class Column
 {
@@ -787,7 +787,7 @@ abstract class Column
      * @param $securityContext
      * @return $this
      */
-    public function setSecurityContext(SecurityContextInterface $securityContext)
+    public function setSecurityContext(AuthorizationCheckerInterface $securityContext)
     {
         $this->securityContext = $securityContext;
 

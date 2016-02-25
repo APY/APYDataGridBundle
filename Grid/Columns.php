@@ -14,7 +14,7 @@ namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class Columns implements \IteratorAggregate, \Countable
 {
@@ -26,7 +26,7 @@ class Columns implements \IteratorAggregate, \Countable
      */
     protected $securityContext;
 
-    public function __construct(SecurityContextInterface $securityContext)
+    public function __construct(AuthorizationCheckerInterface $securityContext)
     {
         $this->securityContext = $securityContext;
     }
