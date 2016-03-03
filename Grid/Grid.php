@@ -53,7 +53,7 @@ class Grid implements GridInterface
     /**
      * @var \Symfony\Component\HttpFoundation\Session\Session;
      */
-    protected $session;
+    protected $session = array();
 
     /**
      * @var \Symfony\Component\HttpFoundation\Request
@@ -418,7 +418,7 @@ class Grid implements GridInterface
 
         $this->processPersistence();
 
-        $this->sessionData = $this->session->get($this->hash);
+        $this->sessionData = (array) $this->session->get($this->hash);
 
         $this->processLazyParameters();
 
