@@ -53,7 +53,7 @@ class Grid implements GridInterface
     /**
      * @var \Symfony\Component\HttpFoundation\Session\Session;
      */
-    protected $session = array();
+    protected $session;
 
     /**
      * @var \Symfony\Component\HttpFoundation\Request
@@ -153,7 +153,7 @@ class Grid implements GridInterface
     /**
      * @var array|object session
      */
-    protected $sessionData;
+    protected $sessionData = array();
 
     /**
      * @var string
