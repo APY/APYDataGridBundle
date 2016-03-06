@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Column\ArrayColumn;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -322,10 +323,14 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getGridCell($column, $row)
     {
+        $values = $row->getField($column->getId());
+
         // Cast a datetime won't work.
-        if (!is_array($values = $row->getField($column->getId()))) {
+        if ($column instanceof ArrayColumn || !is_array($values)) {
             $values = array($values);
         }
+
+        $separator = $column->getSeparator();
 
         $block = null;
         $return = array();
@@ -348,15 +353,23 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
              || $this->hasBlock($block = 'grid_column_type_'.$column->getType().'_cell')
              || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_cell'))
             {
-                $return[] = $this->renderBlock($block, array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
+                $html = $this->renderBlock($block, array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
             } else {
-                $return[] = $this->renderBlock('grid_column_cell', array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
+                $html = $this->renderBlock('grid_column_cell', array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
                 $block = null;
             }
 
+            // Fix blank separator. The <br /> will be removed by the HTML cleaner.
+            if (false !== strpos($separator, 'br')) {
+                $html = str_replace($separator, ',', $html);
+            }
+
+            $return[] = $html;
         }
 
-        return implode($column->getSeparator() , $return);
+        $value = implode($separator, $return);
+
+        return $value;
     }
 
     /**
@@ -460,6 +473,12 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
         // Convert Special Characters in HTML
         $value = html_entity_decode($value, ENT_QUOTES);
+
+        // Remove whitespace
+        $value = preg_replace('/\s\s+/', ' ', $value);
+
+        // Fix space
+        $value = preg_replace('/\s,/', ',', $value);
 
         // Trim
         $value = trim($value);
