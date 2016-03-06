@@ -142,8 +142,6 @@ class Document extends Source
                 return new \MongoRegex('/'.$value.'$/i');
             case Column::OPERATOR_SLIKE:
                 return new \MongoRegex('/'.$value.'/');
-            case Column::OPERATOR_SLIKE:
-               return new \MongoRegex('/^((?!'.$value.').)*$/');
             case Column::OPERATOR_RSLIKE:
                 return new \MongoRegex('/^'.$value.'/');
             case Column::OPERATOR_LSLIKE:
