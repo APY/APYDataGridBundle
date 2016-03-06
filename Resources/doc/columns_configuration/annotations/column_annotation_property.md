@@ -67,6 +67,7 @@ class Product
 **Note 1**: Every attribute has a setter and a getter method.  
 **Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.  
 **Note 3**: If operators are not visible, filtering is performed with the default operator.
+**Note 4**: If you have and `id` field and want to use another field as primary, you need to set `primary=false on the id field.`
 
 ## Title translation
 
