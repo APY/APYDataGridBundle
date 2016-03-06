@@ -69,11 +69,6 @@ $grid2->setSource($source2);
 
 if ($gridManager->isReadyForRedirect())
 {
-    if ($gridManager->isReadyForExport())
-	{
-		return $gridManager->getExportResponse();
-	}
-	
     return new RedirectResponse($gridManager->getRouteUrl());
 }
 else
