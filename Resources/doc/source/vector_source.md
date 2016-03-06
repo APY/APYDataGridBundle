@@ -98,7 +98,10 @@ $source = new Vector(array(), $columns);
 ...
 ```
 
-**Note:** Columns are not sourcable and mapped with id by default, you have to define source=true and field=<id> if you want your data mapped on these columns.
+**Note:**
+
+* Attributes `id` and `field` are required. The `id` is the identifier of your column and `field` is the field's named to map.
+* Columns are not sourcable and mapped with id by default, you have to define source=true and field=<id> if you want your data mapped on these columns.
 
 <a name="set_id"/>
 ## Set a primary field
