@@ -3,7 +3,7 @@
 All available configuration options are listed below with their default values.
 
 ```yaml
-apy_datagrid:
+apy_data_grid:
     limits: [20, 50, 100]
     persistence: false
     theme: 'APYDataGridBundle::blocks.html.twig'
