@@ -97,6 +97,7 @@ abstract class Column
     protected $isManualField;
     protected $isAggregate;
     protected $usePrefixTitle;
+    protected $translationDomain;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -115,7 +116,7 @@ abstract class Column
     {
         $this->params = $params;
         $this->setId($this->getParam('id'));
-        $this->setTitle($this->getParam('title', ''));
+        $this->setTitle($this->getParam('title', $this->getParam('field')));
         $this->setSortable($this->getParam('sortable', true));
         $this->setVisible($this->getParam('visible', true));
         $this->setSize($this->getParam('size', -1));
@@ -165,6 +166,7 @@ abstract class Column
         $this->setSeparator($this->getParam('separator', "<br />"));
         $this->setExport($this->getParam('export'));
         $this->setClass($this->getParam('class'));
+        $this->setTranslationDomain($this->getParam('translation_domain'));
     }
 
     protected function getParam($id, $default = null)
@@ -924,7 +926,28 @@ abstract class Column
         $this->usePrefixTitle = $usePrefixTitle;
         return $this;
     }
- 
-    
-    
+
+    /**
+     * Get TranslationDomain
+     *
+     * @return string
+     */
+    public function getTranslationDomain()
+    {
+        return $this->translationDomain;
+    }
+
+    /**
+     * Set TranslationDomain
+     *
+     * @param string $translationDomain
+     *
+     * @return $this
+     */
+    public function setTranslationDomain($translationDomain)
+    {
+        $this->translationDomain = $translationDomain;
+
+        return $this;
+    }
 }

@@ -59,29 +59,33 @@
 {% block grid_titles %}
     <tr class="grid-row-titles">
     {% for column in grid.columns %}
+        {% set translation_domain = column.translationDomain %}
         {% if column.visible(grid.isReadyForExport) %}
             <th class="{% if column.align != 'left'%}align-{{ column.align }}{% endif %}{% if column.class %} {{ column.class }}{% endif %}{% if loop.last %} last-column{% endif %}"{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>
             {%- spaceless %}
             {% if column.type == 'massaction' %}
                 <input type="checkbox" class="grid-mass-selector" onclick="{{ grid.hash }}_markVisible(this.checked);"/>
             {% else %}
+                {% set columnTitle = column.title %}
+
                 {% if column.usePrefixTitle == true %}
-                    {% set columnTitle = grid.prefixTitle ~ column.title ~ '__abbr' %}
-                    {% if columnTitle|trans == columnTitle %}
+                    {% set columnTitle = grid.prefixTitle ~ columnTitle ~ '__abbr' %}
+                    {% if columnTitle|trans({}, translation_domain) == columnTitle %}
                         {% set columnTitle = grid.prefixTitle ~ column.title %}
                     {% endif %}
-                {% else %}
-                    {% set columnTitle = column.title %}
                 {% endif %}
+
+                {% set columnTitle = columnTitle|trans({}, translation_domain) %}
+
                 {% if (column.sortable) %}
-                    <a class="order" href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by'|trans }} {{ columnTitle|trans }}">{{ columnTitle|trans }}</a>
+                    <a class="order" href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by'|trans }} {{ columnTitle }}">{{ columnTitle }}</a>
                     {% if column.order == 'asc' %}
                         <div class="sort_up"></div>
                     {% elseif column.order == 'desc' %}
                         <div class="sort_down"></div>
                     {% endif %}
                 {% else %}
-                    {{ columnTitle|trans }}
+                    {{ columnTitle }}
                 {% endif %}
             {% endif %}
             {% endspaceless -%}
