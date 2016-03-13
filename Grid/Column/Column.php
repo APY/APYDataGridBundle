@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use Doctrine\Common\Version as DoctrineVersion;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use APY\DataGridBundle\Grid\Filter;
 
@@ -678,8 +679,11 @@ abstract class Column
      */
     public function getOperators()
     {
-        // Issue with Doctrine (See http://www.doctrine-project.org/jira/browse/DDC-1857 and http://www.doctrine-project.org/jira/browse/DDC-1858)
-        if ($this->hasDQLFunction()) {
+        // Issue with Doctrine
+        // -------------------
+        // @see http://www.doctrine-project.org/jira/browse/DDC-1857
+        // @see http://www.doctrine-project.org/jira/browse/DDC-1858
+        if ($this->hasDQLFunction() && version_compare(DoctrineVersion::VERSION, '2.5') < 0) {
             return array_intersect($this->operators, array(self::OPERATOR_EQ,
                 self::OPERATOR_NEQ,
                 self::OPERATOR_LT,
