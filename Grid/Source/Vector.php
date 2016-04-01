@@ -107,7 +107,7 @@ class Vector extends Source
                         } else {
                             $fieldTypes['datetime'] = 1;
                         }
-                        
+
                     } elseif (strlen($fieldValue) >= 3 && strtotime($fieldValue) !== false) {
                         $dt = new \DateTime($fieldValue);
                         if ($dt->format('His') === '000000') {
@@ -247,7 +247,7 @@ class Vector extends Source
         }
     }
 
-    public function delete(array $ids)
+    public function delete(array $ids, $actionAllKeys)
     {
     }
 
