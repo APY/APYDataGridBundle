@@ -250,7 +250,7 @@
 {% endblock grid_column_actions_cell %}
 {# ------------------------------------------------ grid_column_massaction_cell --------------------------------------------- #}
 {% block grid_column_massaction_cell %}
-    <input type="checkbox" class="action" value="1" name="{{ grid.hash }}[{{ column.id }}][{{ row.primaryFieldValue }}]"/>
+    <input type="checkbox" class="action" value="1" name="{{ grid.hash }}[{{ column.id }}][{{ row.primaryFieldValue }}]" onclick="{{ grid.hash }}_updateVisible(this.checked);" />
 {% endblock grid_column_massaction_cell %}
 {# ------------------------------------------------ grid_column_type_boolean_cell --------------------------------------------- #}
 {% block grid_column_boolean_cell %}
@@ -404,6 +404,7 @@
 {{ grid_scripts_enter_page(grid) }}
 {{ grid_scripts_results_per_page(grid) }}
 {{ grid_scripts_mark_visible(grid) }}
+{{ grid_scripts_update_visible(grid) }}
 {{ grid_scripts_mark_all(grid) }}
 {{ grid_scripts_switch_operator(grid) }}
 {{ grid_scripts_submit_form(grid) }}
@@ -490,6 +491,7 @@ function {{ grid.hash }}_markVisible(select)
     for (var i=0; i < form.elements.length; i++ ) {
         if (form.elements[i].type == 'checkbox') {
             form.elements[i].checked = select;
+            form.elements[i].disabled = false;
 
             if (form.elements[i].checked){
                counter++;
@@ -510,6 +512,34 @@ function {{ grid.hash }}_markVisible(select)
 }
 {% endblock grid_scripts_mark_visible %}
 
+{% block grid_scripts_update_visible %}
+    function {{ grid.hash }}_updateVisible(select)
+    {
+    var form = document.getElementById('{{ grid.hash }}');
+
+    var counter = 0;
+
+    for (var i=0; i < form.elements.length; i++ ) {
+    if (form.elements[i].type == 'checkbox') {
+    if (form.elements[i].checked){
+    counter++;
+    }
+    }
+    }
+
+    {% if grid.isFilterSectionVisible %}
+        counter--;
+    {% endif %}
+
+    var selected = document.getElementById('{{ grid.hash }}_mass_action_selected');
+    selected.innerHTML = counter > 0 ? '{{ 'Selected _s_ rows'|trans }}'.replace('_s_', counter) : '';
+
+    document.getElementById('{{ grid.hash }}_mass_action_all').value = '0';
+
+    return false;
+    }
+{% endblock grid_scripts_update_visible %}
+
 {% block grid_scripts_mark_all %}
 function {{ grid.hash }}_markAll(select)
 {
@@ -518,6 +548,7 @@ function {{ grid.hash }}_markAll(select)
     for (var i=0; i < form.elements.length; i++ ) {
         if (form.elements[i].type == 'checkbox') {
             form.elements[i].checked = select;
+            form.elements[i].disabled = select;
         }
     }
 
