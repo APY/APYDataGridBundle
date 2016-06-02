@@ -153,7 +153,7 @@ class Grid implements GridInterface
     /**
      * @var array|object session
      */
-    protected $sessionData;
+    protected $sessionData = array();
 
     /**
      * @var string
@@ -418,7 +418,7 @@ class Grid implements GridInterface
 
         $this->processPersistence();
 
-        $this->sessionData = $this->session->get($this->hash);
+        $this->sessionData = (array) $this->session->get($this->hash);
 
         $this->processLazyParameters();
 

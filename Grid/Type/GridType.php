@@ -56,14 +56,30 @@ class GridType extends AbstractType
             'sortable'         => true,
         ));
 
-        $resolver->setAllowedTypes('source', array('null', 'APY\DataGridBundle\Grid\Source\Source'));
-        $resolver->setAllowedTypes('group_by', array('null', 'string', 'array'));
-        $resolver->setAllowedTypes('route_parameters', 'array');
-        $resolver->setAllowedTypes('persistence', 'bool');
-        $resolver->setAllowedTypes('filterable', 'bool');
-        $resolver->setAllowedTypes('sortable', 'bool');
+        $allowedTypes = array(
+            'source' => array('null', 'APY\DataGridBundle\Grid\Source\Source'),
+            'group_by' => array('null', 'string', 'array'),
+            'route_parameters' => 'array',
+            'persistence' => 'bool',
+            'filterable' => 'bool',
+            'sortable' => 'bool',
+        );
+        $allowedValues = array(
+            'order' => array('asc', 'desc'),
+        );
+        if (method_exists($resolver, 'setDefault')) {
+            // Symfony 2.6.0 and up
+            foreach ($allowedTypes as $option => $types) {
+                $resolver->setAllowedTypes($option, $types);
+            }
 
-        $resolver->setAllowedValues('order', array('asc', 'desc'));
+            foreach ($allowedValues as $option => $values) {
+                $resolver->setAllowedValues($option, $values);
+            }
+        } else {
+            $resolver->setAllowedTypes($allowedTypes);
+            $resolver->setAllowedValues($allowedValues);
+        }
     }
 
     /**

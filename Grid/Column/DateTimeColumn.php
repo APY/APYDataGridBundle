@@ -111,14 +111,14 @@ class DateTimeColumn extends Column
     /**
      * DateTimeHelper::getDatetime() from SonataIntlBundle
      *
-     * @param \Datetime|string|integer $data
-     * @param null|string timezone
+     * @param \Datetime|\DateTimeImmutable|string|integer $data
+     * @param \DateTimeZone timezone
      * @return \Datetime
      */
-    protected function getDatetime($data, $timezone = null)
+    protected function getDatetime($data, \DateTimeZone $timezone)
     {
-        if($data instanceof \DateTime) {
-            return $data;
+        if($data instanceof \DateTime || $data instanceof \DateTimeImmutable) {
+            return $data->setTimezone($timezone);
         }
 
         // the format method accept array or integer

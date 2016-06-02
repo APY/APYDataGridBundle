@@ -12,8 +12,10 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
-use APY\DataGridBundle\Grid\Filter;
+use Doctrine\Common\Version as DoctrineVersion;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use APY\DataGridBundle\Grid\Filter;
 
 abstract class Column
 {
@@ -41,7 +43,7 @@ abstract class Column
     const OPERATOR_NSLIKE  = 'nslike';
     const OPERATOR_RSLIKE  = 'rslike';
     const OPERATOR_LSLIKE  = 'lslike';
-    
+
     const OPERATOR_ISNULL  = 'isNull';
     const OPERATOR_ISNOTNULL  = 'isNotNull';
 
@@ -97,6 +99,7 @@ abstract class Column
     protected $isManualField;
     protected $isAggregate;
     protected $usePrefixTitle;
+    protected $translationDomain;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -115,7 +118,7 @@ abstract class Column
     {
         $this->params = $params;
         $this->setId($this->getParam('id'));
-        $this->setTitle($this->getParam('title', ''));
+        $this->setTitle($this->getParam('title', $this->getParam('field')));
         $this->setSortable($this->getParam('sortable', true));
         $this->setVisible($this->getParam('visible', true));
         $this->setSize($this->getParam('size', -1));
@@ -135,7 +138,7 @@ abstract class Column
         $this->setIsManualField($this->getParam('isManualField', false));
         $this->setIsAggregate($this->getParam('isAggregate', false));
         $this->setUsePrefixTitle($this->getParam('usePrefixTitle', true));
-        
+
         // Order is important for the order display
         $this->setOperators($this->getParam('operators', array(
             self::OPERATOR_EQ,
@@ -165,6 +168,7 @@ abstract class Column
         $this->setSeparator($this->getParam('separator', "<br />"));
         $this->setExport($this->getParam('export'));
         $this->setClass($this->getParam('class'));
+        $this->setTranslationDomain($this->getParam('translation_domain'));
     }
 
     protected function getParam($id, $default = null)
@@ -676,8 +680,11 @@ abstract class Column
      */
     public function getOperators()
     {
-        // Issue with Doctrine (See http://www.doctrine-project.org/jira/browse/DDC-1857 and http://www.doctrine-project.org/jira/browse/DDC-1858)
-        if ($this->hasDQLFunction()) {
+        // Issue with Doctrine
+        // -------------------
+        // @see http://www.doctrine-project.org/jira/browse/DDC-1857
+        // @see http://www.doctrine-project.org/jira/browse/DDC-1858
+        if ($this->hasDQLFunction() && version_compare(DoctrineVersion::VERSION, '2.5') < 0) {
             return array_intersect($this->operators, array(self::OPERATOR_EQ,
                 self::OPERATOR_NEQ,
                 self::OPERATOR_LT,
@@ -924,7 +931,28 @@ abstract class Column
         $this->usePrefixTitle = $usePrefixTitle;
         return $this;
     }
- 
-    
-    
+
+    /**
+     * Get TranslationDomain
+     *
+     * @return string
+     */
+    public function getTranslationDomain()
+    {
+        return $this->translationDomain;
+    }
+
+    /**
+     * Set TranslationDomain
+     *
+     * @param string $translationDomain
+     *
+     * @return $this
+     */
+    public function setTranslationDomain($translationDomain)
+    {
+        $this->translationDomain = $translationDomain;
+
+        return $this;
+    }
 }
