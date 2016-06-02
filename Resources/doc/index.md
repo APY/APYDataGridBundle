@@ -28,42 +28,13 @@ For more information about translations, check [Symfony documentation](https://s
 
 ### Step 1 : Download APYDataGridBundle using composer
 
-For this forked version of APYDataGridBundle, update your project's composer.json file like the following :
-
-```json
-{
-	"require": {
-        "artscorestudio/APYDataGridBundle": "dev-master"
-	},
-	"repositories" : [{
-        "type": "package",
-        "package": {
-            "name": "artscorestudio/APYDataGridBundle",
-            "version": "dev-master",
-            "dist" : {
-				"url" : "https://github.com/artscorestudio/APYDataGridBundle/archive/master.zip",
-				"type" : "zip"
-			},
-			"source" : {
-				"url" : "https://github.com/artscorestudio/APYDataGridBundle.git",
-				"type" : "git",
-				"reference" : "dev-master"
-			},
-			"autoload": {
-			    "psr-4": { "APY\\DataGridBundle\\": "" }
-			}
-        }
-    }]
-}
-```
-
-And run composer update command :
+Require the bundle with composer :
 
 ```bash
-$ composer update
+$ composer require artscorestudio/datagrid-bundle
 ```
 
-Composer will install the bundle to your project's *vendor/artscorestudio/APYDataGridBundle* directory.
+Composer will install the bundle to your project's *vendor/artscorestudio/datagrid-bundle* directory.
 
 ### Step 2 : Enable the bundle
 
