@@ -1,7 +1,10 @@
-Getting Started With APYDataGridBundle
-======================================
+# Getting Started With APYDataGridBundle
 
-## Choose your source of data
+For using APYDataGrid Bundle, follows this simple steps in your controller :
+
+## Quick steps for use APYDataGrid in your controller
+
+### Step 1 : Choose your source of data
 
 You can choose between an [Entity (ORM)](source/entity_source.md), a [Document (ODM)](source/document_source.md) or a [Vector (Array)](source/vector_source.md) source.
 
@@ -78,7 +81,7 @@ class DefaultController extends Controller
 }
 ```
 
-## Get a grid instance
+### Step 2 : Get a grid instance
 
 ```php
 <?php
@@ -90,7 +93,7 @@ public function myGridAction()
 }
 ```
 
-## Attach the source to the grid
+### Step 3 : Attach the source to the grid
 
 ```php
 <?php
@@ -104,7 +107,7 @@ public function myGridAction()
 }
 ```
 
-## Configuration of the grid
+### Step 4 : Configuration of the grid
 
 ```php
 <?php
@@ -134,7 +137,7 @@ public function myGridAction()
 }
 ```
 
-## Return the grid to the template
+### Step 5a : Return the grid to the template
 
 ```php
 <?php
@@ -154,7 +157,7 @@ public function myGridAction()
 }
 ```
 
-## Manage the grid redirection, exports and the response of the controller
+### Step 5b : Manage the grid redirection, exports and the response of the controller
 
 ```php
 <?php

@@ -14,6 +14,7 @@ namespace APY\DataGridBundle\Grid\Column;
 
 use Doctrine\Common\Version as DoctrineVersion;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use APY\DataGridBundle\Grid\Filter;
 
 abstract class Column
@@ -42,7 +43,7 @@ abstract class Column
     const OPERATOR_NSLIKE  = 'nslike';
     const OPERATOR_RSLIKE  = 'rslike';
     const OPERATOR_LSLIKE  = 'lslike';
-    
+
     const OPERATOR_ISNULL  = 'isNull';
     const OPERATOR_ISNOTNULL  = 'isNotNull';
 
@@ -137,7 +138,7 @@ abstract class Column
         $this->setIsManualField($this->getParam('isManualField', false));
         $this->setIsAggregate($this->getParam('isAggregate', false));
         $this->setUsePrefixTitle($this->getParam('usePrefixTitle', true));
-        
+
         // Order is important for the order display
         $this->setOperators($this->getParam('operators', array(
             self::OPERATOR_EQ,
@@ -793,7 +794,7 @@ abstract class Column
      * @param $securityContext
      * @return $this
      */
-    public function setSecurityContext(SecurityContextInterface $securityContext)
+    public function setSecurityContext(AuthorizationCheckerInterface $securityContext)
     {
         $this->securityContext = $securityContext;
 
