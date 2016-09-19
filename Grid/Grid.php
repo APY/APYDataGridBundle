@@ -1113,7 +1113,9 @@ class Grid implements GridInterface
     protected function set($key, $data)
     {
         // Only the filters values are removed from the session
-        if (isset($data['from']) && ((is_string($data['from']) && $data['from'] === '') || (is_array($data['from']) && $data['from'][0] === ''))) {
+        $fromIsEmpty = isset($data['from']) && ((is_string($data['from']) && $data['from'] === '') || (is_array($data['from']) && $data['from'][0] === ''));
+        $toIsSet = isset($data['to']) && (is_string($data['to']) && $data['to'] !== '');
+        if ($fromIsEmpty && !$toIsSet) {
             if (array_key_exists($key, $this->sessionData)) {
                 unset($this->sessionData[$key]);
             }
