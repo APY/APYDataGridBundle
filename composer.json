@@ -1,6 +1,6 @@
 {
-    "name": "artscorestudio/datagrid-bundle",
-    "description": "Symfony2 Datagrid Bundle",
+    "name": "apy/datagrid-bundle",
+    "description": "Symfony Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
     "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
     "type": "symfony-bundle",
