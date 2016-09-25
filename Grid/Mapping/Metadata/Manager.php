@@ -14,18 +14,6 @@
 
 namespace APY\DataGridBundle\Grid\Mapping\Metadata;
 
-class DriverHeap extends \SplPriorityQueue
-{
-     public function compare($priority1, $priority2)
-     {
-         if ($priority1 === $priority2) {
-             return 0;
-         }
-
-         return $priority1 > $priority2 ? -1 : 1;
-     }
-}
-
 class Manager
 {
     /**
@@ -45,7 +33,7 @@ class Manager
 
     /**
      * @todo remove this hack
-     * @return \APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface[]|DriverHeap
+     * @return \APY\DataGridBundle\Grid\Mapping\Metadata\DriverHeap
      */
     public function getDrivers()
     {

@@ -1,5 +1,5 @@
-Set the separator of the actions column
-===============================================
+Set the title of the actions column
+===========================================
 
 ## Usage
 
@@ -8,17 +8,15 @@ Set the separator of the actions column
 ...
 $grid->setSource($source);
 
-$grid->setActionsColumnSeparator($separator);
+$grid->setActionsColumnTitle($title);
 ...
 ```
 
-## Grid::setActionsColumnSize parameters
+## Grid::setActionsColumnTitle parameters
 
 |Parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|
-|separator|string|<br />|Separator of the default actions column|
-
-**Note**: This parameter accepts HTML tags.
+|title|string|Actions|Title of the default actions column|
 
 ## Example
 
@@ -29,7 +27,7 @@ use APY\DataGridBundle\Grid\Action\RowAction;
 ...
 $grid->setSource($source);
 
-$grid->setActionsColumnSeparator("<br />");
+$grid->setActionsColumnTitle('default_actions_column');
 
 // Attach a rowAction to the Actions Column
 $rowAction1 = new RowAction('Show', 'route_to_show');
@@ -43,8 +41,8 @@ $grid->addRowAction($rowAction3);
 ...
 ```
 
-## Set the default separator of the actions column in your config.yml
+## Set the default title of the actions column in your config.yml
 ```yml
 apy_data_grid:
-    actions_columns_separator: "<b> - </b>"
+    actions_columns_title: Actions
 ```

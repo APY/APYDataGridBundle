@@ -12,7 +12,10 @@
         <parameter key="grid.column.date.class">APY\DataGridBundle\Grid\Column\DateColumn</parameter>
         <parameter key="grid.column.time.class">APY\DataGridBundle\Grid\Column\TimeColumn</parameter>
         <parameter key="grid.column.array.class">APY\DataGridBundle\Grid\Column\ArrayColumn</parameter>
+        <parameter key="grid.column.simple_array.class">APY\DataGridBundle\Grid\Column\SimpleArrayColumn</parameter>
         <parameter key="grid.column.blank.class">APY\DataGridBundle\Grid\Column\BlankColumn</parameter>
+        <parameter key="grid.column.rank.class">APY\DataGridBundle\Grid\Column\RankColumn</parameter>
+        <parameter key="grid.column.join.class">APY\DataGridBundle\Grid\Column\JoinColumn</parameter>
     </parameters>
 
     <services>
@@ -44,9 +47,20 @@
             <tag name="grid.column.extension" />
         </service>
 
+        <service id="grid.column.simple_array" class="%grid.column.simple_array.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
         <service id="grid.column.blank" class="%grid.column.blank.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
 
+        <service id="grid.column.rank" class="%grid.column.rank.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.join" class="%grid.column.join.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
     </services>
 </container>

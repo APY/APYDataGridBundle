@@ -13,10 +13,8 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 /**
- *
  * PHPExcel 5 Export (97-2003) (.xls)
  * 52 columns maximum
- *
  */
 class PHPExcel5Export extends Export
 {
@@ -37,20 +35,13 @@ class PHPExcel5Export extends Export
     {
         $data = $this->getFlatGridData($grid);
 
-        $this->objPHPExcel->setActiveSheetIndex(0);
-
         $row = 1;
         foreach ($data as $line) {
             $column = 'A';
             foreach ($line as $cell) {
                 $this->objPHPExcel->getActiveSheet()->SetCellValue($column.$row, $cell);
 
-                // 52 columns maximum
-                if ($column == 'Z') {
-                    $column = 'AA';
-                } else {
-                    $column++;
-                }
+                $column++;
             }
             $row++;
         }

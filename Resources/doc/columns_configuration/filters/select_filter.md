@@ -15,10 +15,10 @@ The two selectors are disabled if the `Is defined` operator or the  `Is not defi
 
 |Attribute|Type|Default value|Possible values|Description|
 |:--:|:--|:--|:--|:--|
-|selectFrom|string|query|query, source or values|Define this attribute if you want to force the format of the value.<br />(e.g. "Y-m-d H:i:s")|
+|selectFrom|string|query|query, source or values|How to populate the selector of the select filters of the column.|
 |selectMulti|boolean|false|true/false|Set to true for multiple select.
 |selectExpanded|boolean|false|true/false|If sets to true, radio buttons or checkboxes (depending on the multiple value) will be rendered instead of a select element.
-|values|array|||Define the options values of the selector if selectFrom is set to `values`.<br />(e.g. "Y-m-d H:i:s")|
+|values|array|||Define the options values of the selector if selectFrom is set to `values` or if you want to replace values in the grid.|
 
 ## selectFrom informations
 
@@ -40,7 +40,7 @@ From values:
 /**
  * @ORM\Column(type="string", length="32")
  *
- * @GRID\Column(filter="select", selectFrom="values", values={"type1"="Type 1","type1"="Type 2"})
+ * @GRID\Column(filter="select", selectFrom="values", values={"type1"="Type 1","type2"="Type 2"})
  */
 protected $type;
 ...

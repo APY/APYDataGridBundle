@@ -2,6 +2,46 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="1">
+                <source>Page</source>
+                <target>Page</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>, Display</source>
+                <target>, Display</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>of %count%</source>
+                <target>of %count%</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Items per page</source>
+                <target>Items per page</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Select visible</source>
+                <target>Select visible</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Select all</source>
+                <target>Select all</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Deselect visible</source>
+                <target>Deselect visible</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Deselect all</source>
+                <target>Deselect all</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>Action</source>
+                <target>Action</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Submit Action</source>
+                <target>Submit Action</target>
+            </trans-unit>
             <trans-unit id="13">
                 <source>eq</source>
                 <target>Equals</target>
@@ -64,8 +104,21 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>{0,1}%count% Result, |[2, Inf]%count% Results, </target>
+                <target>%count% Result, |%count% Results, </target>
             </trans-unit>
+            <trans-unit id="29">
+                <source>Search</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>Reset</source>
+                <target>Reset</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>Order by</source>
+                <target>Order by</target>
+            </trans-unit>
+
 
     <!-- with symbols -->
             <!--trans-unit id="26">
@@ -120,6 +173,31 @@
                 <source>btwes</source>
                 <target>&lt;=x&lt;<=/target>
             </trans-unit-->
+            
+            <trans-unit id="39">
+                <source>slike</source>
+                <target>Contains</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>nslike</source>
+                <target>Not contains</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>rslike</source>
+                <target>Starts with</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>lslike</source>
+                <target>Ends with</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>No data</source>
+                <target>No data</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>No result</source>
+                <target>No result</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

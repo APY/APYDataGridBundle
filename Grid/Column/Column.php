@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use Doctrine\Common\Version as DoctrineVersion;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use APY\DataGridBundle\Grid\Filter;
 
@@ -37,6 +38,11 @@ abstract class Column
     const OPERATOR_NLIKE  = 'nlike';
     const OPERATOR_RLIKE  = 'rlike';
     const OPERATOR_LLIKE  = 'llike';
+    const OPERATOR_SLIKE   = 'slike'; //simple/strict LIKE
+    const OPERATOR_NSLIKE  = 'nslike';
+    const OPERATOR_RSLIKE  = 'rslike';
+    const OPERATOR_LSLIKE  = 'lslike';
+    
     const OPERATOR_ISNULL  = 'isNull';
     const OPERATOR_ISNOTNULL  = 'isNotNull';
 
@@ -71,7 +77,6 @@ abstract class Column
     protected $field;
     protected $role;
     protected $filterType;
-    protected $filter;
     protected $params;
     protected $isSorted = false;
     protected $orderUrl;
@@ -86,6 +91,14 @@ abstract class Column
     protected $selectExpanded;
     protected $searchOnClick = false;
     protected $safe;
+    protected $separator;
+    protected $joinType;
+    protected $export;
+    protected $class;
+    protected $isManualField;
+    protected $isAggregate;
+    protected $usePrefixTitle;
+    protected $translationDomain;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -104,7 +117,7 @@ abstract class Column
     {
         $this->params = $params;
         $this->setId($this->getParam('id'));
-        $this->setTitle($this->getParam('title', ''));
+        $this->setTitle($this->getParam('title', $this->getParam('field')));
         $this->setSortable($this->getParam('sortable', true));
         $this->setVisible($this->getParam('visible', true));
         $this->setSize($this->getParam('size', -1));
@@ -116,10 +129,15 @@ abstract class Column
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
         $this->setOrder($this->getParam('order'));
+        $this->setJoinType($this->getParam('joinType'));
         $this->setFilterType($this->getParam('filter', 'input'));
         $this->setSelectFrom($this->getParam('selectFrom', 'query'));
         $this->setValues($this->getParam('values', array()));
         $this->setOperatorsVisible($this->getParam('operatorsVisible', true));
+        $this->setIsManualField($this->getParam('isManualField', false));
+        $this->setIsAggregate($this->getParam('isAggregate', false));
+        $this->setUsePrefixTitle($this->getParam('usePrefixTitle', true));
+        
         // Order is important for the order display
         $this->setOperators($this->getParam('operators', array(
             self::OPERATOR_EQ,
@@ -134,6 +152,10 @@ abstract class Column
             self::OPERATOR_NLIKE,
             self::OPERATOR_RLIKE,
             self::OPERATOR_LLIKE,
+            self::OPERATOR_SLIKE,
+            self::OPERATOR_NSLIKE,
+            self::OPERATOR_RSLIKE,
+            self::OPERATOR_LSLIKE,
             self::OPERATOR_ISNULL,
             self::OPERATOR_ISNOTNULL,
         )));
@@ -142,6 +164,10 @@ abstract class Column
         $this->setSelectExpanded($this->getParam('selectExpanded', false));
         $this->setSearchOnClick($this->getParam('searchOnClick', false));
         $this->setSafe($this->getParam('safe', 'html'));
+        $this->setSeparator($this->getParam('separator', "<br />"));
+        $this->setExport($this->getParam('export'));
+        $this->setClass($this->getParam('class'));
+        $this->setTranslationDomain($this->getParam('translation_domain'));
     }
 
     protected function getParam($id, $default = null)
@@ -163,6 +189,7 @@ abstract class Column
             return call_user_func($this->callback, $value, $row, $router);
         }
 
+        $value = is_bool($value) ? (int)$value : $value;
         if (array_key_exists((string)$value, $this->values)) {
             $value = $this->values[$value];
         }
@@ -245,6 +272,7 @@ abstract class Column
      * Set column visibility
      *
      * @param boolean $visible
+     * @return $this
      */
     public function setVisible($visible)
     {
@@ -258,13 +286,15 @@ abstract class Column
      *
      * @return bool return true when column is visible
      */
-    public function isVisible()
+    public function isVisible($isExported = false)
     {
-        if ($this->visible && $this->securityContext !== null && $this->getRole() != null) {
+        $visible = $isExported && $this->export !== null ? $this->export : $this->visible;
+
+        if ($visible && $this->securityContext !== null && $this->getRole() != null) {
             return $this->securityContext->isGranted($this->getRole());
         }
 
-        return $this->visible;
+        return $visible;
     }
 
     /**
@@ -376,18 +406,6 @@ abstract class Column
         return $this->size;
     }
 
-    public function setOrderUrl($orderUrl)
-    {
-        $this->orderUrl = $orderUrl;
-
-        return $this;
-    }
-
-    public function getOrderUrl()
-    {
-        return $this->orderUrl;
-    }
-
     /**
      * set filter data from session | request
      *
@@ -457,7 +475,7 @@ abstract class Column
 
     /**
      * Set column visibility for source class
-     * @param $value
+     * @param $visibleForSource
      * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setVisibleForSource($visibleForSource)
@@ -480,6 +498,7 @@ abstract class Column
      * Set column as primary
      *
      * @param boolean $primary
+     * @return $this
      */
     public function setPrimary($primary)
     {
@@ -500,6 +519,7 @@ abstract class Column
     /**
      * Set column align
      * @param string $align left/right/center
+     * @return $this
      */
     public function setAlign($align)
     {
@@ -523,7 +543,9 @@ abstract class Column
 
     public function setInputType($inputType)
     {
-        return $this->inputType = $inputType;
+        $this->inputType = $inputType;
+
+        return $this;
     }
 
     public function getInputType()
@@ -603,12 +625,16 @@ abstract class Column
                     case self::OPERATOR_LIKE:
                     case self::OPERATOR_RLIKE:
                     case self::OPERATOR_LLIKE:
+                    case self::OPERATOR_SLIKE:
+                    case self::OPERATOR_RSLIKE:
+                    case self::OPERATOR_LSLIKE:
+                    case self::OPERATOR_EQ:
                         if ($this->getSelectMulti()) {
                             $this->setDataJunction(self::DATA_DISJUNCTION);
                         }
-                    case self::OPERATOR_EQ:
                     case self::OPERATOR_NEQ:
                     case self::OPERATOR_NLIKE:
+                    case self::OPERATOR_NSLIKE:
                         foreach ((array) $this->data['from'] as $value) {
                             $filters[] = new Filter($this->data['operator'], $value);
                         }
@@ -653,8 +679,11 @@ abstract class Column
      */
     public function getOperators()
     {
-        // Issue with Doctrine (See http://www.doctrine-project.org/jira/browse/DDC-1857 and http://www.doctrine-project.org/jira/browse/DDC-1858)
-        if ($this->hasDQLFunction()) {
+        // Issue with Doctrine
+        // -------------------
+        // @see http://www.doctrine-project.org/jira/browse/DDC-1857
+        // @see http://www.doctrine-project.org/jira/browse/DDC-1858
+        if ($this->hasDQLFunction() && version_compare(DoctrineVersion::VERSION, '2.5') < 0) {
             return array_intersect($this->operators, array(self::OPERATOR_EQ,
                 self::OPERATOR_NEQ,
                 self::OPERATOR_LT,
@@ -762,6 +791,7 @@ abstract class Column
      * Internal function
      *
      * @param $securityContext
+     * @return $this
      */
     public function setSecurityContext(SecurityContextInterface $securityContext)
     {
@@ -806,7 +836,7 @@ abstract class Column
     /**
      * Allows to set twig escaping parameter (html, js, css, url, html_attr)
      * or to display raw value if type is false
-     * @param type $safeOption can be one of raw, html, js, css, url, html_attr
+     * @param string|bool $safeOption can be one of false, html, js, css, url, html_attr
      * @return \APY\DataGridBundle\Grid\Column\Column
      */
     public function setSafe($safeOption)
@@ -819,5 +849,109 @@ abstract class Column
     public function getSafe()
     {
         return $this->safe;
+    }
+
+    public function setSeparator($separator)
+    {
+        $this->separator = $separator;
+
+        return $this;
+    }
+
+    public function getSeparator()
+    {
+        return $this->separator;
+    }
+
+    public function setJoinType($type)
+    {
+        $this->joinType = $type;
+
+        return $this;
+    }
+
+    public function getJoinType()
+    {
+        return $this->joinType;
+    }
+
+    public function setExport($export)
+    {
+        $this->export = $export;
+
+        return $this;
+    }
+
+    public function getExport()
+    {
+        return $this->export;
+    }
+
+    public function setClass($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+
+    public function setIsManualField($isManualField)
+    {
+        $this->isManualField = $isManualField;
+    }
+
+    public function getIsManualField()
+    {
+        return $this->isManualField;
+    }
+
+    public function setIsAggregate($isAggregate)
+    {
+        $this->isAggregate = $isAggregate;
+    }
+
+    public function getIsAggregate()
+    {
+        return $this->isAggregate;
+    }
+
+    public function getUsePrefixTitle()
+    {
+        return $this->usePrefixTitle;
+    }
+
+    public function setUsePrefixTitle($usePrefixTitle)
+    {
+        $this->usePrefixTitle = $usePrefixTitle;
+        return $this;
+    }
+
+    /**
+     * Get TranslationDomain
+     *
+     * @return string
+     */
+    public function getTranslationDomain()
+    {
+        return $this->translationDomain;
+    }
+
+    /**
+     * Set TranslationDomain
+     *
+     * @param string $translationDomain
+     *
+     * @return $this
+     */
+    public function setTranslationDomain($translationDomain)
+    {
+        $this->translationDomain = $translationDomain;
+
+        return $this;
     }
 }

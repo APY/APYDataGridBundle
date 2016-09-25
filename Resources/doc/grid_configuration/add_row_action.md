@@ -27,19 +27,19 @@ $grid->addRowAction($rowAction);
 |attributes|array|array()||Add attributes to the anchor tag|
 |role|mixed|null|A symfony role|Don't add this mass action if the access isn't granted for the defined role(s)|
 
-**Note**: Every parameter have a setter and a getter method. and others options can be set too.
+**Note**: Every parameter has a setter and a getter method. and others options can be set too.
 
 
-## Additionnal parameters
+## Additional parameters
 
 These parameters have a setter and a getter method.
 
 |parameter|Type|Default value|Possible values|Description|
 |:--:|:--|:--|:--|:--|
 |confirmMessage|string|'Do you want to '.strtolower($title).' this row?'||Confirm message on click|
-|routeParameters|string or array|array()||Add additional parameters to the route.|
-
-**Note**: For the route parameters, if you pass a column identifier instead of a key/value pair, the row action will use the value of the column of the selected row to generate its url.
+|routeParameters|string or array|array()|Array of field name and field/value pair|Add additional parameters to the route.<br />**Note**: If you pass a column identifier instead of a key/value pair, the row action will use the value of the column of the selected row to generate its url.|
+|routeParametersMapping|array|array()||Map field name with parameters of the route.|
+|[manipulateRender](https://github.com/Abhoryo/APYDataGridBundle/blob/master/Resources/doc/grid_configuration/manipulate_row_action_rendering.md)|[\Closure](http://php.net/manual/en/functions.anonymous.php) or [callable](http://php.net/manual/en/language.types.callable.php)|null||Callback to manipulate action rendering. Null means no callback.|
 
 ## Example
 ```php
@@ -85,4 +85,34 @@ public function djettePlayListShowAction($userInformationCountry)
 ...
 ```
 
+You can map mapped fields to appropriate route parameters with the setRouteParametersMapping method.
+In this example the `user.information.country` field will be mapped to the `countryId` route parameter.
 
+## Example
+```php
+<?php
+use APY\DataGridBundle\Grid\Action\RowAction;
+...
+$grid->setSource($source);
+
+// Specify route parameters for the edit action
+$rowAction2 = new RowAction('Edit', 'route_to_edit');
+$rowAction2->setRouteParameters(array('user.information.country', 'version' => 2));
+$rowAction2->setRouteParametersMapping(array('user.information.country' => 'countryId'));
+$grid->addRowAction($rowAction2);
+...
+```
+
+```php
+<?php
+...
+/**
+ * @Route("/{version}/{countryId}", name="route_to_edit")
+ * @Template
+ */
+public function showAction($version, $countryId)
+{
+    ...
+}
+...
+```

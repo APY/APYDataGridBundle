@@ -44,7 +44,7 @@ class DefaultController extends Controller
         $grid->setLimits(array(5, 10, 15));
 
         // Set the default page
-        $grid->setPage(1);
+        $grid->setDefaultPage(1);
 
         // Add a mass action with static callback
         $yourMassAction = new MassAction('Action 1', 'MyProject\MyBundle\Controller\DefaultController::myStaticMethod');
@@ -63,7 +63,7 @@ class DefaultController extends Controller
 
         // Add a typed column with a rendering callback
         $MyColumn2 = new DateColumn(array('id' => 'Another Column', 'sortable' => true, 'filterable' => false, 'source' => false));
-        $MyColumn2->manipulateRender(function($value, $row, $router) {
+        $MyColumn2->manipulateRenderCell(function($value, $row, $router) {
             return $router->generateUrl('_my_route', array('param' => $row->getField('column')));}
         );
         $grid->addColumn($MyColumn2);

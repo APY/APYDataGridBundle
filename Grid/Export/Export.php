@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Column\ArrayColumn;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,8 +32,6 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     protected $parameters = array();
 
     protected $container;
-
-    protected $template;
 
     protected $templates;
 
@@ -77,6 +76,8 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     {
         $this->container = $container;
 
+        $this->twig = $this->container->get('twig');
+
         return $this;
     }
 
@@ -98,12 +99,13 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     public function getResponse()
     {
         // Response
-        if (function_exists('mb_strlen')) {
-            $this->content = mb_convert_encoding($this->content, $this->charset, $this->container->getParameter('kernel.charset'));
+        $kernelCharset = $this->container->getParameter('kernel.charset');
+        if ($this->charset != $kernelCharset && function_exists('mb_strlen')) {
+            $this->content = mb_convert_encoding($this->content, $this->charset, $kernelCharset);
             $filesize = mb_strlen($this->content, '8bit');
         } else {
             $filesize = strlen($this->content);
-            $this->charset = $this->container->getParameter('kernel.charset');
+            $this->charset = $kernelCharset;
         }
 
         $headers = array(
@@ -176,10 +178,6 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $result = array();
 
         $this->grid = $grid;
-
-        $this->twig = $this->container->get('twig');
-
-        $this->template = $this->grid->getTemplate();
 
         if ($this->grid->isTitleSectionVisible()) {
             $result['titles'] = $this->getGridTitles();
@@ -271,7 +269,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         foreach ($this->grid->getColumns() as $column) {
             if ($column->isVisible(true)) {
                 if (!isset($titlesClean[$i])) {
-                    throw new \OutOfBoundsException('There are more more visible columns than titles found.');
+                    throw new \OutOfBoundsException('There are more visible columns than titles found.');
                 }
                 $titles[$column->getId()] = $titlesClean[$i++];
             }
@@ -287,7 +285,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $titles = array();
         foreach ($this->grid->getColumns() as $column) {
             if ($column->isVisible(true)) {
-                $titles[] = utf8_decode($translator->trans($column->getTitle()));
+                $titles[] = utf8_decode($translator->trans(/** @Ignore */$column->getTitle()));
             }
         }
 
@@ -325,15 +323,51 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getGridCell($column, $row)
     {
-        $value = $column->renderCell($row->getField($column->getId()), $row, $this->container->get('router'));
+        $values = $row->getField($column->getId());
 
-        if ($this->hasBlock($block = 'grid_'.$this->grid->getHash().'_column_'.$column->getRenderBlockId().'_cell')
-         || $this->hasBlock($block = 'grid_'.$this->grid->getHash().'_column_'.$column->getType().'_cell')
-         || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
-         || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell'))
-        {
-            return $this->renderBlock($block, array('grid' => $this->grid, 'column' => $column, 'value' => $value, 'row' => $row));
+        // Cast a datetime won't work.
+        if ($column instanceof ArrayColumn || !is_array($values)) {
+            $values = array($values);
         }
+
+        $separator = $column->getSeparator();
+
+        $block = null;
+        $return = array();
+        foreach ($values as $sourceValue) {
+            $value = $column->renderCell($sourceValue, $row, $this->container->get('router'));
+
+            $id = $this->grid->getId();
+
+            if (($id != '' && ($block !== null
+             || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_cell')
+             || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getType().'_cell')
+             || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell')))
+             || $this->hasBlock($block = 'grid_'.$id.'_column_id_'.$column->getRenderBlockId().'_cell')
+             || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getType().'_cell')
+             || $this->hasBlock($block = 'grid_'.$id.'_column_type_'.$column->getParentType().'_cell')
+             || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
+             || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
+             || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell')
+             || $this->hasBlock($block = 'grid_column_id_'.$column->getRenderBlockId().'_cell')
+             || $this->hasBlock($block = 'grid_column_type_'.$column->getType().'_cell')
+             || $this->hasBlock($block = 'grid_column_type_'.$column->getParentType().'_cell'))
+            {
+                $html = $this->renderBlock($block, array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
+            } else {
+                $html = $this->renderBlock('grid_column_cell', array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
+                $block = null;
+            }
+
+            // Fix blank separator. The <br /> will be removed by the HTML cleaner.
+            if (false !== strpos($separator, 'br')) {
+                $html = str_replace($separator, ',', $html);
+            }
+
+            $return[] = $html;
+        }
+
+        $value = implode($separator, $return);
 
         return $value;
     }
@@ -381,25 +415,36 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      */
     protected function getTemplates()
     {
-        $template = $this->grid->getTemplate();
-
         if (empty($this->templates)) {
-            //get template name
-            if (is_string($template)) {
-                if (substr($template, 0, 8) === '__SELF__') {
-                    $this->templates = $this->getTemplatesFromString(substr($template, 8));
-                    $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
-                } else {
-                    $this->templates = $this->getTemplatesFromString($template);
-                }
-            } elseif ($this->template === null) {
-                $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
-            } else {
-                throw new \Exception('Unable to load template');
-            }
+            $this->setTemplate($this->grid->getTemplate());
         }
 
         return $this->templates;
+    }
+
+    /**
+     * set template
+     *
+     * @param \Twig_TemplateInterface|string $template
+     *
+     * @return self
+     */
+    public function setTemplate($template)
+    {
+        if (is_string($template)) {
+            if (substr($template, 0, 8) === '__SELF__') {
+                $this->templates = $this->getTemplatesFromString(substr($template, 8));
+                $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+            } else {
+                $this->templates = $this->getTemplatesFromString($template);
+            }
+        } elseif ($this->templates === null) {
+            $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+        } else {
+            throw new \Exception('Unable to load template');
+        }
+
+        return $this;
     }
 
     protected function getTemplatesFromString($theme)
@@ -417,6 +462,9 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function cleanHTML($value)
     {
+        // Handle image
+        $value = preg_replace('#<img[^>]*title="([^"]*)"[^>]*?/>#isU', '\1', $value);
+
         // Clean indent
         $value = preg_replace('/>[\s\n\t\r]*</', '><', $value);
 
@@ -424,8 +472,15 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $value = strip_tags($value);
 
         // Convert Special Characters in HTML
-        $value = html_entity_decode($value);
+        $value = html_entity_decode($value, ENT_QUOTES);
 
+        // Remove whitespace
+        $value = preg_replace('/\s\s+/', ' ', $value);
+
+        // Fix space
+        $value = preg_replace('/\s,/', ',', $value);
+
+        // Trim
         $value = trim($value);
 
         return $value;
@@ -502,8 +557,6 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     {
         return $this->fileExtension;
     }
-
-
 
     /**
      * get base name
@@ -618,35 +671,11 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      */
     public function getParameter($name)
     {
-        if (!hasParameter($name)) {
+        if (!$this->hasParameter($name)) {
             throw new \InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
         }
 
         return $this->parameters[$name];
-    }
-
-    /**
-     * set template
-     *
-     * @param string $template
-     *
-     * @return self
-     */
-    public function setTemplate($template)
-    {
-        $this->template = $template;
-
-        return $this;
-    }
-
-    /**
-     * get template
-     *
-     * @return boolean
-     */
-    public function getTemplate()
-    {
-        return $this->template ?:$this::DEFAULT_TEMPLATE;
     }
 
     /**

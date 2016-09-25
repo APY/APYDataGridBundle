@@ -13,9 +13,7 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 /**
- *
  * JSON
- *
  */
 class JSONExport extends Export
 {

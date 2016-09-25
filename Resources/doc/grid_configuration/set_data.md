@@ -3,7 +3,7 @@ Set data
 
 You can use fetched data to avoid unnecessary queries.
 
-**Note²**: With setData, operators `Equals` and `Contains` support regular expression.
+**Note**: With setData, operators `Equals` and `Contains` support regular expression.
 
 Imagine a user with bookmarks represented by a type (youtube, twitter,...) and a link.  
 Current behavior to display the bookmarks of a user:
@@ -26,7 +26,8 @@ public function displayUserBookmarksAction()
     $source = new Entity('MyProjectMyBundle:Bookmark');
 
     // Add a where condition to the query to get only bookmarks of the user
-    $tableAlias = $source::TABLE_ALIAS;
+    $tableAlias = $source->getTableAlias();
+
     $source->manipulateQuery(function ($query) use ($tableAlias, $user) {
         $query->where($tableAlias . '.member = '.$user->getId());
     });
@@ -55,7 +56,7 @@ $grid->setSource($source);
 |:--:|:--|:--|:--|:--|
 |data|array||Array of data compatible with the source.|
 
-## Exemple
+## Example
 ```php
 <?php
 ...

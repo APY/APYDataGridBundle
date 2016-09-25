@@ -112,7 +112,7 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>{0}%count% Registros, |{1}%count% Registro, |]1, Inf]%count% Registros, </target>
+                <target>%count% Registro, |%count% Registros, </target>
             </trans-unit>
 
 
@@ -169,6 +169,26 @@
                 <source>btwes</source>
                 <target>&lt;=x&lt;<=/target>
             </trans-unit-->
+            <trans-unit id="39">
+                <source>Delete</source>
+                <target>Borrar</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>No result</source>
+                <target>Sin resultados</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>Actions</source>
+                <target>Acciones</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>No data</source>
+                <target>Sin datos</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>Export</source>
+                <target>Exportar</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

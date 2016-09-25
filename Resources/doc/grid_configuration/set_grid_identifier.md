@@ -7,7 +7,7 @@ You have to define the identifier of a grid if you use two grids with the same s
 
 The grid will have the identifier grid_<grid_id> in html pages. And every request will use this variable to query the grid.
 
-The Identifier mustn't use special chars like dot (.)
+**Note:** The Identifier mustn't use special chars for url like dot (. or +)
 
 ## Usage
 

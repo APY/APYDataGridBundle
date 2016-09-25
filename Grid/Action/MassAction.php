@@ -26,17 +26,15 @@ class MassAction implements MassActionInterface
      * @param string $title Title of the mass action
      * @param string $callback Callback of the mass action
      * @param boolean $confirm Show confirm message if true
-     * @param array $parameters Additionnal parameters
+     * @param array $parameters Additional parameters
      * @param string $role Security role
-     *
-     * @return \APY\DataGridBundle\Grid\Action\MassAction
      */
     public function __construct($title, $callback = null, $confirm = false, $parameters = array(), $role = null)
     {
         $this->title = $title;
         $this->callback = $callback;
         $this->confirm = $confirm;
-        $this->confirmMessage = 'Do you want to '.strtolower($title).' the seleted rows?';
+        $this->confirmMessage = 'Do you want to '.strtolower($title).' the selected rows?';
         $this->parameters = $parameters;
         $this->role = $role;
     }
@@ -141,6 +139,7 @@ class MassAction implements MassActionInterface
      * Set action/controller parameters
      *
      * @param array $parameters
+     * @return $this
      */
     public function setParameters(array $parameters)
     {

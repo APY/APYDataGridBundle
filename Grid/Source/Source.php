@@ -50,14 +50,16 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * @param \Closure $callback
+     * @param callable $callback
+     * @return $this
      */
-    public function manipulateQuery(\Closure $callback = null)
+    public function manipulateQuery($callback = null)
     {
         $this->prepareQueryCallback = $callback;
 
         return $this;
     }
+
 
     /**
      * @param \Closure $callback
@@ -181,6 +183,7 @@ abstract class Source implements DriverInterface
         foreach ($this->data as $key => $item) {
             foreach ($columns as $column) {
                 $fieldName = $column->getField();
+                $fieldValue = '';
 
                 if ($this instanceof Entity) {
                     // Mapped field
@@ -209,7 +212,7 @@ abstract class Source implements DriverInterface
                     } else {
                         throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
                     }
-                } else {
+                } elseif (isset($item[$fieldName])) {
                     $fieldValue = $item[$fieldName];
                 }
 
@@ -218,7 +221,6 @@ abstract class Source implements DriverInterface
         }
 
         return $items;
-
     }
 
     /**
@@ -243,6 +245,10 @@ abstract class Source implements DriverInterface
                 $fieldValue = $items[$key][$fieldName];
                 $dataIsNumeric = ($column->getType() == 'number' || $column->getType() == 'boolean');
 
+                if ($column->getType() === 'array') {
+                    $serializeColumns[] = $column->getId();
+                }
+
                 // Filter
                 if ($column->isFiltered()) {
                     // Some attributes of the column can be changed in this function
@@ -262,7 +268,8 @@ abstract class Source implements DriverInterface
                         $value = $filter->getValue();
 
                         // Normalize value
-                        if (!$dataIsNumeric) {
+                        if (!$dataIsNumeric && !($value instanceof \DateTime)) {
+                            $value = $this->prepareStringForLikeCompare($value);
                             switch ($operator) {
                                 case Column\Column::OPERATOR_EQ:
                                     $value = '/^'.preg_quote($value, '/').'$/i';
@@ -281,6 +288,18 @@ abstract class Source implements DriverInterface
                                     break;
                                 case Column\Column::OPERATOR_RLIKE:
                                     $value = '/^'.preg_quote($value, '/').'/i';
+                                    break;
+                                case Column\Column::OPERATOR_SLIKE:
+                                    $value = '/'.preg_quote($value, '/').'/';
+                                    break;
+                                case Column\Column::OPERATOR_NSLIKE:
+                                    $value = '/^((?!'.preg_quote($value, '/').').)*$/';
+                                    break;
+                                case Column\Column::OPERATOR_LSLIKE:
+                                    $value = '/'.preg_quote($value, '/').'$/';
+                                    break;
+                                case Column\Column::OPERATOR_RSLIKE:
+                                    $value = '/^'.preg_quote($value, '/').'/';
                                     break;
                             }
                         }
@@ -301,9 +320,11 @@ abstract class Source implements DriverInterface
                             case Column\Column::OPERATOR_NLIKE:
                             case Column\Column::OPERATOR_LLIKE:
                             case Column\Column::OPERATOR_RLIKE:
-                                if ($column->getType() === 'array') {
-                                    $fieldValue = str_replace(':{i:0;', ':{', serialize($fieldValue));
-                                }
+                            case Column\Column::OPERATOR_SLIKE:
+                            case Column\Column::OPERATOR_NSLIKE:
+                            case Column\Column::OPERATOR_LSLIKE:
+                            case Column\Column::OPERATOR_RSLIKE:
+                                $fieldValue = $this->prepareStringForLikeCompare($fieldValue, $column->getType());
 
                                 $found = preg_match($value, $fieldValue);
                                 break;
@@ -330,26 +351,22 @@ abstract class Source implements DriverInterface
                         // AND
                         if (!$found && !$disjunction) {
                             $keep = false;
-                            break 2;
+                            break;
                         }
 
                         // OR
                         if ($found && $disjunction) {
                             $keep = true;
-                            break 2;
+                            break;
                         }
                     }
-                }
 
-                if ($column->getType() === 'array') {
-                    $serializeColumns[] = $column->getId();
+                    if (!$keep) {
+                        unset($items[$key]);
+                        break;
+                    }
                 }
             }
-
-            if (!$keep) {
-                unset($items[$key]);
-            }
-
         }
 
         // Order
@@ -454,8 +471,8 @@ abstract class Source implements DriverInterface
 
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
-                    foreach($column->getFilters('vector') as $filter) {
-                        if (in_array($filter->getOperator(), array(Column\Column::OPERATOR_NEQ, Column\Column::OPERATOR_NLIKE))) {
+                    foreach ($column->getFilters('vector') as $filter) {
+                        if (in_array($filter->getOperator(), array(Column\Column::OPERATOR_NEQ, Column\Column::OPERATOR_NLIKE,Column\Column::OPERATOR_NSLIKE))) {
                             $selectFrom = 'source';
                             break;
                         }
@@ -466,7 +483,7 @@ abstract class Source implements DriverInterface
                 $item = ($selectFrom === 'source') ? $this->data : $this->items;
 
                 $values = array();
-                foreach($item as $row) {
+                foreach ($item as $row) {
                     $value = $row[$column->getField()];
 
                     switch ($column->getType()) {
@@ -526,5 +543,30 @@ abstract class Source implements DriverInterface
     public function getTotalCountFromData($maxResults = null)
     {
         return $maxResults === null ? $this->count : min($this->count, $maxResults);
+    }
+
+    /**
+     * Prepares string to have almost the same behaviour as with a database,
+     * removing accents and latin special chars
+     * @param mixed $inputString
+     * @param string $type for array type, will serialize datas
+     * @return string the input, serialized for arrays or without accents for strings
+     */
+    protected function prepareStringForLikeCompare($input, $type = null)
+    {
+        if ($type === 'array') {
+            $outputString = str_replace(':{i:0;', ':{', serialize($input));
+        } else {
+            $outputString = $this->removeAccents($input);
+        }
+        return $outputString;
+    }
+
+    private function removeAccents($str)
+    {
+        $entStr = htmlentities($str, ENT_NOQUOTES, "UTF-8");
+        $noaccentStr = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $entStr);
+
+        return preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $noaccentStr);
     }
 }

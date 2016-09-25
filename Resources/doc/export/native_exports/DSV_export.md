@@ -23,7 +23,7 @@ $grid->addExport(new DSVExport($title, $fileName, $params, $charset, $role));
 |:--:|:--|:--|:--|:--|
 |title|string||Title of the export in the selector.|
 |fileName|string|export|Name of the export file without the extension.|
-|params|array|array()|Additionnal parameters.|
+|params|array|array()|Additionnal parameters (Delimiter and BOM).|
 |charset|string|UTF-8|Charset to convert the ouput of the export.|
 |role|mixed|null|Don't add this export if the access isn't granted for the defined role(s)|
 
@@ -41,9 +41,11 @@ use APY\DataGridBundle\Grid\Export\DSVExport;
 ...
 $grid->setSource($source);
 
-$grid->addExport(new DSVExport('DSV Export with ,', 'export', array('delimiter' => ',')));
-$grid->setFileExtension('csv');
-$grid->setMimeType('text/comma-separated-values');
+$exporter = new DSVExport('DSV Export with , without BOM characters', 'export', array('delimiter' => ',', 'withBOM' => false));
+$exporter->setFileExtension('csv');
+$exporter->setMimeType('text/comma-separated-values');
+
+$grid->addExport($exporter);
 ...
 ```
 
@@ -56,11 +58,14 @@ use APY\DataGridBundle\Grid\Export\DSVExport;
 ...
 $grid->setSource($source);
 
-$grid->addExport(new DSVExport('DSV Export with ,'));
-$grid->setDelimiter(',');
-$grid->setFileName('export');
-$grid->setFileExtension('csv');
-$grid->setMimeType('text/comma-separated-values');
+$exporter = new DSVExport('DSV Export with ,');
+$exporter->setDelimiter(',');
+$exporter->setWithBOM(false);
+$exporter->setFileName('export');
+$exporter->setFileExtension('csv');
+$exporter->setMimeType('text/comma-separated-values');
+
+$grid->addExport($exporter);
 ...
 ```
 

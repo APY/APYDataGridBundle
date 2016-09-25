@@ -16,13 +16,10 @@ use APY\DataGridBundle\Grid\Filter;
 
 class ArrayColumn extends Column
 {
-    protected $separator;
-
     public function __initialize(array $params)
     {
         parent::__initialize($params);
 
-        $this->setSeparator($this->getParam('separator', "<br />"));
         $this->setOperators($this->getParam('operators', array(
             self::OPERATOR_LIKE,
             self::OPERATOR_NLIKE,
@@ -39,37 +36,41 @@ class ArrayColumn extends Column
         $parentFilters = parent::getFilters($source);
 
         $filters = array();
-        foreach($parentFilters as $filter) {
-            switch ($filter->getOperator()) {
-                case self::OPERATOR_EQ:
-                case self::OPERATOR_NEQ:
-                    $filterValues = (array) $filter->getValue();
-                    $value = '';
-                    $counter = 1;
-                    foreach ($filterValues as $filterValue) {
-                        $len = strlen($filterValue);
-                        $value .= 'i:'.$counter++.';s:'.$len.':"'.$filterValue.'";';
-                    }
+        foreach ($parentFilters as $filter) {
+            if ($source === "document") {
+                $filters[] = $filter;
+            } else {
+                switch ($filter->getOperator()) {
+                    case self::OPERATOR_EQ:
+                    case self::OPERATOR_NEQ:
+                        $filterValues = (array) $filter->getValue();
+                        $value = '';
+                        $counter = 1;
+                        foreach ($filterValues as $filterValue) {
+                            $len = strlen($filterValue);
+                            $value .= 'i:' . $counter++ . ';s:' . $len . ':"' . $filterValue . '";';
+                        }
 
-                    $filters[] =  new Filter($filter->getOperator(), 'a:'.count($filterValues).':{'.$value.'}');
-                    break;
-                case self::OPERATOR_LIKE:
-                case self::OPERATOR_NLIKE:
-                    $len = strlen($filter->getValue());
-                    $value = 's:'.$len.':"'.$filter->getValue().'";';
-                    $filters[] =  new Filter($filter->getOperator(), $value);
-                    break;
-                case self::OPERATOR_ISNULL:
-                    $filters[] =  new Filter(self::OPERATOR_ISNULL);
-                    $filters[] =  new Filter(self::OPERATOR_EQ, 'a:0:{}');
-                    $this->setDataJunction(self::DATA_DISJUNCTION);
-                    break;
-                case self::OPERATOR_ISNOTNULL:
-                    $filters[] =  new Filter(self::OPERATOR_ISNOTNULL);
-                    $filters[] =  new Filter(self::OPERATOR_NEQ, 'a:0:{}');
-                    break;
-                default:
-                    $filters[] = $filter;
+                        $filters[] = new Filter($filter->getOperator(), 'a:' . count($filterValues) . ':{' . $value . '}');
+                        break;
+                    case self::OPERATOR_LIKE:
+                    case self::OPERATOR_NLIKE:
+                        $len = strlen($filter->getValue());
+                        $value = 's:' . $len . ':"' . $filter->getValue() . '";';
+                        $filters[] = new Filter($filter->getOperator(), $value);
+                        break;
+                    case self::OPERATOR_ISNULL:
+                        $filters[] = new Filter(self::OPERATOR_ISNULL);
+                        $filters[] = new Filter(self::OPERATOR_EQ, 'a:0:{}');
+                        $this->setDataJunction(self::DATA_DISJUNCTION);
+                        break;
+                    case self::OPERATOR_ISNOTNULL:
+                        $filters[] = new Filter(self::OPERATOR_ISNOTNULL);
+                        $filters[] = new Filter(self::OPERATOR_NEQ, 'a:0:{}');
+                        break;
+                    default:
+                        $filters[] = $filter;
+                }
             }
         }
 
@@ -83,27 +84,17 @@ class ArrayColumn extends Column
         }
 
         $return = array();
-        foreach ($values as $key => $value) {
-            if (!is_array($value) && isset($this->values[(string)$value])) {
-                $value = $this->values[$value];
-            }
+        if (is_array($values) || $values instanceof \Traversable) {
+            foreach ($values as $key => $value) {
+                if (!is_array($value) && isset($this->values[(string) $value])) {
+                    $value = $this->values[$value];
+                }
 
-            $return[$key] = $value;
+                $return[$key] = $value;
+            }
         }
 
         return $return;
-    }
-
-    public function setSeparator($separator)
-    {
-        $this->separator = $separator;
-
-        return $this;
-    }
-
-    public function getSeparator()
-    {
-        return $this->separator;
     }
 
     public function getType()

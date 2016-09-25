@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle;
 
+use APY\DataGridBundle\DependencyInjection\Compiler\GridPass;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use APY\DataGridBundle\DependencyInjection\Compiler\GridExtensionPass;
@@ -23,5 +24,6 @@ class APYDataGridBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new GridExtensionPass());
+        $container->addCompilerPass(new GridPass());
     }
 }

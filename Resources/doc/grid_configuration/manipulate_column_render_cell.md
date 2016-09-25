@@ -16,7 +16,7 @@ $grid->getColumn('my_column_id')->manipulateRenderCell($callback);
 ...
 ```
 
-## Method Column::manipulateRender parameters
+## Method Column::manipulateRenderCell parameters
 
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|
@@ -39,7 +39,7 @@ $grid->setSource($source);
 
 $grid->getColumn('my_column_id')->manipulateRenderCell(
     function($value, $row, $router) {
-        return $router->generateUrl('_my_route', array('param' => $row->getField('column4')));
+        return $router->generate('_my_route', array('param' => $row->getField('column4')));
     }
 );
 ...
@@ -58,7 +58,7 @@ $grid->setSource($source);
 $MyColumn = new TextColumn(array('id' => 'Another Column'));
 
 $MyColumn->manipulateRenderCell(function($value, $row, $router) {
-    return $router->generateUrl('_my_route', array('param' => $row->getField('column4')));}
+    return $router->generate('_my_route', array('param' => $row->getField('column4')));}
 );
 
 $grid->addColumn($MyColumn);

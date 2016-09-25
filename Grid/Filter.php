@@ -9,19 +9,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace APY\DataGridBundle\Grid;
 
 class Filter
 {
     protected $value;
     protected $operator;
-    protected $id;
+    protected $columnName;
 
-    public function __construct($operator, $value = null, $id = null)
+    public function __construct($operator, $value = null, $columnName = null)
     {
         $this->value = $value;
         $this->operator = $operator;
-        $this->id = $id;
+        $this->columnName = $columnName;
     }
 
     public function setOperator($operator)
@@ -48,20 +49,20 @@ class Filter
         return $this->value;
     }
 
-    public function hasId()
+    public function hasColumnName()
     {
-        return $this->id !== null;
+        return $this->columnName !== null;
     }
 
-    public function setId($id)
+    public function setColumnName($columnName)
     {
-        $this->id = $id;
+        $this->columnName = $columnName;
 
         return $this;
     }
 
-    public function getId()
+    public function getColumnName()
     {
-        return $this->id;
+        return $this->columnName;
     }
 }

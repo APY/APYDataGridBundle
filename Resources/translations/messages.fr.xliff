@@ -40,7 +40,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>Submit Action</source>
-                <target>Éxecuter</target>
+                <target>Exécuter</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>From:</source>
@@ -52,7 +52,7 @@
             </trans-unit>
             <trans-unit id="13">
                 <source>eq</source>
-                <target>Égale à</target>
+                <target>Égal à</target>
             </trans-unit>
             <trans-unit id="14">
                 <source>neq</source>
@@ -64,7 +64,7 @@
             </trans-unit>
             <trans-unit id="16">
                 <source>lte</source>
-                <target>Inférieur ou égale à</target>
+                <target>Inférieur ou égal à</target>
             </trans-unit>
             <trans-unit id="17">
                 <source>gt</source>
@@ -72,7 +72,7 @@
             </trans-unit>
             <trans-unit id="18">
                 <source>gte</source>
-                <target>Supérieur ou égale à</target>
+                <target>Supérieur ou égal à</target>
             </trans-unit>
             <trans-unit id="19">
                 <source>req</source>
@@ -92,7 +92,7 @@
             </trans-unit>
             <trans-unit id="23">
                 <source>llike</source>
-                <target>Fini par</target>
+                <target>Finit par</target>
             </trans-unit>
             <trans-unit id="24">
                 <source>btw</source>
@@ -112,7 +112,35 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>{0,1}%count% Résultat, |[2, Inf]%count% Résultats, </target>
+                <target>%count% Résultat, |%count% Résultats, </target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>Search</source>
+                <target>Rechercher</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>Reset</source>
+                <target>Réinitialiser</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>Order by</source>
+                <target>Trier par</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>slike</source>
+                <target>Contient</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>nslike</source>
+                <target>Ne contient pas</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>rslike</source>
+                <target>Commence par</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>lslike</source>
+                <target>Finit par</target>
             </trans-unit>
         </body>
     </file>

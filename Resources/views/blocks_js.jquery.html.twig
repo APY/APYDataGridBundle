@@ -4,15 +4,15 @@
 function {{ grid.hash }}_goto(url, data, type)
 {
     type = type || 'GET';
- 
+
     if (data) {
         data = data + '&{{ grid.hash }}_ajax=true';
     } else {
         data = '{{ grid.hash }}[ajax]=true';
     }
- 
+
     $('#{{ grid.hash }}').parent().fadeTo("slow", 0.5);
-    
+
     jQuery.ajax({
 			type: type,
 			dataType : 'html',
@@ -29,20 +29,32 @@ function {{ grid.hash }}_goto(url, data, type)
 			},
 			url : url
 		});
-   
+
     return false;
 }
 {% endblock grid_scripts_goto %}
 
 {% block grid_scripts_submit_form %}
-function {{ grid.hash }}_submitForm(event, form, force)
+function {{ grid.hash }}_submitForm(event, form)
 {
-    if (force || event.which == 13) {
+    if (event.type != 'keypress' || event.which == 13) {
         var data = '';
         $('.grid-filter-operator select, .grid-filter-input-query-from, .grid-filter-input-query-to, .grid-filter-select-query-from, .grid-filter-select-query-to', form).each(function () {
             if ($(this).is(':disabled') == false) {
-                var value = $(this).val() == null ? '' : $(this).val();
-                data += '&' + $(this).attr('name') + '=' + value;
+                var name = $(this).attr('name');
+                var value = $(this).val();
+                if (value != null) {
+                    if ($(this).attr('multiple') == 'multiple') {
+                        for(var i= 0; i < value.length; i++)
+                        {
+                            data += '&' + name + '=' + value[i];
+                        }
+                    } else {
+                        data += '&' + name + '=' + value;
+                    }
+                } else {
+                    data += '&' + name + '=';
+                }
             }
         });
 
@@ -56,7 +68,12 @@ function {{ grid.hash }}_submitForm(event, form, force)
 {% block grid_scripts_ajax %}
 function {{ grid.hash }}_initGridEvents(routeurl) {
     // Order and pagerfanta links
-    $('a.order, nav a, .pagination a', '#{{ grid.hash }}').click(function () {
+    $('.pagination li.disabled a', '#{{ grid.hash }}').click(function (e) {
+        return false;
+    });
+
+    // Order and pagerfanta links
+    $('a.order, nav a, a.searchOnClick, .pagination li:not(.disabled) a', '#{{ grid.hash }}').click(function () {
         {{ grid.hash }}_goto(this.href);
 
         return false;
@@ -80,7 +97,7 @@ function {{ grid.hash }}_initGridEvents(routeurl) {
 
     // Grid_search submit (load only one time)
     $('#{{ grid.hash }}_search').one('submit', function (event) {
-        {{ grid.hash }}_submitForm(event, this, true);
+        {{ grid.hash }}_submitForm(event, this);
 
         return false;
     });

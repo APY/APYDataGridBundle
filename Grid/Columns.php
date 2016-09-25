@@ -46,13 +46,18 @@ class Columns implements \IteratorAggregate, \Countable
     {
         $column->setSecurityContext($this->securityContext);
 
-        if ($position > 0) {
-            $position--;
+        if ($position == 0) {
+            $this->columns[] = $column;
+        } else {
+            if ($position > 0) {
+                $position--;
+            } else {
+                $position = max(0, count($this->columns) + $position);
+            }
+
             $head = array_slice($this->columns, 0, $position);
             $tail = array_slice($this->columns, $position);
             $this->columns = array_merge($head, array($column), $tail);
-        } else {
-            $this->columns[] = $column;
         }
 
         return $this;
@@ -124,13 +129,14 @@ class Columns implements \IteratorAggregate, \Countable
     /**
      * Sets order of Columns passing an array of column ids
      * If the list of ids is uncomplete, the remaining columns will be
-     * placed after
+     * placed after if keepOtherColumns is true 
      *
      * @param array $columnIds
+     * @param boolean $keepOtherColumns
      *
      * @return self
      */
-    public function setColumnsOrder(array $columnIds)
+    public function setColumnsOrder(array $columnIds, $keepOtherColumns = true)
     {
         $reorderedColumns = array();
         $columnsIndexedByIds = array();
@@ -146,7 +152,11 @@ class Columns implements \IteratorAggregate, \Countable
             }
         }
 
-        $this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
+		if ($keepOtherColumns) {
+			$this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
+		} else {
+			$this->columns = $reorderedColumns;
+		}
         
         return $this;
     }

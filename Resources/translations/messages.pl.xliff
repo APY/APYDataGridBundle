@@ -2,6 +2,71 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="13">
+                <source>eq</source>
+                <target>Równe</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>neq</source>
+                <target>Różne niż</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>lt</source>
+                <target>Mniejsze niż</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>lte</source>
+                <target>Mniejsze lub równe</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>gt</source>
+                <target>Większe niż</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>gte</source>
+                <target>Większe lub równe</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>req</source>
+                <target>Wyrażenie regularne</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>like</source>
+                <target>Stała</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>nlike</source>
+                <target>Zmienna</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>rlike</source>
+                <target>Zaczynające się</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>llike</source>
+                <target>Kończące się</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>btw</source>
+                <target>Pomiędzy bez</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>btwe</source>
+                <target>Pomiędzy z</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>isNull</source>
+                <target>Puste</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>isNotNull</source>
+                <target>Niepuste</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>%count% Results, </source>
+                <target>{0} %count% Wyników|{1} %count% Wynik|]1,Inf[ %count% Wyników, </target>
+            </trans-unit>
+
             <trans-unit id="1">
                 <source>Page</source>
                 <target>Strona</target>
