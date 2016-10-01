@@ -2,7 +2,7 @@
     "name": "apy/datagrid-bundle",
     "description": "Symfony Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
-    "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
+    "homepage": "https://github.com/apy/APYDataGridBundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
