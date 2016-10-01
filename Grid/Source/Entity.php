@@ -13,6 +13,7 @@
 namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Column\JoinColumn;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Row;
 use Doctrine\ORM\NoResultException;
@@ -350,7 +351,7 @@ class Entity extends Source
             }
 
             if ($column->isSorted()) {
-                if ($column->getType() === 'join') {
+                if ($column instanceof JoinColumn) {
                     $this->query->resetDQLPart('orderBy');
                     foreach($column->getJoinColumns() as $columnName) {
                         $this->query->addOrderBy($this->getFieldName($columnsById[$columnName]), $column->getOrder());
@@ -373,7 +374,7 @@ class Entity extends Source
                 foreach ($filters as $filter) {
                     $operator = $this->normalizeOperator($filter->getOperator());
 
-                    $columnForFilter = ($column->getType() !== 'join') ? $column : $columnsById[$filter->getColumnName()];
+                    $columnForFilter = (!$column instanceof JoinColumn) ? $column : $columnsById[$filter->getColumnName()];
 
                     $fieldName = $this->getFieldName($columnForFilter, false);
                     $bindIndexPlaceholder = "?$bindIndex";

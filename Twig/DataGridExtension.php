@@ -19,10 +19,10 @@ use Symfony\Component\Routing\RouterInterface;
 
 /**
  * DataGrid Twig Extension
- * 
+ *
  * (c) Abhoryo <abhoryo@free.fr>
  * (c) Stanislav Turza
- * 
+ *
  * Updated by Nicolas Claverie <info@artscore-studio.fr>
  *
  */
