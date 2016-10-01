@@ -795,7 +795,7 @@ class Entity extends Source
         }
 
         foreach ($join[$this->getTableAlias()] as $join) {
-            if ($join->getJoinType() === Join::INNER_JOIN) {
+            if ($join->getJoinType() === Join::INNER_JOIN || $join->getJoinType() === Join::LEFT_JOIN) {
                 return true;
             }
         }
