@@ -24,7 +24,7 @@ class RowAction implements RowActionInterface
     protected $routeParametersMapping = array();
     protected $attributes = array();
     protected $role;
-    protected $callback;
+    protected $callbacks;
     protected $enabled = true;
 
     /**
@@ -331,12 +331,25 @@ class RowAction implements RowActionInterface
     /**
      * Set render callback
      *
+     * @deprecated This is deprecated and will be removed in 2.4. Use addManipulateRender instead.
+     *
      * @param  $callback
      * @return self
      */
     public function manipulateRender($callback)
     {
-        $this->callback = $callback;
+        return $this->addManipulateRender($callback);
+    }
+
+    /**
+     * Add a callback to render callback stack
+     *
+     * @param $callback
+     * @return self
+     */
+    public function addManipulateRender($callback)
+    {
+        $this->callbacks[] = $callback;
 
         return $this;
     }
@@ -349,8 +362,12 @@ class RowAction implements RowActionInterface
      */
     public function render($row)
     {
-        if (is_callable($this->callback)) {
-            return call_user_func($this->callback, $this, $row);
+        foreach ($this->callbacks as $callback) {
+            if (is_callable($callback)) {
+                if (null === call_user_func($callback, $this, $row)) {
+                    return null;
+                }
+            }
         }
 
         return $this;
