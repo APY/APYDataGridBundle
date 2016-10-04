@@ -24,7 +24,7 @@ class RowAction implements RowActionInterface
     protected $routeParametersMapping = array();
     protected $attributes = array();
     protected $role;
-    protected $callbacks;
+    protected $callbacks = array();
     protected $enabled = true;
 
     /**
