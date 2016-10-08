@@ -495,6 +495,7 @@ class Document extends Source
                     $column->setSelectFrom('source');
                     $this->populateSelectFilters($columns, true);
                 } else {
+                    $values = $this->prepareColumnValues($column, $values);
                     $column->setValues($values);
                 }
             }
