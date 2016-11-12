@@ -367,7 +367,11 @@ class Entity extends Source
 
                 $isDisjunction = $column->getDataJunction() === Column::DATA_DISJUNCTION;
 
-                $hasHavingClause = $column->hasDQLFunction() || $column->getIsAggregate();
+                $dqlMatches = [];
+                $hasHavingClause = $column->hasDQLFunction($dqlMatches) || $column->getIsAggregate();
+                if(isset($dqlMatches['function']) && $dqlMatches['function'] == 'translation_agg'){
+                    $hasHavingClause = false;
+                }
 
                 $sub = $isDisjunction ? $this->query->expr()->orx() : ($hasHavingClause ? $this->query->expr()->andx() : $where);
 
@@ -378,11 +382,15 @@ class Entity extends Source
 
                     $fieldName = $this->getFieldName($columnForFilter, false);
                     $bindIndexPlaceholder = "?$bindIndex";
-                    if (in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))) {
-                        $fieldName = "LOWER($fieldName)";
+                    if( in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))){
+                        if(isset($dqlMatches['function']) && $dqlMatches['function'] == 'translation_agg'){
+                            $fieldName = "LOWER(_translations.".$dqlMatches['field'].")";
+                        }else{
+                            $fieldName = "LOWER($fieldName)";
+                        }
                         $bindIndexPlaceholder = "LOWER($bindIndexPlaceholder)";
                     }
-                    
+
                     $q = $this->query->expr()->$operator($fieldName, $bindIndexPlaceholder);
 
                     if ($filter->getOperator() == Column::OPERATOR_NLIKE || $filter->getOperator() == Column::OPERATOR_NSLIKE) {
