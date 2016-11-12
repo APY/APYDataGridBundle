@@ -149,6 +149,41 @@ class Entity extends Source
      * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @return string
      */
+    protected function getTranslationFieldNameWithParents($column)
+    {
+        $name = $column->getField();
+
+        if ($column->getIsManualField()) {
+            return $column->getField();
+        }
+
+        if (strpos($name, '.') !== false) {
+            $previousParent = '';
+
+            $elements = explode('.', $name);
+            while ($element = array_shift($elements)) {
+                if (count($elements) > 0) {
+                    $previousParent .= '_' . $element;
+                }
+            }
+        } elseif (strpos($name, ':') !== false) {
+            $previousParent = $this->getTableAlias();
+        } else {
+            return $this->getTableAlias().'.'.$name;
+        }
+
+        $matches = array();
+        if ($column->hasDQLFunction($matches)) {
+            return $previousParent.'.'.$matches['field'];
+        }
+
+        return $column->getField();
+    }
+
+    /**
+     * @param \APY\DataGridBundle\Grid\Column\Column $column
+     * @return string
+     */
     protected function getFieldName($column, $withAlias = false)
     {
         $name = $column->getField();
@@ -384,7 +419,8 @@ class Entity extends Source
                     $bindIndexPlaceholder = "?$bindIndex";
                     if( in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))){
                         if(isset($dqlMatches['function']) && $dqlMatches['function'] == 'translation_agg'){
-                            $fieldName = "LOWER(_translations.".$dqlMatches['field'].")";
+                            $translationFieldName = $this->getTranslationFieldNameWithParents($columnForFilter);
+                            $fieldName = "LOWER(".$translationFieldName.")";
                         }else{
                             $fieldName = "LOWER($fieldName)";
                         }
