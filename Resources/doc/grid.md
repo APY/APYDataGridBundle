@@ -109,7 +109,7 @@ class ProductListType extends GridType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefault([
+        $resolver->setDefaults([
             'source'       => new Entity('MyProjectBundle:Product'),
             'persistence'  => true,
             'route'        => 'product_list',
