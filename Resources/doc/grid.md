@@ -52,7 +52,7 @@ class ProductController extends Controller
 
         // Creates columns
         $grid = $gridBuilder
-            ->add('id', 'numeric', [
+            ->add('id', 'number', [
                 'title'   => '#',
                 'primary' => 'true',
             ])
@@ -94,7 +94,7 @@ class ProductListType extends GridType
         parent::buildGrid($builder, $options);
 
         $builder
-            ->add('id', 'numeric', [
+            ->add('id', 'number', [
                 'title'   => '#',
                 'primary' => 'true',
             ])
