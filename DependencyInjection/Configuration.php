@@ -14,6 +14,7 @@ class Configuration implements ConfigurationInterface
 {
     /**
      * {@inheritDoc}
+     * @throws \RuntimeException
      */
     public function getConfigTreeBuilder()
     {
@@ -47,6 +48,27 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(array('prev_message' => '«', 'next_message' => '»'))
                             ->useAttributeAsKey('options')
                             ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('grids')
+                    ->defaultValue(array())
+                    ->addDefaultsIfNotSet()
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('entity')->end()
+                            ->scalarNode('id')->end()
+                            ->scalarNode('limits')->end()
+                            ->scalarNode('source')->end()
+                            ->arrayNode('columns')
+                                ->prototype('array')
+                                    children()
+                                        ->scalarNode('visible')->end()
+                                        ->scalarNode('source')->end()
+                                        // ... other
+                                    ->end()
+                                ->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()
