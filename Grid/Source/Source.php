@@ -134,9 +134,9 @@ abstract class Source implements DriverInterface
      *
      * @abstract
      * @param array $ids
-     * @return void
+     * @param boolean $actionAllKeys
      */
-    abstract public function delete(array $ids);
+    abstract public function delete(array $ids, $actionAllKeys);
 
     /**
      * Use data instead of fetching the source

@@ -612,9 +612,9 @@ class Grid implements GridInterface
                     $this->page = 0;
                     $this->limit = 0;
                 }
-                
+
                 $this->prepare();
-                
+
                 if($actionAllKeys == true){
                     foreach($this->rows as $row){
                         $actionKeys[]=$row->getPrimaryFieldValue();
@@ -2075,9 +2075,10 @@ class Grid implements GridInterface
     /**
      * Default delete action
      *
-     * @param $ids
+     * @param array $ids
+     * @param boolean $actionAllKeys
      */
-    public function deleteAction($ids, $actionAllKeys)
+    public function deleteAction(array $ids, $actionAllKeys)
     {
         $this->source->delete($ids, $actionAllKeys);
     }

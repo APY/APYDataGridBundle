@@ -382,7 +382,7 @@ class Entity extends Source
                         $fieldName = "LOWER($fieldName)";
                         $bindIndexPlaceholder = "LOWER($bindIndexPlaceholder)";
                     }
-                    
+
                     $q = $this->query->expr()->$operator($fieldName, $bindIndexPlaceholder);
 
                     if ($filter->getOperator() == Column::OPERATOR_NLIKE || $filter->getOperator() == Column::OPERATOR_NSLIKE) {
@@ -712,21 +712,25 @@ class Entity extends Source
         return $this;
     }
 
-    public function delete(array $ids)
+    public function delete(array $ids, $actionAllKeys)
     {
-        $repository = $this->getRepository();
+        if (true === $actionAllKeys) {
+            $this->query->delete($this->entityName, $this->tableAlias)->getQuery()->execute();
+        } else {
+            $repository = $this->getRepository();
 
-        foreach ($ids as $id) {
-            $object = $repository->find($id);
+            foreach ($ids as $id) {
+                $object = $repository->find($id);
 
-            if (!$object) {
-                throw new \Exception(sprintf('No %s found for id %s', $this->entityName, $id));
+                if (!$object) {
+                    throw new \Exception(sprintf('No %s found for id %s', $this->entityName, $id));
+                }
+
+                $this->manager->remove($object);
             }
 
-            $this->manager->remove($object);
+            $this->manager->flush();
         }
-
-        $this->manager->flush();
     }
 
     public function getRepository()
