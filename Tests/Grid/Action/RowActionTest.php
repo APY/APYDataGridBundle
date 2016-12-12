@@ -41,7 +41,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
     {
         $this->rowAction->addManipulateRender(function ($action, $row) {
             if ($row->getField('foo') == 0) {
-                return null;
+                return;
             }
 
             return $action;
@@ -49,13 +49,12 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
 
         $this->rowAction->addManipulateRender(function ($action, $row) {
             if ($row->getField('bar') == 0) {
-                return null;
+                return;
             }
 
             return $action;
         });
     }
-
 
     /**
      * {@inheritdoc}

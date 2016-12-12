@@ -15,35 +15,35 @@ namespace APY\DataGridBundle\Grid\Action;
 interface MassActionInterface
 {
     /**
-     * get action title
+     * get action title.
      *
      * @return string
      */
     public function getTitle();
 
     /**
-     * get action callback
+     * get action callback.
      *
      * @return string
      */
     public function getCallback();
 
     /**
-     * get action confirm
+     * get action confirm.
      *
-     * @return boolean
+     * @return bool
      */
     public function getConfirm();
 
     /**
-     * get action confirmMessage
+     * get action confirmMessage.
      *
-     * @return boolean
+     * @return bool
      */
     public function getConfirmMessage();
 
     /**
-     * get additional parameters
+     * get additional parameters.
      *
      * @return array
      */

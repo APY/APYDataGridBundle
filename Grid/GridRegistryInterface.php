@@ -1,4 +1,5 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
@@ -6,7 +7,6 @@ use APY\DataGridBundle\Grid\Column\Column;
 /**
  * The central registry of the Grid component.
  *
- * @package APY\DataGridBundle\Grid
  * @author  Quentin Ferrer
  */
 interface GridRegistryInterface

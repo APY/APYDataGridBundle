@@ -20,24 +20,23 @@ class ArrayColumn extends Column
     {
         parent::__initialize($params);
 
-        $this->setOperators($this->getParam('operators', array(
+        $this->setOperators($this->getParam('operators', [
             self::OPERATOR_LIKE,
             self::OPERATOR_NLIKE,
             self::OPERATOR_EQ,
             self::OPERATOR_NEQ,
             self::OPERATOR_ISNULL,
             self::OPERATOR_ISNOTNULL,
-        )));
-        $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
+        ]));
     }
 
     public function getFilters($source)
     {
         $parentFilters = parent::getFilters($source);
 
-        $filters = array();
+        $filters = [];
         foreach ($parentFilters as $filter) {
-            if ($source === "document") {
+            if ($source === 'document') {
                 $filters[] = $filter;
             } else {
                 switch ($filter->getOperator()) {
@@ -83,7 +82,7 @@ class ArrayColumn extends Column
             return call_user_func($this->callback, $values, $row, $router);
         }
 
-        $return = array();
+        $return = [];
         if (is_array($values) || $values instanceof \Traversable) {
             foreach ($values as $key => $value) {
                 if (!is_array($value) && isset($this->values[(string) $value])) {
