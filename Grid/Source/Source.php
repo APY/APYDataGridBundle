@@ -75,6 +75,14 @@ abstract class Source implements DriverInterface
     }
 
     /**
+     * @return null|\Closure
+     */
+    public function getRowCallback()
+    {
+        return $this->prepareRowCallback;
+    }
+
+    /**
      * Find data for current page.
      *
      * @abstract
@@ -82,6 +90,7 @@ abstract class Source implements DriverInterface
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
      * @param int                                      $page             Page Number
      * @param int                                      $limit            Rows Per Page
+     * @param int                                      $maxResults       Max results per page
      * @param int                                      $gridDataJunction Grid data junction
      *
      * @return \APY\DataGridBundle\Grid\Rows
