@@ -65,7 +65,7 @@ class AddColumnTest extends \PHPUnit_Framework_TestCase
 
     protected function getBaseColumns()
     {
-        $context = $this->getMock('Symfony\Component\Security\Core\SecurityContextInterface');
+        $context = $this->getMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
         $columns = new Columns($context);
         $columns->addColumn($this->col1);
         $columns->addColumn($this->col2);

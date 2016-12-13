@@ -164,8 +164,8 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
 
                                     return $request;
                                     break;
-                                case 'security.context':
-                                    return $self->getMock('Symfony\Component\Security\Core\SecurityContextInterface');
+                                case 'security.authorization_checker':
+                                    return $self->getMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
                                     break;
                             }
                         }));
