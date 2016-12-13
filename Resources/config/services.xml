@@ -20,7 +20,7 @@
             </call>
         </service>
 
-        <service id="grid" class="%grid.class%" scope="prototype">
+        <service id="grid" class="%grid.class%" shared="false">
             <argument type="service" id="service_container" />
             <call method="setLimits">
                 <argument>%apy_data_grid.limits%</argument>
@@ -50,12 +50,18 @@
             <argument type="service" id="annotation_reader" />
         </service>
 
-        <service id="grid.mapping.manager" class="APY\DataGridBundle\Grid\Mapping\Metadata\Manager" scope="prototype">
+        <service id="grid.mapping.manager" class="APY\DataGridBundle\Grid\Mapping\Metadata\Manager" shared="false">
             <argument type="service" id="form.factory"/>
             <call method="addDriver">
                 <argument type="service" id="grid.metadata.driver.annotation" />
                 <argument>1</argument>
             </call>
+        </service>
+
+        <service id="grid.subscriber.init_template_finalize_grid" class="APY\DataGridBundle\Subscriber\InitTemplateFinalizeGridSubscriber">
+            <argument type="service" id="templating" />
+            <argument type="service" id="router" />
+            <tag name="kernel.event_subscriber" />
         </service>
     </services>
 </container>

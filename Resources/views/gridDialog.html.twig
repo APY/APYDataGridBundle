@@ -1,0 +1,62 @@
+{% extends 'APYDataGridBundle::grid.html.twig' %}
+
+{# ------------------------------------------------------ grid ------------------------------------------------------ #}
+{% block grid %}
+    <div class="grid">
+        <form id="{{ grid.hash }}" action="{{ grid.routeUrl }}" method="post" class="noClientValidation grid">
+            <div class="grid_header row">
+              <div class="col-md-12">
+                {% if grid.isPagerSectionVisible %}
+                  {{ grid_pager(grid) }}
+                {% elseif grid.totalCount > 0 %}
+                  {{ grid.totalCount ~ ' risultati' }}
+                {% endif %}
+              </div>
+            </div>
+            <div class="grid_body">
+                <table class="table table-hover">
+                    {% if grid.isTitleSectionVisible %}
+                        {{ grid_titles(grid) }}
+                    {% endif %}
+                    {% if grid.isFilterSectionVisible %}
+                        {{ grid_filters(grid) }}
+                    {% endif %}
+                    {% if grid.totalCount > 0 or grid.isFiltered or grid.noDataMessage is same as(false) %}
+                        {{ grid_rows(grid) }}
+                        {% if grid.isTitleSectionVisible %}
+                            {{ grid_titles(grid) }}
+                        {% endif %}
+                    {% else %}
+                        {{ grid_no_data(grid) }}
+                    {% endif %}
+                </table>
+            </div>
+            <div class="grid_footer">
+                {% if grid.isPagerSectionVisible %}
+                    {{ grid_pager(grid) }}
+                {% endif %}
+            </div>
+            {% if withjs %}
+                {{ grid_scripts(grid) }}
+            {% endif %}
+        </form>
+    </div>
+{% endblock grid %}
+
+{# --------------------------------------------------- grid_actions ------------------------------------------------- #}
+{% block grid_actions %}
+
+{% endblock grid_actions %}
+
+{# override per colonna actions #}
+{% block grid_column_actions_cell %}
+    {% set actions = column.getActionsToRender(row) %}
+    <ul class="grid-row-actions list-unstyled">
+        {% if 'pinned' in column.class and 'hideActions' not in column.class %}
+            <li><a href="#" class="btn btn-default btn-sm btn-info seleziona_ajax prevent-ajax-action-trigger" data-entity-property="{{ attribute(row.getentity, property) }}" data-entity-id="{{ attribute(row.getentity, idRendered) }}"><i class="fa fa-hand-o-left"></i></a></li>
+        {% endif %}
+        {% for action in actions %}
+            <li><a href="{{ url(action.route, column.routeParameters(row, action), false) }}" target="{{ action.target }}"{% if action.confirm %} onclick="return confirm('{{ action.confirmMessage }}')"{% endif %}{% for name, value in action.attributes %} {{ name }}="{{ value }}" {% endfor %}>{% autoescape false %}{{ action.title|trans }}{% endautoescape %}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock grid_column_actions_cell %}

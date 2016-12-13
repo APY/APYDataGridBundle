@@ -16,11 +16,15 @@ namespace APY\DataGridBundle\Grid;
 use APY\DataGridBundle\Grid\Action\MassActionInterface;
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
 use APY\DataGridBundle\Grid\Column\ActionsColumn;
+use APY\DataGridBundle\Grid\Column\BooleanColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
+use APY\DataGridBundle\Grid\Column\NumberColumn;
+use APY\DataGridBundle\Grid\Exception\NoActionSelectedException;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
+use Madisoft\AppBundle\Listener\AjaxDialogRedirectListener;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,6 +35,7 @@ class Grid implements GridInterface
 {
     const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
     const REQUEST_QUERY_MASS_ACTION = '__action_id';
+    const REQUEST_QUERY_MASS_ACTION_SUBMIT = '__action_id_submit';
     const REQUEST_QUERY_EXPORT = '__export_id';
     const REQUEST_QUERY_TWEAK = '__tweak_id';
     const REQUEST_QUERY_PAGE = '_page';
@@ -38,6 +43,10 @@ class Grid implements GridInterface
     const REQUEST_QUERY_ORDER = '_order';
     const REQUEST_QUERY_TEMPLATE = '_template';
     const REQUEST_QUERY_RESET = '_reset';
+
+    /** CUSTOM COLUMNS HANDLED */
+    const BOOLEAN_CUSTOM_COLUMN_TYPE = 'boolean';
+    const NUMBER_CUSTOM_COLUMN_TYPE = 'number';
 
     /**
      * @var \Symfony\Component\DependencyInjection\Container
@@ -277,6 +286,13 @@ class Grid implements GridInterface
      */
     protected $sessionFilters;
 
+    /**
+     * Has pinned column.
+     *
+     * @var bool
+     */
+    protected $pinned;
+
     // Lazy parameters
     protected $lazyAddColumn = [];
     protected $lazyHiddenColumns = [];
@@ -307,7 +323,7 @@ class Grid implements GridInterface
         $this->config = $config;
 
         $this->router = $container->get('router');
-        $this->request = $container->get('request');
+        $this->request = $container->get('request_stack')->getCurrentRequest();
         $this->session = $this->request->getSession();
         $this->authorizationChecker = $container->get('security.authorization_checker');
 
@@ -499,7 +515,15 @@ class Grid implements GridInterface
             $this->redirect = true;
         }
 
-        if ($this->redirect === null || ($this->request->isXmlHttpRequest() && !$this->isReadyForExport)) {
+        /**
+         * If is an ajax request invoked by a mass action, I don't need to process filters/session data and redirect
+         * I need this as ajax/dialog events could lead to this operation even by mass action that in a default
+         * fashion would never hit this block of code ($this->request->isXmlHttpRequest would be always false).
+         */
+        if ($this->redirect === null
+            || ($this->request->isXmlHttpRequest() && !$this->isReadyForExport
+            && !$this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION))
+        ) {
             if ($this->newSession) {
                 $this->setDefaultSessionData();
             }
@@ -597,9 +621,16 @@ class Grid implements GridInterface
      *
      * @throws \RuntimeException
      * @throws \OutOfBoundsException
+     * @throws NoActionSelectedException
      */
     protected function processMassActions($actionId)
     {
+        if ($this->request->get('hidden_' . self::REQUEST_QUERY_MASS_ACTION_SUBMIT) != null
+            && $actionId == -1
+        ) {
+            throw new NoActionSelectedException();
+        }
+
         if ($actionId > -1 && '' !== $actionId) {
             if (array_key_exists($actionId, $this->massActions)) {
                 $action = $this->massActions[$actionId];
@@ -632,7 +663,7 @@ class Grid implements GridInterface
                         $action->getParameters()
                     );
 
-                    $subRequest = $this->container->get('request')->duplicate([], null, $path);
+                    $subRequest = $this->container->get('request_stack')->getCurrentRequest()->duplicate([], null, $path);
 
                     $this->massActionResponse = $this->container->get('http_kernel')->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
                 } else {
@@ -1131,7 +1162,7 @@ class Grid implements GridInterface
 
     protected function createHash()
     {
-        $this->hash = 'grid_' . (empty($this->id) ? md5($this->request->get('_controller') . $this->columns->getHash() . $this->source->getHash()) : $this->getId());
+        $this->hash = 'grid_' . (empty($this->id) ? md5($this->request->get('_controller') . $this->columns->getHash() . $this->source->getHash()) : str_ireplace('-', '_', $this->getId()));
     }
 
     public function getHash()
@@ -1152,6 +1183,286 @@ class Grid implements GridInterface
         $this->lazyAddColumn[] = ['column' => $column, 'position' => $position];
 
         return $this;
+    }
+
+    /**
+     * Create a custom column with values taken from a $callbackMethod result
+     * and add custom filter (if column is filterable) based on $callbackMethod result.
+     *
+     * @param string    $columnType
+     * @param array     $columnAttributes
+     * @param int       $columnPosition
+     * @param string    $callbackMethod
+     * @param array     $callbackMethodParams
+     * @param bool|true $filterable
+     * @param null      $entityRetrievalCallback
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function addCustomColumn(
+        $columnType,
+        $columnAttributes,
+        $columnPosition,
+        $callbackMethod,
+        $callbackMethodParams = [],
+        $filterable = true,
+        $entityRetrievalCallback = null
+    ) {
+        $handledCustomColumnsTypes = [
+            self::BOOLEAN_CUSTOM_COLUMN_TYPE,
+            self::NUMBER_CUSTOM_COLUMN_TYPE,
+        ];
+
+        if (false === in_array($columnType, $handledCustomColumnsTypes)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'addCustomColumnToGrid method accepts following column types: %s. Type %s given',
+                    implode(',', $handledCustomColumnsTypes),
+                    $columnType
+                )
+            );
+        }
+
+        if (!isset($columnAttributes['id'])) {
+            throw new \InvalidArgumentException('addCustomColumnToGrid method need an attribute "id" in columnAttributes array');
+        }
+        $columnId = $columnAttributes['id'];
+
+        if (false == $filterable) {
+            $columnAttributes = array_merge($columnAttributes, ['filterable' => false]);
+        }
+
+        switch ($columnType) {
+            /* The only chance I have to filter a custom column, especially if this has some "logic", is to
+             * add a custom filter that with $callbackMethod result
+             */
+            case self::BOOLEAN_CUSTOM_COLUMN_TYPE:
+                $column = new BooleanColumn($columnAttributes);
+                if ($filterable) {
+                    $this->createBooleanFilterForCustomColumn($columnId, $callbackMethod, $callbackMethodParams, $entityRetrievalCallback);
+                }
+                break;
+            case self::NUMBER_CUSTOM_COLUMN_TYPE:
+                $column = new NumberColumn($columnAttributes);
+                if ($filterable) {
+                    $this->createNumericFilterForCustomColumn($columnId, $callbackMethod, $callbackMethodParams, $entityRetrievalCallback);
+                }
+                break;
+            default:
+                //I should never enter there as I check for handled custom columns
+                return;
+        }
+
+        $this->addColumn($column, $columnPosition);
+        /* The only chance I have to insert a value into custom column, especially if this has some "logic", is to
+         * manipulate its content with $callbackMethod result
+         */
+        $this->manipulateCustomColumnContent($columnId, $callbackMethod, $callbackMethodParams, $entityRetrievalCallback);
+    }
+
+    /**
+     * Set row->column (cell) value based on $callbackMethod result.
+     *
+     * @param int      $columnId
+     * @param string   $callbackMethod
+     * @param array    $callbackMethodParams
+     * @param \Closure $entityRetrievalCallback
+     */
+    protected function manipulateCustomColumnContent(
+        $columnId,
+        $callbackMethod,
+        $callbackMethodParams,
+        $entityRetrievalCallback
+    ) {
+        /*
+         * Not all entities bounded to $row are representative for grid logic we are showing.
+         * Cell content could be manipulated by a more complex logic than "getEntity" (i.e.: I have an entity Foo bounded
+         * to current column, but I want to rely on $foo->getBar()->getFooBar()->count() return value to show correct info.
+         * So, if $entityRetrievalCallback has a value, we need to invoke the closure to retrieve entity and, then, apply
+         * the $callbackMethod to retrieve correct value (count() in our example) for that cell.
+         */
+        $this->getColumn($columnId)->manipulateRenderCell(
+            function ($value, $row, $router) use ($entityRetrievalCallback, $callbackMethod, $callbackMethodParams) {
+                /* @var Row $row */
+                if ($entityRetrievalCallback) {
+                    $entity = $entityRetrievalCallback($value, $row, $router);
+                } else {
+                    $entity = $row->getEntity();
+                }
+
+                return call_user_func_array([$entity, $callbackMethod], $callbackMethodParams);
+            }
+        );
+    }
+
+    /**
+     * Create the filtering function for custom boolean columns. Row is included/excluded by $callbackMethod result.
+     *
+     * @param int      $columnId
+     * @param string   $callbackMethod
+     * @param array    $callbackMethodParams
+     * @param \Closure $entityRetrievalCallback
+     */
+    protected function createBooleanFilterForCustomColumn($columnId, $callbackMethod, $callbackMethodParams, $entityRetrievalCallback)
+    {
+        /*
+         * As manipulateRow accept a callback and store it inside a protected member of Source class and as we're doing filtering
+         * operation onto a row (so, single row, multiple custom columns available for filtering operations), we simply cannot store
+         * more than one callBack inside a Source (row) [we could store an array of that calls but we wuold be forced to change
+         * all bundle implementation].
+         * The idea behind this is to retrive (if stored before) the Closure callback stored before this and, if this is stored,
+         * store a new Closure callback composed by this and the previous one.
+         * We need to check/call previous callback as first operations because:
+         *  - if no callback is stored, we can go on with this filter logic
+         *  - if a callback is stored, we need to check its return value: if row isn't returned back, it's useless to keep going
+         *    with filtering operations.
+         */
+        $source = $this->getSource();
+        $previousCallback = $source->getRowCallback();
+
+        $this->getSource()->manipulateRow(
+            function (Row $row) use ($columnId, $callbackMethod, $callbackMethodParams, $previousCallback, $entityRetrievalCallback) {
+
+                if (null !== $previousCallback) {
+                    $previousCallbackResult = $previousCallback($row);
+                    if (!$previousCallbackResult) {
+                        return;
+                    }
+                }
+
+                $filter = $this->getFilter($columnId);
+
+                if (null === $filter) {
+                    return $row;
+                }
+
+                $filterValue = $filter->getValue()[0];
+
+                if ($entityRetrievalCallback) {
+                    $entity = $entityRetrievalCallback(null, $row, null);
+                } else {
+                    $entity = $row->getEntity();
+                }
+
+                if (!method_exists($entity, $callbackMethod)) {
+                    return $row;
+                }
+                $methodValue = call_user_func_array([$entity, $callbackMethod], $callbackMethodParams);
+
+                if ($filterValue && !$methodValue) {
+                    return;
+                }
+                if (!$filterValue && $methodValue) {
+                    return;
+                }
+
+                return $row;
+            });
+    }
+
+    /**
+     * Create the filtering function for custom numeric columns. Row is included/excluded by $callbackMethod result.
+     *
+     * @param int      $columnId
+     * @param string   $callbackMethod
+     * @param string   $callbackMethodParams
+     * @param \Closure $entityRetrievalCallback
+     */
+    protected function createNumericFilterForCustomColumn($columnId, $callbackMethod, $callbackMethodParams, $entityRetrievalCallback)
+    {
+        /*
+         * As manipulateRow accept a callback and store it inside a protected member of Source class and as we're doing filtering
+         * operation onto a row (so, single row, multiple custom columns available for filtering operations), we simply cannot store
+         * more than one callBack inside a Source (row) [we could store an array of that calls but we wuold be forced to change
+         * all bundle implementation].
+         * The idea behind this is to retrive (if stored before) the Closure callback stored before this and, if this is stored,
+         * store a new Closure callback composed by this and the previous one.
+         * We need to check/call previous callback as first operations because:
+         *  - if no callback is stored, we can go on with this filter logic
+         *  - if a callback is stored, we need to check its return value: if row isn't returned back, it's useless to keep going
+         *    with filtering operations.
+         */
+        $source = $this->getSource();
+        $previousCallback = $source->getRowCallback();
+
+        $this->getSource()->manipulateRow(
+            function (Row $row) use ($columnId, $callbackMethod, $callbackMethodParams, $previousCallback, $entityRetrievalCallback) {
+
+                if (null !== $previousCallback) {
+                    $previousCallbackResult = $previousCallback($row);
+                    if (!$previousCallbackResult) {
+                        return;
+                    }
+                }
+
+                $filter = $this->getFilter($columnId);
+
+                if (null === $filter) {
+                    return $row;
+                }
+
+                if ($entityRetrievalCallback) {
+                    $entity = $entityRetrievalCallback(null, $row, null);
+                } else {
+                    $entity = $row->getEntity();
+                }
+
+                $methodValue = call_user_func_array([$entity, $callbackMethod], $callbackMethodParams);
+                $filterValue = $filter->getValue();
+
+                $operator = $filter->getOperator();
+                switch ($operator) {
+                    case Column::OPERATOR_EQ:
+                        if ($methodValue != $filterValue) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_NEQ:
+                        if ($methodValue == $filterValue) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_LT:
+                        if ($methodValue >= $filterValue) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_LTE:
+                        if ($methodValue > $filterValue) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_GT:
+                        if ($methodValue <= $filterValue) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_GTE:
+                        if ($methodValue < $filterValue) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_BTW:
+                        $lowerBound = $filterValue['from'];
+                        $upperBound = $filterValue['to'];
+                        if ($methodValue < $lowerBound || $methodValue > $upperBound) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_BTWE:
+                        $lowerBound = $filterValue['from'];
+                        $upperBound = $filterValue['to'];
+                        if ($methodValue <= $lowerBound || $methodValue >= $upperBound) {
+                            return;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                return $row;
+            }
+        );
     }
 
     /**
@@ -1876,6 +2187,30 @@ class Grid implements GridInterface
     }
 
     /**
+     * Return true if pinned property has marked to true.
+     *
+     * @return bool return true if table has columns pinned
+     */
+    public function isPinnable()
+    {
+        return $this->pinned === true;
+    }
+
+    /**
+     * Set the pinned table.
+     *
+     * @param bool $pin
+     *
+     * @return self
+     */
+    public function setPinned($pin)
+    {
+        $this->pinned = $pin;
+
+        return $this;
+    }
+
+    /**
      * Hides Filters Panel.
      *
      * @return self
@@ -2117,7 +2452,24 @@ class Grid implements GridInterface
         }
 
         if ($isReadyForRedirect) {
-            return new RedirectResponse($this->getRouteUrl());
+            /*
+             * Redirect should be handled properly after ajax/dialog feature we introduced.
+             * In this case I need to append ajaxAction and followRedirect=0 if ajaxAction is in query string
+             * as we're doing operation inside the dialog box and we want to stay inside the dialog
+             */
+            if ($ajaxAction = $this->request->get('ajaxAction')) {
+                $redirectUrl = AjaxDialogRedirectListener::appendParametersToQueryString(
+                    $this->getRouteUrl(),
+                    [
+                        ['name' => 'ajaxAction', 'value' => $ajaxAction],
+                        ['name' => 'followRedirect', 'value' => 0],
+                    ]
+                );
+            } else {
+                $redirectUrl = $this->getRouteUrl();
+            }
+
+            return new RedirectResponse($redirectUrl);
         } else {
             if (is_array($param1) || $param1 === null) {
                 $parameters = (array) $param1;
@@ -2226,8 +2578,7 @@ class Grid implements GridInterface
     /**
      * Returns the filter of a column stored in session.
      *
-     * @param string $columnId
-     *                         Id of the column
+     * @param string $columnId Id of the column
      *
      * @throws \Exception
      *
@@ -2247,8 +2598,7 @@ class Grid implements GridInterface
     /**
      * A filter of the column is stored in session ?
      *
-     * @param string $columnId
-     *                         Id of the column
+     * @param string $columnId Id of the column
      *
      * @throws \Exception
      *

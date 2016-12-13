@@ -1,0 +1,5 @@
+{% if property is defined %}
+    {{ grid(grid, gridTemplate|default('APYDataGridBundle::grid.html.twig'), '', {'property': property, 'idRendered': idRendered}) }}
+{% else %}
+    {{ grid(grid, 'APYDataGridBundle::grid.html.twig') }}
+{% endif %}
