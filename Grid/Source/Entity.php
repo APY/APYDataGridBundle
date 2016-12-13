@@ -205,7 +205,7 @@ class Entity extends Source
                 return "$functionWithParameters as $alias";
             }
 
-            return $alias;
+            return $functionWithParameters;
         }
 
         if ($withAlias) {
@@ -389,7 +389,11 @@ class Entity extends Source
                         $bindIndexPlaceholder = "LOWER($bindIndexPlaceholder)";
                     }
 
-                    $q = $this->query->expr()->$operator($fieldName, $bindIndexPlaceholder);
+                    if ($hasHavingClause && 'like' == $operator) {
+                        $q = $this->query->expr()->gt('instr(' . $fieldName . ',' . $bindIndexPlaceholder . ')', 0);
+                    } else {
+                        $q = $this->query->expr()->$operator($fieldName, $bindIndexPlaceholder);
+                    }
 
                     if ($filter->getOperator() == Column::OPERATOR_NLIKE || $filter->getOperator() == Column::OPERATOR_NSLIKE) {
                         $q = $this->query->expr()->not($q);
@@ -398,7 +402,11 @@ class Entity extends Source
                     $sub->add($q);
 
                     if ($filter->getValue() !== null) {
-                        $this->query->setParameter($bindIndex++, $this->normalizeValue($filter->getOperator(), $filter->getValue()));
+                        if ($hasHavingClause && 'like' == $operator) {
+                            $this->query->setParameter($bindIndex++, $this->normalizeValue(Column::OPERATOR_EQ, $filter->getValue()));
+                        } else {
+                            $this->query->setParameter($bindIndex++, $this->normalizeValue($filter->getOperator(), $filter->getValue()));
+                        }
                     }
                 }
 
@@ -643,6 +651,7 @@ class Entity extends Source
                     ->setFirstResult(null)
                     ->setMaxResults(null)
                     ->getQuery();
+
                 if ($selectFrom === 'query') {
                     foreach ($this->hints as $hintKey => $hintValue) {
                         $query->setHint($hintKey, $hintValue);

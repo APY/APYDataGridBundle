@@ -12,11 +12,13 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use APY\DataGridBundle\Grid\Action\RowActionInterface;
+
 class ActionsColumn extends Column
 {
     protected $rowActions;
 
-    public function __construct($column, $title, array $rowActions = [])
+    public function __construct($column, $title, array $rowActions = [], $class = '')
     {
         $this->rowActions = $rowActions;
 
@@ -26,6 +28,7 @@ class ActionsColumn extends Column
             'sortable'   => false,
             'source'     => false,
             'filterable' => true, // Show a reset link instead of a filter
+            'class'      => $class,
         ]);
     }
 
@@ -99,10 +102,18 @@ class ActionsColumn extends Column
     public function getActionsToRender($row)
     {
         $list = $this->rowActions;
+
         foreach ($list as $i => $a) {
             $action = clone $a;
             $list[$i] = $action->render($row);
             if (null === $list[$i]) {
+                unset($list[$i]);
+                continue;
+            }
+            /** @var $clonedRowAction RowActionInterface */
+            $clonedRowAction = $list[$i];
+            $attributes = $clonedRowAction->getAttributes();
+            if (array_key_exists('class', $attributes) && stripos($attributes['class'], 'hidden') !== false) {
                 unset($list[$i]);
             }
         }
