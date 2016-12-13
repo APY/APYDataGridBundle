@@ -14,14 +14,14 @@ namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\JoinColumn;
-use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Grid\Rows;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpKernel\Kernel;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
+use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
 {
@@ -90,13 +90,15 @@ class Entity extends Source
      * You can override this if the querybuilder is constructed in a business-specific way
      * by an external controller/service/repository and you wish to re-use it for the datagrid.
      * Typical use-case involves an external repository creating complex default restriction (i.e. multi-tenancy etc)
-     * which then will be expanded on by the datagrid
+     * which then will be expanded on by the datagrid.
+     *
      * @var QueryBuilder
      */
     protected $queryBuilder;
 
     /**
-     * The table alias that will be used in the query to fetch actual data
+     * The table alias that will be used in the query to fetch actual data.
+     *
      * @var string
      */
     protected $tableAlias;
@@ -108,22 +110,23 @@ class Entity extends Source
 
     /**
      * Legacy way of accessing the default alias (before it became possible to change it)
-     * Please use $entity->getTableAlias() now instead of $entity::TABLE_ALIAS
+     * Please use $entity->getTableAlias() now instead of $entity::TABLE_ALIAS.
+     *
      * @deprecated
      */
     const TABLE_ALIAS = '_a';
 
     /**
-     * @param string $entityName e.g Cms:Page
+     * @param string $entityName  e.g Cms:Page
      * @param string $managerName e.g. mydatabase
      */
     public function __construct($entityName, $group = 'default', $managerName = null)
     {
         $this->entityName = $entityName;
         $this->managerName = $managerName;
-        $this->joins = array();
+        $this->joins = [];
         $this->group = $group;
-        $this->hints = array();
+        $this->hints = [];
         $this->setTableAlias(self::TABLE_ALIAS);
     }
 
@@ -138,7 +141,7 @@ class Entity extends Source
 
         $mapping = $container->get('grid.mapping.manager');
 
-        /** todo autoregister mapping drivers with tag */
+        /* todo autoregister mapping drivers with tag */
         $mapping->addDriver($this, -1);
         $this->metadata = $mapping->getMetadata($this->class, $this->group);
 
@@ -147,6 +150,7 @@ class Entity extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Column\Column $column
+     *
      * @return string
      */
     protected function getFieldName($column, $withAlias = false)
@@ -165,7 +169,7 @@ class Entity extends Source
                 if (count($elements) > 0) {
                     $parent = ($previousParent == '') ? $this->getTableAlias() : $previousParent;
                     $previousParent .= '_' . $element;
-                    $this->joins[$previousParent] = array('field' => $parent . '.' . $element, 'type' => $column->getJoinType());
+                    $this->joins[$previousParent] = ['field' => $parent . '.' . $element, 'type' => $column->getJoinType()];
                 } else {
                     $name = $previousParent . '.' . $element;
                 }
@@ -176,21 +180,21 @@ class Entity extends Source
             $previousParent = $this->getTableAlias();
             $alias = $name;
         } else {
-            return $this->getTableAlias().'.'.$name;
+            return $this->getTableAlias() . '.' . $name;
         }
 
         // Aggregate dql functions
-        $matches = array();
+        $matches = [];
         if ($column->hasDQLFunction($matches)) {
             if (strtolower($matches['parameters']) == 'distinct') {
-                $functionWithParameters = $matches['function'].'(DISTINCT '.$previousParent.'.'.$matches['field'].')';
+                $functionWithParameters = $matches['function'] . '(DISTINCT ' . $previousParent . '.' . $matches['field'] . ')';
             } else {
                 $parameters = '';
                 if ($matches['parameters'] !== '') {
-                    $parameters = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'".$matches['parameters']."'");
+                    $parameters = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'" . $matches['parameters'] . "'");
                 }
 
-                $functionWithParameters = $matches['function'].'('.$previousParent.'.'.$matches['field'].$parameters.')';
+                $functionWithParameters = $matches['function'] . '(' . $previousParent . '.' . $matches['field'] . $parameters . ')';
             }
 
             if ($withAlias) {
@@ -213,6 +217,7 @@ class Entity extends Source
 
     /**
      * @param string $fieldName
+     *
      * @return string
      */
     protected function getGroupByFieldName($fieldName)
@@ -233,7 +238,7 @@ class Entity extends Source
                 $fieldName = substr($fieldName, 0, $pos);
             }
 
-            return $this->getTableAlias().'.'.$fieldName;
+            return $this->getTableAlias() . '.' . $fieldName;
         }
 
         return $name;
@@ -241,7 +246,6 @@ class Entity extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Columns $columns
-     * @return null
      */
     public function getColumns($columns)
     {
@@ -289,7 +293,8 @@ class Entity extends Source
     }
 
     /**
-     * Sets the initial QueryBuilder for this DataGrid
+     * Sets the initial QueryBuilder for this DataGrid.
+     *
      * @param QueryBuilder $queryBuilder
      */
     public function initQueryBuilder(QueryBuilder $queryBuilder)
@@ -323,9 +328,10 @@ class Entity extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int $page Page Number
-     * @param int $limit Rows Per Page
-     * @param int $gridDataJunction  Grid data junction
+     * @param int                                      $page             Page Number
+     * @param int                                      $limit            Rows Per Page
+     * @param int                                      $gridDataJunction Grid data junction
+     *
      * @return \APY\DataGridBundle\Grid\Rows
      */
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
@@ -334,17 +340,17 @@ class Entity extends Source
         $this->querySelectfromSource = clone $this->query;
 
         $bindIndex = 123;
-        $serializeColumns = array();
+        $serializeColumns = [];
         $where = $gridDataJunction === Column::DATA_CONJUNCTION ? $this->query->expr()->andx() : $this->query->expr()->orx();
 
-        $columnsById = array();
+        $columnsById = [];
         foreach ($columns as $column) {
             $columnsById[$column->getId()] = $column;
         }
 
         foreach ($columns as $column) {
             // If a column is a manual field, ie a.col*b.col as myfield, it is added to select from user.
-            if($column->getIsManualField() === false) {
+            if ($column->getIsManualField() === false) {
                 $fieldName = $this->getFieldName($column, true);
                 $this->query->addSelect($fieldName);
                 $this->querySelectfromSource->addSelect($fieldName);
@@ -353,7 +359,7 @@ class Entity extends Source
             if ($column->isSorted()) {
                 if ($column instanceof JoinColumn) {
                     $this->query->resetDQLPart('orderBy');
-                    foreach($column->getJoinColumns() as $columnName) {
+                    foreach ($column->getJoinColumns() as $columnName) {
                         $this->query->addOrderBy($this->getFieldName($columnsById[$columnName]), $column->getOrder());
                     }
                 } else {
@@ -378,11 +384,11 @@ class Entity extends Source
 
                     $fieldName = $this->getFieldName($columnForFilter, false);
                     $bindIndexPlaceholder = "?$bindIndex";
-                    if (in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))) {
+                    if (in_array($filter->getOperator(), [Column::OPERATOR_LIKE, Column::OPERATOR_RLIKE, Column::OPERATOR_LLIKE, Column::OPERATOR_NLIKE])) {
                         $fieldName = "LOWER($fieldName)";
                         $bindIndexPlaceholder = "LOWER($bindIndexPlaceholder)";
                     }
-                    
+
                     $q = $this->query->expr()->$operator($fieldName, $bindIndexPlaceholder);
 
                     if ($filter->getOperator() == Column::OPERATOR_NLIKE || $filter->getOperator() == Column::OPERATOR_NSLIKE) {
@@ -408,7 +414,7 @@ class Entity extends Source
             }
         }
 
-        if ($where->count()> 0) {
+        if ($where->count() > 0) {
             //Using ->andWhere here to make sure we preserve any other where clauses present in the query builder
             //the other where clauses may have come from an external builder
             $this->query->andWhere($where);
@@ -519,7 +525,7 @@ class Entity extends Source
             $countQuery->setHint($hintName, $hintValue);
         }
 
-        if (! $countQuery->getHint(CountWalker::HINT_DISTINCT)) {
+        if (!$countQuery->getHint(CountWalker::HINT_DISTINCT)) {
             $countQuery->setHint(CountWalker::HINT_DISTINCT, true);
         }
 
@@ -535,7 +541,7 @@ class Entity extends Source
             $hints = $countQuery->getHint(Query::HINT_CUSTOM_TREE_WALKERS);
 
             if ($hints === false) {
-                $hints = array();
+                $hints = [];
             }
 
             $hints[] = 'Doctrine\ORM\Tools\Pagination\CountWalker';
@@ -557,10 +563,10 @@ class Entity extends Source
 
     public function getFieldsMetadata($class, $group = 'default')
     {
-        $result = array();
+        $result = [];
         foreach ($this->ormMetadata->getFieldNames() as $name) {
             $mapping = $this->ormMetadata->getFieldMapping($name);
-            $values = array('title' => $name, 'source' => true);
+            $values = ['title' => $name, 'source' => true];
 
             if (isset($mapping['fieldName'])) {
                 $values['field'] = $mapping['fieldName'];
@@ -618,7 +624,7 @@ class Entity extends Source
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('entity') as $filter) {
-                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE,Column::OPERATOR_NSLIKE))) {
+                        if (in_array($filter->getOperator(), [Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE, Column::OPERATOR_NSLIKE])) {
                             $selectFrom = 'source';
                             break;
                         }
@@ -641,7 +647,7 @@ class Entity extends Source
                 }
                 $result = $query->getResult();
 
-                $values = array();
+                $values = [];
                 foreach ($result as $row) {
                     $value = $row[str_replace('.', '::', $column->getId())];
 
@@ -703,6 +709,7 @@ class Entity extends Source
 
     /**
      * @param callable $callback
+     *
      * @return $this
      */
     public function manipulateCountQuery($callback = null)
@@ -746,11 +753,12 @@ class Entity extends Source
 
     public function clearHints()
     {
-        $this->hints = array();
+        $this->hints = [];
     }
 
     /**
-     *  Set groupby column
+     *  Set groupby column.
+     *
      *  @param string $groupBy GroupBy column
      */
     public function setGroupBy($groupBy)
