@@ -69,6 +69,7 @@ abstract class Column
     protected $visible;
     protected $callback;
     protected $order;
+    protected $orderIndex = null;
     protected $size;
     protected $visibleForSource;
     protected $primary;
@@ -127,7 +128,7 @@ abstract class Column
         $this->setInputType($this->getParam('inputType', 'text'));
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
-        $this->setOrder($this->getParam('order'));
+        $this->setOrder($this->getParam('order'), $this->getParam('orderIndex'));
         $this->setJoinType($this->getParam('joinType'));
         $this->setFilterType($this->getParam('filter', 'input'));
         $this->setSelectFrom($this->getParam('selectFrom', 'query'));
@@ -361,18 +362,28 @@ abstract class Column
     /**
      * set column order.
      *
-     * @param string $order asc|desc
+     * @param string $order      asc|desc
+     * @param int    $orderIndex
      *
      * @return \APY\DataGridBundle\Grid\Column\Column
      */
-    public function setOrder($order)
+    public function setOrder($order, $orderIndex = -1)
     {
         if ($order !== null) {
             $this->order = $order;
             $this->isSorted = true;
+            $this->orderIndex = $orderIndex;
         }
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrderIndex()
+    {
+        return $this->orderIndex;
     }
 
     /**

@@ -64,6 +64,8 @@ abstract class Source implements DriverInterface
 
     /**
      * @param \Closure $callback
+     *
+     * @return $this
      */
     public function manipulateRow(\Closure $callback = null)
     {
@@ -148,6 +150,8 @@ abstract class Source implements DriverInterface
      * Use data instead of fetching the source.
      *
      * @param array|object $data
+     *
+     * @return $this
      */
     public function setData($data)
     {
@@ -178,6 +182,10 @@ abstract class Source implements DriverInterface
 
     /**
      * Gets an array of data items for rows from the set data.
+     *
+     * @param $columns
+     *
+     * @throws PropertyAccessDeniedException
      *
      * @return array
      */
@@ -376,54 +384,7 @@ abstract class Source implements DriverInterface
         }
 
         // Order
-        foreach ($columns as $column) {
-            if ($column->isSorted()) {
-                $sortType = SORT_REGULAR;
-                $sortedItems = [];
-                foreach ($items as $key => $item) {
-                    $value = $item[$column->getField()];
-
-                    // Format values for sorting and define the type of sort
-                    switch ($column->getType()) {
-                        case 'text':
-                            $sortedItems[$key] = strtolower($value);
-                            $sortType = SORT_STRING;
-                            break;
-                        case 'datetime':
-                        case 'date':
-                        case 'time':
-                            if ($value instanceof \DateTime) {
-                                $sortedItems[$key] = $value->getTimestamp();
-                            } else {
-                                $sortedItems[$key] = strtotime($value);
-                            }
-                            $sortType = SORT_NUMERIC;
-                            break;
-                        case 'boolean':
-                            $sortedItems[$key] = $value ? 1 : 0;
-                            $sortType = SORT_NUMERIC;
-                            break;
-                        case 'array':
-                            $sortedItems[$key] = json_encode($value);
-                            $sortType = SORT_STRING;
-                            break;
-                        case 'number':
-                            $sortedItems[$key] = $value;
-                            $sortType = SORT_NUMERIC;
-                            break;
-                        default:
-                            $sortedItems[$key] = $value;
-                            $sortType = SORT_REGULAR;
-                    }
-                }
-
-                if (!empty($sortedItems)) {
-                    array_multisort($sortedItems, ($column->getOrder() == 'asc') ? SORT_ASC : SORT_DESC, $sortType, $items);
-                }
-
-                break;
-            }
-        }
+        $items = $this->multiSort($columns, $items);
 
         $this->count = count($items);
 
@@ -467,6 +428,106 @@ abstract class Source implements DriverInterface
         return $rows;
     }
 
+    /**
+     * @param $columns
+     *
+     * @return array
+     */
+    private function getColumnsToSort($columns)
+    {
+        $columnsToSort = [];
+        foreach ($columns as $column) {
+            if ($column->isSorted()) {
+                $columnsToSort[$column->getOrderIndex()] = $column;
+            }
+        }
+
+        return $columnsToSort;
+    }
+
+    /**
+     * @param Column\Column $colum
+     *
+     * @return int
+     */
+    private function getSortTypeByColumn(Column\Column $colum)
+    {
+        switch ($colum->getType()) {
+            case 'text':
+            case 'array':
+                $sortType = SORT_STRING;
+                break;
+            case 'datetime':
+            case 'date':
+            case 'time':
+            case 'boolean':
+            case 'number':
+                $sortType = SORT_NUMERIC;
+                break;
+            default:
+                $sortType = SORT_REGULAR;
+        }
+
+        return$sortType;
+    }
+
+    /**
+     * @param $columns
+     * @param $items
+     *
+     * @return array
+     */
+    private function multiSort($columns, $items)
+    {
+        $columnsToSort = $this->getColumnsToSort($columns);
+        if (empty($columnsToSort)) {
+            return $items;
+        }
+
+        $args = [];
+        $sortIndexes = array_keys($columnsToSort);
+        sort($sortIndexes);
+        foreach ($sortIndexes as $sortIndex) {
+            $columToSort = $columnsToSort[$sortIndex];
+            $columnValues = [];
+            foreach ($items as $key => $item) {
+                $columnValue = $item[$columToSort->getField()];
+                switch ($columToSort->getType()) {
+                    case 'text':
+                        $columnValue = strtolower($columnValue);
+                        break;
+                    case 'datetime':
+                    case 'date':
+                    case 'time':
+                        if ($columnValue instanceof \DateTime) {
+                            $columnValue = $columnValue->getTimestamp();
+                        } else {
+                            $columnValue = strtotime($columnValue);
+                        }
+                        break;
+                    case 'boolean':
+                        $columnValue = $columnValue ? 1 : 0;
+                        break;
+                    case 'array':
+                        $columnValue = json_encode($columnValue);
+                        break;
+                }
+                $columnValues[$columToSort->getField()][$key] = $columnValue;
+            }
+            $args[] = $columnValues[$columToSort->getField()];
+            $args[] = $columToSort->getOrder() == 'asc' ? SORT_ASC : SORT_DESC;
+            $args[] = $this->getSortTypeByColumn($columToSort);
+        }
+        $args[] = &$items;
+        call_user_func_array('array_multisort', $args);
+
+        return end($args);
+    }
+
+    /**
+     * @param $columns
+     * @param bool $loop
+     */
     public function populateSelectFiltersFromData($columns, $loop = false)
     {
         /* @var $column Column */
@@ -544,6 +605,8 @@ abstract class Source implements DriverInterface
     /**
      * Get Total count of data items.
      *
+     * @param int $maxResults
+     *
      * @return int
      */
     public function getTotalCountFromData($maxResults = null)
@@ -555,8 +618,8 @@ abstract class Source implements DriverInterface
      * Prepares string to have almost the same behaviour as with a database,
      * removing accents and latin special chars.
      *
-     * @param mixed  $inputString
-     * @param string $type        for array type, will serialize datas
+     * @param mixed  $input
+     * @param string $type  for array type, will serialize datas
      *
      * @return string the input, serialized for arrays or without accents for strings
      */
