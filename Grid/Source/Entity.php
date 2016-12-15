@@ -205,7 +205,7 @@ class Entity extends Source
                 return "$functionWithParameters as $alias";
             }
 
-            return $alias;
+            return $functionWithParameters;
         }
 
         if ($withAlias) {
@@ -402,7 +402,11 @@ class Entity extends Source
                     $sub->add($q);
 
                     if ($filter->getValue() !== null) {
-                        $this->query->setParameter($bindIndex++, $this->normalizeValue($filter->getOperator(), $filter->getValue()));
+                        if ($hasHavingClause && 'like' == $operator) {
+                            $this->query->setParameter($bindIndex++, $this->normalizeValue(Column::OPERATOR_EQ, $filter->getValue()));
+                        } else {
+                            $this->query->setParameter($bindIndex++, $this->normalizeValue($filter->getOperator(), $filter->getValue()));
+                        }
                     }
                 }
 
@@ -647,6 +651,7 @@ class Entity extends Source
                     ->setFirstResult(null)
                     ->setMaxResults(null)
                     ->getQuery();
+
                 if ($selectFrom === 'query') {
                     foreach ($this->hints as $hintKey => $hintValue) {
                         $query->setHint($hintKey, $hintValue);
