@@ -64,7 +64,14 @@
                 <th class="{% if column.align != 'left'%}align-{{ column.align }}{% endif %}{% if column.class %} {{ column.class }}{% endif %}{% if loop.last %} last-column{% endif %}"{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>
                     {%- spaceless %}
                         {% if column.type == 'massaction' %}
-                            <input type="checkbox" class="grid-mass-selector" onclick="{{ grid.hash }}_markVisible(this.checked);"/>
+                            <div class="text-center checkbox c-checkbox">
+                                Seleziona / deseleziona tutto <br />
+                                <label>
+                                    <input type="checkbox" class="grid-mass-selector"
+                                           onclick="{{ grid.hash }}_markVisible(this.checked);"/>
+                                    <span class="fa fa-check"></span>
+                                </label>
+                            </div>
                         {% else %}
                             {% set columnTitle = column.title %}
 
