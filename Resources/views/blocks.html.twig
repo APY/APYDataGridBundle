@@ -276,7 +276,13 @@
 {% endblock grid_column_actions_cell %}
 {# ------------------------------------------------ grid_column_massaction_cell --------------------------------------------- #}
 {% block grid_column_massaction_cell %}
-    <input type="checkbox" class="action" value="1" name="{{ grid.hash }}[{{ column.id }}][{{ row.primaryFieldValue }}]"/>
+    <div class="text-center checkbox c-checkbox">
+        <label>
+            <input type="checkbox" class="action" value="1"
+                   name="{{ grid.hash }}[{{ column.id }}][{{ row.primaryFieldValue }}]" {#onclick="{{ grid.hash }}_markVisible();"#}/>
+            <span class="fa fa-check"></span>
+        </label>
+    </div>
 {% endblock grid_column_massaction_cell %}
 {# ------------------------------------------------ grid_column_type_boolean_cell --------------------------------------------- #}
 {% block grid_column_boolean_cell %}
