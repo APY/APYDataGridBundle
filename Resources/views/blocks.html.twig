@@ -543,7 +543,7 @@
 {% endblock grid_scripts_results_per_page %}
 
 {% block grid_scripts_mark_visible %}
-    function {{ grid.hash }}_markVisibleAll(select) {
+    function {{ grid.hash }}_markVisible(select) {
     var table = $('#{{ grid.hash }}').find('.table-grid');
     var checkboxes = table.find('td').find(':checkbox');
 
