@@ -421,6 +421,9 @@ class Entity extends Source
                         if(isset($dqlMatches['function']) && $dqlMatches['function'] == 'translation_agg'){
                             $translationFieldName = $this->getTranslationFieldNameWithParents($columnForFilter);
                             $fieldName = "LOWER(".$translationFieldName.")";
+                        }elseif(isset($dqlMatches['function']) && $dqlMatches['function'] == 'role_agg'){
+                            $translationFieldName = $this->getTranslationFieldNameWithParents($columnForFilter);
+                            $fieldName = "LOWER(".$translationFieldName.")";
                         }else{
                             $fieldName = "LOWER($fieldName)";
                         }
