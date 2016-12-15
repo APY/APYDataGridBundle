@@ -22,13 +22,13 @@ class Columns implements \IteratorAggregate, \Countable
     protected $extensions = [];
 
     /**
-     * @var \Symfony\Component\Security\Core\SecurityContextInterface
+     * @var AuthorizationCheckerInterface
      */
-    protected $securityContext;
+    protected $authorizationChecker;
 
-    public function __construct(AuthorizationCheckerInterface $securityContext)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
     {
-        $this->securityContext = $securityContext;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function getIterator($showOnlySourceColumns = false)
@@ -46,7 +46,7 @@ class Columns implements \IteratorAggregate, \Countable
      */
     public function addColumn(Column $column, $position = 0)
     {
-        $column->setSecurityContext($this->securityContext);
+        $column->setAuthorizationChecker($this->authorizationChecker);
 
         if ($position == 0) {
             $this->columns[] = $column;
