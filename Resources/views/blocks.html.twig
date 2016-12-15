@@ -543,32 +543,22 @@
 {% endblock grid_scripts_results_per_page %}
 
 {% block grid_scripts_mark_visible %}
-    function {{ grid.hash }}_markVisible(select)
-    {
-    var form = document.getElementById('{{ grid.hash }}');
+    function {{ grid.hash }}_markVisibleAll(select) {
+    var table = $('#{{ grid.hash }}').find('.table-grid');
+    var checkboxes = table.find('td').find(':checkbox');
 
-    var counter = 0;
-
-    for (var i=0; i < form.elements.length; i++ ) {
-    if (form.elements[i].type == 'checkbox') {
-    form.elements[i].checked = select;
-
-    if (form.elements[i].checked){
-    counter++;
-    }
-    }
-    }
+    checkboxes.prop('checked', select);
+    var counter = select ? checkboxes.length / table.length : 0;
 
     {% if grid.isFilterSectionVisible %}
-        counter--;
+        table.find('tr:last').find(':checkbox').prop('checked', select);
     {% endif %}
 
     var selected = document.getElementById('{{ grid.hash }}_mass_action_selected');
     selected.innerHTML = counter > 0 ? '{{ 'Selected _s_ rows'|trans }}'.replace('_s_', counter) : '';
 
-    document.getElementById('{{ grid.hash }}_mass_action_all').value = '0';
-
     return false;
+    }
     }
 {% endblock grid_scripts_mark_visible %}
 
