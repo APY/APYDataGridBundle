@@ -18,10 +18,11 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\Routing\RouterInterface;
 use Twig_Environment;
 use Twig_Extension;
+use Twig_Extension_GlobalsInterface;
 use Twig_SimpleFilter;
 use Twig_SimpleFunction;
 
-class DataGridExtension extends Twig_Extension
+class DataGridExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface
 {
     const DEFAULT_TEMPLATE = 'APYDataGridBundle::blocks.html.twig';
 
@@ -362,7 +363,7 @@ class DataGridExtension extends Twig_Extension
     protected function renderBlock(Twig_Environment $environment, $name, $parameters)
     {
         foreach ($this->getTemplates($environment) as $template) {
-            if ($template->hasBlock($name)) {
+            if ($template->hasBlock($name, [])) {
                 return $template->renderBlock($name, array_merge($environment->getGlobals(), $parameters, $this->params));
             }
         }
@@ -381,7 +382,8 @@ class DataGridExtension extends Twig_Extension
     protected function hasBlock(Twig_Environment $environment, $name)
     {
         foreach ($this->getTemplates($environment) as $template) {
-            if ($template->hasBlock($name)) {
+            /** @var $template \Twig_Template */
+            if ($template->hasBlock($name, [])) {
                 return true;
             }
         }
@@ -427,10 +429,5 @@ class DataGridExtension extends Twig_Extension
         }
 
         return $this->templates;
-    }
-
-    public function getName()
-    {
-        return 'datagrid_twig_extension';
     }
 }
