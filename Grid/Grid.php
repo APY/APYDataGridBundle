@@ -612,9 +612,9 @@ class Grid implements GridInterface
                     $this->page = 0;
                     $this->limit = 0;
                 }
-                
+
                 $this->prepare();
-                
+
                 if($actionAllKeys == true){
                     foreach($this->rows as $row){
                         $actionKeys[]=$row->getPrimaryFieldValue();
@@ -633,7 +633,7 @@ class Grid implements GridInterface
                         $action->getParameters()
                     );
 
-                    $subRequest = $this->container->get('request')->duplicate(array(), null, $path);
+                    $subRequest = $this->request->duplicate(array(), null, $path);
 
                     $this->massActionResponse = $this->container->get('http_kernel')->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
                 } else {
