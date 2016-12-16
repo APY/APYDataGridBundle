@@ -16,29 +16,29 @@ class ActionsColumn extends Column
 {
     protected $rowActions;
 
-    public function __construct($column, $title, array $rowActions = array())
+    public function __construct($column, $title, array $rowActions = [])
     {
         $this->rowActions = $rowActions;
 
-        parent::__construct(array(
+        parent::__construct([
             'id'         => $column,
             'title'      => $title,
             'sortable'   => false,
             'source'     => false,
-            'filterable' => true // Show a reset link instead of a filter
-        ));
+            'filterable' => true, // Show a reset link instead of a filter
+        ]);
     }
 
     public function getRouteParameters($row, $action)
     {
         $actionParameters = $action->getRouteParameters();
 
-        if(!empty($actionParameters)) {
-            $routeParameters = array();
+        if (!empty($actionParameters)) {
+            $routeParameters = [];
 
             foreach ($actionParameters as $name => $parameter) {
-                if(is_int($name)) {
-                    if(($name = $action->getRouteParametersMapping($parameter)) === null) {
+                if (is_int($name)) {
+                    if (($name = $action->getRouteParametersMapping($parameter)) === null) {
                         $name = $this->getValidRouteParameters($parameter);
                     }
                     $routeParameters[$name] = $row->getField($parameter);
@@ -50,14 +50,14 @@ class ActionsColumn extends Column
             return $routeParameters;
         }
 
-        return array($row->getPrimaryField() => $row->getPrimaryFieldValue());
+        return [$row->getPrimaryField() => $row->getPrimaryFieldValue()];
     }
 
     protected function getValidRouteParameters($name)
     {
         $pos = 0;
         while (($pos = strpos($name, '.', ++$pos)) !== false) {
-            $name = substr($name, 0, $pos) . strtoupper(substr($name, $pos+1, 1)) . substr($name, $pos+2);
+            $name = substr($name, 0, $pos) . strtoupper(substr($name, $pos + 1, 1)) . substr($name, $pos + 2);
         }
 
         return $name;
@@ -90,18 +90,19 @@ class ActionsColumn extends Column
     }
 
     /**
-     * Get the list of actions to render
+     * Get the list of actions to render.
      *
      * @param $row
+     *
      * @return array
      */
     public function getActionsToRender($row)
     {
         $list = $this->rowActions;
-        foreach($list as $i=>$a) {
+        foreach ($list as $i => $a) {
             $action = clone $a;
             $list[$i] = $action->render($row);
-            if(null === $list[$i]) {
+            if (null === $list[$i]) {
                 unset($list[$i]);
             }
         }

@@ -1,4 +1,5 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Source\Source;
@@ -6,7 +7,6 @@ use APY\DataGridBundle\Grid\Source\Source;
 /**
  * The configuration of a {@link Grid} object.
  *
- * @package APY\DataGridBundle\Grid
  * @author  Quentin Ferrer
  */
 interface GridConfigInterface

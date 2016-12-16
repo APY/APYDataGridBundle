@@ -24,8 +24,8 @@ class DateColumn extends DateTimeColumn
     {
         $parentFilters = parent::getFilters($source);
 
-        $filters = array();
-        foreach($parentFilters as $filter) {
+        $filters = [];
+        foreach ($parentFilters as $filter) {
             if ($filter->getValue() !== null) {
                 $dateFrom = $filter->getValue();
                 $dateFrom->setTime(0, 0, 0);
@@ -35,26 +35,26 @@ class DateColumn extends DateTimeColumn
 
                 switch ($filter->getOperator()) {
                     case self::OPERATOR_EQ:
-                        $filters[] =  new Filter(self::OPERATOR_GTE, $dateFrom);
-                        $filters[] =  new Filter(self::OPERATOR_LTE, $dateTo);
+                        $filters[] = new Filter(self::OPERATOR_GTE, $dateFrom);
+                        $filters[] = new Filter(self::OPERATOR_LTE, $dateTo);
                         break;
                     case self::OPERATOR_NEQ:
-                        $filters[] =  new Filter(self::OPERATOR_LT, $dateFrom);
-                        $filters[] =  new Filter(self::OPERATOR_GT, $dateTo);
+                        $filters[] = new Filter(self::OPERATOR_LT, $dateFrom);
+                        $filters[] = new Filter(self::OPERATOR_GT, $dateTo);
                         $this->setDataJunction(self::DATA_DISJUNCTION);
                         break;
                     case self::OPERATOR_LT:
                     case self::OPERATOR_GTE:
-                        $filters[] =  new Filter($filter->getOperator(), $dateFrom);
+                        $filters[] = new Filter($filter->getOperator(), $dateFrom);
                         break;
                     case self::OPERATOR_GT:
                     case self::OPERATOR_LTE:
-                        $filters[] =  new Filter($filter->getOperator(), $dateTo);
+                        $filters[] = new Filter($filter->getOperator(), $dateTo);
                         break;
                     default:
                         $filters[] = $filter;
                 }
-            }else {
+            } else {
                 $filters[] = $filter;
             }
         }

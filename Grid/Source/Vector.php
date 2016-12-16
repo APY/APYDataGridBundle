@@ -15,7 +15,8 @@ namespace APY\DataGridBundle\Grid\Source;
 use APY\DataGridBundle\Grid\Column;
 
 /**
- * Vector is really an Array
+ * Vector is really an Array.
+ *
  * @author dellamowica
  */
 class Vector extends Source
@@ -23,26 +24,29 @@ class Vector extends Source
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * either a column name as a string
-     *  or an array of names of columns
+     *  or an array of names of columns.
+     *
      * @var mixed
      */
     protected $id = null;
 
     /**
-     * Array of columns
+     * Array of columns.
+     *
      * @var Column[]
      */
     protected $columns;
 
     /**
-     * Creates the Vector and sets its data
+     * Creates the Vector and sets its data.
+     *
      * @param array $data
      */
-    public function __construct(array $data, array $columns = array())
+    public function __construct(array $data, array $columns = [])
     {
         if (!empty($data)) {
             $this->setData($data);
@@ -60,20 +64,20 @@ class Vector extends Source
 
     protected function guessColumns()
     {
-        $guessedColumns = array();
+        $guessedColumns = [];
         $dataColumnIds = array_keys(reset($this->data));
 
         foreach ($dataColumnIds as $id) {
             if (!$this->hasColumn($id)) {
-                $params = array(
-                    'id' => $id,
-                    'title' => $id,
-                    'source' => true,
+                $params = [
+                    'id'         => $id,
+                    'title'      => $id,
+                    'source'     => true,
                     'filterable' => true,
-                    'sortable' => true,
-                    'visible' => true,
-                    'field' => $id,
-                );
+                    'sortable'   => true,
+                    'visible'    => true,
+                    'field'      => $id,
+                ];
                 $guessedColumns[] = new Column\UntypedColumn($params);
             }
         }
@@ -89,7 +93,7 @@ class Vector extends Source
             }
 
             $i = 0;
-            $fieldTypes = array();
+            $fieldTypes = [];
 
             foreach ($this->data as $row) {
                 if (!isset($row[$c->getId()])) {
@@ -101,13 +105,12 @@ class Vector extends Source
                 if ($fieldValue !== '' && $fieldValue !== null) {
                     if (is_array($fieldValue)) {
                         $fieldTypes['array'] = 1;
-                    } elseif($fieldValue instanceof \DateTime) {
+                    } elseif ($fieldValue instanceof \DateTime) {
                         if ($fieldValue->format('His') === '000000') {
                             $fieldTypes['date'] = 1;
                         } else {
                             $fieldTypes['datetime'] = 1;
                         }
-                        
                     } elseif (strlen($fieldValue) >= 3 && strtotime($fieldValue) !== false) {
                         $dt = new \DateTime($fieldValue);
                         if ($dt->format('His') === '000000') {
@@ -143,7 +146,6 @@ class Vector extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Columns $columns
-     * @return null
      */
     public function getColumns($columns)
     {
@@ -188,9 +190,10 @@ class Vector extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int $page Page Number
-     * @param int $limit Rows Per Page
-     * @param int $gridDataJunction  Grid data junction
+     * @param int                                      $page             Page Number
+     * @param int                                      $limit            Rows Per Page
+     * @param int                                      $gridDataJunction Grid data junction
+     *
      * @return \APY\DataGridBundle\Grid\Rows
      */
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
@@ -210,11 +213,12 @@ class Vector extends Source
 
     public function getHash()
     {
-        return __CLASS__.md5(implode('', array_map(function ($c) { return $c->getId(); }, $this->columns)));
+        return __CLASS__ . md5(implode('', array_map(function ($c) { return $c->getId(); }, $this->columns)));
     }
 
     /**
-     * sets the primary key
+     * sets the primary key.
+     *
      * @param mixed $id either a string or an array of strings
      */
     public function setId($id)
@@ -223,8 +227,10 @@ class Vector extends Source
     }
 
     /**
-     * Set a two-dimentional array
+     * Set a two-dimentional array.
+     *
      * @param array $data
+     *
      * @throws \InvalidArgumentException
      */
     public function setData($data)

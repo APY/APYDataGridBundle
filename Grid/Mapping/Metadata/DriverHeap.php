@@ -17,15 +17,16 @@ namespace APY\DataGridBundle\Grid\Mapping\Metadata;
 class DriverHeap extends \SplPriorityQueue
 {
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see SplPriorityQueue::compare()
      */
-     public function compare($priority1, $priority2)
-     {
-         if ($priority1 === $priority2) {
-             return 0;
-         }
+    public function compare($priority1, $priority2)
+    {
+        if ($priority1 === $priority2) {
+            return 0;
+        }
 
-         return $priority1 > $priority2 ? -1 : 1;
-     }
+        return $priority1 > $priority2 ? -1 : 1;
+    }
 }

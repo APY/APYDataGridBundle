@@ -20,14 +20,14 @@ class SimpleArrayColumn extends Column
     {
         parent::__initialize($params);
 
-        $this->setOperators($this->getParam('operators', array(
+        $this->setOperators($this->getParam('operators', [
             self::OPERATOR_LIKE,
             self::OPERATOR_NLIKE,
             self::OPERATOR_EQ,
             self::OPERATOR_NEQ,
             self::OPERATOR_ISNULL,
             self::OPERATOR_ISNOTNULL,
-        )));
+        ]));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
     }
 
@@ -35,7 +35,7 @@ class SimpleArrayColumn extends Column
     {
         $parentFilters = parent::getFilters($source);
 
-        $filters = array();
+        $filters = [];
         foreach ($parentFilters as $filter) {
             switch ($filter->getOperator()) {
                 case self::OPERATOR_EQ:
@@ -71,10 +71,10 @@ class SimpleArrayColumn extends Column
             return call_user_func($this->callback, $values, $row, $router);
         }
 
-        $return = array();
-        if(is_array($values) || $values instanceof \Traversable) {
+        $return = [];
+        if (is_array($values) || $values instanceof \Traversable) {
             foreach ($values as $key => $value) {
-                if (!is_array($value) && isset($this->values[(string)$value])) {
+                if (!is_array($value) && isset($this->values[(string) $value])) {
                     $value = $this->values[$value];
                 }
 

@@ -24,7 +24,7 @@ class Row
 
     public function __construct()
     {
-        $this->fields = array();
+        $this->fields = [];
         $this->color = '';
     }
 
@@ -121,6 +121,6 @@ class Row
             return $primaryField;
         }
 
-        return array('id' => $primaryField);
+        return ['id' => $primaryField];
     }
 }

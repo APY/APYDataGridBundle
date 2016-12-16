@@ -15,11 +15,11 @@ namespace APY\DataGridBundle\Grid;
 class Rows implements \IteratorAggregate, \Countable
 {
     /**
-     * @var \SplObjectStorage $rows
+     * @var \SplObjectStorage
      */
     protected $rows;
 
-    public function __construct(array $rows = array())
+    public function __construct(array $rows = [])
     {
         $this->rows = new \SplObjectStorage();
 
@@ -29,7 +29,8 @@ class Rows implements \IteratorAggregate, \Countable
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see IteratorAggregate::getIterator()
      */
     public function getIterator()
@@ -38,9 +39,10 @@ class Rows implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Add row
+     * Add row.
      *
      * @param Row $row
+     *
      * @return Rows
      */
     public function addRow(Row $row)
@@ -51,7 +53,8 @@ class Rows implements \IteratorAggregate, \Countable
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see Countable::count()
      */
     public function count()
@@ -60,7 +63,7 @@ class Rows implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Returns the iterator as an array
+     * Returns the iterator as an array.
      *
      * @return array
      */

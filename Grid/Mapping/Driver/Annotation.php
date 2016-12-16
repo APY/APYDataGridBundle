@@ -29,7 +29,7 @@ class Annotation implements DriverInterface
     public function __construct($reader)
     {
         $this->reader = $reader;
-        $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = $this->sortable = array();
+        $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = $this->sortable = [];
     }
 
     public function getClassColumns($class, $group = 'default')
@@ -48,14 +48,16 @@ class Annotation implements DriverInterface
 
     public function getGroupBy($class, $group = 'default')
     {
-        return isset($this->groupBy[$class][$group]) ? $this->groupBy[$class][$group] : array();
+        return isset($this->groupBy[$class][$group]) ? $this->groupBy[$class][$group] : [];
     }
 
     protected function loadMetadataFromReader($className, $group = 'default')
     {
-        if (isset($this->loaded[$className][$group])) return;
+        if (isset($this->loaded[$className][$group])) {
+            return;
+        }
 
-        $reflectionCollection = array();
+        $reflectionCollection = [];
 
         $reflectionCollection[] = $reflection = new \ReflectionClass($className);
         while (false !== $reflection = $reflection->getParentClass()) {
@@ -70,7 +72,7 @@ class Annotation implements DriverInterface
             }
 
             foreach ($reflection->getProperties() as $property) {
-                $this->fields[$className][$group][$property->getName()] = array();
+                $this->fields[$className][$group][$property->getName()] = [];
 
                 foreach ($this->reader->getPropertyAnnotations($property) as $class) {
                     $this->getMetadataFromClassProperty($className, $class, $property->getName(), $group);
@@ -109,7 +111,7 @@ class Annotation implements DriverInterface
             if ($name === null) { // Class Column annotation
                 if (isset($metadata['id'])) {
                     $metadata['source'] = false;
-                    $this->fields[$className][$group][$metadata['id']] = array();
+                    $this->fields[$className][$group][$metadata['id']] = [];
                 } else {
                     throw new \Exception(sprintf('Missing parameter `id` in annotations for extra column of class %s', $className));
                 }
@@ -129,7 +131,7 @@ class Annotation implements DriverInterface
 
             // Check the group of the annotation and don't override if an annotation with the group have already been defined
             if (isset($metadata['groups']) && !in_array($group, (array) $metadata['groups'])
-             || isset($this->fields[$className][$group][$metadata['id']]['groups'])) {
+                || isset($this->fields[$className][$group][$metadata['id']]['groups'])) {
                 return;
             }
 
