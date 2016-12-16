@@ -153,6 +153,41 @@ class Entity extends Source
      *
      * @return string
      */
+    protected function getTranslationFieldNameWithParents($column)
+    {
+        $name = $column->getField();
+
+        if ($column->getIsManualField()) {
+            return $column->getField();
+        }
+
+        if (strpos($name, '.') !== false) {
+            $previousParent = '';
+
+            $elements = explode('.', $name);
+            while ($element = array_shift($elements)) {
+                if (count($elements) > 0) {
+                    $previousParent .= '_' . $element;
+                }
+            }
+        } elseif (strpos($name, ':') !== false) {
+            $previousParent = $this->getTableAlias();
+        } else {
+            return $this->getTableAlias().'.'.$name;
+        }
+
+        $matches = array();
+        if ($column->hasDQLFunction($matches)) {
+            return $previousParent.'.'.$matches['field'];
+        }
+
+        return $column->getField();
+    }
+
+    /**
+     * @param \APY\DataGridBundle\Grid\Column\Column $column
+     * @return string
+     */
     protected function getFieldName($column, $withAlias = false)
     {
         $name = $column->getField();
@@ -373,7 +408,11 @@ class Entity extends Source
 
                 $isDisjunction = $column->getDataJunction() === Column::DATA_DISJUNCTION;
 
-                $hasHavingClause = $column->hasDQLFunction() || $column->getIsAggregate();
+                $dqlMatches = [];
+                $hasHavingClause = $column->hasDQLFunction($dqlMatches) || $column->getIsAggregate();
+                if(isset($dqlMatches['function']) && $dqlMatches['function'] == 'translation_agg'){
+                    $hasHavingClause = false;
+                }
 
                 $sub = $isDisjunction ? $this->query->expr()->orx() : ($hasHavingClause ? $this->query->expr()->andx() : $where);
 
@@ -384,8 +423,17 @@ class Entity extends Source
 
                     $fieldName = $this->getFieldName($columnForFilter, false);
                     $bindIndexPlaceholder = "?$bindIndex";
-                    if (in_array($filter->getOperator(), [Column::OPERATOR_LIKE, Column::OPERATOR_RLIKE, Column::OPERATOR_LLIKE, Column::OPERATOR_NLIKE])) {
-                        $fieldName = "LOWER($fieldName)";
+
+                    if( in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))){
+                        if(isset($dqlMatches['function']) && $dqlMatches['function'] == 'translation_agg'){
+                            $translationFieldName = $this->getTranslationFieldNameWithParents($columnForFilter);
+                            $fieldName = "LOWER(".$translationFieldName.")";
+                        }elseif(isset($dqlMatches['function']) && $dqlMatches['function'] == 'role_agg'){
+                            $translationFieldName = $this->getTranslationFieldNameWithParents($columnForFilter);
+                            $fieldName = "LOWER(".$translationFieldName.")";
+                        }else{
+                            $fieldName = "LOWER($fieldName)";
+                        }
                         $bindIndexPlaceholder = "LOWER($bindIndexPlaceholder)";
                     }
 
