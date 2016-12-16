@@ -18,13 +18,12 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * DataGrid Twig Extension
+ * DataGrid Twig Extension.
  *
  * (c) Abhoryo <abhoryo@free.fr>
  * (c) Stanislav Turza
  *
  * Updated by Nicolas Claverie <info@artscore-studio.fr>
- *
  */
 class DataGridExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
@@ -167,8 +166,8 @@ class DataGridExtension extends \Twig_Extension implements \Twig_Extension_Globa
 
     /**
      * @param \Twig_Environment $environment
-     * @param string $name
-     * @param unknown $grid
+     * @param string            $name
+     * @param unknown           $grid
      */
     public function getGrid_(\Twig_Environment $environment, $name, $grid)
     {
@@ -177,7 +176,8 @@ class DataGridExtension extends \Twig_Extension implements \Twig_Extension_Globa
 
     /**
      * @param \Twig_Environment $environment
-     * @param unknown $grid
+     * @param unknown           $grid
+     *
      * @return string
      */
     public function getGridPager(\Twig_Environment $environment, $grid)
@@ -295,13 +295,13 @@ class DataGridExtension extends \Twig_Extension implements \Twig_Extension_Globa
 
     /**
      * @param \Twig_Environment $environment
-     * @param unknown $grid
-     * @param unknown $theme
-     * @param string $id
-     * @param array $params
+     * @param unknown           $grid
+     * @param unknown           $theme
+     * @param string            $id
+     * @param array             $params
+     *
      * @return string
      */
-    
     public function getGridSearch(\Twig_Environment $environment, $grid, $theme = null, $id = '', array $params = [])
     {
         $this->initGrid($grid, $theme, $id, $params);
@@ -335,8 +335,8 @@ class DataGridExtension extends \Twig_Extension implements \Twig_Extension_Globa
      * Render block.
      *
      * @param \Twig_Environment $environment
-     * @param string $name
-     * @param array  $parameters
+     * @param string            $name
+     * @param array             $parameters
      *
      * @throws \InvalidArgumentException If the block could not be found
      *
@@ -401,7 +401,7 @@ class DataGridExtension extends \Twig_Extension implements \Twig_Extension_Globa
 
     /**
      * @param \Twig_Environment $environment
-     * @param unknown $theme
+     * @param unknown           $theme
      */
     protected function getTemplatesFromString(\Twig_Environment $environment, $theme)
     {
@@ -417,7 +417,8 @@ class DataGridExtension extends \Twig_Extension implements \Twig_Extension_Globa
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
      * @see Twig_ExtensionInterface::getName()
      */
     public function getName()
