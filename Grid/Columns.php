@@ -18,17 +18,17 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class Columns implements \IteratorAggregate, \Countable
 {
-    protected $columns = array();
-    protected $extensions = array();
+    protected $columns = [];
+    protected $extensions = [];
 
     /**
-     * @var \Symfony\Component\Security\Core\SecurityContextInterface
+     * @var AuthorizationCheckerInterface
      */
-    protected $securityContext;
+    protected $authorizationChecker;
 
-    public function __construct(AuthorizationCheckerInterface $securityContext)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
     {
-        $this->securityContext = $securityContext;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function getIterator($showOnlySourceColumns = false)
@@ -37,27 +37,29 @@ class Columns implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Add column
+     * Add column.
+     *
      * @param Column $column
-     * @param int $position
+     * @param int    $position
+     *
      * @return Columns
      */
     public function addColumn(Column $column, $position = 0)
     {
-        $column->setSecurityContext($this->securityContext);
+        $column->setAuthorizationChecker($this->authorizationChecker);
 
         if ($position == 0) {
             $this->columns[] = $column;
         } else {
             if ($position > 0) {
-                $position--;
+                --$position;
             } else {
                 $position = max(0, count($this->columns) + $position);
             }
 
             $head = array_slice($this->columns, 0, $position);
             $tail = array_slice($this->columns, $position);
-            $this->columns = array_merge($head, array($column), $tail);
+            $this->columns = array_merge($head, [$column], $tail);
         }
 
         return $this;
@@ -129,17 +131,17 @@ class Columns implements \IteratorAggregate, \Countable
     /**
      * Sets order of Columns passing an array of column ids
      * If the list of ids is uncomplete, the remaining columns will be
-     * placed after if keepOtherColumns is true 
+     * placed after if keepOtherColumns is true.
      *
      * @param array $columnIds
-     * @param boolean $keepOtherColumns
+     * @param bool  $keepOtherColumns
      *
      * @return self
      */
     public function setColumnsOrder(array $columnIds, $keepOtherColumns = true)
     {
-        $reorderedColumns = array();
-        $columnsIndexedByIds = array();
+        $reorderedColumns = [];
+        $columnsIndexedByIds = [];
 
         foreach ($this->columns as $column) {
             $columnsIndexedByIds[$column->getId()] = $column;
@@ -152,12 +154,12 @@ class Columns implements \IteratorAggregate, \Countable
             }
         }
 
-		if ($keepOtherColumns) {
-			$this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
-		} else {
-			$this->columns = $reorderedColumns;
-		}
-        
+        if ($keepOtherColumns) {
+            $this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
+        } else {
+            $this->columns = $reorderedColumns;
+        }
+
         return $this;
     }
 }

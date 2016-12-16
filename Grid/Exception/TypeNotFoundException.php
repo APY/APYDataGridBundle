@@ -1,10 +1,10 @@
 <?php
+
 namespace APY\DataGridBundle\Grid\Exception;
 
 /**
- * Class TypeNotFoundException
+ * Class TypeNotFoundException.
  *
- * @package APY\DataGridBundle\Grid\Exception
  * @author  Quentin Ferrer
  */
 class TypeNotFoundException extends \InvalidArgumentException

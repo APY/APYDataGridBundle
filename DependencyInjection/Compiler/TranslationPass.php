@@ -1,4 +1,5 @@
 <?php
+
 namespace APY\DataGridBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -6,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
 /**
- * Class TranslationPass
+ * Class TranslationPass.
  *
  * @author Quentin FERRER
  */

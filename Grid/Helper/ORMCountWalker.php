@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Doctrine ORM
+ * Doctrine ORM.
  *
  * LICENSE
  *
@@ -13,17 +14,17 @@
 
 namespace APY\DataGridBundle\Grid\Helper;
 
-use Doctrine\ORM\Query\TreeWalkerAdapter;
-use Doctrine\ORM\Query\AST\SelectStatement;
-use Doctrine\ORM\Query\AST\SelectExpression;
-use Doctrine\ORM\Query\AST\PathExpression;
 use Doctrine\ORM\Query\AST\AggregateExpression;
+use Doctrine\ORM\Query\AST\PathExpression;
+use Doctrine\ORM\Query\AST\SelectExpression;
+use Doctrine\ORM\Query\AST\SelectStatement;
+use Doctrine\ORM\Query\TreeWalkerAdapter;
 
 /**
  * Replaces the selectClause of the AST with a COUNT statement.
  *
  * @category    DoctrineExtensions
- * @package     DoctrineExtensions\Paginate
+ *
  * @author      David Abdemoulaie <dave@hobodave.com>
  * @copyright   Copyright (c) 2010 David Abdemoulaie (http://hobodave.com/)
  * @license     http://hobodave.com/license.txt New BSD License
@@ -40,21 +41,19 @@ class ORMCountWalker extends TreeWalkerAdapter
      *
      * @param SelectStatement $AST
      *
-     * @return void
-     *
      * @throws \RuntimeException
      */
     public function walkSelectStatement(SelectStatement $AST)
     {
-        $rootComponents = array();
-        foreach ($this->_getQueryComponents() AS $dqlAlias => $qComp) {
+        $rootComponents = [];
+        foreach ($this->_getQueryComponents() as $dqlAlias => $qComp) {
             if (array_key_exists('parent', $qComp) && $qComp['parent'] === null && $qComp['nestingLevel'] == 0) {
-                $rootComponents[] = array($dqlAlias => $qComp);
+                $rootComponents[] = [$dqlAlias => $qComp];
             }
         }
 
         if (count($rootComponents) > 1) {
-            throw new \RuntimeException("Cannot count query which selects two FROM components, cannot make distinction");
+            throw new \RuntimeException('Cannot count query which selects two FROM components, cannot make distinction');
         }
 
         $root = reset($rootComponents);
@@ -66,7 +65,6 @@ class ORMCountWalker extends TreeWalkerAdapter
             $parent['metadata']->getSingleIdentifierFieldName()
         );
         $pathExpression->type = PathExpression::TYPE_STATE_FIELD;
-
 
         // Remove the variables which are not used by other clauses
         foreach ($AST->selectClause->selectExpressions as $key => $selectExpression) {

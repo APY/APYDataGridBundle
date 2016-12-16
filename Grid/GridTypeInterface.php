@@ -1,12 +1,12 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Interface GridTypeInterface
+ * Interface GridTypeInterface.
  *
- * @package APY\DataGridBundle
  * @author  Quentin Ferrer
  */
 interface GridTypeInterface
@@ -16,17 +16,13 @@ interface GridTypeInterface
      *
      * @param GridBuilder $builder The grid builder
      * @param array       $options The options
-     *
-     * @return void
      */
-    public function buildGrid(GridBuilder $builder, array $options = array());
+    public function buildGrid(GridBuilder $builder, array $options = []);
 
     /**
      * Configures the options for this type.
      *
      * @param OptionsResolver $resolver The resolver for the options
-     *
-     * @return void
      */
     public function configureOptions(OptionsResolver $resolver);
 

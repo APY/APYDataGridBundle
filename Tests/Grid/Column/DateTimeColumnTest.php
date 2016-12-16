@@ -1,4 +1,5 @@
 <?php
+
 namespace APY\DataGridBundle\Tests\Grid\Column;
 
 use APY\DataGridBundle\Grid\Column\DateTimeColumn;
@@ -56,11 +57,11 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
     public function provideDisplayInput()
     {
         $now = new \DateTime();
-        
-        return array(
-            array($now, $now->format('Y-m-d H:i:s')),
-            array('2016/01/01 12:13:14', '2016-01-01 12:13:14'),
-            array(1, '1970-01-01 00:00:01', 'UTC')
-        );
+
+        return [
+            [$now, $now->format('Y-m-d H:i:s')],
+            ['2016/01/01 12:13:14', '2016-01-01 12:13:14'],
+            [1, '1970-01-01 00:00:01', 'UTC'],
+        ];
     }
 }
