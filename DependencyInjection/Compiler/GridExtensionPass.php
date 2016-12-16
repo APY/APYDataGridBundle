@@ -12,9 +12,9 @@
 
 namespace APY\DataGridBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class GridExtensionPass implements CompilerPassInterface
 {
@@ -31,10 +31,10 @@ class GridExtensionPass implements CompilerPassInterface
         // afterward. If not, the globals from the extensions will never
         // be registered.
         $calls = $definition->getMethodCalls();
-        $definition->setMethodCalls(array());
+        $definition->setMethodCalls([]);
 
         foreach ($container->findTaggedServiceIds('grid.column.extension') as $id => $attributes) {
-            $definition->addMethodCall('addColumnExtension', array(new Reference($id)));
+            $definition->addMethodCall('addColumnExtension', [new Reference($id)]);
         }
 
         $definition->setMethodCalls(array_merge($definition->getMethodCalls(), $calls));

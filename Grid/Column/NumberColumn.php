@@ -16,7 +16,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class NumberColumn extends Column
 {
-    protected static $styles = array(
+    protected static $styles = [
         'decimal'    => \NumberFormatter::DECIMAL,
         'percent'    => \NumberFormatter::PERCENT,
         'money'      => \NumberFormatter::CURRENCY,
@@ -24,7 +24,7 @@ class NumberColumn extends Column
         'duration'   => \NumberFormatter::DURATION,
         'scientific' => \NumberFormatter::SCIENTIFIC,
         'spellout'   => \NumberFormatter::SPELLOUT,
-    );
+    ];
 
     protected $style;
 
@@ -63,7 +63,7 @@ class NumberColumn extends Column
             $this->setRuleSet($this->getParam('ruleSet', '%in-numerals')); // or '%with-words'
         }
 
-        $this->setOperators($this->getParam('operators', array(
+        $this->setOperators($this->getParam('operators', [
             self::OPERATOR_EQ,
             self::OPERATOR_NEQ,
             self::OPERATOR_LT,
@@ -74,13 +74,13 @@ class NumberColumn extends Column
             self::OPERATOR_BTWE,
             self::OPERATOR_ISNULL,
             self::OPERATOR_ISNOTNULL,
-        )));
+        ]));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_EQ));
     }
 
     public function isQueryValid($query)
     {
-        $result = array_filter((array) $query, "is_numeric");
+        $result = array_filter((array) $query, 'is_numeric');
 
         return !empty($result);
     }
@@ -108,7 +108,7 @@ class NumberColumn extends Column
                 $formatter->setTextAttribute(\NumberFormatter::DEFAULT_RULESET, $this->ruleSet);
             }
 
-            if($this->maxFractionDigits !== null){
+            if ($this->maxFractionDigits !== null) {
                 $formatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $this->maxFractionDigits);
             }
 
@@ -136,7 +136,7 @@ class NumberColumn extends Column
                 throw new TransformationFailedException($formatter->getErrorMessage());
             }
 
-            if (key_exists((string)$value, $this->values)) {
+            if (array_key_exists((string) $value, $this->values)) {
                 $value = $this->values[$value];
             }
 
@@ -150,8 +150,8 @@ class NumberColumn extends Column
     {
         $parentFilters = parent::getFilters($source);
 
-        $filters = array();
-        foreach($parentFilters as $filter) {
+        $filters = [];
+        foreach ($parentFilters as $filter) {
             // Transforme in number for ODM
             $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue($filter->getValue() + 0);
         }
