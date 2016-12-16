@@ -1,12 +1,12 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
 
 /**
- * Interface GridBuilderInterface
+ * Interface GridBuilderInterface.
  *
- * @package APY\DataGridBundle\Grid
  * @author  Quentin Ferrer
  */
 interface GridBuilderInterface
@@ -20,7 +20,7 @@ interface GridBuilderInterface
      *
      * @return GridBuilderInterface
      */
-    public function add($name, $type, array $options = array());
+    public function add($name, $type, array $options = []);
 
     /**
      * Returns a column.

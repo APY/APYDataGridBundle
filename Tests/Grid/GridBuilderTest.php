@@ -1,13 +1,12 @@
 <?php
+
 namespace APY\DataGridBundle\Grid\Tests;
 
 use APY\DataGridBundle\Grid\GridBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class GridBuilderTest
- *
- * @package APY\DataGridBundle\Tests
+ * Class GridBuilderTest.
  */
 class GridBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,7 +30,7 @@ class GridBuilderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('APY\DataGridBundle\Grid\Exception\UnexpectedTypeException');
 
         $this->builder->add('foo', 123);
-        $this->builder->add('foo', array('test'));
+        $this->builder->add('foo', ['test']);
     }
 
     public function testAddColumnTypeString()
@@ -40,7 +39,7 @@ class GridBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->factory->expects($this->once())
                       ->method('createColumn')
-                      ->with('foo', 'text', array())
+                      ->with('foo', 'text', [])
                       ->willReturn($this->getMock('APY\DataGridBundle\Grid\Column\Column'));
 
         $this->builder->add('foo', 'text');
@@ -59,7 +58,7 @@ class GridBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testAddIsFluent()
     {
-        $builder = $this->builder->add('name', 'text', array('key' => 'value'));
+        $builder = $this->builder->add('name', 'text', ['key' => 'value']);
         $this->assertSame($builder, $this->builder);
     }
 
@@ -79,7 +78,7 @@ class GridBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->factory->expects($this->once())
                       ->method('createColumn')
-                      ->with('foo', 'text', array())
+                      ->with('foo', 'text', [])
                       ->willReturn($expectedColumn);
 
         $this->builder->add('foo', 'text');
@@ -93,7 +92,7 @@ class GridBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->factory->expects($this->once())
                       ->method('createColumn')
-                      ->with('foo', 'text', array())
+                      ->with('foo', 'text', [])
                       ->willReturn($this->getMock('APY\DataGridBundle\Grid\Column\Column'));
 
         $this->builder->add('foo', 'text');
@@ -110,7 +109,7 @@ class GridBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->factory->expects($this->once())
                       ->method('createColumn')
-                      ->with('foo', 'text', array())
+                      ->with('foo', 'text', [])
                       ->willReturn($this->getMock('APY\DataGridBundle\Grid\Column\Column'));
 
         $this->builder->add('foo', 'text');
@@ -141,13 +140,13 @@ class GridBuilderTest extends \PHPUnit_Framework_TestCase
         $this->container = $this->getMock('Symfony\Component\DependencyInjection\Container');
         $this->container->expects($this->any())
                         ->method('get')
-                        ->will($this->returnCallback(function ($param) use($self) {
+                        ->will($this->returnCallback(function ($param) use ($self) {
                             switch ($param) {
                                 case 'router':
                                     return $self->getMock('Symfony\Component\Routing\RouterInterface');
                                     break;
                                 case 'request':
-                                    $request = new Request(array(), array(), array('key' => 'value'));
+                                    $request = new Request([], [], ['key' => 'value']);
 
                                     return $request;
                                     break;

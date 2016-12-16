@@ -1,10 +1,10 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 /**
- * Interface GridConfigBuilderInterface
+ * Interface GridConfigBuilderInterface.
  *
- * @package APY\DataGridBundle\Grid
  * @author  Quentin Ferrer
  */
 interface GridConfigBuilderInterface extends GridConfigInterface

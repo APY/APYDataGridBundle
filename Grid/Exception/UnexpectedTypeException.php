@@ -1,16 +1,16 @@
 <?php
+
 namespace APY\DataGridBundle\Grid\Exception;
 
 /**
- * Class UnexpectedTypeException
+ * Class UnexpectedTypeException.
  *
- * @package APY\DataGridBundle\Grid\Exception
  * @author  Quentin Ferrer
  */
 class UnexpectedTypeException extends \InvalidArgumentException
 {
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $value
      * @param int    $expectedType

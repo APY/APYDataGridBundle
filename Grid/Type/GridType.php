@@ -1,4 +1,5 @@
 <?php
+
 namespace APY\DataGridBundle\Grid\Type;
 
 use APY\DataGridBundle\Grid\AbstractType;
@@ -8,7 +9,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class for all grids type.
  *
- * @package APY\DataGridBundle
  * @author  Quentin Ferrer
  */
 class GridType extends AbstractType
@@ -16,7 +16,7 @@ class GridType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildGrid(GridBuilder $builder, array $options = array())
+    public function buildGrid(GridBuilder $builder, array $options = [])
     {
         $builder
             ->setRoute($options['route'])
@@ -41,32 +41,32 @@ class GridType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'source'           => null,
             'group_by'         => null,
             'sort_by'          => null,
             'order'            => 'asc',
             'page'             => 1,
             'route'            => '',
-            'route_parameters' => array(),
+            'route_parameters' => [],
             'persistence'      => false,
             'max_per_page'     => 10,
             'max_results'      => null,
             'filterable'       => true,
             'sortable'         => true,
-        ));
+        ]);
 
-        $allowedTypes = array(
-            'source' => array('null', 'APY\DataGridBundle\Grid\Source\Source'),
-            'group_by' => array('null', 'string', 'array'),
+        $allowedTypes = [
+            'source'           => ['null', 'APY\DataGridBundle\Grid\Source\Source'],
+            'group_by'         => ['null', 'string', 'array'],
             'route_parameters' => 'array',
-            'persistence' => 'bool',
-            'filterable' => 'bool',
-            'sortable' => 'bool',
-        );
-        $allowedValues = array(
-            'order' => array('asc', 'desc'),
-        );
+            'persistence'      => 'bool',
+            'filterable'       => 'bool',
+            'sortable'         => 'bool',
+        ];
+        $allowedValues = [
+            'order' => ['asc', 'desc'],
+        ];
         if (method_exists($resolver, 'setDefault')) {
             // Symfony 2.6.0 and up
             foreach ($allowedTypes as $option => $types) {
