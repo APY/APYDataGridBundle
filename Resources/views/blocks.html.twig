@@ -143,7 +143,7 @@
                     {% endif %}
                 {% endfor %}
             {% endset %}
-            <tr{% if row.color != '' %} style="background-color:{{ row.color }};"{% endif %} class="grid-row-cells {{ cycle(['odd', 'even'], loop.index) }}{% if row.class != '' %} {{ row.class }}{% endif %}">
+            <tr{% if row.color != '' %} style="background-color:{{ row.color }};"{% endif %} data-index="{{ loop.index }}" class="grid-row-cells {{ cycle(['odd', 'even'], loop.index) }}{% if row.class != '' %} {{ row.class }}{% endif %}">
             {{ gridColumns }}
         {% endspaceless %}
         </tr>
