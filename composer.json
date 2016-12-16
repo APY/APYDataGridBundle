@@ -17,9 +17,6 @@
         {
             "name": "Evan Owens",
             "email": "eaowens@gmail.com"
-        },{
-            "name": "APYDataGridBundle contributors",
-            "email": "https://github.com/APY/APYDataGridBundle/graphs/contributors"
         }
     ],
     "require": {
