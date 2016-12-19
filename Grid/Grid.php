@@ -632,7 +632,7 @@ class Grid implements GridInterface
                         $action->getParameters()
                     );
 
-                    $subRequest = $this->container->get('request')->duplicate([], null, $path);
+                    $subRequest = $this->request->duplicate([], null, $path);
 
                     $this->massActionResponse = $this->container->get('http_kernel')->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
                 } else {
