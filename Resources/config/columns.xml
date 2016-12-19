@@ -75,7 +75,7 @@
             <tag name="grid.column.extension" />
         </service>
 
-        <service id="grid.column.file" class="%grid.column.alert_number.class%" public="false">
+        <service id="grid.column.file" class="%grid.column.file.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
 
