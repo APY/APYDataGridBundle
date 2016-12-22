@@ -739,6 +739,7 @@ class Entity extends Source
                         natcasesort($values);
                     }
 
+                    $values = $this->prepareColumnValues($column, $values);
                     $column->setValues($values);
                 }
             }

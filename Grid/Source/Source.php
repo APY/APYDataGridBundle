@@ -469,7 +469,7 @@ abstract class Source implements DriverInterface
 
     public function populateSelectFiltersFromData($columns, $loop = false)
     {
-        /* @var $column Column */
+        /* @var $column Column\Column */
         foreach ($columns as $column) {
             $selectFrom = $column->getSelectFrom();
 
@@ -535,6 +535,7 @@ abstract class Source implements DriverInterface
                         natcasesort($values);
                     }
 
+                    $values = $this->prepareColumnValues($column, $values);
                     $column->setValues(array_unique($values));
                 }
             }
@@ -577,5 +578,16 @@ abstract class Source implements DriverInterface
         $noaccentStr = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $entStr);
 
         return preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $noaccentStr);
+    }
+
+    protected function prepareColumnValues(Column\Column $column, $values)
+    {
+        $existingValues = $column->getValues();
+        if (!empty($existingValues)) {
+            $intersect = array_intersect_key($existingValues, $values);
+            $values = array_replace($values, $intersect);
+        }
+
+        return $values;
     }
 }
