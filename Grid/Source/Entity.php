@@ -20,11 +20,11 @@ use APY\DataGridBundle\Grid\Rows;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpKernel\Kernel;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
 {
