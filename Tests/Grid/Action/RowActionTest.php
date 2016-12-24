@@ -62,7 +62,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->rowAction = new RowAction('foo', 'foo_route');
-        $this->row = $this->getMock('APY\DataGridBundle\Grid\Row');
+        $this->row = $this->createMock('APY\DataGridBundle\Grid\Row');
     }
 
     protected function tearDown()

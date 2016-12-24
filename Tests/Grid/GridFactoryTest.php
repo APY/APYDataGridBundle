@@ -11,6 +11,7 @@ use APY\DataGridBundle\Grid\GridFactory;
 use APY\DataGridBundle\Grid\GridRegistryInterface;
 use APY\DataGridBundle\Grid\GridTypeInterface;
 use APY\DataGridBundle\Grid\Type\GridType;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -21,7 +22,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 /**
  * Class GridFactoryTest.
  */
-class GridFactoryTest extends \PHPUnit_Framework_TestCase
+class GridFactoryTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -45,7 +46,7 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateWithUnexpectedType()
     {
-        $this->setExpectedException(UnexpectedTypeException::class);
+        $this->expectException(UnexpectedTypeException::class);
         $this->factory->create(1234);
         $this->factory->create(['foo']);
         $this->factory->create(new \stdClass());
@@ -56,7 +57,7 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
         $this->registry->expects($this->once())
                        ->method('getType')
                        ->with('foo')
-                       ->willReturn($this->getMock(GridTypeInterface::class));
+                       ->willReturn($this->createMock(GridTypeInterface::class));
 
         $this->assertInstanceOf(Grid::class, $this->factory->create('foo'));
     }
@@ -87,7 +88,7 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
         $givenOptions = ['a' => 1, 'b' => 2];
         $resolvedOptions = ['a' => 1, 'b' => 2, 'c' => 3];
 
-        $type = $this->getMock(GridTypeInterface::class);
+        $type = $this->createMock(GridTypeInterface::class);
 
         $type->expects($this->once())
              ->method('getName')
@@ -122,7 +123,7 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateColumnWithUnexpectedType()
     {
-        $this->setExpectedException(UnexpectedTypeException::class);
+        $this->expectException(UnexpectedTypeException::class);
         $this->factory->createColumn('foo', 1234);
     }
 
@@ -161,13 +162,13 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $self = $this;
 
-        $this->container = $this->getMock(Container::class);
+        $this->container = $this->createMock(Container::class);
         $this->container->expects($this->any())
             ->method('get')
             ->will($this->returnCallback(function ($param) use ($self) {
                 switch ($param) {
                     case 'router':
-                        return $self->getMock(RouterInterface::class);
+                        return $self->createMock(RouterInterface::class);
                         break;
                     case 'request_stack':
                         $request = new Request([], [], ['key' => 'value']);
@@ -177,13 +178,13 @@ class GridFactoryTest extends \PHPUnit_Framework_TestCase
                         return $requestStack;
                         break;
                     case 'security.authorization_checker':
-                        return $self->getMock(AuthorizationCheckerInterface::class);
+                        return $self->createMock(AuthorizationCheckerInterface::class);
                         break;
                 }
             }));
 
-        $this->registry = $this->getMock(GridRegistryInterface::class);
-        $this->builder = $this->getMock(GridBuilderInterface::class);
+        $this->registry = $this->createMock(GridRegistryInterface::class);
+        $this->builder = $this->createMock(GridBuilderInterface::class);
         $this->factory = new GridFactory($this->container, $this->registry);
     }
 }

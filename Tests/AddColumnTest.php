@@ -10,10 +10,10 @@ class AddColumnTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->col1 = $this->getMock(Column::class);
-        $this->col2 = $this->getMock(Column::class);
-        $this->col3 = $this->getMock(Column::class);
-        $this->newCol = $this->getMock(Column::class);
+        $this->col1 = $this->createMock(Column::class);
+        $this->col2 = $this->createMock(Column::class);
+        $this->col3 = $this->createMock(Column::class);
+        $this->newCol = $this->createMock(Column::class);
     }
 
     public function testAddColumnPositiveOffset()
@@ -67,7 +67,7 @@ class AddColumnTest extends \PHPUnit_Framework_TestCase
 
     protected function getBaseColumns()
     {
-        $authChecker = $this->getMock(AuthorizationCheckerInterface::class);
+        $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
 
         $columns = new Columns($authChecker);
         $columns->addColumn($this->col1);
