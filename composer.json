@@ -26,7 +26,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~5.7",
-        "friendsofphp/php-cs-fixer": "1.11.*"
+        "friendsofphp/php-cs-fixer": "1.11.*",
+        "satooshi/php-coveralls": "^1.0"
     },
     "suggest": {
         "ext-intl": "Translate the grid",

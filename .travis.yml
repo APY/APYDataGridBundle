@@ -19,6 +19,13 @@ before_install:
 install:
   - travis_retry composer self-update
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction
+  - curl -s http://getcomposer.org/installer | php
+  - php composer.phar install --dev --no-interaction
 
 script:
   - vendor/bin/phpunit
+  - mkdir -p build/logs
+  - php vendor/bin/phpunit -c phpunit.xml.dist
+
+after_success:
+  - travis_retry php vendor/bin/coveralls
