@@ -5,6 +5,7 @@
  *
  * (c) Abhoryo <abhoryo@free.fr>
  * (c) Stanislav Turza
+ * (c) Patryk Grudniewski <patgrudniewski@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,9 +19,11 @@ use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
@@ -505,12 +508,13 @@ class Entity extends Source
 
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
+        $hasJoin = $this->checkIfQueryHasFetchJoin($this->query);
 
         $query = $this->query->getQuery();
         foreach ($this->hints as $hintKey => $hintValue) {
             $query->setHint($hintKey, $hintValue);
         }
-        $items = $query->getResult();
+        $items = new Paginator($query, $hasJoin);
 
         $repository = $this->manager->getRepository($this->entityName);
 
@@ -834,5 +838,25 @@ class Entity extends Source
     public function getTableAlias()
     {
         return $this->tableAlias;
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @return boolean
+     */
+    protected function checkIfQueryHasFetchJoin(QueryBuilder $qb)
+    {
+        $join = $qb->getDqlPart('join');
+        if (empty($join)) {
+            return false;
+        }
+
+        foreach ($join[$this->getTableAlias()] as $join) {
+            if ($join->getJoinType() === Join::INNER_JOIN || $join->getJoinType() === Join::LEFT_JOIN) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
