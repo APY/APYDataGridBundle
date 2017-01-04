@@ -143,19 +143,21 @@
                     {% endif %}
                 {% endfor %}
             {% endset %}
-            {% if entityIdDataAttributePropertyPath is not defined %}
-                {% set dataEntityId = row.entity.id %}
-            {% else %}
-                {% set rowEntityFromPropertyPath = row.entity %}
-                {% set propertyPathGetters = entityIdDataAttributePropertyPath|split('.') %}
-                {% for getter in propertyPathGetters %}
-                    {% set rowEntityFromPropertyPath = attribute(rowEntityFromPropertyPath, getter)  %}
-                {% endfor %}
-                {% set dataEntityId = attribute(rowEntityFromPropertyPath, 'id') %}
+            {% if grid.source.getData is null %}
+                {% if entityIdDataAttributePropertyPath is not defined %}
+                    {% set dataEntityId = row.entity.id %}
+                {% else %}
+                    {% set rowEntityFromPropertyPath = row.entity %}
+                    {% set propertyPathGetters = entityIdDataAttributePropertyPath|split('.') %}
+                    {% for getter in propertyPathGetters %}
+                        {% set rowEntityFromPropertyPath = attribute(rowEntityFromPropertyPath, getter)  %}
+                    {% endfor %}
+                    {% set dataEntityId = attribute(rowEntityFromPropertyPath, 'id') %}
+                {% endif %}
             {% endif %}
             <tr{% if row.color != '' %} style="background-color:{{ row.color }};"{% endif %} data-index="{{ loop.index }}" class="grid-row-cells {{ cycle(['odd', 'even'], loop.index) }}{% if row.class != '' %} {{ row.class }}{% endif %}"
             {# il check su grid.source.getData fa si che row.entity NON venga chiamato su grid di tipo Vector #}
-            {% if grid.source.getData is null %} data-entity-id="{{ dataEntityId }}"{% endif %}>
+            {% if dataEntityId is defined %} data-entity-id="{{ dataEntityId }}"{% endif %}>
             {{ gridColumns }}
         {% endspaceless %}
         </tr>
