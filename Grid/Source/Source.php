@@ -12,7 +12,7 @@
 
 namespace APY\DataGridBundle\Grid\Source;
 
-use APY\DataGridBundle\Grid\Column;
+use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
@@ -260,7 +260,7 @@ abstract class Source implements DriverInterface
                     // Some attributes of the column can be changed in this function
                     $filters = $column->getFilters('vector');
 
-                    if ($column->getDataJunction() === Column\Column::DATA_DISJUNCTION) {
+                    if ($column->getDataJunction() === Column::DATA_DISJUNCTION) {
                         $disjunction = true;
                         $keep = false;
                     } else {
@@ -277,34 +277,34 @@ abstract class Source implements DriverInterface
                         if (!$dataIsNumeric && !($value instanceof \DateTime)) {
                             $value = $this->prepareStringForLikeCompare($value);
                             switch ($operator) {
-                                case Column\Column::OPERATOR_EQ:
+                                case Column::OPERATOR_EQ:
                                     $value = '/^' . preg_quote($value, '/') . '$/i';
                                     break;
-                                case Column\Column::OPERATOR_NEQ:
+                                case Column::OPERATOR_NEQ:
                                     $value = '/^(?!' . preg_quote($value, '/') . '$).*$/i';
                                     break;
-                                case Column\Column::OPERATOR_LIKE:
+                                case Column::OPERATOR_LIKE:
                                     $value = '/' . preg_quote($value, '/') . '/i';
                                     break;
-                                case Column\Column::OPERATOR_NLIKE:
+                                case Column::OPERATOR_NLIKE:
                                     $value = '/^((?!' . preg_quote($value, '/') . ').)*$/i';
                                     break;
-                                case Column\Column::OPERATOR_LLIKE:
+                                case Column::OPERATOR_LLIKE:
                                     $value = '/' . preg_quote($value, '/') . '$/i';
                                     break;
-                                case Column\Column::OPERATOR_RLIKE:
+                                case Column::OPERATOR_RLIKE:
                                     $value = '/^' . preg_quote($value, '/') . '/i';
                                     break;
-                                case Column\Column::OPERATOR_SLIKE:
+                                case Column::OPERATOR_SLIKE:
                                     $value = '/' . preg_quote($value, '/') . '/';
                                     break;
-                                case Column\Column::OPERATOR_NSLIKE:
+                                case Column::OPERATOR_NSLIKE:
                                     $value = '/^((?!' . preg_quote($value, '/') . ').)*$/';
                                     break;
-                                case Column\Column::OPERATOR_LSLIKE:
+                                case Column::OPERATOR_LSLIKE:
                                     $value = '/' . preg_quote($value, '/') . '$/';
                                     break;
-                                case Column\Column::OPERATOR_RSLIKE:
+                                case Column::OPERATOR_RSLIKE:
                                     $value = '/^' . preg_quote($value, '/') . '/';
                                     break;
                             }
@@ -312,44 +312,44 @@ abstract class Source implements DriverInterface
 
                         // Test
                         switch ($operator) {
-                            case Column\Column::OPERATOR_EQ:
+                            case Column::OPERATOR_EQ:
                                 if ($dataIsNumeric) {
                                     $found = abs($fieldValue - $value) < 0.00001;
                                     break;
                                 }
-                            case Column\Column::OPERATOR_NEQ:
+                            case Column::OPERATOR_NEQ:
                                 if ($dataIsNumeric) {
                                     $found = abs($fieldValue - $value) > 0.00001;
                                     break;
                                 }
-                            case Column\Column::OPERATOR_LIKE:
-                            case Column\Column::OPERATOR_NLIKE:
-                            case Column\Column::OPERATOR_LLIKE:
-                            case Column\Column::OPERATOR_RLIKE:
-                            case Column\Column::OPERATOR_SLIKE:
-                            case Column\Column::OPERATOR_NSLIKE:
-                            case Column\Column::OPERATOR_LSLIKE:
-                            case Column\Column::OPERATOR_RSLIKE:
+                            case Column::OPERATOR_LIKE:
+                            case Column::OPERATOR_NLIKE:
+                            case Column::OPERATOR_LLIKE:
+                            case Column::OPERATOR_RLIKE:
+                            case Column::OPERATOR_SLIKE:
+                            case Column::OPERATOR_NSLIKE:
+                            case Column::OPERATOR_LSLIKE:
+                            case Column::OPERATOR_RSLIKE:
                                 $fieldValue = $this->prepareStringForLikeCompare($fieldValue, $column->getType());
 
                                 $found = preg_match($value, $fieldValue);
                                 break;
-                            case Column\Column::OPERATOR_GT:
+                            case Column::OPERATOR_GT:
                                 $found = $fieldValue > $value;
                                 break;
-                            case Column\Column::OPERATOR_GTE:
+                            case Column::OPERATOR_GTE:
                                 $found = $fieldValue >= $value;
                                 break;
-                            case Column\Column::OPERATOR_LT:
+                            case Column::OPERATOR_LT:
                                 $found = $fieldValue < $value;
                                 break;
-                            case Column\Column::OPERATOR_LTE:
+                            case Column::OPERATOR_LTE:
                                 $found = $fieldValue <= $value;
                                 break;
-                            case Column\Column::OPERATOR_ISNULL:
+                            case Column::OPERATOR_ISNULL:
                                 $found = $fieldValue === null;
                                 break;
-                            case Column\Column::OPERATOR_ISNOTNULL:
+                            case Column::OPERATOR_ISNOTNULL:
                                 $found = $fieldValue !== null;
                                 break;
                         }
@@ -478,7 +478,7 @@ abstract class Source implements DriverInterface
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('vector') as $filter) {
-                        if (in_array($filter->getOperator(), [Column\Column::OPERATOR_NEQ, Column\Column::OPERATOR_NLIKE, Column\Column::OPERATOR_NSLIKE])) {
+                        if (in_array($filter->getOperator(), [Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE, Column::OPERATOR_NSLIKE])) {
                             $selectFrom = 'source';
                             break;
                         }

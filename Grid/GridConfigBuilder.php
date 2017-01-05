@@ -189,11 +189,11 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * Set RouteParameters.
      *
-     * @param mixed $routeParameters
+     * @param array $routeParameters
      *
      * @return $this
      */
-    public function setRouteParameters($routeParameters)
+    public function setRouteParameters(array $routeParameters)
     {
         $this->routeParameters = $routeParameters;
 
