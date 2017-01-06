@@ -66,13 +66,14 @@ class Row
      */
     public function getPrimaryKeyValue()
     {
-        $primaryField = $this->getPrimaryFieldValue();
+        $primaryFieldValue = $this->getPrimaryFieldValue();
 
-        if (is_array($primaryField)) {
-            return $primaryField;
+        if (is_array($primaryFieldValue)) {
+            return $primaryFieldValue;
         }
 
-        return ['id' => $primaryField];
+        // @todo: is that correct? shouldn't be [$this->primaryField => $primaryFieldValue] ??
+        return ['id' => $primaryFieldValue];
     }
 
     /**
@@ -88,6 +89,10 @@ class Row
 
         if (is_array($this->primaryField)) {
             return array_intersect_key($this->fields, array_flip($this->primaryField));
+        }
+
+        if (!isset($this->fields[$this->primaryField])) {
+            throw new \InvalidArgumentException('Primary field not added to fields');
         }
 
         return $this->fields[$this->primaryField];
@@ -114,26 +119,26 @@ class Row
     }
 
     /**
-     * @param mixed $rowId
+     * @param mixed $columnId
      * @param mixed $value
      *
      * @return $this
      */
-    public function setField($rowId, $value)
+    public function setField($columnId, $value)
     {
-        $this->fields[$rowId] = $value;
+        $this->fields[$columnId] = $value;
 
         return $this;
     }
 
     /**
-     * @param mixed $rowId
+     * @param mixed $columnId
      *
      * @return mixed
      */
-    public function getField($rowId)
+    public function getField($columnId)
     {
-        return isset($this->fields[$rowId]) ? $this->fields[$rowId] : '';
+        return isset($this->fields[$columnId]) ? $this->fields[$columnId] : '';
     }
 
     /**
@@ -189,7 +194,7 @@ class Row
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getLegend()
     {
