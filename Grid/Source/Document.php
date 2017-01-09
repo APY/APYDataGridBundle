@@ -32,7 +32,7 @@ class Document extends Source
     protected $manager;
 
     /**
-     * e.g. Base\Cms\Document\Page
+     * e.g. Base\Cms\Document\Page.
      */
     protected $class;
 
@@ -42,7 +42,7 @@ class Document extends Source
     protected $odmMetadata;
 
     /**
-     * e.g. Cms:Page
+     * e.g. Cms:Page.
      */
     protected $documentName;
 
@@ -64,12 +64,12 @@ class Document extends Source
     /**
      * @var array
      */
-    protected $referencedColumns = array();
+    protected $referencedColumns = [];
 
     /**
      * @var array
      */
-    protected $referencedMappings = array();
+    protected $referencedMappings = [];
 
     /**
      * @param string $documentName e.g. "Cms:Page"
@@ -93,7 +93,6 @@ class Document extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Columns $columns
-     * @return null
      */
     public function getColumns($columns)
     {
@@ -139,13 +138,13 @@ class Document extends Source
             case Column::OPERATOR_RLIKE:
                 return new \MongoRegex('/^' . $value . '/i');
             case Column::OPERATOR_LLIKE:
-                return new \MongoRegex('/'.$value.'$/i');
+                return new \MongoRegex('/' . $value . '$/i');
             case Column::OPERATOR_SLIKE:
-                return new \MongoRegex('/'.$value.'/');
+                return new \MongoRegex('/' . $value . '/');
             case Column::OPERATOR_RSLIKE:
-                return new \MongoRegex('/^'.$value.'/');
+                return new \MongoRegex('/^' . $value . '/');
             case Column::OPERATOR_LSLIKE:
-                return new \MongoRegex('/'.$value.'$/');
+                return new \MongoRegex('/' . $value . '$/');
             case Column::OPERATOR_ISNULL:
                 return false;
             case Column::OPERATOR_ISNOTNULL:
@@ -156,7 +155,8 @@ class Document extends Source
     }
 
     /**
-     * Sets the initial QueryBuilder for this DataGrid
+     * Sets the initial QueryBuilder for this DataGrid.
+     *
      * @param QueryBuilder $queryBuilder
      */
     public function initQueryBuilder(QueryBuilder $queryBuilder)
@@ -182,9 +182,10 @@ class Document extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int $page Page Number
-     * @param int $limit Rows Per Page
-     * @param int $gridDataJunction  Grid data junction
+     * @param int                                      $page             Page Number
+     * @param int                                      $limit            Rows Per Page
+     * @param int                                      $gridDataJunction Grid data junction
+     *
      * @return \APY\DataGridBundle\Grid\Rows
      */
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
@@ -225,7 +226,6 @@ class Document extends Source
                     } else {
                         $this->query->field($column->getField())->$operator($value);
                     }
-
                 }
             }
         }
@@ -276,7 +276,7 @@ class Document extends Source
     }
 
     /**
-     * @param array  $subColumn
+     * @param array $subColumn
      * @param Column \APY\DataGridBundle\Grid\Column\Column
      */
     protected function addReferencedColumnn(array $subColumn, Column $column)
@@ -306,15 +306,16 @@ class Document extends Source
                         $this->query->addOr($this->query->expr()->field($subColumn[0])->references($resource));
                     }
                 }
-
             }
         }
     }
 
     /**
-     * @param \APY\DataGridBundle\Grid\Row    $row
-     * @param Document $resource
+     * @param \APY\DataGridBundle\Grid\Row $row
+     * @param Document                     $resource
+     *
      * @throws \Exception if getter for field does not exists
+     *
      * @return \APY\DataGridBundle\Grid\Row $row with referenced fields
      */
     protected function addReferencedFields(Row $row, $resource)
@@ -341,7 +342,7 @@ class Document extends Source
     public function getTotalCount($maxResults = null)
     {
         if ($maxResults !== null) {
-            return min(array($maxResults, $this->count));
+            return min([$maxResults, $this->count]);
         }
 
         return $this->count;
@@ -351,7 +352,7 @@ class Document extends Source
     {
         $reflect = new \ReflectionClass($obj);
         $props = $reflect->getProperties();
-        $result = array();
+        $result = [];
 
         foreach ($props as $property) {
             $property->setAccessible(true);
@@ -363,11 +364,11 @@ class Document extends Source
 
     public function getFieldsMetadata($class, $group = 'default')
     {
-        $result = array();
+        $result = [];
         foreach ($this->odmMetadata->getReflectionProperties() as $property) {
             $name = $property->getName();
             $mapping = $this->odmMetadata->getFieldMapping($name);
-            $values = array('title' => $name, 'source' => true);
+            $values = ['title' => $name, 'source' => true];
 
             if (isset($mapping['fieldName'])) {
                 $values['field'] = $mapping['fieldName'];
@@ -445,7 +446,7 @@ class Document extends Source
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('document') as $filter) {
-                        if (in_array($filter->getOperator(), array(Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE,Column::OPERATOR_NSLIKE))) {
+                        if (in_array($filter->getOperator(), [Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE, Column::OPERATOR_NSLIKE])) {
                             $selectFrom = 'source';
                             break;
                         }
@@ -456,16 +457,15 @@ class Document extends Source
                 $query = ($selectFrom === 'source') ? clone $queryFromSource : clone $queryFromQuery;
 
                 $result = $query->select($column->getField())
-                                ->distinct($column->getField())
-                                ->sort($column->getField(), 'asc')
-                                ->skip(null)
-                                ->limit(null)
-                                ->getQuery()
-                                ->execute();
+                    ->distinct($column->getField())
+                    ->sort($column->getField(), 'asc')
+                    ->skip(null)
+                    ->limit(null)
+                    ->getQuery()
+                    ->execute();
 
-                $values = array();
+                $values = [];
                 foreach ($result as $value) {
-
                     switch ($column->getType()) {
                         case 'number':
                             $values[$value] = $column->getDisplayedValue($value);
@@ -478,7 +478,7 @@ class Document extends Source
                             }
 
                             // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
-                            if (is_array($value) && array_keys($value) == array('t', 'i')) {
+                            if (is_array($value) && array_keys($value) == ['t', 'i']) {
                                 $value = $value['i'];
                             }
 
@@ -495,6 +495,7 @@ class Document extends Source
                     $column->setSelectFrom('source');
                     $this->populateSelectFilters($columns, true);
                 } else {
+                    $values = $this->prepareColumnValues($column, $values);
                     $column->setValues($values);
                 }
             }

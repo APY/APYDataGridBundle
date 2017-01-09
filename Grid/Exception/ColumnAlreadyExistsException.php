@@ -1,10 +1,10 @@
 <?php
+
 namespace APY\DataGridBundle\Grid\Exception;
 
 /**
- * Class ColumnAlreadyExistsException
+ * Class ColumnAlreadyExistsException.
  *
- * @package APY\DataGridBundle\Grid\Exception
  * @author  Quentin Ferrer
  */
 class ColumnAlreadyExistsException extends \InvalidArgumentException

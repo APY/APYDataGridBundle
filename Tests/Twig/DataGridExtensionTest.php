@@ -1,19 +1,17 @@
 <?php
+
 namespace APY\DataGridBundle\Tests\Twig;
 
-use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Twig\DataGridExtension;
 
 /**
- * Class DataGridExtensionTest
+ * Class DataGridExtensionTest.
  *
- * @package APY\DataGridBundle\Tests\Twig
  *
  * @author Quentin FERRER
  */
 class DataGridExtensionTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var DataGridExtension
      */
@@ -27,11 +25,11 @@ class DataGridExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testGetGridUrl()
     {
-        $baseUrl  = 'http://localhost';
+        $baseUrl = 'http://localhost';
         $gridHash = 'my_grid';
 
         // Creates grid
-        $grid = $this->getMock('APY\DataGridBundle\Grid\Grid', array(), array(), '', false);
+        $grid = $this->getMock('APY\DataGridBundle\Grid\Grid', [], [], '', false);
         $grid->expects($this->any())->method('getRouteUrl')->willReturn($baseUrl);
         $grid->expects($this->any())->method('getHash')->willReturn($gridHash);
 

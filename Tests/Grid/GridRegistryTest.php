@@ -1,12 +1,11 @@
 <?php
+
 namespace APY\DataGridBundle\Tests\Grid;
 
 use APY\DataGridBundle\Grid\GridRegistry;
 
 /**
- * Class GridRegistryTest
- *
- * @package APY\DataGridBundle\Tests\Grid
+ * Class GridRegistryTest.
  */
 class GridRegistryTest extends \PHPUnit_Framework_TestCase
 {

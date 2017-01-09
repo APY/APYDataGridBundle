@@ -45,6 +45,7 @@ class GridManager implements \IteratorAggregate, \Countable
 
     /**
      * @param mixed $id
+     *
      * @return Grid
      */
     public function createGrid($id = null)
@@ -66,7 +67,7 @@ class GridManager implements \IteratorAggregate, \Countable
             throw new \RuntimeException('No grid has been added to the manager.');
         }
 
-        $checkHash = array();
+        $checkHash = [];
 
         $isReadyForRedirect = false;
         $this->grids->rewind();
@@ -102,7 +103,7 @@ class GridManager implements \IteratorAggregate, \Countable
             throw new \RuntimeException('No grid has been added to the manager.');
         }
 
-        $checkHash = array();
+        $checkHash = [];
 
         $this->grids->rewind();
         while ($this->grids->valid()) {
@@ -147,9 +148,9 @@ class GridManager implements \IteratorAggregate, \Countable
     /**
      * Renders a view.
      *
-     * @param string|array $param1 The view name or an array of parameters to pass to the view
-     * @param string|array $param1 The view name or an array of parameters to pass to the view
-     * @param Response $response A response instance
+     * @param string|array $param1   The view name or an array of parameters to pass to the view
+     * @param string|array $param2   The view name or an array of parameters to pass to the view
+     * @param Response     $response A response instance
      *
      * @return Response A Response instance
      */
@@ -179,9 +180,9 @@ class GridManager implements \IteratorAggregate, \Countable
             $i = 1;
             $this->grids->rewind();
             while ($this->grids->valid()) {
-                $parameters = array_merge(array('grid'.$i => $this->grids->current()), $parameters);
+                $parameters = array_merge(['grid' . $i => $this->grids->current()], $parameters);
                 $this->grids->next();
-                $i++;
+                ++$i;
             }
 
             if ($view === null) {

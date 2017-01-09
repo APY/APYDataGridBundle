@@ -14,7 +14,7 @@ namespace APY\DataGridBundle\Grid\Column;
 
 class JoinColumn extends TextColumn
 {
-    protected $joinColumns = array();
+    protected $joinColumns = [];
 
     protected $dataJunction = self::DATA_DISJUNCTION;
 
@@ -22,24 +22,26 @@ class JoinColumn extends TextColumn
     {
         parent::__initialize($params);
 
-        $this->setJoinColumns($this->getParam('columns', array()));
+        $this->setJoinColumns($this->getParam('columns', []));
         $this->setSeparator($this->getParam('separator', '&nbsp;'));
 
         $this->setVisibleForSource(true);
         $this->setIsManualField(true);
     }
 
-    public function setJoinColumns(array $columns) {
+    public function setJoinColumns(array $columns)
+    {
         $this->joinColumns = $columns;
     }
 
-    public function getJoinColumns() {
+    public function getJoinColumns()
+    {
         return $this->joinColumns;
     }
 
     public function getFilters($source)
     {
-        $filters = array();
+        $filters = [];
 
         // Apply same filters on each column
         foreach ($this->joinColumns as $columnName) {

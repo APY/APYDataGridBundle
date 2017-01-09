@@ -13,7 +13,7 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 /**
- * Comma-Separated Values
+ * Comma-Separated Values.
  */
 class CSVExport extends DSVExport
 {
