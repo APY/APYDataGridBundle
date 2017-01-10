@@ -403,7 +403,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     protected function renderBlock($name, $parameters)
     {
         foreach ($this->getTemplates() as $template) {
-            if ($template->hasBlock($name)) {
+            if ($template->hasBlock($name, [])) {
                 return $template->renderBlock($name, array_merge($parameters, $this->params));
             }
         }
