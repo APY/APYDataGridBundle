@@ -384,7 +384,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     protected function hasBlock($name)
     {
         foreach ($this->getTemplates() as $template) {
-            if ($template->hasBlock($name)) {
+            if ($template->hasBlock($name, [])) {
                 return true;
             }
         }
