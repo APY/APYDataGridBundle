@@ -13,19 +13,21 @@
 
 namespace APY\DataGridBundle\Grid;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-
 use APY\DataGridBundle\Grid\Action\MassActionInterface;
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
+use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
-use APY\DataGridBundle\Grid\Column\ActionsColumn;
-use APY\DataGridBundle\Grid\Source\Source;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
+use APY\DataGridBundle\Grid\Source\Entity;
+use APY\DataGridBundle\Grid\Source\Source;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class Grid
+class Grid implements GridInterface
 {
     const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
     const REQUEST_QUERY_MASS_ACTION = '__action_id';
@@ -88,9 +90,9 @@ class Grid
     protected $source;
 
     /**
-     * @var boolean
+     * @var bool
      */
-     protected $prepared = false;
+    protected $prepared = false;
 
     /**
      * @var int
@@ -110,7 +112,7 @@ class Grid
     /**
      * @var array
      */
-    protected $limits = array();
+    protected $limits = [];
 
     /**
      * @var \APY\DataGridBundle\Grid\Columns|\APY\DataGridBundle\Grid\Column\Column[]
@@ -125,20 +127,20 @@ class Grid
     /**
      * @var \APY\DataGridBundle\Grid\Action\MassAction[]
      */
-    protected $massActions = array();
+    protected $massActions = [];
 
     /**
      * @var \APY\DataGridBundle\Grid\Action\RowAction[]
      */
-    protected $rowActions = array();
+    protected $rowActions = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $showFilters = true;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $showTitles = true;
 
@@ -150,7 +152,7 @@ class Grid
     /**
      * @var array|object session
      */
-    protected $sessionData;
+    protected $sessionData = [];
 
     /**
      * @var string
@@ -158,12 +160,12 @@ class Grid
     protected $prefixTitle = '';
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $persistence = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $newSession = false;
 
@@ -180,15 +182,15 @@ class Grid
     /**
      * @var \APY\DataGridBundle\Grid\Export\Export[]
      */
-    protected $exports = array();
+    protected $exports = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $redirect = null;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isReadyForExport = false;
 
@@ -210,87 +212,99 @@ class Grid
     /**
      * @var array
      */
-    protected $items = array();
+    protected $items = [];
 
     /**
-     * Data junction of the grid
+     * Data junction of the grid.
      *
      * @var int
      */
     protected $dataJunction = Column::DATA_CONJUNCTION;
 
     /**
-     * Permanent filters
+     * Permanent filters.
      *
      * @var array
      */
-    protected $permanentFilters = array();
+    protected $permanentFilters = [];
 
     /**
-     * Default filters
+     * Default filters.
      *
      * @var array
      */
-    protected $defaultFilters = array();
+    protected $defaultFilters = [];
 
     /**
-     * Default order (e.g. my_column_id|asc)
+     * Default order (e.g. my_column_id|asc).
      *
      * @var string
      */
     protected $defaultOrder;
 
     /**
-     * Default limit
+     * Default limit.
      *
-     * @var integer
+     * @var int
      */
     protected $defaultLimit;
 
     /**
-     * Default page
+     * Default page.
      *
      * @var int
      */
     protected $defaultPage;
 
     /**
-     * Tweaks
+     * Tweaks.
      *
      * @var array
      */
-    protected $tweaks = array();
+    protected $tweaks = [];
 
     /**
-     * Default Tweak
+     * Default Tweak.
      *
      * @var string
      */
     protected $defaultTweak;
 
     /**
-     * Filters in session
+     * Filters in session.
+     *
      * @var array
      */
     protected $sessionFilters;
 
     // Lazy parameters
-    protected $lazyAddColumn = array();
-    protected $lazyHiddenColumns = array();
-    protected $lazyVisibleColumns = array();
-    protected $lazyHideShowColumns = array();
+    protected $lazyAddColumn = [];
+    protected $lazyHiddenColumns = [];
+    protected $lazyVisibleColumns = [];
+    protected $lazyHideShowColumns = [];
 
     // Lazy parameters for the action column
     protected $actionsColumnSize;
     protected $actionsColumnTitle;
 
     /**
-     * @param \Symfony\Component\DependencyInjection\Container $container
-     * @param string $id set if you are using more then one grid inside controller
+     * The grid configuration.
+     *
+     * @var GridConfigInterface
      */
-    public function __construct($container, $id = '')
+    private $config;
+
+    /**
+     * Constructor.
+     *
+     * @param Container                $container
+     * @param string                   $id        set if you are using more then one grid inside controller
+     * @param GridConfigInterface|null $config    The grid configuration.
+     */
+    public function __construct($container, $id = '', GridConfigInterface $config = null)
     {
         $this->container = $container;
+        $this->config = $config;
 
         $this->router = $container->get('router');
         $this->request = $container->get('request');
@@ -310,13 +324,129 @@ class Grid
     }
 
     /**
-     * Sets Source to the Grid
+     * {@inheritdoc}
+     */
+    public function initialize()
+    {
+        $config = $this->config;
+
+        if (!$config) {
+            return $this;
+        }
+
+        $this->setPersistence($config->isPersisted());
+
+        // Route
+        if (null != $config->getRoute()) {
+            $this->setRouteUrl($this->router->generate($config->getRoute()));
+        }
+
+        // Route parameters
+        $routeParameters = $config->getRouteParameters();
+        if (!empty($routeParameters)) {
+            foreach ($routeParameters as $parameter => $value) {
+                $this->setRouteParameter($parameter, $value);
+            }
+        }
+
+        // Columns
+        foreach ($this->lazyAddColumn as $columnInfo) {
+            /** @var Column $column */
+            $column = $columnInfo['column'];
+
+            if (!$config->isFilterable()) {
+                $column->setFilterable(false);
+            }
+
+            if (!$config->isSortable()) {
+                $column->setSortable(false);
+            }
+        }
+
+        // Source
+        $source = $config->getSource();
+
+        if (null != $source) {
+            $this->source = $source;
+
+            $source->initialise($this->container);
+
+            if ($source instanceof Entity) {
+                $groupBy = $config->getGroupBy();
+                if (null != $groupBy) {
+                    if (!is_array($groupBy)) {
+                        $groupBy = [$groupBy];
+                    }
+
+                    // Must be set after source because initialize method reset groupBy property
+                    $source->setGroupBy($groupBy);
+                }
+            }
+        }
+
+        // Order
+        if (null != $config->getSortBy()) {
+            $this->setDefaultOrder($config->getSortBy(), $config->getOrder());
+        }
+
+        if (null != $config->getMaxPerPage()) {
+            $this->setLimits($config->getMaxPerPage());
+        }
+
+        $this
+            ->setMaxResults($config->getMaxResults())
+            ->setPage($config->getPage());
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handleRequest(Request $request)
+    {
+        if (null === $this->source) {
+            throw new \LogicException('The source of the grid must be set.');
+        }
+
+        $this->request = $request;
+        $this->session = $request->getSession();
+
+        $this->createHash();
+
+        $this->requestData = $request->get($this->hash);
+
+        $this->processPersistence();
+
+        $this->sessionData = (array) $this->session->get($this->hash);
+
+        $this->processLazyParameters();
+
+        if (!empty($this->requestData)) {
+            $this->processRequestData();
+        }
+
+        if ($this->newSession) {
+            $this->setDefaultSessionData();
+        }
+
+        $this->processPermanentFilters();
+
+        $this->processSessionData();
+
+        $this->prepare();
+
+        return $this;
+    }
+
+    /**
+     * Sets Source to the Grid.
      *
      * @param $source
      *
-     * @return self
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return self
      */
     public function setSource(Source $source)
     {
@@ -389,7 +519,7 @@ class Grid
 
     protected function getCurrentUri()
     {
-        return $this->request->getScheme().'://'.$this->request->getHttpHost().$this->request->getBaseUrl().$this->request->getPathInfo();
+        return $this->request->getScheme() . '://' . $this->request->getHttpHost() . $this->request->getBaseUrl() . $this->request->getPathInfo();
     }
 
     protected function processPersistence()
@@ -398,7 +528,7 @@ class Grid
 
         // Persistence or reset - kill previous session
         if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $referer != $this->getCurrentUri())
-         || isset($this->requestData[self::REQUEST_QUERY_RESET])) {
+            || isset($this->requestData[self::REQUEST_QUERY_RESET])) {
             $this->session->remove($this->hash);
         }
 
@@ -421,7 +551,7 @@ class Grid
 
         // Visible columns
         if (!empty($this->lazyVisibleColumns)) {
-            $columnNames = array();
+            $columnNames = [];
             foreach ($this->columns as $column) {
                 $columnNames[] = $column->getId();
             }
@@ -444,7 +574,7 @@ class Grid
     {
         $this->processMassActions($this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION));
 
-        if ($this->processExports($this->getFromRequest(Grid::REQUEST_QUERY_EXPORT))
+        if ($this->processExports($this->getFromRequest(self::REQUEST_QUERY_EXPORT))
             || $this->processTweaks($this->getFromRequest(self::REQUEST_QUERY_TWEAK))) {
             return;
         }
@@ -461,7 +591,7 @@ class Grid
     }
 
     /**
-     * Process mass actions
+     * Process mass actions.
      *
      * @param int $actionId
      *
@@ -473,29 +603,36 @@ class Grid
         if ($actionId > -1 && '' !== $actionId) {
             if (array_key_exists($actionId, $this->massActions)) {
                 $action = $this->massActions[$actionId];
-                $actionAllKeys = (boolean)$this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
-                $actionKeys = $actionAllKeys == false ? (array) $this->getFromRequest(MassActionColumn::ID) : array();
+                $actionAllKeys = (boolean) $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
+                $actionKeys = $actionAllKeys == false ? array_keys((array) $this->getFromRequest(MassActionColumn::ID)) : [];
 
                 $this->processSessionData();
                 if ($actionAllKeys) {
                     $this->page = 0;
                     $this->limit = 0;
                 }
+
                 $this->prepare();
 
+                if ($actionAllKeys == true) {
+                    foreach ($this->rows as $row) {
+                        $actionKeys[] = $row->getPrimaryFieldValue();
+                    }
+                }
+
                 if (is_callable($action->getCallback())) {
-                    $this->massActionResponse = call_user_func($action->getCallback(), array_keys($actionKeys), $actionAllKeys, $this->session, $action->getParameters());
+                    $this->massActionResponse = call_user_func($action->getCallback(), $actionKeys, $actionAllKeys, $this->session, $action->getParameters());
                 } elseif (strpos($action->getCallback(), ':') !== false) {
                     $path = array_merge(
-                        array(
-                            'primaryKeys'    => array_keys($actionKeys),
+                        [
+                            'primaryKeys'    => $actionKeys,
                             'allPrimaryKeys' => $actionAllKeys,
-                            '_controller'    => $action->getCallback()
-                        ),
+                            '_controller'    => $action->getCallback(),
+                        ],
                         $action->getParameters()
                     );
 
-                    $subRequest = $this->container->get('request')->duplicate(array(), null, $path);
+                    $subRequest = $this->container->get('request')->duplicate([], null, $path);
 
                     $this->massActionResponse = $this->container->get('http_kernel')->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
                 } else {
@@ -508,13 +645,13 @@ class Grid
     }
 
     /**
-     * Process exports
+     * Process exports.
      *
      * @param int $exportId
      *
-     * @return boolean
-     *
      * @throws \OutOfBoundsException
+     *
+     * @return bool
      */
     protected function processExports($exportId)
     {
@@ -545,13 +682,13 @@ class Grid
     }
 
     /**
-     * Process tweaks
+     * Process tweaks.
      *
      * @param int $tweakId
      *
-     * @return boolean
-     *
      * @throws \OutOfBoundsException
+     *
+     * @return bool
      */
     protected function processTweaks($tweakId)
     {
@@ -561,12 +698,12 @@ class Grid
                 $saveAsActive = false;
 
                 if (isset($tweak['reset'])) {
-                    $this->sessionData = array();
+                    $this->sessionData = [];
                     $this->session->remove($this->hash);
                 }
 
                 if (isset($tweak['filters'])) {
-                    $this->defaultFilters = array();
+                    $this->defaultFilters = [];
                     $this->setDefaultFilters($tweak['filters']);
                     $this->processDefaultFilters();
                     $saveAsActive = true;
@@ -660,6 +797,17 @@ class Grid
                 // Get data from request
                 $data = $this->getFromRequest($ColumnId);
 
+                //if no item is selectd in multi select filter : simulate empty first choice
+                if ($column->getFilterType() == 'select'
+                    && $column->getSelectMulti() == true
+                    && $data == null
+                    && $this->getFromRequest(self::REQUEST_QUERY_PAGE) == null
+                    && $this->getFromRequest(self::REQUEST_QUERY_ORDER) == null
+                    && $this->getFromRequest(self::REQUEST_QUERY_LIMIT) == null
+                    && ($this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == null || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == '-1')) {
+                    $data = ['from' => ''];
+                }
+
                 // Store in the session
                 $this->set($ColumnId, $data);
 
@@ -677,9 +825,9 @@ class Grid
     {
         // Set to the first page if this is a request of order, limit, mass action or filtering
         if ($this->getFromRequest(self::REQUEST_QUERY_ORDER) !== null
-         || $this->getFromRequest(self::REQUEST_QUERY_LIMIT) !== null
-         || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) !== null
-         || $filtering) {
+            || $this->getFromRequest(self::REQUEST_QUERY_LIMIT) !== null
+            || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) !== null
+            || $filtering) {
             $this->set(self::REQUEST_QUERY_PAGE, 0);
         } else {
             $this->set(self::REQUEST_QUERY_PAGE, $page);
@@ -692,7 +840,7 @@ class Grid
             list($columnId, $columnOrder) = explode('|', $order);
 
             $column = $this->columns->getColumnById($columnId);
-            if ($column->isSortable() && in_array(strtolower($columnOrder), array('asc', 'desc'))) {
+            if ($column->isSortable() && in_array(strtolower($columnOrder), ['asc', 'desc'])) {
                 $this->set(self::REQUEST_QUERY_ORDER, $order);
             }
         }
@@ -724,7 +872,7 @@ class Grid
             list($columnId, $columnOrder) = explode('|', $this->defaultOrder);
 
             $this->columns->getColumnById($columnId);
-            if (in_array(strtolower($columnOrder), array('asc', 'desc'))) {
+            if (in_array(strtolower($columnOrder), ['asc', 'desc'])) {
                 $this->set(self::REQUEST_QUERY_ORDER, $this->defaultOrder);
             } else {
                 throw new \InvalidArgumentException($columnOrder . ' is not a valid order.');
@@ -750,8 +898,8 @@ class Grid
         $this->saveSession();
     }
 
-     /**
-     * Store permanent filters to the session and disable the filter capability for the column if there are permanent filters
+    /**
+     * Store permanent filters to the session and disable the filter capability for the column if there are permanent filters.
      */
     protected function processFilters($permanent = true)
     {
@@ -766,7 +914,7 @@ class Grid
 
             // Convert simple value
             if (!is_array($value) || !is_string(key($value))) {
-                $value = array('from' => $value);
+                $value = ['from' => $value];
             }
 
             // Convert boolean value
@@ -777,11 +925,11 @@ class Grid
             // Convert simple value with select filter
             if ($column->getFilterType() === 'select') {
                 if (isset($value['from']) && !is_array($value['from'])) {
-                    $value['from'] = array($value['from']);
+                    $value['from'] = [$value['from']];
                 }
 
                 if (isset($value['to']) && !is_array($value['to'])) {
-                    $value['to'] = array($value['to']);
+                    $value['to'] = [$value['to']];
                 }
             }
 
@@ -836,11 +984,11 @@ class Grid
     }
 
     /**
-     * Prepare Grid for Drawing
-     *
-     * @return self
+     * Prepare Grid for Drawing.
      *
      * @throws \Exception
+     *
+     * @return self
      */
     protected function prepare()
     {
@@ -957,13 +1105,15 @@ class Grid
     /**
      * Writes data to the session.
      *
-     * @param string $key A unique key identifying the data
-     * @param mixed $data Data associated with the key
+     * @param string $key  A unique key identifying the data
+     * @param mixed  $data Data associated with the key
      */
     protected function set($key, $data)
     {
         // Only the filters values are removed from the session
-        if (isset($data['from']) && ((is_string($data['from']) && $data['from'] === '') || (is_array($data['from']) && $data['from'][0] === ''))) {
+        $fromIsEmpty = isset($data['from']) && ((is_string($data['from']) && $data['from'] === '') || (is_array($data['from']) && $data['from'][0] === ''));
+        $toIsSet = isset($data['to']) && (is_string($data['to']) && $data['to'] !== '');
+        if ($fromIsEmpty && !$toIsSet) {
             if (array_key_exists($key, $this->sessionData)) {
                 unset($this->sessionData[$key]);
             }
@@ -981,7 +1131,7 @@ class Grid
 
     protected function createHash()
     {
-        $this->hash = 'grid_'. (empty($this->id) ? md5($this->request->get('_controller').$this->columns->getHash().$this->source->getHash()) : $this->getId());
+        $this->hash = 'grid_' . (empty($this->id) ? md5($this->request->get('_controller') . $this->columns->getHash() . $this->source->getHash()) : $this->getId());
     }
 
     public function getHash()
@@ -990,7 +1140,7 @@ class Grid
     }
 
     /**
-     * Adds custom column to the grid
+     * Adds custom column to the grid.
      *
      * @param $column
      * @param int $position
@@ -999,13 +1149,13 @@ class Grid
      */
     public function addColumn($column, $position = 0)
     {
-        $this->lazyAddColumn[] = array('column' => $column, 'position' => $position);
+        $this->lazyAddColumn[] = ['column' => $column, 'position' => $position];
 
         return $this;
     }
 
     /**
-     * Get a column by its identifier
+     * Get a column by its identifier.
      *
      * @param $columnId
      *
@@ -1023,7 +1173,7 @@ class Grid
     }
 
     /**
-     * Returns Grid Columns
+     * Returns Grid Columns.
      *
      * @return Column\Column[]|Columns
      */
@@ -1033,10 +1183,11 @@ class Grid
     }
 
     /**
-     * Returns true if column exists in columns and lazyAddColumn properties
+     * Returns true if column exists in columns and lazyAddColumn properties.
      *
      * @param $columnId
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasColumn($columnId)
     {
@@ -1050,7 +1201,7 @@ class Grid
     }
 
     /**
-     * Sets Array of Columns to the grid
+     * Sets Array of Columns to the grid.
      *
      * @param $columns
      *
@@ -1066,10 +1217,10 @@ class Grid
     /**
      * Sets order of Columns passing an array of column ids
      * If the list of ids is uncomplete, the remaining columns will be
-     * placed after
+     * placed after.
      *
      * @param array $columnIds
-     * @param boolean $keepOtherColumns
+     * @param bool  $keepOtherColumns
      *
      * @return self
      */
@@ -1081,7 +1232,7 @@ class Grid
     }
 
     /**
-     * Adds Mass Action
+     * Adds Mass Action.
      *
      * @param Action\MassActionInterface $action
      *
@@ -1097,7 +1248,7 @@ class Grid
     }
 
     /**
-     * Returns Mass Actions
+     * Returns Mass Actions.
      *
      * @return Action\MassAction[]
      */
@@ -1107,7 +1258,8 @@ class Grid
     }
 
     /**
-     * Add a tweak
+     * Add a tweak.
+     *
      * @param string title title of the tweak
      * @param array $tweak array('filters' => array, 'order' => 'colomunId|order', 'page' => integer, 'limit' => integer, 'export' => integer, 'massAction' => integer)
      * @param string id id of the tweak matching the regex ^[0-9a-zA-Z_\+-]+
@@ -1121,7 +1273,7 @@ class Grid
             throw new \InvalidArgumentException(sprintf('Tweak id "%s" is malformed. The id have to match this regex ^[0-9a-zA-Z_\+-]+', $id));
         }
 
-        $tweak = array_merge(array('id' => $id, 'title' => $title, 'group' => $group), $tweak);
+        $tweak = array_merge(['id' => $id, 'title' => $title, 'group' => $group], $tweak);
         if (isset($id)) {
             $this->tweaks[$id] = $tweak;
         } else {
@@ -1133,17 +1285,17 @@ class Grid
 
     /**
      * Returns tweaks
-     * Add the url of the tweak
+     * Add the url of the tweak.
      *
      * @return array
      */
     public function getTweaks()
     {
-        $separator =  strpos($this->getRouteUrl(), '?') ? '&' : '?';
-        $url = $this->getRouteUrl().$separator.$this->getHash().'['.Grid::REQUEST_QUERY_TWEAK.']=';
+        $separator = strpos($this->getRouteUrl(), '?') ? '&' : '?';
+        $url = $this->getRouteUrl() . $separator . $this->getHash() . '[' . self::REQUEST_QUERY_TWEAK . ']=';
 
         foreach ($this->tweaks as $id => $tweak) {
-            $this->tweaks[$id] = array_merge($tweak, array('url' => $url.$id));
+            $this->tweaks[$id] = array_merge($tweak, ['url' => $url . $id]);
         }
 
         return $this->tweaks;
@@ -1154,7 +1306,7 @@ class Grid
         return (array) $this->get('tweaks');
     }
     /**
-     * Returns a tweak
+     * Returns a tweak.
      *
      * @return array
      */
@@ -1169,7 +1321,7 @@ class Grid
     }
 
     /**
-     * Returns tweaks with a specific group
+     * Returns tweaks with a specific group.
      *
      * @return array
      */
@@ -1189,10 +1341,11 @@ class Grid
     public function getActiveTweakGroup($group)
     {
         $tweaks = $this->getActiveTweaks();
+
         return isset($tweaks[$group]) ? $tweaks[$group] : -1;
     }
     /**
-     * Adds Row Action
+     * Adds Row Action.
      *
      * @param Action\RowActionInterface $action
      *
@@ -1208,7 +1361,7 @@ class Grid
     }
 
     /**
-     * Returns Row Actions
+     * Returns Row Actions.
      *
      * @return Action\RowAction[]
      */
@@ -1218,13 +1371,13 @@ class Grid
     }
 
     /**
-     * Sets template for export
+     * Sets template for export.
      *
      * @param Export $template
      *
-     * @return self
-     *
      * @throws \Exception
+     *
+     * @return self
      */
     public function setTemplate($template)
     {
@@ -1243,7 +1396,7 @@ class Grid
     }
 
     /**
-     * Returns template
+     * Returns template.
      *
      * @return Twig_Template
      */
@@ -1253,7 +1406,7 @@ class Grid
     }
 
     /**
-     * Adds Export
+     * Adds Export.
      *
      * @param ExportInterface $export
      *
@@ -1269,7 +1422,7 @@ class Grid
     }
 
     /**
-     * Returns exports
+     * Returns exports.
      *
      * @return Export[]
      */
@@ -1279,7 +1432,7 @@ class Grid
     }
 
     /**
-     * Returns the export response
+     * Returns the export response.
      *
      * @return Export[]
      */
@@ -1289,7 +1442,7 @@ class Grid
     }
 
     /**
-     * Returns the mass action response
+     * Returns the mass action response.
      *
      * @return Export[]
      */
@@ -1299,10 +1452,10 @@ class Grid
     }
 
     /**
-     * Sets Route Parameters
+     * Sets Route Parameters.
      *
      * @param string $parameter
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return self
      */
@@ -1314,7 +1467,7 @@ class Grid
     }
 
     /**
-     * Returns Route Parameters
+     * Returns Route Parameters.
      *
      * @return array
      */
@@ -1324,7 +1477,7 @@ class Grid
     }
 
     /**
-     * Sets Route URL
+     * Sets Route URL.
      *
      * @param string routeUrl
      *
@@ -1338,7 +1491,7 @@ class Grid
     }
 
     /**
-     * Returns Route URL
+     * Returns Route URL.
      *
      * @return string
      */
@@ -1362,10 +1515,10 @@ class Grid
     }
 
     /**
-     * Set value for filters
+     * Set value for filters.
      *
      * @param array Hash of columnName => initValue
-     * @param boolean permanent filters ?
+     * @param bool permanent filters ?
      *
      * @return self
      */
@@ -1383,10 +1536,10 @@ class Grid
     }
 
     /**
-     * Set permanent value for filters
+     * Set permanent value for filters.
      *
      * @param array Hash of columnName => initValue
-     * @param boolean fixed filters ?
+     * @param bool fixed filters ?
      *
      * @return self
      */
@@ -1396,7 +1549,7 @@ class Grid
     }
 
     /**
-     * Set default value for filters
+     * Set default value for filters.
      *
      * @param array Hash of columnName => initValue
      *
@@ -1423,7 +1576,7 @@ class Grid
     }
 
     /**
-     * Sets unique filter identification
+     * Sets unique filter identification.
      *
      * @param $id
      *
@@ -1437,7 +1590,7 @@ class Grid
     }
 
     /**
-     * Returns unique filter identifier
+     * Returns unique filter identifier.
      *
      * @return string
      */
@@ -1446,9 +1599,8 @@ class Grid
         return $this->id;
     }
 
-
     /**
-     * Sets persistence
+     * Sets persistence.
      *
      * @param $persistence
      *
@@ -1462,9 +1614,9 @@ class Grid
     }
 
     /**
-     * Returns persistence
+     * Returns persistence.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPersistence()
     {
@@ -1484,24 +1636,24 @@ class Grid
     }
 
     /**
-     * Sets Limits
+     * Sets Limits.
      *
      * @param mixed $limits e.g. 10, array(10, 1000) or array(10 => '10', 1000 => '1000')
      *
-     * @return self
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return self
      */
     public function setLimits($limits)
     {
         if (is_array($limits)) {
-            if ((int)key($limits) === 0) {
+            if ((int) key($limits) === 0) {
                 $this->limits = array_combine($limits, $limits);
             } else {
                 $this->limits = $limits;
             }
         } elseif (is_int($limits)) {
-            $this->limits = array($limits => (string)$limits);
+            $this->limits = [$limits => (string) $limits];
         } else {
             throw new \InvalidArgumentException('Limit has to be array or integer');
         }
@@ -1510,7 +1662,7 @@ class Grid
     }
 
     /**
-     * Returns limits
+     * Returns limits.
      *
      * @return array
      */
@@ -1520,7 +1672,7 @@ class Grid
     }
 
     /**
-     * Returns selected Limit (Rows Per Page)
+     * Returns selected Limit (Rows Per Page).
      *
      * @return mixed
      */
@@ -1530,7 +1682,7 @@ class Grid
     }
 
     /**
-     * Sets default Limit
+     * Sets default Limit.
      *
      * @param $limit
      *
@@ -1544,7 +1696,7 @@ class Grid
     }
 
     /**
-     * Sets default Page
+     * Sets default Page.
      *
      * @param $page
      *
@@ -1558,7 +1710,7 @@ class Grid
     }
 
     /**
-     * Sets default Tweak
+     * Sets default Tweak.
      *
      * @param $tweakId
      *
@@ -1572,17 +1724,17 @@ class Grid
     }
 
     /**
-     * Sets current Page (internal)
+     * Sets current Page (internal).
      *
      * @param $page
      *
-     * @return self
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return self
      */
     public function setPage($page)
     {
-        if ((int)$page >= 0) {
+        if ((int) $page >= 0) {
             $this->page = (int) $page;
         } else {
             throw new \InvalidArgumentException('Page must be a positive number');
@@ -1592,7 +1744,7 @@ class Grid
     }
 
     /**
-     * Returns current page
+     * Returns current page.
      *
      * @return int
      */
@@ -1601,9 +1753,8 @@ class Grid
         return $this->page;
     }
 
-
     /**
-     * Returnd grid display data as rows - internal helper for templates
+     * Returnd grid display data as rows - internal helper for templates.
      *
      * @return mixed
      */
@@ -1613,17 +1764,22 @@ class Grid
     }
 
     /**
-     * Return count of available pages
+     * Return count of available pages.
      *
      * @return float
      */
     public function getPageCount()
     {
-        return ceil($this->getTotalCount() / $this->getLimit());
+        $pageCount = 1;
+        if ($this->getLimit() > 0) {
+            $pageCount = ceil($this->getTotalCount() / $this->getLimit());
+        }
+
+        return $pageCount;
     }
 
     /**
-     * Returns count of filtred rows(items) from source
+     * Returns count of filtred rows(items) from source.
      *
      * @return mixed
      */
@@ -1633,13 +1789,13 @@ class Grid
     }
 
     /**
-     * Sets the max results of the grid
+     * Sets the max results of the grid.
      *
      * @param int $maxResults
      *
-     * @return self
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return self
      */
     public function setMaxResults($maxResults = null)
     {
@@ -1653,9 +1809,9 @@ class Grid
     }
 
     /**
-     * Return true if the grid is filtered
+     * Return true if the grid is filtered.
      *
-     * @return boolean
+     * @return bool
      */
     public function isFiltered()
     {
@@ -1669,7 +1825,7 @@ class Grid
     }
 
     /**
-     * Return true if if title panel is visible in template - internal helper
+     * Return true if if title panel is visible in template - internal helper.
      *
      * @return bool
      */
@@ -1685,7 +1841,7 @@ class Grid
     }
 
     /**
-     * Return true if filter panel is visible in template - internal helper
+     * Return true if filter panel is visible in template - internal helper.
      *
      * @return bool
      */
@@ -1703,18 +1859,24 @@ class Grid
     }
 
     /**
-     * Return true if pager panel is visible in template - internal helper
+     * Return true if pager panel is visible in template - internal helper.
      *
      * @return bool return true if pager is visible
      */
     public function isPagerSectionVisible()
     {
+        $limits = $this->getLimits();
+
+        if (empty($limits)) {
+            return false;
+        }
+
         // true when totalCount rows exceed the minimum pager limit
-        return (min(array_keys($this->getLimits())) <= $this->totalCount);
+        return min(array_keys($limits)) < $this->totalCount;
     }
 
     /**
-     * Hides Filters Panel
+     * Hides Filters Panel.
      *
      * @return self
      */
@@ -1726,7 +1888,7 @@ class Grid
     }
 
     /**
-     * Hides Titles panel
+     * Hides Titles panel.
      *
      * @return self
      */
@@ -1738,7 +1900,7 @@ class Grid
     }
 
     /**
-     * Adds Column Extension - internal helper
+     * Adds Column Extension - internal helper.
      *
      * @param Column\Column $extension
      *
@@ -1752,7 +1914,7 @@ class Grid
     }
 
     /**
-     * Set a prefix title
+     * Set a prefix title.
      *
      * @param $prefixTitle string
      *
@@ -1766,7 +1928,7 @@ class Grid
     }
 
     /**
-     * Get the prefix title
+     * Get the prefix title.
      *
      * @return string
      */
@@ -1776,7 +1938,7 @@ class Grid
     }
 
     /**
-     * Set the no data message
+     * Set the no data message.
      *
      * @param $noDataMessage string
      *
@@ -1790,7 +1952,7 @@ class Grid
     }
 
     /**
-     * Get the no data message
+     * Get the no data message.
      *
      * @return string
      */
@@ -1800,7 +1962,7 @@ class Grid
     }
 
     /**
-     * Set the no result message
+     * Set the no result message.
      *
      * @param $noResultMessage string
      *
@@ -1814,7 +1976,7 @@ class Grid
     }
 
     /**
-     * Get the no result message
+     * Get the no result message.
      *
      * @return string
      */
@@ -1824,7 +1986,7 @@ class Grid
     }
 
     /**
-     * Sets a list of columns to hide when the grid is output
+     * Sets a list of columns to hide when the grid is output.
      *
      * @param array $columnIds
      *
@@ -1839,7 +2001,7 @@ class Grid
 
     /**
      * Sets a list of columns to show when the grid is output
-     * It acts as a mask; Other columns will be set as hidden
+     * It acts as a mask; Other columns will be set as hidden.
      *
      * @param array $columnIds
      *
@@ -1853,7 +2015,7 @@ class Grid
     }
 
     /**
-     * Sets on the visibility of columns
+     * Sets on the visibility of columns.
      *
      * @param string|array $columnIds
      *
@@ -1869,7 +2031,7 @@ class Grid
     }
 
     /**
-     * Sets off the visiblilty of columns
+     * Sets off the visiblilty of columns.
      *
      * @param string|array $columnIds
      *
@@ -1885,9 +2047,9 @@ class Grid
     }
 
     /**
-     * Sets the size of the default action column
+     * Sets the size of the default action column.
      *
-     * @param integer $size
+     * @param int $size
      *
      * @return self
      */
@@ -1899,7 +2061,7 @@ class Grid
     }
 
     /**
-     * Sets the title of the default action column
+     * Sets the title of the default action column.
      *
      * @param string $title
      *
@@ -1913,7 +2075,7 @@ class Grid
     }
 
     /**
-     * Default delete action
+     * Default delete action.
      *
      * @param $ids
      */
@@ -1923,7 +2085,7 @@ class Grid
     }
 
     /**
-     * Get a clone of the grid
+     * Get a clone of the grid.
      */
     public function __clone()
     {
@@ -1934,11 +2096,11 @@ class Grid
     /****** HELPER ******/
 
     /**
-     * Redirects or Renders a view - helper function
+     * Redirects or Renders a view - helper function.
      *
-     * @param string|array $param1 The view name or an array of parameters to pass to the view
-     * @param string|array $param2 The view name or an array of parameters to pass to the view
-     * @param Response $response A response instance
+     * @param string|array $param1   The view name or an array of parameters to pass to the view
+     * @param string|array $param2   The view name or an array of parameters to pass to the view
+     * @param Response     $response A response instance
      *
      * @return Response A Response instance
      */
@@ -1965,7 +2127,7 @@ class Grid
                 $view = $param1;
             }
 
-            $parameters = array_merge(array('grid' => $this), $parameters);
+            $parameters = array_merge(['grid' => $this], $parameters);
 
             if ($view === null) {
                 return $parameters;
@@ -1976,10 +2138,10 @@ class Grid
     }
 
     /**
-     * Extract raw data of columns
+     * Extract raw data of columns.
      *
-     * @param string|array $columnNames The name of the extract columns. If null, all the columns are return.
-     * @param boolean $namedIndexes If sets to true, named indexes will be used
+     * @param string|array $columnNames  The name of the extract columns. If null, all the columns are return.
+     * @param bool         $namedIndexes If sets to true, named indexes will be used
      *
      * @return array Raw data of columns
      */
@@ -1992,9 +2154,9 @@ class Grid
         }
 
         $columnNames = (array) $columnNames;
-        $result = array();
+        $result = [];
         foreach ($this->rows as $row) {
-            $resultRow = array();
+            $resultRow = [];
             foreach ($columnNames as $columnName) {
                 if ($namedIndexes) {
                     $resultRow[$columnName] = $row->getField($columnName);
@@ -2010,10 +2172,11 @@ class Grid
     }
 
     /**
-     * Returns an array of the active filters of the grid stored in session
+     * Returns an array of the active filters of the grid stored in session.
+     *
+     * @throws \Exception
      *
      * @return Filter[]
-     * @throws \Exception
      */
     public function getFilters()
     {
@@ -2022,10 +2185,10 @@ class Grid
         }
 
         if ($this->sessionFilters === null) {
-            $this->sessionFilters = array();
+            $this->sessionFilters = [];
             $session = $this->sessionData;
 
-            $requestQueries = array(
+            $requestQueries = [
                 self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED,
                 self::REQUEST_QUERY_MASS_ACTION,
                 self::REQUEST_QUERY_EXPORT,
@@ -2035,7 +2198,7 @@ class Grid
                 self::REQUEST_QUERY_TEMPLATE,
                 self::REQUEST_QUERY_RESET,
                 MassActionColumn::ID,
-            );
+            ];
 
             foreach ($requestQueries as $request_query) {
                 unset($session[$request_query]);
@@ -2049,7 +2212,7 @@ class Grid
                     $operator = $this->getColumn($columnId)->getDefaultOperator();
                 }
 
-                if (! isset($sessionFilter['to'])) {
+                if (!isset($sessionFilter['to']) && isset($sessionFilter['from'])) {
                     $sessionFilter = $sessionFilter['from'];
                 }
 
@@ -2061,12 +2224,14 @@ class Grid
     }
 
     /**
-     * Returns the filter of a column stored in session
+     * Returns the filter of a column stored in session.
      *
      * @param string $columnId
-     *            Id of the column
-     * @return Filter
+     *                         Id of the column
+     *
      * @throws \Exception
+     *
+     * @return Filter
      */
     public function getFilter($columnId)
     {
@@ -2083,9 +2248,11 @@ class Grid
      * A filter of the column is stored in session ?
      *
      * @param string $columnId
-     *            Id of the column
-     * @return boolean
+     *                         Id of the column
+     *
      * @throws \Exception
+     *
+     * @return bool
      */
     public function hasFilter($columnId)
     {
@@ -2093,6 +2260,6 @@ class Grid
             throw new \Exception('hasFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.');
         }
 
-        return getFilter($columnId) !== null;
+        return $this->getFilter($columnId) !== null;
     }
 }

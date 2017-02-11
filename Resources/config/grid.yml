@@ -1,0 +1,55 @@
+services:
+    # Core
+    apy_grid.factory:
+        class: APY\DataGridBundle\Grid\GridFactory
+        arguments: ['@service_container', '@apy_grid.registry']
+    apy_grid.registry:
+        class: APY\DataGridBundle\Grid\GridRegistry
+
+    # Types
+    apy_grid.type.grid:
+        class: APY\DataGridBundle\Grid\Type\GridType
+        tags:
+            - { name: apy_grid.type }
+
+    # Columns
+    apy_grid.column.text:
+        class: APY\DataGridBundle\Grid\Column\TextColumn
+        tags:
+            - { name: apy_grid.column }
+    apy_grid.column.array:
+        class: APY\DataGridBundle\Grid\Column\ArrayColumn
+        tags:
+            - { name: apy_grid.column }
+    apy_grid.column.blank:
+        class: APY\DataGridBundle\Grid\Column\BlankColumn
+        tags:
+            - { name: apy_grid.column }
+    apy_grid.column.boolean:
+        class: APY\DataGridBundle\Grid\Column\BooleanColumn
+        tags:
+            - { name: apy_grid.column }
+    apy_grid.column.date:
+        class: APY\DataGridBundle\Grid\Column\DateColumn
+        tags:
+            - { name: apy_grid.column }
+    apy_grid.column.date_time:
+        class: APY\DataGridBundle\Grid\Column\DateTimeColumn
+        tags:
+            - { name: apy_grid.column }
+    apy_grid.column.join:
+        class: APY\DataGridBundle\Grid\Column\JoinColumn
+        tags:
+            - { name: apy_grid.column }
+    apy_grid.column.number:
+        class: APY\DataGridBundle\Grid\Column\NumberColumn
+        tags:
+            - { name: apy_grid.column }
+    apy_grid.column.rank:
+        class: APY\DataGridBundle\Grid\Column\RankColumn
+        tags:
+            - { name: apy_grid.column }
+    apy_grid.column.time:
+        class: APY\DataGridBundle\Grid\Column\TimeColumn
+        tags:
+            - { name: apy_grid.column }

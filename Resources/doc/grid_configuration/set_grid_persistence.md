@@ -3,7 +3,7 @@ Set the persistence of the grid
 
 By default, filters, page and order are reset when you quit the page where your grid is.
 
-If you set to true the persistence, its parameters are kept until you close your web browser or you kill yourself the cookie of the session.
+If you set to true the persistence, its parameters are kept until you close your web browser or you kill the session cookie yourself.
 But don't forget to define an different identifier of your grids else your sessions will be reset by another grid with the same identifier.
 
 ## Usage

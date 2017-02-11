@@ -23,13 +23,13 @@ class Source
     protected $groups;
     protected $groupBy;
 
-    public function __construct($metadata = array())
+    public function __construct($metadata = [])
     {
-        $this->columns = (isset($metadata['columns']) && $metadata['columns'] != '') ? array_map('trim', explode(',', $metadata['columns'])) : array();
+        $this->columns = (isset($metadata['columns']) && $metadata['columns'] != '') ? array_map('trim', explode(',', $metadata['columns'])) : [];
         $this->filterable = isset($metadata['filterable']) ? $metadata['filterable'] : true;
         $this->sortable = isset($metadata['sortable']) ? $metadata['sortable'] : true;
-        $this->groups = (isset($metadata['groups']) && $metadata['groups'] != '') ? (array) $metadata['groups'] : array('default');
-        $this->groupBy = (isset($metadata['groupBy']) && $metadata['groupBy'] != '') ? (array) $metadata['groupBy'] : array();
+        $this->groups = (isset($metadata['groups']) && $metadata['groups'] != '') ? (array) $metadata['groups'] : ['default'];
+        $this->groupBy = (isset($metadata['groupBy']) && $metadata['groupBy'] != '') ? (array) $metadata['groupBy'] : [];
     }
 
     public function getColumns()

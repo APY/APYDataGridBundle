@@ -1,23 +1,47 @@
+CHANGELOG
+=========
+
+2.3 (WIP)
+---------
+
+### New feature
+
+* Add `GridBuilder`, `GridConfig` and `GridFactory` to make easier the grid constructor.
+* Add `GridType`, `GridRegistry` for build the grid in a separate class, which can then be reused.
+
+### Bugfix
+
+- Fix #739 - Fix filters with undefined index error 
+
+2.2 or earlier
+--------------
+
 `14 October 2012`
+
  * Don't redirect with an  AJAX request
  
 `13 October 2012`
+
  * Fix bug - Fixed errors with default values in Column __initialize.
  * Add escape option for the value of a cell
  
 `7 October 2012`
+
  * Fix bug - Fix file Content-Length calculation for export.
  
 `2 October 2012`
+
  * Fix bug - Fix field name in DQL for multi level entities
 
 `21 September 2012`
+
  * Fix bug - Wrong regex for the eq operator for the vector source and the setData function
  * Fix bug - Fix excpetion in ArrayColumn class
  * Add pagerfanta to the configuration
  * Add a columns order function
 
 `7 September 2012`
+
  * Fix #241 - Numeric and boolean filter don't work with Vector source and setData function
  * Fix #224 - Fix wrong default junction with multi select feature
  * Fix #239 - Fix complexes alias names conflict
@@ -27,29 +51,36 @@
  * Add DQL function support with non mapped fields 
 
 `4 September 2012`
+
  * Fix #237 - Add distinct support for DQL aggregate function
  * Add abbrevation support with __abbr in translation file
  * Fix #236 See https://bugs.php.net/bug.php?id=62464
 
 `27 August 2012`
+
  * Fix #229 - Fix pagerfanta with PHP < 5.4
 
 `18 August 2012`
+
  * Fix #227 - Bug with annotations config groups
 
 `17 August 2012`
+
  * Add role control on massAction, rowAction and Export
  * Fix bug : grid not found when you export a grid with an searchOnClick column
  * Fix persistence with basic authentification
 
 `14 August 2012`
+
  * Add grid data conjunction setting
  * Fix bug : wrong convert charset for exports
 
 `9 August 2012`
+
  * Fix datetime select filter
 
 `8 August 2012`
+
  * Add the default size and separator default config
 
 `31 July 2012`

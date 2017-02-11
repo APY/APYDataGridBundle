@@ -15,58 +15,65 @@ namespace APY\DataGridBundle\Grid\Action;
 interface RowActionInterface
 {
     /**
-     * get action title
+     * get action title.
      *
      * @return string
      */
     public function getTitle();
 
     /**
-     * get action route
+     * get action route.
      *
      * @return string
      */
     public function getRoute();
 
     /**
-     * get action confirm
+     * get action confirm.
      *
-     * @return boolean
+     * @return bool
      */
     public function getConfirm();
 
     /**
-     * get action confirmMessage
+     * get action confirmMessage.
      *
-     * @return boolean
+     * @return bool
      */
     public function getConfirmMessage();
 
     /**
-     * get action target
+     * get action target.
      *
-     * @return boolean
+     * @return bool
      */
     public function getTarget();
 
     /**
-     * get the action column id
+     * get the action column id.
      *
-     * @return boolean
+     * @return bool
      */
     public function getColumn();
 
     /**
-     * get route parameters
+     * get route parameters.
      *
      * @return array
      */
     public function getRouteParameters();
 
     /**
-     * get attributes of the link
+     * get attributes of the link.
      *
      * @return array
      */
     public function getAttributes();
+
+    /**
+     * get action enabled.
+     *
+     * @return bool
+     */
+    public function getEnabled();
 }

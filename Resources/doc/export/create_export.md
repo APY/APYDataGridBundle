@@ -159,7 +159,7 @@ We'll try to create a CSV export.
 
     **Note**: These functions return the array of titles only if titles are visible.
 
-    #### Export::getFlatGridData and Export::getRawFlatGridData
+    #### Export::getFlatGridData and Export::getFlatRawGridData
 
     These functions return an flat array of rows. If titles are visible the first index of the array is the array of titles.
 
@@ -223,7 +223,7 @@ We'll try to create a CSV export.
     }
     ```
     
-    Voil‡, you can export your grid in a csv file.
+    Voil√†, you can export your grid in a csv file.
 
 7. **Additional parameters**
 

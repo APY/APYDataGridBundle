@@ -1,7 +1,7 @@
 {# ------------------------------------------------------ grid ------------------------------------------------------ #}
 {% block grid %}
 <div class="grid">
-{% if grid.totalCount > 0 or grid.isFiltered or grid.noDataMessage is sameas(false) %}
+{% if grid.totalCount > 0 or grid.isFiltered or grid.noDataMessage is same as (false) %}
     <form id="{{ grid.hash }}" action="{{ grid.routeUrl }}" method="post">
         <div class="grid_header">
         {% if grid.massActions|length > 0 %}
@@ -59,29 +59,33 @@
 {% block grid_titles %}
     <tr class="grid-row-titles">
     {% for column in grid.columns %}
+        {% set translation_domain = column.translationDomain %}
         {% if column.visible(grid.isReadyForExport) %}
             <th class="{% if column.align != 'left'%}align-{{ column.align }}{% endif %}{% if column.class %} {{ column.class }}{% endif %}{% if loop.last %} last-column{% endif %}"{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>
             {%- spaceless %}
             {% if column.type == 'massaction' %}
                 <input type="checkbox" class="grid-mass-selector" onclick="{{ grid.hash }}_markVisible(this.checked);"/>
-            {% else %} 
+            {% else %}
+                {% set columnTitle = column.title %}
+
                 {% if column.usePrefixTitle == true %}
-                    {% set columnTitle = grid.prefixTitle ~ column.title ~ '__abbr' %}
-                    {% if columnTitle|trans == columnTitle %}
+                    {% set columnTitle = grid.prefixTitle ~ columnTitle ~ '__abbr' %}
+                    {% if columnTitle|trans({}, translation_domain) == columnTitle %}
                         {% set columnTitle = grid.prefixTitle ~ column.title %}
                     {% endif %}
-                {% else %}
-                    {% set columnTitle = column.title %}
                 {% endif %}
+
+                {% set columnTitle = columnTitle|trans({}, translation_domain) %}
+
                 {% if (column.sortable) %}
-                    <a class="order" href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by'|trans }} {{ columnTitle|trans }}">{{ columnTitle|trans }}</a>
+                    <a class="order" href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by'|trans }} {{ columnTitle }}">{{ columnTitle }}</a>
                     {% if column.order == 'asc' %}
                         <div class="sort_up"></div>
                     {% elseif column.order == 'desc' %}
                         <div class="sort_down"></div>
                     {% endif %}
                 {% else %}
-                    {{ columnTitle|trans }}
+                    {{ columnTitle }}
                 {% endif %}
             {% endif %}
             {% endspaceless -%}
@@ -234,7 +238,13 @@
     {% set actions = column.getActionsToRender(row) %}
     <ul class="grid-row-actions">
     {% for action in actions %}
-        <li><a href="{{ url(action.route, column.routeParameters(row, action), false) }}" target="{{ action.target }}"{% if action.confirm %} onclick="return confirm('{{ action.confirmMessage }}')"{% endif %}{% for name, value in action.attributes %} {{ name }}="{{ value }}" {% endfor %}>{{ action.title|trans }}</a></li>
+        <li>
+        {% if action.enabled %}
+            <a href="{{ url(action.route, column.routeParameters(row, action), false) }}" target="{{ action.target }}"{% if action.confirm %} onclick="return confirm('{{ action.confirmMessage }}')"{% endif %}{% for name, value in action.attributes %} {{ name }}="{{ value }}" {% endfor %}>{{ action.title|trans }}</a>
+        {% else %}
+            <span{% for name, value in action.attributes %} {{ name }}="{{ value }}" {% endfor %}>{{ action.title|trans }}</span>
+        {% endif %}
+        </li>
     {% endfor %}
     </ul>
 {% endblock grid_column_actions_cell %}
@@ -263,7 +273,10 @@
 {% for key, index in values -%}
     {% set value = index %}
     {% set sourceValue = sourceValues[key] %}
-    {{ block('grid_column_cell') | raw }}{{ column.separator | raw }}
+    {{ block('grid_column_cell') | raw }}
+    {% if not loop.last %}
+      {{ column.separator | raw }}
+    {% endif %}
 {%- endfor %}
 {% endblock grid_column_array_cell %}
 {% block grid_column_type_array_cell %}
@@ -280,13 +293,17 @@
 {% block grid_column_type_join_cell %}
 	{{ block('grid_column_join_cell') }}
 {% endblock grid_column_type_join_cell %}
+{# ------------------------------------------------ grid_column_type_simple_array_columns --------------------------------------------- #}
+{% block grid_column_type_simple_array_cell %}
+    {{ block('grid_column_array_cell') }}
+{% endblock grid_column_type_simple_array_cell %}
 {# ------------------------------------------- grid_column_cell ---------------------------------------- #}
 {% block grid_column_cell %}
 {%- spaceless %}
 {% if column.filterable and column.searchOnClick %}
     {% set sourceValue = sourceValue is defined ? sourceValue : row.field(column.id) %}
     <a href="?{{ grid.hash }}[{{ column.id }}][from]={{ sourceValue | url_encode() }}" class="searchOnClick">{{ value }}</a>
-{% elseif column.safe is sameas(false) %}
+{% elseif column.safe is same as (false) %}
     {{ value|raw }}
 {% else %}
     {{ value|escape(column.safe)|raw }}
@@ -297,7 +314,7 @@
 {% block grid_column_operator %}
 {% if column.operatorsVisible %}
 <span class="grid-filter-operator">
-    <select name="{{ grid.hash }}[{{ column.id }}][operator]" onchange="{{ grid.hash }}_switchOperator(this, '{{ grid.hash }}__{{ column.id }}__query__'{% if submitOnChange is sameas(false) %}, false{% endif%});">
+    <select name="{{ grid.hash }}[{{ column.id }}][operator]" onchange="{{ grid.hash }}_switchOperator(this, '{{ grid.hash }}__{{ column.id }}__query__'{% if submitOnChange is same as (false) %}, false{% endif%});">
     {% for operator in column.operators %}
         <option value="{{ operator }}"{% if op == operator %} selected="selected"{% endif %}>{{ operator |trans }}</option>
     {% endfor %}
@@ -317,8 +334,8 @@
 <span class="grid-filter-input">
     {{ grid_column_operator(column, grid, op, submitOnChange) }}
     <span class="grid-filter-input-query">
-        <input type="{{ column.inputType }}" value="{{ from }}" class="grid-filter-input-query-from" name="{{ grid.hash }}[{{ column.id }}][from]" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onkeypress="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }} />
-        <input type="{{ column.inputType }}" value="{{ to }}" class="grid-filter-input-query-to" name="{{ grid.hash }}[{{ column.id }}][to]" id="{{ grid.hash }}__{{ column.id }}__query__to" {% if submitOnChange is sameas(true) %}onkeypress="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }} />
+        <input type="{{ column.inputType }}" value="{{ from }}" class="grid-filter-input-query-from" name="{{ grid.hash }}[{{ column.id }}][from]" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is same as (true) %}onkeypress="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }} />
+        <input type="{{ column.inputType }}" value="{{ to }}" class="grid-filter-input-query-to" name="{{ grid.hash }}[{{ column.id }}][to]" id="{{ grid.hash }}__{{ column.id }}__query__to" {% if submitOnChange is same as (true) %}onkeypress="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }} />
     </span>
 </span>
 {% endblock grid_column_filter_type_input %}
@@ -339,23 +356,23 @@
     {% if expanded %}
         <span class="grid-filter-select-query-from" id="{{ grid.hash }}__{{ column.id }}__query__from" {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
         {% for key, value in column.values %}
-            <span><input type="{% if multiple %}checkbox{% else %}radio{% endif %}" name="{{ grid.hash }}[{{ column.id }}][from][]" value="{{ key }}" {% if key in from %} checked="checked"{% endif %} {% if submitOnChange is sameas(true) %}onclick="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%}/><label>{{ value }}</label></span>
+            <span><input type="{% if multiple %}checkbox{% else %}radio{% endif %}" name="{{ grid.hash }}[{{ column.id }}][from][]" value="{{ key }}" {% if key in from %} checked="checked"{% endif %} {% if submitOnChange is same as (true) %}onclick="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%}/><label>{{ value }}</label></span>
         {% endfor %}
         </span>
         <span class="grid-filter-select-query-to" id="{{ grid.hash }}__{{ column.id }}__query__to" {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }}>
         {% for key, value in column.values %}
-            <span><input type="{% if multiple %}checkbox{% else %}radio{% endif %}" name="{{ grid.hash }}[{{ column.id }}][to]" value="{{ key }}" {% if not to is null and to == key %} checked="checked"{% endif %} {% if submitOnChange is sameas(true) %}onclick="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%}/><label>{{ value }}</label></span>
+            <span><input type="{% if multiple %}checkbox{% else %}radio{% endif %}" name="{{ grid.hash }}[{{ column.id }}][to]" value="{{ key }}" {% if not to is null and to == key %} checked="checked"{% endif %} {% if submitOnChange is same as (true) %}onclick="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%}/><label>{{ value }}</label></span>
         {% endfor %}
         </span>
         {% if multiple %}<input type="submit" value="{{ 'Go'|trans }}" />{% endif %}
     {% else %}
-        <select{% if multiple %} multiple="multiple"{% endif %} name="{{ grid.hash }}[{{ column.id }}][from][]" class="grid-filter-select-query-from" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is sameas(true) %}onchange="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
+        <select{% if multiple %} multiple="multiple"{% endif %} name="{{ grid.hash }}[{{ column.id }}][from][]" class="grid-filter-select-query-from" id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is same as (true) %}onchange="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
             <option value="">&nbsp;</option>
             {% for key, value in column.values %}
                 <option value="{{ key }}"{% if key in from %} selected="selected"{% endif %}>{{ value }}</option>
             {% endfor %}
         </select>
-        <select name="{{ grid.hash }}[{{ column.id }}][to]" class="grid-filter-select-query-to" id="{{ grid.hash }}__{{ column.id }}__query__to" {% if submitOnChange is sameas(true) %}onchange="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }}>
+        <select name="{{ grid.hash }}[{{ column.id }}][to]" class="grid-filter-select-query-to" id="{{ grid.hash }}__{{ column.id }}__query__to" {% if submitOnChange is same as (true) %}onchange="return {{ grid.hash }}_submitForm(event, this.form);"{% endif%} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }}>
             <option value="">&nbsp;</option>
             {% for key, value in column.values %}
                 <option value="{{ key }}"{% if not to is null and to == key %} selected="selected"{% endif %}>{{ value }}</option>
@@ -397,7 +414,14 @@
 {% block grid_scripts_goto %}
 function {{ grid.hash }}_goto(url)
 {
-    window.location.href = url;
+    if (/MSIE (8\.\d+);/.test(navigator.userAgent)) {
+        var referLink = document.createElement('a');
+        referLink.href = url;
+        document.body.appendChild(referLink);
+        referLink.click();
+    } else {
+        window.location.href = url;
+    }
 
     return false;
 }
