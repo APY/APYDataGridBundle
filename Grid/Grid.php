@@ -336,17 +336,17 @@ class Grid implements GridInterface
 
         $this->setPersistence($config->isPersisted());
 
-        // Route
-        if (null != $config->getRoute()) {
-            $this->setRouteUrl($this->router->generate($config->getRoute()));
-        }
-
         // Route parameters
         $routeParameters = $config->getRouteParameters();
         if (!empty($routeParameters)) {
             foreach ($routeParameters as $parameter => $value) {
                 $this->setRouteParameter($parameter, $value);
             }
+        }
+        
+        // Route
+        if (null != $config->getRoute()) {
+            $this->setRouteUrl($this->router->generate($config->getRoute()));
         }
 
         // Columns
