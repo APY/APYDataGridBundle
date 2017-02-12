@@ -346,7 +346,7 @@ class Grid implements GridInterface
         
         // Route
         if (null != $config->getRoute()) {
-            $this->setRouteUrl($this->router->generate($config->getRoute()));
+            $this->setRouteUrl($this->router->generate($config->getRoute(), $routeParameters));
         }
 
         // Columns
