@@ -25,7 +25,7 @@ class MassActionColumn extends Column
             'filterable' => true,
             'sortable'   => false,
             'source'     => false,
-            'align'      => 'center',
+            'align'      => Column::ALIGN_CENTER,
         ]);
     }
 
