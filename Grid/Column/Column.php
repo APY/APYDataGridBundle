@@ -47,6 +47,27 @@ abstract class Column
     const OPERATOR_ISNULL = 'isNull';
     const OPERATOR_ISNOTNULL = 'isNotNull';
 
+    protected static $availableOperators = [
+        self::OPERATOR_EQ,
+        self::OPERATOR_NEQ,
+        self::OPERATOR_LT,
+        self::OPERATOR_LTE,
+        self::OPERATOR_GT,
+        self::OPERATOR_GTE,
+        self::OPERATOR_BTW,
+        self::OPERATOR_BTWE,
+        self::OPERATOR_LIKE,
+        self::OPERATOR_NLIKE,
+        self::OPERATOR_RLIKE,
+        self::OPERATOR_LLIKE,
+        self::OPERATOR_SLIKE,
+        self::OPERATOR_NSLIKE,
+        self::OPERATOR_RSLIKE,
+        self::OPERATOR_LSLIKE,
+        self::OPERATOR_ISNULL,
+        self::OPERATOR_ISNOTNULL,
+    ];
+
     /**
      * Align.
      */
@@ -971,5 +992,13 @@ abstract class Column
         $this->translationDomain = $translationDomain;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAvailableOperators()
+    {
+        return self::$availableOperators;
     }
 }
