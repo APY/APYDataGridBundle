@@ -25,7 +25,7 @@ $grid->addRowAction($rowAction1);
 // OR add a second row action directly to a new action column
 $rowAction2 = new RowAction('Edit', 'route_to_edit');
 
-$actionsColumn2 = new ActionsColumn($column, $title, array(rowAction2), $separator);
+$actionsColumn2 = new ActionsColumn($column, $title, array($rowAction2), $separator);
 $grid->addColumn($actionsColumn2, $position2);
 ...
 ```
