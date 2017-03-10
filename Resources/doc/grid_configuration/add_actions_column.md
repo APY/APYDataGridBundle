@@ -70,7 +70,7 @@ $grid->addRowAction($rowAction1);
 // OR add a second row action directly to a new action column
 $rowAction2 = new RowAction('Edit', 'route_to_edit');
 
-$actionsColumn2 = new ActionsColumn('info_column_2', 'Actions 3', array(rowAction2));
+$actionsColumn2 = new ActionsColumn('info_column_2', 'Actions 3', array($rowAction2));
 $grid->addColumn($actionsColumn2, 2);
 ...
 ```
