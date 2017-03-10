@@ -16,6 +16,10 @@
         <parameter key="grid.column.blank.class">APY\DataGridBundle\Grid\Column\BlankColumn</parameter>
         <parameter key="grid.column.rank.class">APY\DataGridBundle\Grid\Column\RankColumn</parameter>
         <parameter key="grid.column.join.class">APY\DataGridBundle\Grid\Column\JoinColumn</parameter>
+        <parameter key="grid.column.booleannullable.class">APY\DataGridBundle\Grid\Column\BooleanNullableColumn</parameter>
+        <parameter key="grid.column.htmltext.class">APY\DataGridBundle\Grid\Column\HtmlTextColumn</parameter>
+        <parameter key="grid.column.file.class">APY\DataGridBundle\Grid\Column\FileColumn</parameter>
+        <parameter key="grid.column.alert_number.class">APY\DataGridBundle\Grid\Column\AlertNumberColumn</parameter>
     </parameters>
 
     <services>
@@ -60,6 +64,22 @@
         </service>
 
         <service id="grid.column.join" class="%grid.column.join.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.booleannullable" class="%grid.column.booleannullable.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.htmltext" class="%grid.column.htmltext.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.file" class="%grid.column.alert_number.class%" public="false">
+            <tag name="grid.column.extension" />
+        </service>
+
+        <service id="grid.column.alert_number" class="%grid.column.alert_number.class%" public="false">
             <tag name="grid.column.extension" />
         </service>
     </services>

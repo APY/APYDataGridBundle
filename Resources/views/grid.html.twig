@@ -1,0 +1,382 @@
+{% extends 'APYDataGridBundle::blocks_js.jquery.html.twig' %}
+
+{# ------------------------------------------------------ grid ------------------------------------------------------ #}
+{% block grid %}
+  <div class="grid">
+    {% if '?' in grid.routeUrl %}
+      {% set gridRouteUrl = grid.routeUrl~'&followRedirect=0'  %}
+    {% else %}
+      {% set  gridRouteUrl = grid.routeUrl~'?followRedirect=0'%}
+    {% endif %}
+    {% if grid.totalCount > 0 or grid.isFiltered or grid.noDataMessage is same as(false) %}
+      <form id="{{ grid.hash }}" action="{{ gridRouteUrl }}" method="post" class="noClientValidation grid">
+        <div class="grid_header row">
+          <div class="col-md-12">
+            {% if grid.massActions|length > 0 %}
+              <div class="row">
+                <div class="col-md-12 mass-act-cont">
+                  {{ grid_actions(grid) }}
+                </div>
+              </div>
+            {% endif %}
+            {% if grid.isPagerSectionVisible %}
+              {{ grid_pager(grid) }}
+            {% elseif grid.totalCount > 0 %}
+              {{ grid.totalCount ~ ' risultati' }}
+            {% endif %}
+          </div>
+        </div>
+        <div class="space-20"></div>
+        <div class="panel panel-default">
+          <div class="grid_body {% if grid.isPinnable is same as (true) %}table-responsive{% endif %} {% if app.environment != 'test' %}table-responsive{% endif %}">
+          {#<div class="grid_body #}{#{% if grid.isPinnable is same as (true) %}table-responsive{% endif %}#}{#">#}
+            <table
+              class="table table-striped table-bordered table-hover {% if grid.isPinnable is same as (true) %} table-pinned{% endif %} table-grid">
+              <thead class="fixhead">
+              {% if grid.isTitleSectionVisible %}
+                {{ grid_titles(grid) }}
+              {% endif %}
+              {% if grid.isFilterSectionVisible %}
+                {{ grid_filters(grid) }}
+              {% endif %}
+              </thead>
+              <tbody>
+              {#{% if grid.totalCount > 0 or grid.isFiltered or grid.noDataMessage is same as(false) %}#}
+                {{ grid_rows(grid) }}
+                {% if grid.isTitleSectionVisible %}
+                  {{ grid_titles(grid) }}
+                {% endif %}
+              {#{% else %}#}
+                {#{{ grid_no_data(grid) }}#}
+              {#{% endif %}#}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="grid_footer">
+          {% if grid.exports|length > 0 %}
+            {{ grid_exports(grid) }}
+          {% endif %}
+          {% if grid.isPagerSectionVisible %}
+            {{ grid_pager(grid) }}
+          {% endif %}
+          {% if grid.tweaks|length > 0 %}
+            {{ grid_tweaks(grid) }}
+          {% endif %}
+        </div>
+        {% if withjs %}
+          {{ grid_scripts(grid) }}
+        {% endif %}
+      </form>
+    {% else %}
+      {{ grid_no_data(grid) }}
+    {% endif %}
+  </div>
+{% endblock grid %}
+
+{# --------------------------------------------------- grid_no_data ------------------------------------------------- #}
+{% block grid_no_data %}
+  <div class="well well-sm well-warning no-data text-center">
+    <p class="h2 inline-block-middle">
+      {{ grid.noDataMessage|default('No data')|trans|raw }}
+    </p>
+  </div>
+
+{% endblock grid_no_data %}
+
+{# --------------------------------------------------- grid_actions ------------------------------------------------- #}
+{% block grid_actions %}
+  <div class="mass-actions">
+        <span class="grid_massactions_helper">
+        <span class="mass-actions-selected" id="{{ grid.hash }}_mass_action_selected"></span>
+        </span>
+    {% spaceless %}
+      <div class="grid_massactions pull-right">
+        <div class="form-inline">
+          <div class="form-group">
+            <label for="{{ grid.hash }}[{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_MASS_ACTION') }}]">{{ 'Action'|trans }}</label>
+            <select name="{{ grid.hash }}[{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_MASS_ACTION') }}]"
+                    id="{{ grid.hash }}_mass_action_all"
+                    class="select2 gridMassActionSelect form">
+              <option value="-1"></option>
+              {% for key, massAction in grid.massActions %}
+                <option
+                  {% if massAction.parameters['classAttrs'] is defined %}class="{{ massAction.parameters['classAttrs'] }}" {% endif %}
+                  value="{{ key }}">{{ massAction.title|trans }}</option>
+              {% endfor %}
+            </select>
+
+          </div>
+          <input class="btn btn-default btn-primary btn-small gridMassActionSubmit extraSubmitButton" type="submit"
+                 name="{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_MASS_ACTION_SUBMIT') }}" value="{{ 'Submit Action'|trans }}"/>
+        </div>
+      </div>
+    {% endspaceless %}
+  </div>
+{% endblock grid_actions %}
+
+{# -------------------------------------------------- grid_filters -------------------------------------------------- #}
+{% block grid_filters %}
+  <tr class="grid-row-filters gridFilters">
+    {% set gridHasActionColumn = false %}
+    {% for column in grid.columns %}
+      {% if column.type == 'actions' %}
+        {% set gridHasActionColumn = true %}
+      {% endif %}
+    {% endfor %}
+    {% for column in grid.columns %}
+      {% if column.visible(grid.isReadyForExport) %}
+        <th
+          class="{% if column.class %}{{ column.class }}{% endif %}{% if loop.last %} last-column{% endif %}{% if column.type == 'massaction' %} pinned{% endif %}"{% if(column.size > -1) %} style="width:{{ column.size }}px;"{% endif %}>{% if column.filterable %}{{ grid_filter(column, grid)|raw }}{% endif %}
+
+          {% if column.type == 'massaction' and not(gridHasActionColumn) %}
+            <a class="btn btn-sm btn-default grid-reset" href="{{ grid_url('reset', grid) }}">Togli filtri</a>
+            <button class="btn btn-sm btn-success grid-submit" type="submit">Ricerca</button>
+          {% endif %}
+        </th>
+      {% endif %}
+    {% endfor %}
+  </tr>
+{% endblock grid_filters %}
+
+{# override per filtro booleano si/no #}
+{% block grid_column_boolean_cell %}
+  <span
+    class="fa grid_boolean_{{ (value|data_grid_boolean_column_value_checker == 'true' ? 'true fa-check-circle' : 'false fa-times-circle') }}"
+    title="{{ value|data_grid_boolean_alt_value }}">
+    <span class="hidden"> {{ (value|data_grid_boolean_column_value_checker == 'true' ? 'si' : 'no') }} </span>
+  </span>
+{% endblock grid_column_boolean_cell %}
+
+{% block grid_column_booleannullable_cell %}
+  {% if value == '' %}
+    {{ block('grid_column_cell') }}
+  {% else %}
+    <span
+      class="fa grid_boolean_{{ (value|data_grid_boolean_column_value_checker == 'true' ? 'true fa-check-circle' : 'false fa-times-circle') }}"></span>
+  {% endif %}
+{% endblock grid_column_booleannullable_cell %}
+
+{% block grid_column_htmltext_cell %}
+  {{ value|raw }}
+{% endblock grid_column_htmltext_cell %}
+
+{# override per is_sync_sidi #}
+{% block grid_column_is_sync_sidi_cell %}
+  {% set dataSyncSidi = row.getentity.datasyncsidi %}
+  {% if dataSyncSidi is null %}
+    {% set value = 'no' %}
+  {% elseif getDateDiff(date("now"),dataSyncSidi) > 30 %}
+    {% set value = 'no' %}
+  {% endif %}
+  <span class="fa grid_boolean_{{ value == 'si' ? 'true fa-check-circle' : 'false fa-times-circle' }}"
+        title="{{ value == 'si' ? dataSyncSidi|date('d/m/Y H:i') : '' }}"></span>
+{% endblock grid_column_is_sync_sidi_cell %}
+
+{# override per tipo di colonna custom "file" #}
+{# value è il valore della proprietà. È il nome del file memorizzato nella entity. Se value è un array è perchè vogliamo forzare della logica particolare. (es: chiamare un'altra entity) #}
+{% block grid_column_file_cell %}
+  {% if value is iterable and value.method is defined %}
+    {% set entity = attribute(row.getentity, value.method) %}
+  {% else %}
+    {% set entity = row.getentity %}
+  {% endif %}
+  {% if value is null or value == '' %}
+    {# se value false non mostrare nulla #}
+  {% else %}
+    {% include 'MadisoftFileBundle:Helper:downloadAndPreviewLinks.html.twig' with {excludeText: true} %}
+  {% endif %}
+{% endblock grid_column_file_cell %}
+
+{# override per colonna actions #}
+{% block grid_column_actions_cell %}
+  {% set actions = column.getActionsToRender(row) %}
+  <div class="grid-row-actions btn-group" role="group">
+    {% set len = actions|length %}
+    {% set split = 5 %}
+    {% set classToBeRemoved = {
+    'btn': '',
+    'btn-default': '',
+    'btn-primary': '',
+    'btn-info': '',
+    'btn-warning': '',
+    'btn-danger': '',
+    'btn-success': '',
+    'btn-sm': '',
+    'btn-xs': '',
+    'btn-lg': '',
+    'btn-xl': ''
+    } %}
+    {% for action in actions %}
+      {% if loop.index == split and len > split %}
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="fa fa-ellipsis-h"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li style="float: none;">
+              <a href="{{ url(action.route, column.routeParameters(row, action), false) }}" target="{{ action.target }}"{% if action.confirm %} onclick="return confirm('{{ action.confirmMessage }}')"{% endif %}{% for name, value in action.attributes %} {% if name != 'title' %}{{ name }}="{% if name == 'class' %}{{ value|replace(classToBeRemoved) }}{% else %}{{ value }}{% endif %}"{% endif %} {% endfor %}>{% autoescape false %}{{ action.title|trans }}{% endautoescape %} {{ action.attributes['title']|default('') }}</a>
+            </li>
+      {% else %}
+        {% if loop.index > split %}
+          <li style="float: none;">
+              <a href="{{ url(action.route, column.routeParameters(row, action), false) }}" target="{{ action.target }}"{% if action.confirm %} onclick="return confirm('{{ action.confirmMessage }}')"{% endif %}{% for name, value in action.attributes %} {% if name != 'title' %}{{ name }}="{% if name == 'class' %}{{ value|replace(classToBeRemoved) }}{% else %}{{ value }}{% endif %}"{% endif %} {% endfor %}>{% autoescape false %}{{ action.title|trans }}{% endautoescape %} {{ action.attributes['title']|default('') }}</a>
+          </li>
+        {% else %}
+          <a href="{{ url(action.route, column.routeParameters(row, action), false) }}" target="{{ action.target }}"{% if action.confirm %} onclick="return confirm('{{ action.confirmMessage }}')"{% endif %}{% for name, value in action.attributes %} {{ name }}="{{ value }}" {% endfor %}>{% autoescape false %}{{ action.title|trans }}{% endautoescape %}</a>
+        {% endif %}
+        {% if loop.last and len > split %}
+          </ul>
+        </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endblock grid_column_actions_cell %}
+
+{# pulsanti per avvio/azzera ricerca #}
+{% block grid_column_filter_type_actions %}
+  <a class="btn btn-sm btn-default grid-reset" href="{{ grid_url('reset', grid) }}">Togli filtri</a>
+  <button class="btn btn-sm btn-success grid-submit" type="submit">Ricerca</button>
+{% endblock grid_column_filter_type_actions %}
+
+
+{% block grid_column_filter_type_data %}
+  {% set btwOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_BTW') %}
+  {% set btweOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_BTWE') %}
+  {% set isNullOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_ISNULL') %}
+  {% set isNotNullOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_ISNOTNULL') %}
+  {% set op = column.data.operator is defined ? column.data.operator : column.defaultOperator %}
+
+  {# Query #}
+  {% set from = column.data.from is defined ? column.data.from : null %}
+  {% set to = column.data.to is defined ? column.data.to : null %}
+
+  {# Display #}
+  <span class="grid-filter-input">
+    {{ grid_column_operator(column, grid, op, submitOnChange) }}
+    <span class="grid-filter-input-query">
+      <input type="text" value="{{ from }}" class="grid-filter-input-query-from datepicker_senduk form-control"
+             name="{{ grid.hash }}[{{ column.id }}][from]" id="{{ grid.hash }}__{{ column.id }}__query__from"
+        {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }} />
+      <input type="text" value="{{ to }}" class="grid-filter-input-query-to datepicker_senduk form-control"
+             name="{{ grid.hash }}[{{ column.id }}][to]" id="{{ grid.hash }}__{{ column.id }}__query__to"
+        {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }} />
+    </span>
+</span>
+
+{% endblock grid_column_filter_type_data %}
+
+{# -------------------------------------------- grid_column_filter_type_select --------------------------------------- #}
+{% block grid_column_filter_type_select %}
+  {% set btwOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_BTW') %}
+  {% set btweOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_BTWE') %}
+  {% set isNullOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_ISNULL') %}
+  {% set isNotNullOperator = constant('APY\\DataGridBundle\\Grid\\Column\\Column::OPERATOR_ISNOTNULL') %}
+  {% set op = column.data.operator is defined ? column.data.operator : column.defaultOperator %}
+  {% set from = column.data.from is defined ? column.data.from : null %}
+  {% set to = column.data.to is defined ? column.data.to : null %}
+  {% set multiple = column.selectMulti %}
+  {% set expanded = column.selectExpanded %}
+  <span class="grid-filter-select">
+    {{ grid_column_operator(column, grid, op, submitOnChange) }}
+    <span class="grid-filter-select-query">
+    {% if expanded %}
+      <span class="grid-filter-select-query-from"
+            id="{{ grid.hash }}__{{ column.id }}__query__from" {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
+        {% for key, value in column.values %}
+          <span><input type="{% if multiple %}checkbox{% else %}radio{% endif %}"
+                       name="{{ grid.hash }}[{{ column.id }}][from][]"
+                       value="{{ key }}" {% if key in from %} checked="checked"{% endif %} {% if submitOnChange is same as(true) %}onclick="return {{ grid.hash }}_submitForm(event, this.form);"{% endif %} /><label>{{ value }}</label></span>
+        {% endfor %}
+        </span>
+      <span class="grid-filter-select-query-to"
+            id="{{ grid.hash }}__{{ column.id }}__query__to" {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }}>
+        {% for key, value in column.values %}
+          <span><input type="{% if multiple %}checkbox{% else %}radio{% endif %}"
+                       name="{{ grid.hash }}[{{ column.id }}][to]"
+                       value="{{ key }}" {% if not to is null and to == key %} checked="checked"{% endif %} {% if submitOnChange is same as(true) %}onclick="return {{ grid.hash }}_submitForm(event, this.form);"{% endif %} /><label>{{ value }}</label></span>
+        {% endfor %}
+        </span>
+      {#{% if multiple %}#}
+      {#<button class="btn btn-default btn-xs" type="submit">{{ 'Go'|trans }}</button>{% endif %}#}
+    {% else %}
+      <select{% if multiple %} multiple="multiple"{% endif %} name="{{ grid.hash }}[{{ column.id }}][from][]"
+                                                              class="grid-filter-select-query-from form-control"
+                                                              style="width:100%"
+                                                              id="{{ grid.hash }}__{{ column.id }}__query__from" {% if submitOnChange is same as(true) %}onchange="return {{ grid.hash }}_submitForm(event, this.form);"{% endif %} {{ ( op == isNullOperator or op == isNotNullOperator ) ? 'style="display: none;" disabled="disabled"' : '' }}>
+        {% if not multiple %} <option value="">&nbsp;</option> {% endif %}
+        {% for key, value in column.values %}
+          <option value="{{ key }}"{% if key in from %} selected="selected"{% endif %}>{{ value }}</option>
+        {% endfor %}
+      </select>
+      <select name="{{ grid.hash }}[{{ column.id }}][to]" class="grid-filter-select-query-to form-control"
+              id="{{ grid.hash }}__{{ column.id }}__query__to"
+              {% if submitOnChange is same as(true) %}onchange="return {{ grid.hash }}_submitForm(event, this.form);"{% endif %} {{ ( op == btwOperator or op == btweOperator ) ? '': 'style="display: none;" disabled="disabled"' }}>
+        <option value="">&nbsp;</option>
+        {% for key, value in column.values %}
+          <option
+            value="{{ key }}"{% if not to is null and to == key %} selected="selected"{% endif %}>{{ value }}</option>
+        {% endfor %}
+      </select>
+      {#{% if multiple %}#}
+      {#<button class="btn btn-default btn-xs" type="submit">{{ 'Go'|trans }}</button>{% endif %}#}
+    {% endif %}
+    </span>
+</span>
+{% endblock grid_column_filter_type_select %}
+
+{% block grid_scripts_ajax %}
+  {{ parent() }}
+  $(function () {
+
+  var dateFilterCont = $('th.date-filter > .grid-filter-input > .grid-filter-input-query');
+
+  if(dateFilterCont.length) {
+  var inputs = $(dateFilterCont[0]).find('input');
+  var el1 = $(inputs[0]).clone(true);
+  var el1IdOld = '#' + el1.attr('id');
+  el1.attr('id', el1.attr('id') + '_clone');
+  var el2 = $(inputs[1]).clone(true);
+  var el2IdOld = '#' + el2.attr('id');
+  el2.attr('id', el2.attr('id') + '_clone');
+  var btn = $('.grid-submit').clone(true);
+  btn.addClass('btn-small').removeClass('btn-sm');
+  var tpl = '<div class="row text-right" style="margin-bottom: 10px;">' +
+  '<div class="col-md-12 text-center">' +
+    '<form class="form-inline">' +
+      '<div class="form-group" style="margin-right: 10px;">' +
+        el1[0].outerHTML +
+        '</div>' +
+      '<div class="form-group" style="margin-right: 10px;">' +
+        el2[0].outerHTML +
+        '</div>' +
+      btn[0].outerHTML +
+      '</form>' +
+    '</div>' +
+  '</div>';
+  $('.mass-act-cont').prepend(tpl);
+
+  $('#' + el1.attr('id')).on('change', function() {
+  $(el1IdOld).val($(this).val());
+  });
+  $('#' + el2.attr('id')).on('change', function() {
+  $(el2IdOld).val($(this).val());
+  });
+
+  $(el1IdOld).on('change', function() {
+  $('#' + el1.attr('id')).val($(this).val());
+  });
+  $(el2IdOld).on('change', function() {
+  $('#' + el2.attr('id')).val($(this).val());
+  });
+  }
+
+  // Grid_search submit
+  $('#{{ grid.hash }}').on('click', 'button.grid-submit', function (event) {
+  {{ grid.hash }}_submitForm(event, $('#{{ grid.hash }}'));
+
+  return false;
+  });
+  });
+{% endblock grid_scripts_ajax %}

@@ -14,7 +14,7 @@ namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
 use Doctrine\Common\Version as DoctrineVersion;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 abstract class Column
 {
@@ -69,6 +69,7 @@ abstract class Column
     protected $visible;
     protected $callback;
     protected $order;
+    protected $orderIndex = null;
     protected $size;
     protected $visibleForSource;
     protected $primary;
@@ -80,7 +81,7 @@ abstract class Column
     protected $params;
     protected $isSorted = false;
     protected $orderUrl;
-    protected $securityContext;
+    protected $authorizationChecker;
     protected $data;
     protected $operatorsVisible;
     protected $operators;
@@ -127,7 +128,7 @@ abstract class Column
         $this->setInputType($this->getParam('inputType', 'text'));
         $this->setField($this->getParam('field'));
         $this->setRole($this->getParam('role'));
-        $this->setOrder($this->getParam('order'));
+        $this->setOrder($this->getParam('order'), $this->getParam('orderIndex'));
         $this->setJoinType($this->getParam('joinType'));
         $this->setFilterType($this->getParam('filter', 'input'));
         $this->setSelectFrom($this->getParam('selectFrom', 'query'));
@@ -287,14 +288,16 @@ abstract class Column
     /**
      * Return column visibility.
      *
+     * @param bool $isExported
+     *
      * @return bool return true when column is visible
      */
     public function isVisible($isExported = false)
     {
         $visible = $isExported && $this->export !== null ? $this->export : $this->visible;
 
-        if ($visible && $this->securityContext !== null && $this->getRole() != null) {
-            return $this->securityContext->isGranted($this->getRole());
+        if ($visible && $this->authorizationChecker !== null && $this->getRole() != null) {
+            return $this->authorizationChecker->isGranted($this->getRole());
         }
 
         return $visible;
@@ -359,18 +362,28 @@ abstract class Column
     /**
      * set column order.
      *
-     * @param string $order asc|desc
+     * @param string $order      asc|desc
+     * @param int    $orderIndex
      *
      * @return \APY\DataGridBundle\Grid\Column\Column
      */
-    public function setOrder($order)
+    public function setOrder($order, $orderIndex = -1)
     {
         if ($order !== null) {
             $this->order = $order;
             $this->isSorted = true;
+            $this->orderIndex = $orderIndex;
         }
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrderIndex()
+    {
+        return $this->orderIndex;
     }
 
     /**
@@ -804,13 +817,13 @@ abstract class Column
     /**
      * Internal function.
      *
-     * @param $securityContext
+     * @param AuthorizationCheckerInterface $authorizationChecker
      *
      * @return $this
      */
-    public function setSecurityContext(SecurityContextInterface $securityContext)
+    public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker)
     {
-        $this->securityContext = $securityContext;
+        $this->authorizationChecker = $authorizationChecker;
 
         return $this;
     }

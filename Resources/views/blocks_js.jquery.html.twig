@@ -6,15 +6,33 @@ function {{ grid.hash }}_goto(url, data, type)
     type = type || 'GET';
     data = data || [];
 
+    url = url.replace(/\&amp;/g, '&');
+    url = appendAjaxRequestToQueryString(url);
+
     $.ajax({
         url: url,
         data: data,
         type: type
     }).done(function( msg ) {
         $('#{{ grid.hash }}').parent().replaceWith(msg);
+        $('.bootstrap-datetimepicker-widget').each(function() {
+            $(this).hide();
+        });
     });
 
-    return false
+    return false;
+}
+
+function appendAjaxRequestToQueryString(url)
+{
+    //Appendo un parametro in query string (se non già presente)
+    var re = new RegExp("([?&])ajaxRequest=.*?(&|$)", "i");
+    var separator = url.indexOf('?') !== -1 ? "&" : "?";
+    if (null === url.match(re)) {
+    url = url + separator + "ajaxRequest=grid";
+    }
+
+    return url;
 }
 {% endblock grid_scripts_goto %}
 

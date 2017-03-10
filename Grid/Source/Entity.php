@@ -440,7 +440,11 @@ class Entity extends Source
                         $bindIndexPlaceholder = "LOWER($bindIndexPlaceholder)";
                     }
 
-                    $q = $this->query->expr()->$operator($fieldName, $bindIndexPlaceholder);
+                    if ($hasHavingClause && 'like' == $operator) {
+                        $q = $this->query->expr()->gt('instr(' . $fieldName . ',' . $bindIndexPlaceholder . ')', 0);
+                    } else {
+                        $q = $this->query->expr()->$operator($fieldName, $bindIndexPlaceholder);
+                    }
 
                     if ($filter->getOperator() == Column::OPERATOR_NLIKE || $filter->getOperator() == Column::OPERATOR_NSLIKE) {
                         $q = $this->query->expr()->not($q);
@@ -535,6 +539,9 @@ class Entity extends Source
             $row = new Row();
 
             foreach ($item as $key => $value) {
+                if ($key === 0) {
+                    $this->manager->refresh($value); // Force a reload of entity from db due to grouping operations (sql)
+                }
                 $key = str_replace('::', '.', $key);
 
                 if (in_array($key, $serializeColumns) && is_string($value)) {
