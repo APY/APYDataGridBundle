@@ -2,16 +2,18 @@
 
 namespace APY\DataGridBundle\Tests;
 
+use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Columns;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AddColumnTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->col1 = $this->getMock('APY\DataGridBundle\Grid\Column\Column');
-        $this->col2 = $this->getMock('APY\DataGridBundle\Grid\Column\Column');
-        $this->col3 = $this->getMock('APY\DataGridBundle\Grid\Column\Column');
-        $this->newCol = $this->getMock('APY\DataGridBundle\Grid\Column\Column');
+        $this->col1 = $this->getMock(Column::class);
+        $this->col2 = $this->getMock(Column::class);
+        $this->col3 = $this->getMock(Column::class);
+        $this->newCol = $this->getMock(Column::class);
     }
 
     public function testAddColumnPositiveOffset()
@@ -65,8 +67,9 @@ class AddColumnTest extends \PHPUnit_Framework_TestCase
 
     protected function getBaseColumns()
     {
-        $context = $this->getMock('Symfony\Component\Security\Core\SecurityContextInterface');
-        $columns = new Columns($context);
+        $authChecker = $this->getMock(AuthorizationCheckerInterface::class);
+
+        $columns = new Columns($authChecker);
         $columns->addColumn($this->col1);
         $columns->addColumn($this->col2);
         $columns->addColumn($this->col3);
