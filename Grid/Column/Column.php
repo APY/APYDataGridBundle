@@ -616,6 +616,9 @@ abstract class Column
             } else {
                 switch ($this->data['operator']) {
                     case self::OPERATOR_BTW:
+                        if(is_array($this->data['from'])){
+                            $this->data['from'] = reset($this->data['from']);
+                        }
                         if ($this->data['from'] != static::DEFAULT_VALUE) {
                             $filters[] = new Filter(self::OPERATOR_GT, $this->data['from']);
                         }
@@ -624,6 +627,9 @@ abstract class Column
                         }
                         break;
                     case self::OPERATOR_BTWE:
+                        if(is_array($this->data['from'])){
+                            $this->data['from'] = reset($this->data['from']);
+                        }
                         if ($this->data['from'] != static::DEFAULT_VALUE) {
                             $filters[] = new Filter(self::OPERATOR_GTE, $this->data['from']);
                         }
