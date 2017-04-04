@@ -213,7 +213,7 @@ class Entity extends Source
                 }
             }
 
-            $alias = str_replace('.', '::', $column->getId());
+            $alias = str_replace('.', '__', $column->getId());
         } elseif (strpos($name, ':') !== false) {
             $previousParent = $this->getTableAlias();
             $alias = $name;
@@ -535,7 +535,7 @@ class Entity extends Source
             $row = new Row();
 
             foreach ($item as $key => $value) {
-                $key = str_replace('::', '.', $key);
+                $key = str_replace('__', '.', $key);
 
                 if (in_array($key, $serializeColumns) && is_string($value)) {
                     $value = unserialize($value);
