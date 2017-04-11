@@ -1,8 +1,8 @@
 {
     "name": "apy/datagrid-bundle",
-    "description": "Symfony2 Datagrid Bundle",
+    "description": "Symfony Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
-    "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
+    "homepage": "https://github.com/apy/APYDataGridBundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -20,9 +20,9 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "symfony/symfony": "~3",
-        "twig/twig": "~1.28"
+        "php": ">=5.6",
+        "symfony/symfony": "~2.8|~3.0",
+        "twig/twig": ">=1.5.0"
     },
     "require-dev": {
         "phpunit/phpunit": "5.4.*",
@@ -38,7 +38,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1-dev"
+            "dev-master": "3.0-dev"
         }
     }
 }

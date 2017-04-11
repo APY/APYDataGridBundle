@@ -817,7 +817,7 @@ abstract class Column
     /**
      * Internal function.
      *
-     * @param AuthorizationCheckerInterface $authorizationChecker
+     * @param $authorizationChecker
      *
      * @return $this
      */

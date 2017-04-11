@@ -69,7 +69,7 @@ class Grid implements GridInterface
     protected $request;
 
     /**
-     * @var \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface
+     * @var \Symfony\Component\Security\Core\Authorization\AuthorizationChecker
      */
     protected $authorizationChecker;
 
@@ -352,17 +352,22 @@ class Grid implements GridInterface
 
         $this->setPersistence($config->isPersisted());
 
-        // Route
-        if (null != $config->getRoute()) {
-            $this->setRouteUrl($this->router->generate($config->getRoute()));
-        }
-
         // Route parameters
         $routeParameters = $config->getRouteParameters();
         if (!empty($routeParameters)) {
             foreach ($routeParameters as $parameter => $value) {
                 $this->setRouteParameter($parameter, $value);
             }
+        }
+        
+        // Route
+        if (null != $config->getRoute()) {
+            $this->setRouteUrl($this->router->generate($config->getRoute(), $routeParameters));
+        }
+
+        // Route
+        if (null != $config->getRoute()) {
+            $this->setRouteUrl($this->router->generate($config->getRoute(), $routeParameters));
         }
 
         // Columns
@@ -663,7 +668,7 @@ class Grid implements GridInterface
                         $action->getParameters()
                     );
 
-                    $subRequest = $this->container->get('request_stack')->getCurrentRequest()->duplicate([], null, $path);
+                    $subRequest = $this->request->duplicate([], null, $path);
 
                     $this->massActionResponse = $this->container->get('http_kernel')->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
                 } else {

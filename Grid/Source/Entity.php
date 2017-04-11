@@ -5,6 +5,7 @@
  *
  * (c) Abhoryo <abhoryo@free.fr>
  * (c) Stanislav Turza
+ * (c) Patryk Grudniewski <patgrudniewski@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,9 +19,11 @@ use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
@@ -151,6 +154,41 @@ class Entity extends Source
     /**
      * @param \APY\DataGridBundle\Grid\Column\Column $column
      *
+     * @return string
+     */
+    protected function getTranslationFieldNameWithParents($column)
+    {
+        $name = $column->getField();
+
+        if ($column->getIsManualField()) {
+            return $column->getField();
+        }
+
+        if (strpos($name, '.') !== false) {
+            $previousParent = '';
+
+            $elements = explode('.', $name);
+            while ($element = array_shift($elements)) {
+                if (count($elements) > 0) {
+                    $previousParent .= '_' . $element;
+                }
+            }
+        } elseif (strpos($name, ':') !== false) {
+            $previousParent = $this->getTableAlias();
+        } else {
+            return $this->getTableAlias().'.'.$name;
+        }
+
+        $matches = array();
+        if ($column->hasDQLFunction($matches)) {
+            return $previousParent.'.'.$matches['field'];
+        }
+
+        return $column->getField();
+    }
+
+    /**
+     * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @return string
      */
     protected function getFieldName($column, $withAlias = false)
@@ -373,7 +411,11 @@ class Entity extends Source
 
                 $isDisjunction = $column->getDataJunction() === Column::DATA_DISJUNCTION;
 
-                $hasHavingClause = $column->hasDQLFunction() || $column->getIsAggregate();
+                $dqlMatches = [];
+                $hasHavingClause = $column->hasDQLFunction($dqlMatches) || $column->getIsAggregate();
+                if(isset($dqlMatches['function']) && $dqlMatches['function'] == 'translation_agg'){
+                    $hasHavingClause = false;
+                }
 
                 $sub = $isDisjunction ? $this->query->expr()->orx() : ($hasHavingClause ? $this->query->expr()->andx() : $where);
 
@@ -384,8 +426,17 @@ class Entity extends Source
 
                     $fieldName = $this->getFieldName($columnForFilter, false);
                     $bindIndexPlaceholder = "?$bindIndex";
-                    if (in_array($filter->getOperator(), [Column::OPERATOR_LIKE, Column::OPERATOR_RLIKE, Column::OPERATOR_LLIKE, Column::OPERATOR_NLIKE])) {
-                        $fieldName = "LOWER($fieldName)";
+
+                    if( in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))){
+                        if(isset($dqlMatches['function']) && $dqlMatches['function'] == 'translation_agg'){
+                            $translationFieldName = $this->getTranslationFieldNameWithParents($columnForFilter);
+                            $fieldName = "LOWER(".$translationFieldName.")";
+                        }elseif(isset($dqlMatches['function']) && $dqlMatches['function'] == 'role_agg'){
+                            $translationFieldName = $this->getTranslationFieldNameWithParents($columnForFilter);
+                            $fieldName = "LOWER(".$translationFieldName.")";
+                        }else{
+                            $fieldName = "LOWER($fieldName)";
+                        }
                         $bindIndexPlaceholder = "LOWER($bindIndexPlaceholder)";
                     }
 
@@ -465,12 +516,13 @@ class Entity extends Source
 
         //call overridden prepareQuery or associated closure
         $this->prepareQuery($this->query);
+        $hasJoin = $this->checkIfQueryHasFetchJoin($this->query);
 
         $query = $this->query->getQuery();
         foreach ($this->hints as $hintKey => $hintValue) {
             $query->setHint($hintKey, $hintValue);
         }
-        $items = $query->getResult();
+        $items = new Paginator($query, $hasJoin);
 
         $repository = $this->manager->getRepository($this->entityName);
 
@@ -703,6 +755,7 @@ class Entity extends Source
                         natcasesort($values);
                     }
 
+                    $values = $this->prepareColumnValues($column, $values);
                     $column->setValues($values);
                 }
             }
@@ -797,5 +850,25 @@ class Entity extends Source
     public function getTableAlias()
     {
         return $this->tableAlias;
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @return boolean
+     */
+    protected function checkIfQueryHasFetchJoin(QueryBuilder $qb)
+    {
+        $join = $qb->getDqlPart('join');
+        if (empty($join)) {
+            return false;
+        }
+
+        foreach ($join[$this->getTableAlias()] as $join) {
+            if ($join->getJoinType() === Join::INNER_JOIN || $join->getJoinType() === Join::LEFT_JOIN) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
