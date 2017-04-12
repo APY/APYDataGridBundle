@@ -356,11 +356,66 @@ abstract class Column
      */
     public function isFiltered()
     {
-        return  (isset($this->data['from']) && $this->isQueryValid($this->data['from']) && $this->data['from'] != static::DEFAULT_VALUE)
-              || (isset($this->data['to']) && $this->isQueryValid($this->data['to']) && $this->data['to'] != static::DEFAULT_VALUE)
-              || (isset($this->data['operator']) && ($this->data['operator'] === self::OPERATOR_ISNULL || $this->data['operator'] === self::OPERATOR_ISNOTNULL));
+        if ($this->hasFromOperandFilter()) {
+            return true;
+        }
+
+        if ($this->hasToOperandFilter()) {
+            return true;
+        }
+
+        return $this->hasOperatorFilter();
     }
 
+    /**
+     * @return bool
+     */
+    private function hasFromOperandFilter()
+    {
+        if (!isset($this->data['from'])) {
+            return false;
+        }
+
+        if (!$this->isQueryValid($this->data['from'])) {
+            return false;
+        }
+
+        return $this->data['from'] != static::DEFAULT_VALUE;
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasToOperandFilter()
+    {
+        if (!isset($this->data['to'])) {
+            return false;
+        }
+
+        if (!$this->isQueryValid($this->data['to'])) {
+            return false;
+        }
+
+        return $this->data['to'] != static::DEFAULT_VALUE;
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasOperatorFilter()
+    {
+        if (!isset($this->data['operator'])) {
+            return false;
+        }
+
+        return $this->data['operator'] === self::OPERATOR_ISNULL || $this->data['operator'] === self::OPERATOR_ISNOTNULL;
+    }
+
+    /**
+     * @param bool $filterable
+     *
+     * @return $this
+     */
     public function setFilterable($filterable)
     {
         $this->filterable = $filterable;
@@ -734,6 +789,7 @@ abstract class Column
 
     public function setDefaultOperator($defaultOperator)
     {
+        // @todo: should this be \InvalidArgumentException?
         if (!$this->hasOperator($defaultOperator)) {
             throw new \Exception($defaultOperator . ' operator not found in operators list.');
         }
