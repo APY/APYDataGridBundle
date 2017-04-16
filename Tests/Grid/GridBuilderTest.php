@@ -140,6 +140,12 @@ class GridBuilderTest extends TestCase
         $this->assertInstanceOf(Grid::class, $this->builder->getGrid());
     }
 
+    public function testGetGridWithColumns()
+    {
+        $this->builder->add('name', 'Column', ['key' => 'value']);
+        $this->assertInstanceOf(Grid::class, $this->builder->getGrid());
+    }
+
     /**
      * {@inheritdoc}
      */
