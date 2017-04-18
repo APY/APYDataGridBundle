@@ -35,7 +35,14 @@
         {% endif %}
     </form>
 {% else %}
-    {{ grid_no_data(grid) }}
+    <div class="grid_body">
+    <table>
+    {% if grid.isTitleSectionVisible %}
+        {{ grid_titles(grid) }}
+    {% endif %}
+    {{ grid_rows(grid) }}
+    </table>
+    </div>
 {% endif %}
 </div>
 {% endblock grid %}
