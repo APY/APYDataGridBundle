@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle\Grid;
 
+use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -20,6 +21,8 @@ class Columns implements \IteratorAggregate, \Countable
 {
     protected $columns = [];
     protected $extensions = [];
+
+    const MISSING_COLUMN_EX_MSG = 'Column with id "%s" doesn\'t exists';
 
     /**
      * @var AuthorizationCheckerInterface
@@ -83,7 +86,7 @@ class Columns implements \IteratorAggregate, \Countable
     public function getColumnById($columnId)
     {
         if (($column = $this->hasColumnById($columnId, true)) === false) {
-            throw new \InvalidArgumentException(sprintf('Column with id "%s" doesn\'t exists', $columnId));
+            throw new \InvalidArgumentException(sprintf(self::MISSING_COLUMN_EX_MSG, $columnId));
         }
 
         return $column;
@@ -93,7 +96,7 @@ class Columns implements \IteratorAggregate, \Countable
      * @param $columnId
      * @param bool $returnColumn
      *
-     * @return bool|Column
+     * @return bool|Column|ActionsColumn
      */
     public function hasColumnById($columnId, $returnColumn = false)
     {
