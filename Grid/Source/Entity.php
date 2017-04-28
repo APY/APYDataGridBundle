@@ -514,7 +514,7 @@ class Entity extends Source
         foreach ($this->hints as $hintKey => $hintValue) {
             $query->setHint($hintKey, $hintValue);
         }
-        $items = new Paginator($query, $hasJoin);
+        $items = $query->getResult();
 
         $repository = $this->manager->getRepository($this->entityName);
 
