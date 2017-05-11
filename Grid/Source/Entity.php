@@ -515,6 +515,7 @@ class Entity extends Source
             $query->setHint($hintKey, $hintValue);
         }
         $items = new Paginator($query, $hasJoin);
+        $items->setUseOutputWalkers(false);
 
         $repository = $this->manager->getRepository($this->entityName);
 
