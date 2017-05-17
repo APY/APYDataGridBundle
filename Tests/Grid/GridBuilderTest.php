@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use APY\DataGridBundle\Grid\Action\RowActionInterface;
+use Symfony\Component\Workflow\Tests\MarkingTest;
 
 /**
  * Class GridBuilderTest.
@@ -137,6 +139,12 @@ class GridBuilderTest extends TestCase
 
     public function testGetGrid()
     {
+        $this->assertInstanceOf(Grid::class, $this->builder->getGrid());
+    }
+
+    public function testGetGridWithColumns()
+    {
+        $this->builder->add('name', 'Column', ['key' => 'value']);
         $this->assertInstanceOf(Grid::class, $this->builder->getGrid());
     }
 

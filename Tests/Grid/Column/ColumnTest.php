@@ -3,7 +3,10 @@
 namespace APY\DataGridBundle\Tests\Grid\Column;
 
 use APY\DataGridBundle\Grid\Column\Column;
+<<<<<<< HEAD
 use APY\DataGridBundle\Grid\Filter;
+=======
+>>>>>>> [WIP] Added ColumnTest
 use APY\DataGridBundle\Grid\Row;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
@@ -206,6 +209,10 @@ class ColumnTest extends TestCase
     public function testSetId()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setId(1);
 
         $this->assertAttributeEquals(1, 'id', $mock);
@@ -214,6 +221,10 @@ class ColumnTest extends TestCase
     public function testGetId()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setId(1);
 
         $this->assertEquals(1, $mock->getId());
@@ -222,6 +233,10 @@ class ColumnTest extends TestCase
     public function testGetRenderBlockId()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setId('foo.bar:foobar');
 
         $this->assertEquals('foo_bar_foobar', $mock->getRenderBlockId());
@@ -430,6 +445,10 @@ class ColumnTest extends TestCase
     public function testIsNotFilteredIfFromOperandHasDefaultValue()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setData(['from' => Column::DEFAULT_VALUE]);
 
         $this->assertFalse($mock->isFiltered());
@@ -438,6 +457,10 @@ class ColumnTest extends TestCase
     public function testIsNotFilteredIfToOperandHasDefaultValue()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setData(['to' => Column::DEFAULT_VALUE]);
 
         $this->assertFalse($mock->isFiltered());
@@ -446,6 +469,10 @@ class ColumnTest extends TestCase
     public function testIsNotFilteredIfOperatorNeitherIsIsNullNorIsNotNull()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setData(['operator' => Column::OPERATOR_LIKE]);
 
         $this->assertFalse($mock->isFiltered());
@@ -454,6 +481,10 @@ class ColumnTest extends TestCase
     public function testIsFilteredIfFromOperandHasValueDifferentThanDefault()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setData(['from' => 1]);
 
         $this->assertTrue($mock->isFiltered());
@@ -462,6 +493,10 @@ class ColumnTest extends TestCase
     public function testIsFilteredIfToOperandHasValueDifferentThanDefault()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setData(['to' => 1]);
 
         $this->assertTrue($mock->isFiltered());
@@ -470,6 +505,10 @@ class ColumnTest extends TestCase
     public function testIsFilteredIfOperatorIsNull()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setData(['operator' => Column::OPERATOR_ISNULL]);
 
         $this->assertTrue($mock->isFiltered());
@@ -478,6 +517,10 @@ class ColumnTest extends TestCase
     public function testIsFilteredIfOperatorIsNotNull()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setData(['operator' => Column::OPERATOR_ISNOTNULL]);
 
         $this->assertTrue($mock->isFiltered());
@@ -486,6 +529,10 @@ class ColumnTest extends TestCase
     public function testSetFilterable()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setFilterable(true);
 
         $this->assertAttributeEquals(true, 'filterable', $mock);
@@ -494,6 +541,10 @@ class ColumnTest extends TestCase
     public function testIsFilterable()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setFilterable(true);
 
         $this->assertTrue($mock->isFilterable());
@@ -502,6 +553,10 @@ class ColumnTest extends TestCase
     public function testItDoesNotSetOrderIfOrderIsNull()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setOrder(null);
 
         $this->assertAttributeEquals(null, 'order', $mock);
@@ -511,6 +566,10 @@ class ColumnTest extends TestCase
     public function testItDoesSetOrderIfZero()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setOrder(0);
 
         $this->assertAttributeEquals(0, 'order', $mock);
@@ -520,6 +579,10 @@ class ColumnTest extends TestCase
     public function testItDoesSetOrder()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setOrder(1);
 
         $this->assertAttributeEquals(1, 'order', $mock);
@@ -529,6 +592,10 @@ class ColumnTest extends TestCase
     public function testGetOrder()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setOrder(1);
 
         $this->assertEquals(1, $mock->getOrder());
@@ -546,6 +613,10 @@ class ColumnTest extends TestCase
     public function testAutoResize()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setSize(-1);
 
         $this->assertAttributeEquals(-1, 'size', $mock);
@@ -554,6 +625,10 @@ class ColumnTest extends TestCase
     public function testSetSize()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setSize(2);
 
         $this->assertAttributeEquals(2, 'size', $mock);
@@ -562,10 +637,15 @@ class ColumnTest extends TestCase
     public function testGetSize()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
+<<<<<<< HEAD
+=======
+
+>>>>>>> [WIP] Added ColumnTest
         $mock->setSize(3);
 
         $this->assertEquals(3, $mock->getSize());
     }
+<<<<<<< HEAD
 
     public function testDataDefaultIfNoDataSetted()
     {
@@ -1376,4 +1456,6 @@ class ColumnTest extends TestCase
         $this->assertEquals(0, $mock->hasDQLFunction($result));
         $this->assertEmpty($result);
     }
+=======
+>>>>>>> [WIP] Added ColumnTest
 }
