@@ -1,5 +1,5 @@
 {
-    "name": "apy/datagrid-bundle",
+    "name": "mdzzohrabi/datagrid-bundle",
     "description": "Symfony Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
     "homepage": "https://github.com/apy/APYDataGridBundle",
@@ -17,7 +17,11 @@
         {
             "name": "Evan Owens",
             "email": "eaowens@gmail.com"
-        }
+        },
+        {
+            "name": "Masoud Zohrabi",
+            "email": "mdzzohrabi@gmail.com"
+        },
     ],
     "require": {
         "php": ">=5.6",
