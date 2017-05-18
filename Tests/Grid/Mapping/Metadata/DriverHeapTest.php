@@ -3,7 +3,6 @@
 namespace APY\DataGridBundle\Grid\Tests\Mapping\Metadata;
 
 use APY\DataGridBundle\Grid\Mapping\Metadata\DriverHeap;
-use APY\DataGridBundle\Grid\Mapping\Source;
 use PHPUnit\Framework\TestCase;
 
 class DriverHeapTest extends TestCase
