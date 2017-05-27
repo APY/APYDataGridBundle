@@ -133,7 +133,6 @@ class Entity extends Source
     public function initialise($container)
     {
         $doctrine = $container->get('doctrine');
-
         $this->manager = version_compare(Kernel::VERSION, '2.1.0', '>=') ? $doctrine->getManager($this->managerName) : $doctrine->getEntityManager($this->managerName);
         $this->ormMetadata = $this->manager->getClassMetadata($this->entityName);
 
@@ -459,6 +458,7 @@ class Entity extends Source
         $this->prepareQuery($this->query);
 
         $query = $this->query->getQuery();
+
         foreach ($this->hints as $hintKey => $hintValue) {
             $query->setHint($hintKey, $hintValue);
         }
@@ -561,6 +561,7 @@ class Entity extends Source
         return $count;
     }
 
+    // @todo: why pass these parameters? They never used
     public function getFieldsMetadata($class, $group = 'default')
     {
         $result = [];
