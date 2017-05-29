@@ -20,7 +20,7 @@ use Symfony\Component\Form\Exception\PropertyAccessDeniedException;
 
 abstract class Source implements DriverInterface
 {
-    protected $prepareQueryCallback = null;
+    protected $prepareQueryCallbacks = array();
     protected $prepareRowCallback = null;
     protected $data = null;
     protected $items = [];
@@ -31,8 +31,11 @@ abstract class Source implements DriverInterface
      */
     public function prepareQuery($queryBuilder)
     {
-        if (is_callable($this->prepareQueryCallback)) {
-            call_user_func($this->prepareQueryCallback, $queryBuilder);
+        
+        foreach($this->prepareQueryCallbacks as $prepareQueryCallback) {
+            if (is_callable($prepareQueryCallback)) {
+                call_user_func($prepareQueryCallback, $queryBuilder);
+            }
         }
     }
 
@@ -57,7 +60,7 @@ abstract class Source implements DriverInterface
      */
     public function manipulateQuery($callback = null)
     {
-        $this->prepareQueryCallback = $callback;
+        $this->prepareQueryCallbacks[] = $callback;
 
         return $this;
     }
