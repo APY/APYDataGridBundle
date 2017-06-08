@@ -13,6 +13,7 @@
 namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
+use APY\DataGridBundle\Grid\Row;
 use Doctrine\Common\Version as DoctrineVersion;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
