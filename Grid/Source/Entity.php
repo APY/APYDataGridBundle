@@ -522,8 +522,13 @@ class Entity extends Source
         foreach ($this->hints as $hintKey => $hintValue) {
             $query->setHint($hintKey, $hintValue);
         }
-        $items = new Paginator($query, $hasJoin);
-        $items->setUseOutputWalkers(false);
+
+        // impostando l'output walkers a false vanno in errore alcune query. L'errore è:
+        // Cannot select distinct identifiers from query with LIMIT and ORDER BY on a column from a fetch joined to-many association. Use output walkers.
+        // Vedi issue NUV-4879
+//        $items = new Paginator($query, $hasJoin);
+//        $items->setUseOutputWalkers(false);
+        $items = $query->getResult();
 
         $repository = $this->manager->getRepository($this->entityName);
 
