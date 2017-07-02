@@ -2,14 +2,11 @@
 
 namespace APY\DataGridBundle\Grid\Tests\Mapping\Metadata;
 
-use APY\DataGridBundle\Grid\Mapping\Column;
-use APY\DataGridBundle\Grid\Mapping\Driver\Annotation;
+use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
+use APY\DataGridBundle\Grid\Mapping\Metadata\DriverHeap;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Metadata;
-use APY\DataGridBundle\Grid\Mapping\Metadata\DriverHeap;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Validator\Constraints\DateTime;
-use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
 
 class ManagerTest extends TestCase
 {
@@ -34,14 +31,14 @@ class ManagerTest extends TestCase
     public function testGetDrivers()
     {
         $driverInterfaceMock = $this->createMock(DriverInterface::class);
-        
+
         $priority = 1;
         $driverHeap = new DriverHeap();
         $driverHeap->insert($driverInterfaceMock, $priority);
 
         $this->manager->addDriver($driverInterfaceMock, $priority);
         $drivers = $this->manager->getDrivers();
-        
+
         $this->assertEquals($driverHeap, $drivers);
     }
 

@@ -2,8 +2,8 @@
 
 namespace APY\DataGridBundle\Grid\Tests\Mapping\Metadata;
 
-use APY\DataGridBundle\Grid\Columns;
 use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Columns;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Metadata;
 use PHPUnit\Framework\TestCase;
 
@@ -137,11 +137,11 @@ class MetadataTest extends TestCase
         $value2 = 'bar';
         $fieldMapping = [
             $field => [
-                'type' => $value
+                'type' => $value,
             ],
             $field2 => [
-                'type' => $value2
-            ]
+                'type' => $value2,
+            ],
         ];
 
         $columnsMockClone = $this->getMockForAbstractClass(Column::class);
