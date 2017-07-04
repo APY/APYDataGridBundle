@@ -13,6 +13,7 @@
 namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
@@ -77,13 +78,14 @@ abstract class Source implements DriverInterface
      *
      * @abstract
      *
-     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
+     * @param ColumnsIterator $columns
      * @param int                                      $page             Page Number
      * @param int                                      $limit            Rows Per Page
      * @param int                                      $gridDataJunction Grid data junction
      *
      * @return \APY\DataGridBundle\Grid\Rows
      */
+    // @todo: typehint?
     abstract public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION);
 
     /**
