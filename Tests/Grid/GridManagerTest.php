@@ -353,9 +353,7 @@ class GridManagerTest extends TestCase
         $routeUrl = 'aRouteUrl';
         $this->gridManager->setRouteUrl($routeUrl);
 
-        $response = new RedirectResponse($routeUrl);
-
-        $this->assertEquals($response, $this->gridManager->getGridManagerResponse());
+        $this->assertEquals($routeUrl, $this->gridManager->getGridManagerResponse()->getTargetUrl());
     }
 
     public function testGridResponseExport()
