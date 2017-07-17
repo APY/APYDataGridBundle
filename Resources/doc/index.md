@@ -2,10 +2,6 @@
 
 APYDataGridBundle is a Symfony bundle for create grids for list your Entity (ORM), Document (ODM) and Vector (Array) sources. [APYDataGridBundle](https://github.com/APY/APYDataGridBundle) was initiated by **Stanislav Turza (Sorien)** and inspired by **Zfdatagrid and Magento Grid**.
 
-> IMPORTANT NOTICE : this is a fork repository of [APYDataGridBundle](https://github.com/APY/APYDataGridBundle). But the current version of [APYDataGridBundle](https://github.com/APY/APYDataGridBundle) is not compatible with Symfony 3+ framework. So, I fork this repository for make a APYDataGrid bundle compatible with Symfony3+. If you want to use it for Symfony2, please use the original repository [APYDataGridBundle](https://github.com/APY/APYDataGridBundle).
-
-> IMPORTANT NOTICE: This bundle is still under development. Any changes will be done without prior notice to consumers of this package. Of course this code will become stable at a certain point, but for now, use at your own risk.
-
 > You can see [CHANGELOG](CHANGELOG.md) and [UPGRADE 2.0](UPGRADE-2.0.md).
 
 ## Prerequisites
@@ -31,10 +27,10 @@ For more information about translations, check [Symfony documentation](https://s
 Require the bundle with composer :
 
 ```bash
-$ composer require artscorestudio/datagrid-bundle
+$ composer require apy/datagrid-bundle
 ```
 
-Composer will install the bundle to your project's *vendor/artscorestudio/datagrid-bundle* directory.
+Composer will install the bundle to your project's *vendor/apy/datagrid-bundle* directory.
 
 ### Step 2 : Enable the bundle
 
