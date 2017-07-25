@@ -64,7 +64,7 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>%count% Výsledek, |%count% Výsledků, </target>
+                <target>%count% Výsledek, |%count% Výsledky, |%count% Výsledků, </target>
             </trans-unit>
         </body>
     </file>
