@@ -1503,7 +1503,15 @@ class Grid implements GridInterface
     public function getRouteUrl()
     {
         if ($this->routeUrl === null) {
-            $this->routeUrl = $this->router->generate($this->request->get('_route'), $this->getRouteParameters());
+            if(!$this->request->get('_route')){
+                $this->routeUrl =
+                    $this->router->generate(
+                        $this->request->attributes->get('request')->attributes->get('_route'),
+                        $this->request->attributes->get('request')->attributes->get('_route_params')
+                    );
+            } else {
+                $this->routeUrl = $this->router->generate($this->request->get('_route'), $this->getRouteParameters());
+            }
         }
 
         return $this->routeUrl;
