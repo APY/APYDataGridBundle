@@ -294,7 +294,7 @@ abstract class Column
     {
         $visible = $isExported && $this->export !== null ? $this->export : $this->visible;
 
-        if ($visible && $this->authorizationChecker !== null && $this->getRole() != null) {
+        if ($visible && $this->authorizationChecker !== null && $this->getRole() !== null) {
             return $this->authorizationChecker->isGranted($this->getRole());
         }
 

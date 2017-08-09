@@ -345,12 +345,12 @@ class Grid implements GridInterface
         }
         
         // Route
-        if (null != $config->getRoute()) {
+        if (null !== $config->getRoute()) {
             $this->setRouteUrl($this->router->generate($config->getRoute(), $routeParameters));
         }
 
         // Route
-        if (null != $config->getRoute()) {
+        if (null !== $config->getRoute()) {
             $this->setRouteUrl($this->router->generate($config->getRoute(), $routeParameters));
         }
 
@@ -371,14 +371,14 @@ class Grid implements GridInterface
         // Source
         $source = $config->getSource();
 
-        if (null != $source) {
+        if (null !== $source) {
             $this->source = $source;
 
             $source->initialise($this->container);
 
             if ($source instanceof Entity) {
                 $groupBy = $config->getGroupBy();
-                if (null != $groupBy) {
+                if (null !== $groupBy) {
                     if (!is_array($groupBy)) {
                         $groupBy = [$groupBy];
                     }
@@ -390,11 +390,11 @@ class Grid implements GridInterface
         }
 
         // Order
-        if (null != $config->getSortBy()) {
+        if (null !== $config->getSortBy()) {
             $this->setDefaultOrder($config->getSortBy(), $config->getOrder());
         }
 
-        if (null != $config->getMaxPerPage()) {
+        if (null !== $config->getMaxPerPage()) {
             $this->setLimits($config->getMaxPerPage());
         }
 
@@ -609,7 +609,7 @@ class Grid implements GridInterface
             if (array_key_exists($actionId, $this->massActions)) {
                 $action = $this->massActions[$actionId];
                 $actionAllKeys = (boolean) $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
-                $actionKeys = $actionAllKeys == false ? array_keys((array) $this->getFromRequest(MassActionColumn::ID)) : [];
+                $actionKeys = $actionAllKeys === false ? array_keys((array) $this->getFromRequest(MassActionColumn::ID)) : [];
 
                 $this->processSessionData();
                 if ($actionAllKeys) {
@@ -619,7 +619,7 @@ class Grid implements GridInterface
 
                 $this->prepare();
 
-                if ($actionAllKeys == true) {
+                if ($actionAllKeys === true) {
                     foreach ($this->rows as $row) {
                         $actionKeys[] = $row->getPrimaryFieldValue();
                     }
@@ -697,7 +697,7 @@ class Grid implements GridInterface
      */
     protected function processTweaks($tweakId)
     {
-        if ($tweakId != null) {
+        if ($tweakId !== null) {
             if (array_key_exists($tweakId, $this->tweaks)) {
                 $tweak = $this->tweaks[$tweakId];
                 $saveAsActive = false;
@@ -804,12 +804,12 @@ class Grid implements GridInterface
 
                 //if no item is selectd in multi select filter : simulate empty first choice
                 if ($column->getFilterType() == 'select'
-                    && $column->getSelectMulti() == true
-                    && $data == null
-                    && $this->getFromRequest(self::REQUEST_QUERY_PAGE) == null
-                    && $this->getFromRequest(self::REQUEST_QUERY_ORDER) == null
-                    && $this->getFromRequest(self::REQUEST_QUERY_LIMIT) == null
-                    && ($this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == null || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == '-1')) {
+                    && $column->getSelectMulti() === true
+                    && $data === null
+                    && $this->getFromRequest(self::REQUEST_QUERY_PAGE) === null
+                    && $this->getFromRequest(self::REQUEST_QUERY_ORDER) === null
+                    && $this->getFromRequest(self::REQUEST_QUERY_LIMIT) === null
+                    && ($this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) === null || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == '-1')) {
                     $data = ['from' => ''];
                 }
 
@@ -1836,7 +1836,7 @@ class Grid implements GridInterface
      */
     public function isTitleSectionVisible()
     {
-        if ($this->showTitles == true) {
+        if ($this->showTitles === true) {
             foreach ($this->columns as $column) {
                 if ($column->getTitle() != '') {
                     return true;
@@ -1852,7 +1852,7 @@ class Grid implements GridInterface
      */
     public function isFilterSectionVisible()
     {
-        if ($this->showFilters == true) {
+        if ($this->showFilters === true) {
             foreach ($this->columns as $column) {
                 if ($column->isFilterable() && $column->getType() != 'massaction' && $column->getType() != 'actions') {
                     return true;
