@@ -551,7 +551,7 @@ class Entity extends Source
             $row->setRepository($repository);
 
             //call overridden prepareRow or associated closure
-            if (($modifiedRow = $this->prepareRow($row)) != null) {
+            if (($modifiedRow = $this->prepareRow($row)) !== null) {
                 $result->addRow($modifiedRow);
             }
         }
@@ -582,7 +582,7 @@ class Entity extends Source
             $countQuery->setHint(CountWalker::HINT_DISTINCT, true);
         }
 
-        if ($countQuery->getHint(Query::HINT_CUSTOM_OUTPUT_WALKER) == false) {
+        if ($countQuery->getHint(Query::HINT_CUSTOM_OUTPUT_WALKER) === false) {
             $platform = $countQuery->getEntityManager()->getConnection()->getDatabasePlatform(); // law of demeter win
 
             $rsm = new ResultSetMapping();

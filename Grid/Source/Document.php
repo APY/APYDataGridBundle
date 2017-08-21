@@ -267,7 +267,7 @@ class Document extends Source
             $this->addReferencedFields($row, $resource);
 
             //call overridden prepareRow or associated closure
-            if (($modifiedRow = $this->prepareRow($row)) != null) {
+            if (($modifiedRow = $this->prepareRow($row)) !== null) {
                 $result->addRow($modifiedRow);
             }
         }
