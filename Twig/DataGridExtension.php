@@ -452,7 +452,7 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
         $this->templates = [];
 
         $template = $environment->loadTemplate($theme);
-        while ($template !== null) {
+        while ($template instanceof \Twig_Template) {
             $this->templates[] = $template;
             $template = $template->getParent([]);
         }
