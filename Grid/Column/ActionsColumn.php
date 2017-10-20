@@ -16,6 +16,13 @@ class ActionsColumn extends Column
 {
     protected $rowActions;
 
+     /**
+     * ActionsColumn constructor.
+     *
+     * @param string $column     Identifier of the column
+     * @param string $title      Title of the column
+     * @param array  $rowActions Array of rowAction
+     */
     public function __construct($column, $title, array $rowActions = [])
     {
         $this->rowActions = $rowActions;
