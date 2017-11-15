@@ -14,11 +14,22 @@ namespace APY\DataGridBundle\Grid\Action;
 
 class MassAction implements MassActionInterface
 {
+    /** @var string */
     protected $title;
+
+    /** @var string|null */
     protected $callback;
+
+    /** @var bool */
     protected $confirm;
+
+    /** @var string */
     protected $confirmMessage;
+
+    /** @var array  */
     protected $parameters = [];
+
+    /** @var string|null  */
     protected $role;
 
     /**
@@ -40,10 +51,11 @@ class MassAction implements MassActionInterface
         $this->role = $role;
     }
 
+    // @todo: has this setter sense? we passed the title from constructor
     /**
      * Set action title.
      *
-     * @param $title
+     * @param string $title
      *
      * @return self
      */
@@ -67,7 +79,7 @@ class MassAction implements MassActionInterface
     /**
      * Set action callback.
      *
-     * @param  $callback
+     * @param string $callback
      *
      * @return self
      */
@@ -88,10 +100,12 @@ class MassAction implements MassActionInterface
         return $this->callback;
     }
 
+    // @todo: we should change this to something like "enableConfirm" as "false" is the default value and has pretty much
+    // nosense to use setConfirm with false parameter.
     /**
      * Set action confirm.
      *
-     * @param  $confirm
+     * @param bool $confirm
      *
      * @return self
      */
@@ -102,6 +116,7 @@ class MassAction implements MassActionInterface
         return $this;
     }
 
+    // @todo: could we change this to neddConfirm?
     /**
      * Get action confirm.
      *
@@ -163,7 +178,7 @@ class MassAction implements MassActionInterface
     /**
      * set role.
      *
-     * @param mixed $role
+     * @param string $role
      *
      * @return self
      */
@@ -177,7 +192,7 @@ class MassAction implements MassActionInterface
     /**
      * Get role.
      *
-     * @return mixed
+     * @return string
      */
     public function getRole()
     {

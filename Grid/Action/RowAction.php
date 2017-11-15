@@ -12,19 +12,44 @@
 
 namespace APY\DataGridBundle\Grid\Action;
 
+use APY\DataGridBundle\Grid\Row;
+
 class RowAction implements RowActionInterface
 {
+    /** @var string */
     protected $title;
+
+    /** @var string */
     protected $route;
+
+    /** @var bool */
     protected $confirm;
+
+    /** @var string */
     protected $confirmMessage;
+
+    /** @var string */
     protected $target;
+
+    /** @var string */
     protected $column = '__actions';
+
+    /** @var array */
     protected $routeParameters = [];
+
+    /** @var array */
     protected $routeParametersMapping = [];
+
+    /** @var array */
     protected $attributes = [];
+
+    /** @var string|null */
     protected $role;
+
+    /** @var array */
     protected $callbacks = [];
+
+    /** @var bool */
     protected $enabled = true;
 
     /**
@@ -50,6 +75,7 @@ class RowAction implements RowActionInterface
         $this->role = $role;
     }
 
+    // @todo: has this setter real sense? we passed this value from constructor
     /**
      * Set action title.
      *
@@ -65,15 +91,14 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action title.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getTitle()
     {
         return $this->title;
     }
 
+    // @todo: has this setter real sense? we passed this value from constructor
     /**
      * Set action route.
      *
@@ -89,19 +114,19 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action route.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getRoute()
     {
         return $this->route;
     }
 
+    // @todo: we should change this to something like "enableConfirm" as "false" is the default value and has pretty much
+    // nosense to use setConfirm with false parameter.
     /**
      * Set action confirm.
      *
-     * @param  $confirm
+     * @param bool $confirm
      *
      * @return self
      */
@@ -113,9 +138,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action confirm.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function getConfirm()
     {
@@ -137,9 +160,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action confirmMessage.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getConfirmMessage()
     {
@@ -161,9 +182,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action target.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getTarget()
     {
@@ -185,9 +204,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action column.
-     *
-     * @return \APY\DataGridBundle\Grid\Column\Column
+     * {@inheritdoc}
      */
     public function getColumn()
     {
@@ -231,15 +248,14 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get route parameters.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getRouteParameters()
     {
         return $this->routeParameters;
     }
 
+    // @todo: why is this accepting string? it seems pretty useless, isn't it?
     /**
      * Set route parameters mapping.
      *
@@ -296,9 +312,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Get attributes.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getAttributes()
     {
@@ -308,7 +322,7 @@ class RowAction implements RowActionInterface
     /**
      * set role.
      *
-     * @param mixed $role
+     * @param string $role
      *
      * @return self
      */
@@ -322,7 +336,7 @@ class RowAction implements RowActionInterface
     /**
      * Get role.
      *
-     * @return mixed
+     * @return string
      */
     public function getRole()
     {
@@ -332,13 +346,13 @@ class RowAction implements RowActionInterface
     /**
      * Set render callback.
      *
-     * @deprecated This is deprecated and will be removed in 2.4. Use addManipulateRender instead.
+     * @deprecated This is deprecated and will be removed in 3.0; use addManipulateRender instead.
      *
-     * @param  $callback
+     * @param \Closure $callback
      *
      * @return self
      */
-    public function manipulateRender($callback)
+    public function manipulateRender(\Closure $callback)
     {
         return $this->addManipulateRender($callback);
     }
@@ -346,7 +360,7 @@ class RowAction implements RowActionInterface
     /**
      * Add a callback to render callback stack.
      *
-     * @param $callback
+     * @param \Closure $callback
      *
      * @return self
      */
@@ -360,9 +374,9 @@ class RowAction implements RowActionInterface
     /**
      * Render action for row.
      *
-     * @param \APY\DataGridBundle\Grid\Row $row
+     * @param Row $row
      *
-     * @return null|RowAction
+     * @return RowAction|null
      */
     public function render($row)
     {
@@ -377,22 +391,22 @@ class RowAction implements RowActionInterface
         return $this;
     }
 
+    // @todo: should not this be "isEnabled"?
     /**
-     * Get the enabled state of this action.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function getEnabled()
     {
         return $this->enabled;
     }
 
+    // @todo: should not this be "enable" as default value is false?
     /**
      * Set the enabled state of this action.
      *
      * @param bool $enabled
      *
-     * @return \APY\DataGridBundle\Grid\Action\RowAction
+     * @return self
      */
     public function setEnabled($enabled)
     {

@@ -85,6 +85,7 @@ class ArrayColumn extends Column
         $return = [];
         if (is_array($values) || $values instanceof \Traversable) {
             foreach ($values as $key => $value) {
+                // @todo: this seems like dead code
                 if (!is_array($value) && isset($this->values[(string) $value])) {
                     $value = $this->values[$value];
                 }

@@ -71,6 +71,7 @@ class SimpleArrayColumn extends Column
             return call_user_func($this->callback, $values, $row, $router);
         }
 
+        // @todo: when it has an array as value?
         $return = [];
         if (is_array($values) || $values instanceof \Traversable) {
             foreach ($values as $key => $value) {
