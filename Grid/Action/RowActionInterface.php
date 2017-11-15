@@ -12,6 +12,9 @@
 
 namespace APY\DataGridBundle\Grid\Action;
 
+// @todo: implementation seems to be more specific than interface. It obviously be the case but I've noticed that
+// only one method of this interface is used in our code. So I wonder if this interface is "updated" and is the mimimum
+// API methods that should be provided as a contract or not.
 interface RowActionInterface
 {
     /**
@@ -38,21 +41,21 @@ interface RowActionInterface
     /**
      * get action confirmMessage.
      *
-     * @return bool
+     * @return string
      */
     public function getConfirmMessage();
 
     /**
      * get action target.
      *
-     * @return bool
+     * @return string
      */
     public function getTarget();
 
     /**
      * get the action column id.
      *
-     * @return bool
+     * @return string
      */
     public function getColumn();
 

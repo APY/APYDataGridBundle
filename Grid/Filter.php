@@ -18,6 +18,11 @@ class Filter
     protected $operator;
     protected $columnName;
 
+    /**
+     * @param string      $operator
+     * @param mixed|null  $value
+     * @param string|null $columnName
+     */
     public function __construct($operator, $value = null, $columnName = null)
     {
         $this->value = $value;
@@ -25,6 +30,11 @@ class Filter
         $this->columnName = $columnName;
     }
 
+    /**
+     * @param string $operator
+     *
+     * @return Filter
+     */
     public function setOperator($operator)
     {
         $this->operator = $operator;
@@ -32,11 +42,19 @@ class Filter
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getOperator()
     {
         return $this->operator;
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return Filter
+     */
     public function setValue($value)
     {
         $this->value = $value;
@@ -44,16 +62,27 @@ class Filter
         return $this;
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getValue()
     {
         return $this->value;
     }
 
+    /**
+     * @return bool
+     */
     public function hasColumnName()
     {
         return $this->columnName !== null;
     }
 
+    /**
+     * @param string $columnName
+     *
+     * @return Filter
+     */
     public function setColumnName($columnName)
     {
         $this->columnName = $columnName;
@@ -61,6 +90,9 @@ class Filter
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getColumnName()
     {
         return $this->columnName;

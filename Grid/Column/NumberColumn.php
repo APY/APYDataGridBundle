@@ -48,7 +48,7 @@ class NumberColumn extends Column
     {
         parent::__initialize($params);
 
-        $this->setAlign($this->getParam('align', 'right'));
+        $this->setAlign($this->getParam('align', Column::ALIGN_RIGHT));
         $this->setStyle($this->getParam('style', 'decimal'));
         $this->setLocale($this->getParam('locale', \Locale::getDefault()));
         $this->setPrecision($this->getParam('precision', null));
