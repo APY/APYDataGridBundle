@@ -1,0 +1,12 @@
+framework:
+    secret: "secret"
+    router:
+      resource: "%kernel.root_dir%/routing.yml"
+    form: ~
+
+twig:
+    paths:
+        '%kernel.root_dir%/../../Resources/views': APYDataGridBundle
+
+apy_data_grid:
+  theme: '@APYDataGridBundle/blocks.html.twig'
