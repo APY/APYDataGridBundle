@@ -217,7 +217,7 @@ abstract class Source implements DriverInterface
                            || is_callable([$itemEntity, $fullFunctionName = 'is' . $functionName])) {
                         $fieldValue = call_user_func([$itemEntity, $fullFunctionName]);
                     } else {
-                        throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
+                        throw new PropertyAccessDeniedExceptio(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
                     }
                 } elseif (isset($item[$fieldName])) {
                     $fieldValue = $item[$fieldName];
@@ -236,8 +236,9 @@ abstract class Source implements DriverInterface
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
      * @param int                                      $page
      * @param int                                      $limit
+     * @param int                                      $maxResults
      *
-     * @return \APY\DataGridBundle\DataGrid\Rows
+     * @return Rows
      */
     public function executeFromData($columns, $page = 0, $limit = 0, $maxResults = null)
     {
@@ -246,7 +247,6 @@ abstract class Source implements DriverInterface
         $serializeColumns = [];
 
         foreach ($this->data as $key => $item) {
-            $keep = true;
 
             foreach ($columns as $column) {
                 $fieldName = $column->getField();
@@ -443,7 +443,7 @@ abstract class Source implements DriverInterface
             $row = new Row();
 
             if ($this instanceof Vector) {
-                $row->setPrimaryField($this->id);
+                $row->setPrimaryField($this->getId());
             }
 
             foreach ($item as $fieldName => $fieldValue) {

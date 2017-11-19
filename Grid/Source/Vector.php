@@ -12,7 +12,15 @@
 
 namespace APY\DataGridBundle\Grid\Source;
 
-use APY\DataGridBundle\Grid\Column;
+use APY\DataGridBundle\Grid\Column\ArrayColumn;
+use APY\DataGridBundle\Grid\Column\BooleanColumn;
+use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Column\DateColumn;
+use APY\DataGridBundle\Grid\Column\DateTimeColumn;
+use APY\DataGridBundle\Grid\Column\NumberColumn;
+use APY\DataGridBundle\Grid\Column\TextColumn;
+use APY\DataGridBundle\Grid\Column\UntypedColumn;
+use APY\DataGridBundle\Grid\Rows;
 
 /**
  * Vector is really an Array.
@@ -45,6 +53,7 @@ class Vector extends Source
      * Creates the Vector and sets its data.
      *
      * @param array $data
+     * @param array $columns
      */
     public function __construct(array $data, array $columns = [])
     {
@@ -78,7 +87,7 @@ class Vector extends Source
                     'visible'    => true,
                     'field'      => $id,
                 ];
-                $guessedColumns[] = new Column\UntypedColumn($params);
+                $guessedColumns[] = new UntypedColumn($params);
             }
         }
 
@@ -88,7 +97,7 @@ class Vector extends Source
         $iteration = min(10, count($this->data));
 
         foreach ($this->columns as $c) {
-            if (!$c instanceof Column\UntypedColumn) {
+            if (!$c instanceof UntypedColumn) {
                 continue;
             }
 
@@ -152,26 +161,26 @@ class Vector extends Source
         $token = empty($this->id); //makes the first column primary by default
 
         foreach ($this->columns as $c) {
-            if ($c instanceof Column\UntypedColumn) {
+            if ($c instanceof UntypedColumn) {
                 switch ($c->getType()) {
                     case 'date':
-                        $column = new Column\DateColumn($c->getParams());
+                        $column = new DateColumn($c->getParams());
                         break;
                     case 'datetime':
-                        $column = new Column\DateTimeColumn($c->getParams());
+                        $column = new DateTimeColumn($c->getParams());
                         break;
                     case 'boolean':
-                        $column = new Column\BooleanColumn($c->getParams());
+                        $column = new BooleanColumn($c->getParams());
                         break;
                     case 'number':
-                        $column = new Column\NumberColumn($c->getParams());
+                        $column = new NumberColumn($c->getParams());
                         break;
                     case 'array':
-                        $column = new Column\ArrayColumn($c->getParams());
+                        $column = new ArrayColumn($c->getParams());
                         break;
                     case 'text':
                     default:
-                        $column = new Column\TextColumn($c->getParams());
+                        $column = new TextColumn($c->getParams());
                         break;
                 }
             } else {
@@ -192,9 +201,10 @@ class Vector extends Source
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
      * @param int                                      $page             Page Number
      * @param int                                      $limit            Rows Per Page
+     * @param int                                      $maxResults       Max rows
      * @param int                                      $gridDataJunction Grid data junction
      *
-     * @return \APY\DataGridBundle\Grid\Rows
+     * @return Rows
      */
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
@@ -227,6 +237,14 @@ class Vector extends Source
     }
 
     /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * Set a two-dimentional array.
      *
      * @param array $data
@@ -241,12 +259,14 @@ class Vector extends Source
             throw new \InvalidArgumentException('Data should be an array with content');
         }
 
+        // This seems to exclude ...
         if (is_object(reset($this->data))) {
             foreach ($this->data as $key => $object) {
                 $this->data[$key] = (array) $object;
             }
         }
 
+        // ... this other (or vice versa)
         $firstRaw = reset($this->data);
         if (!is_array($firstRaw) || empty($firstRaw)) {
             throw new \InvalidArgumentException('Data should be a two-dimentional array');
@@ -271,14 +291,5 @@ class Vector extends Source
         }
 
         return false;
-    }
-
-    protected function getColumn($id)
-    {
-        foreach ($this->columns as $c) {
-            if ($id === $c->getId()) {
-                return $c;
-            }
-        }
     }
 }
