@@ -30,7 +30,7 @@ class APYDataGridExtension extends Extension
         $loader->load('columns.xml');
 
         $ymlLoader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $ymlLoader->load('grid.yml');
+        $ymlLoader->load('grid.yaml');
 
         $container->setParameter('apy_data_grid.limits', $config['limits']);
         $container->setParameter('apy_data_grid.theme', $config['theme']);
