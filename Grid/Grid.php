@@ -24,7 +24,7 @@ use APY\DataGridBundle\Grid\Exception\NoActionSelectedException;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
-use Madisoft\AppBundle\Listener\AjaxDialogRedirectListener;
+use Nuvola\AppBundle\Helper\QueryStringHelper;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -2463,7 +2463,7 @@ class Grid implements GridInterface
              * as we're doing operation inside the dialog box and we want to stay inside the dialog
              */
             if ($ajaxAction = $this->request->get('ajaxAction')) {
-                $redirectUrl = AjaxDialogRedirectListener::appendParametersToQueryString(
+                $redirectUrl = QueryStringHelper::appendParametersToQueryString(
                     $this->getRouteUrl(),
                     [
                         ['name' => 'ajaxAction', 'value' => $ajaxAction],
