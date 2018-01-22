@@ -13,11 +13,11 @@
 namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Exception\PropertyAccessDeniedException;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
-use Symfony\Component\Form\Exception\PropertyAccessDeniedException;
 
 abstract class Source implements DriverInterface
 {
@@ -217,7 +217,7 @@ abstract class Source implements DriverInterface
                            || is_callable([$itemEntity, $fullFunctionName = 'is' . $functionName])) {
                         $fieldValue = call_user_func([$itemEntity, $fullFunctionName]);
                     } else {
-                        throw new PropertyAccessDeniedExceptio(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
+                        throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
                     }
                 } elseif (isset($item[$fieldName])) {
                     $fieldValue = $item[$fieldName];
@@ -233,10 +233,10 @@ abstract class Source implements DriverInterface
     /**
      * Find data from array|object.
      *
-     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int                                      $page
-     * @param int                                      $limit
-     * @param int                                      $maxResults
+     * @param Column[] $columns
+     * @param int      $page
+     * @param int      $limit
+     * @param int      $maxResults
      *
      * @return Rows
      */
@@ -471,7 +471,7 @@ abstract class Source implements DriverInterface
 
     public function populateSelectFiltersFromData($columns, $loop = false)
     {
-        /* @var $column Column\Column */
+        /* @var $column Column */
         foreach ($columns as $column) {
             $selectFrom = $column->getSelectFrom();
 
@@ -582,7 +582,7 @@ abstract class Source implements DriverInterface
         return preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $noaccentStr);
     }
 
-    protected function prepareColumnValues(Column\Column $column, $values)
+    protected function prepareColumnValues(Column $column, $values)
     {
         $existingValues = $column->getValues();
         if (!empty($existingValues)) {
