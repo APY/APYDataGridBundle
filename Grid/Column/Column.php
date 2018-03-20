@@ -47,6 +47,27 @@ abstract class Column
     const OPERATOR_ISNULL = 'isNull';
     const OPERATOR_ISNOTNULL = 'isNotNull';
 
+    protected static $availableOperators = [
+        self::OPERATOR_EQ,
+        self::OPERATOR_NEQ,
+        self::OPERATOR_LT,
+        self::OPERATOR_LTE,
+        self::OPERATOR_GT,
+        self::OPERATOR_GTE,
+        self::OPERATOR_BTW,
+        self::OPERATOR_BTWE,
+        self::OPERATOR_LIKE,
+        self::OPERATOR_NLIKE,
+        self::OPERATOR_RLIKE,
+        self::OPERATOR_LLIKE,
+        self::OPERATOR_SLIKE,
+        self::OPERATOR_NSLIKE,
+        self::OPERATOR_RSLIKE,
+        self::OPERATOR_LSLIKE,
+        self::OPERATOR_ISNULL,
+        self::OPERATOR_ISNOTNULL,
+    ];
+
     /**
      * Align.
      */
@@ -297,7 +318,7 @@ abstract class Column
     {
         $visible = $isExported && $this->export !== null ? $this->export : $this->visible;
 
-        if ($visible && $this->authorizationChecker !== null && $this->getRole() != null) {
+        if ($visible && $this->authorizationChecker !== null && $this->getRole() !== null) {
             return $this->authorizationChecker->isGranted($this->getRole());
         }
 
@@ -338,11 +359,66 @@ abstract class Column
      */
     public function isFiltered()
     {
-        return  (isset($this->data['from']) && $this->isQueryValid($this->data['from']) && $this->data['from'] != static::DEFAULT_VALUE)
-              || (isset($this->data['to']) && $this->isQueryValid($this->data['to']) && $this->data['to'] != static::DEFAULT_VALUE)
-              || (isset($this->data['operator']) && ($this->data['operator'] === self::OPERATOR_ISNULL || $this->data['operator'] === self::OPERATOR_ISNOTNULL));
+        if ($this->hasFromOperandFilter()) {
+            return true;
+        }
+
+        if ($this->hasToOperandFilter()) {
+            return true;
+        }
+
+        return $this->hasOperatorFilter();
     }
 
+    /**
+     * @return bool
+     */
+    private function hasFromOperandFilter()
+    {
+        if (!isset($this->data['from'])) {
+            return false;
+        }
+
+        if (!$this->isQueryValid($this->data['from'])) {
+            return false;
+        }
+
+        return $this->data['from'] != static::DEFAULT_VALUE;
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasToOperandFilter()
+    {
+        if (!isset($this->data['to'])) {
+            return false;
+        }
+
+        if (!$this->isQueryValid($this->data['to'])) {
+            return false;
+        }
+
+        return $this->data['to'] != static::DEFAULT_VALUE;
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasOperatorFilter()
+    {
+        if (!isset($this->data['operator'])) {
+            return false;
+        }
+
+        return $this->data['operator'] === self::OPERATOR_ISNULL || $this->data['operator'] === self::OPERATOR_ISNOTNULL;
+    }
+
+    /**
+     * @param bool $filterable
+     *
+     * @return $this
+     */
     public function setFilterable($filterable)
     {
         $this->filterable = $filterable;
@@ -726,6 +802,7 @@ abstract class Column
 
     public function setDefaultOperator($defaultOperator)
     {
+        // @todo: should this be \InvalidArgumentException?
         if (!$this->hasOperator($defaultOperator)) {
             throw new \Exception($defaultOperator . ' operator not found in operators list.');
         }
@@ -984,5 +1061,13 @@ abstract class Column
         $this->translationDomain = $translationDomain;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAvailableOperators()
+    {
+        return self::$availableOperators;
     }
 }

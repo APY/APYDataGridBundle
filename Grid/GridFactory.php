@@ -124,7 +124,7 @@ class GridFactory implements GridFactoryInterface
 
         $type->configureOptions($resolver);
 
-        if (null != $source && !isset($options['source'])) {
+        if (null !== $source && !isset($options['source'])) {
             $options['source'] = $source;
         }
 

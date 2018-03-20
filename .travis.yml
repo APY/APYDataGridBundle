@@ -12,13 +12,25 @@ matrix:
     - php: 5.6
       env: |
         SYMFONY_VERSION=2.8.*
+    - php: 7.1
+      env: |
+        SYMFONY_VERSION=^4.0
 
 before_install:
   - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/symfony=${SYMFONY_VERSION}; fi;';
 
+before_script:
+  - echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+
 install:
   - travis_retry composer self-update
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction
+  - curl -s http://getcomposer.org/installer | php
+  - php composer.phar install --dev --no-interaction
 
 script:
-  - vendor/bin/phpunit
+  - mkdir -p build/logs
+  - php vendor/bin/phpunit -c phpunit.xml.dist
+
+after_success:
+  - php vendor/bin/coveralls

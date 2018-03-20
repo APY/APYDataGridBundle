@@ -341,10 +341,10 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
 
     /**
      * @param Twig_Environment $environment
-     * @param unknown           $grid
-     * @param unknown           $theme
-     * @param string            $id
-     * @param array             $params
+     * @param unknown          $grid
+     * @param unknown          $theme
+     * @param string           $id
+     * @param array            $params
      *
      * @return string
      */
@@ -492,7 +492,7 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
         $this->templates = [];
 
         $template = $environment->loadTemplate($theme);
-        while ($template != null) {
+        while ($template instanceof \Twig_Template) {
             $this->templates[] = $template;
             $template = $template->getParent([]);
         }

@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle\Grid;
 
+use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -21,16 +22,26 @@ class Columns implements \IteratorAggregate, \Countable
     protected $columns = [];
     protected $extensions = [];
 
+    const MISSING_COLUMN_EX_MSG = 'Column with id "%s" doesn\'t exists';
+
     /**
      * @var \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface
      */
     protected $authorizationChecker;
 
+    /**
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->authorizationChecker = $authorizationChecker;
     }
 
+    /**
+     * @param bool $showOnlySourceColumns
+     *
+     * @return ColumnsIterator
+     */
     public function getIterator($showOnlySourceColumns = false)
     {
         return new ColumnsIterator(new \ArrayIterator($this->columns), $showOnlySourceColumns);
@@ -65,15 +76,28 @@ class Columns implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * @param $columnId
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return Column
+     */
     public function getColumnById($columnId)
     {
         if (($column = $this->hasColumnById($columnId, true)) === false) {
-            throw new \InvalidArgumentException(sprintf('Column with id "%s" doesn\'t exists', $columnId));
+            throw new \InvalidArgumentException(sprintf(self::MISSING_COLUMN_EX_MSG, $columnId));
         }
 
         return $column;
     }
 
+    /**
+     * @param $columnId
+     * @param bool $returnColumn
+     *
+     * @return bool|Column|ActionsColumn
+     */
     public function hasColumnById($columnId, $returnColumn = false)
     {
         foreach ($this->columns as $column) {
@@ -85,6 +109,11 @@ class Columns implements \IteratorAggregate, \Countable
         return false;
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     *
+     * @return Column
+     */
     public function getPrimaryColumn()
     {
         foreach ($this->columns as $column) {
@@ -96,11 +125,19 @@ class Columns implements \IteratorAggregate, \Countable
         throw new \InvalidArgumentException('Primary column doesn\'t exists');
     }
 
+    /**
+     * @return int
+     */
     public function count()
     {
         return count($this->columns);
     }
 
+    /**
+     * @param $extension
+     *
+     * @return Columns
+     */
     public function addExtension($extension)
     {
         $this->extensions[strtolower($extension->getType())] = $extension;
@@ -108,16 +145,30 @@ class Columns implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * @param $type
+     *
+     * @return bool
+     */
     public function hasExtensionForColumnType($type)
     {
         return isset($this->extensions[$type]);
     }
 
+    /**
+     * @param $type
+     *
+     * @return mixed
+     */
     public function getExtensionForColumnType($type)
     {
+        // @todo: should not index be checked?
         return $this->extensions[$type];
     }
 
+    /**
+     * @return string
+     */
     public function getHash()
     {
         $hash = '';
@@ -136,7 +187,7 @@ class Columns implements \IteratorAggregate, \Countable
      * @param array $columnIds
      * @param bool  $keepOtherColumns
      *
-     * @return self
+     * @return Columns
      */
     public function setColumnsOrder(array $columnIds, $keepOtherColumns = true)
     {

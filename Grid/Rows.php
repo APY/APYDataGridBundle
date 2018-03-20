@@ -14,11 +14,12 @@ namespace APY\DataGridBundle\Grid;
 
 class Rows implements \IteratorAggregate, \Countable
 {
-    /**
-     * @var \SplObjectStorage
-     */
+    /** @var \SplObjectStorage */
     protected $rows;
 
+    /**
+     * @param array $rows
+     */
     public function __construct(array $rows = [])
     {
         $this->rows = new \SplObjectStorage();
