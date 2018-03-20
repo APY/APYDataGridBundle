@@ -28,6 +28,9 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
 {
+    const DOT_DQL_ALIAS_PH = '__dot__';
+    const COLON_DQL_ALIAS_PH = '__col__';
+
     /**
      * @var \Doctrine\ORM\EntityManager
      */
@@ -213,7 +216,7 @@ class Entity extends Source
                 }
             }
 
-            $alias = str_replace('.', '::', $column->getId());
+            $alias = $this->fromColIdToAlias($column->getId());
         } elseif (strpos($name, ':') !== false) {
             $previousParent = $this->getTableAlias();
             $alias = $name;
@@ -251,6 +254,16 @@ class Entity extends Source
         }
 
         return $name;
+    }
+
+    /**
+     * @param string $colId
+     *
+     * @return string
+     */
+    private function fromColIdToAlias($colId)
+    {
+        return str_replace(['.', ':'], [self::DOT_DQL_ALIAS_PH, self::COLON_DQL_ALIAS_PH], $colId);
     }
 
     /**
@@ -536,7 +549,7 @@ class Entity extends Source
             $row = new Row();
 
             foreach ($item as $key => $value) {
-                $key = str_replace('::', '.', $key);
+                $key = $this->fromAliasToColId($key);
 
                 if (in_array($key, $serializeColumns) && is_string($value)) {
                     $value = unserialize($value);
@@ -557,6 +570,16 @@ class Entity extends Source
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $alias
+     *
+     * @return string
+     */
+    private function fromAliasToColId($alias)
+    {
+        return str_replace([self::DOT_DQL_ALIAS_PH, self::COLON_DQL_ALIAS_PH], ['.', ':'], $alias);
     }
 
     public function getTotalCount($maxResults = null)
@@ -702,7 +725,9 @@ class Entity extends Source
 
                 $values = [];
                 foreach ($result as $row) {
-                    $value = $row[str_replace('.', '::', $column->getId())];
+                    $alias = $this->fromColIdToAlias($column->getId());
+
+                    $value = $row[$alias];
 
                     switch ($column->getType()) {
                         case 'array':
