@@ -457,11 +457,11 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * @param Column\Column $colum
+     * @param Column $colum
      *
      * @return int
      */
-    private function getSortTypeByColumn(Column\Column $colum)
+    private function getSortTypeByColumn(Column $colum)
     {
         switch ($colum->getType()) {
             case 'text':
