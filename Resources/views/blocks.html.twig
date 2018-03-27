@@ -170,16 +170,22 @@
     {% if pagerfanta %}
         {{ grid_pagerfanta(grid) }}
     {% else %}
-        <div class="row" style="padding: 15px;">
-            <div class="inline-block-middle" style="width: 80px;">
-            {{ grid_pager_totalcount(grid) }}
-            </div>
-            <div class="inline-block-middle" style="width: 200px;">
-            {{ grid_pager_selectpage(grid) }}
-            </div>
-            <div class="inline-block-middle" style="width: 300px;">
-            {{ grid_pager_results_perpage(grid) }}
+        {# BS4 STYLE #}
+        <div class="col-12 col-sm-4 mt-3 pull-left">
+            <div class="d-inline-flex m0 pt-1">{{ grid_pager_totalcount(grid) }}</div>
+            <span class="grid_massactions_helper">
+            <span data-grid-id="{{ grid.hash }}" class="mass-actions-selected" id="{{ grid.hash }}_mass_action_selected"></span>
+        </span>
         </div>
+        <div class="col-12 col-sm-8 mt-2 pull-right">
+            <div class="row">
+                <div class="col-12 col-sm-5 mt-1 text-right">
+                    {{ grid_pager_selectpage(grid) }}
+                </div>
+                <div class="col-12 col-sm-7 mt-2 text-right">
+                    {{ grid_pager_results_perpage(grid) }}
+                </div>
+            </div>
         </div>
     {% endif %}
 {% endblock grid_pager %}
