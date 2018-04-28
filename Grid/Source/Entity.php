@@ -202,6 +202,8 @@ class Entity extends Source
             return $column->getField();
         }
 
+        $alias = $this->fromColIdToAlias($column->getId());
+
         if (strpos($name, '.') !== false) {
             $previousParent = '';
 
@@ -215,11 +217,8 @@ class Entity extends Source
                     $name = $previousParent . '.' . $element;
                 }
             }
-
-            $alias = $this->fromColIdToAlias($column->getId());
         } elseif (strpos($name, ':') !== false) {
             $previousParent = $this->getTableAlias();
-            $alias = $name;
         } else {
             return $this->getTableAlias() . '.' . $name;
         }
