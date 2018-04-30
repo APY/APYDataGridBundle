@@ -198,6 +198,14 @@
                 <source>No result</source>
                 <target>No result</target>
             </trans-unit>
+            <trans-unit id="45">
+                <source>Selected _s_ rows</source>
+                <target>Selected _s_ rows</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>Actions</source>
+                <target>Actions</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
