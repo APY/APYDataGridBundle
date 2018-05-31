@@ -17,7 +17,19 @@ matrix:
         SYMFONY_VERSION=^4.0
 
 before_install:
-  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/symfony=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/form=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/dependency-injection=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/config=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/http-foundation=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/http-kernel=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/options-resolver=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/security=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/serializer=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/templating=${SYMFONY_VERSION}; fi;';
+
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --dev --no-update symfony/framework-bundle=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --dev --no-update symfony/browser-kit=${SYMFONY_VERSION}; fi;';
+  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --dev --no-update symfony/expression-language=${SYMFONY_VERSION}; fi;';
 
 before_script:
   - echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
