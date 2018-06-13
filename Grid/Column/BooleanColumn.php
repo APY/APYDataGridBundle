@@ -1,6 +1,6 @@
 <?php
 
-    /*
+/*
  * This file is part of the DataGridBundle.
  *
  * (c) Abhoryo <abhoryo@free.fr>
@@ -18,7 +18,7 @@ class BooleanColumn extends Column
     {
         $params['filter'] = 'select';
         $params['selectFrom'] = 'values';
-        $params['operators'] = array(self::OPERATOR_EQ);
+        $params['operators'] = [self::OPERATOR_EQ];
         $params['defaultOperator'] = self::OPERATOR_EQ;
         $params['operatorsVisible'] = false;
         $params['selectMulti'] = false;
@@ -27,13 +27,13 @@ class BooleanColumn extends Column
 
         $this->setAlign($this->getParam('align', 'center'));
         $this->setSize($this->getParam('size', '30'));
-        $this->setValues($this->getParam('values', array(1 => 'true', 0 => 'false')));
+        $this->setValues($this->getParam('values', [1 => 'true', 0 => 'false']));
     }
 
     public function isQueryValid($query)
     {
         $query = (array) $query;
-        if ($query[0] === true || $query[0] === false || $query[0] == 0 || $query[0] == 1 ) {
+        if ($query[0] === true || $query[0] === false || $query[0] == 0 || $query[0] == 1) {
             return true;
         }
 

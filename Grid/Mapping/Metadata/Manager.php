@@ -33,6 +33,7 @@ class Manager
 
     /**
      * @todo remove this hack
+     *
      * @return \APY\DataGridBundle\Grid\Mapping\Metadata\DriverHeap
      */
     public function getDrivers()
@@ -44,7 +45,7 @@ class Manager
     {
         $metadata = new Metadata();
 
-        $columns = $fieldsMetadata = $groupBy = array();
+        $columns = $fieldsMetadata = $groupBy = [];
 
         foreach ($this->getDrivers() as $driver) {
             $columns = array_merge($columns, $driver->getClassColumns($className, $group));
@@ -52,12 +53,12 @@ class Manager
             $groupBy = array_merge($groupBy, $driver->getGroupBy($className, $group));
         }
 
-        $mappings = $cols = array();
+        $mappings = $cols = [];
 
         foreach ($columns as $fieldName) {
-            $map = array();
+            $map = [];
 
-            foreach($fieldsMetadata as $field) {
+            foreach ($fieldsMetadata as $field) {
                 if (isset($field[$fieldName]) && (!isset($field[$fieldName]['groups']) || in_array($group, (array) $field[$fieldName]['groups']))) {
                     $map = array_merge($map, $field[$fieldName]);
                 }

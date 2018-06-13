@@ -1,12 +1,12 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Interface GridInterface
+ * Interface GridInterface.
  *
- * @package Grid
  * @author  Quentin Ferrer
  */
 interface GridInterface
@@ -22,8 +22,6 @@ interface GridInterface
      * Handles filters, sorts, exports, ... .
      *
      * @param Request $request The request
-     *
-     * @return void
      */
     public function handleRequest(Request $request);
 }

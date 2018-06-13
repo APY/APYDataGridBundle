@@ -1,14 +1,20 @@
 <?php
+
 namespace APY\DataGridBundle\Tests\Grid;
 
+use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Exception\ColumnAlreadyExistsException;
+use APY\DataGridBundle\Grid\Exception\ColumnNotFoundException;
+use APY\DataGridBundle\Grid\Exception\TypeAlreadyExistsException;
+use APY\DataGridBundle\Grid\Exception\TypeNotFoundException;
 use APY\DataGridBundle\Grid\GridRegistry;
+use APY\DataGridBundle\Grid\GridTypeInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Class GridRegistryTest
- *
- * @package APY\DataGridBundle\Tests\Grid
+ * Class GridRegistryTest.
  */
-class GridRegistryTest extends \PHPUnit_Framework_TestCase
+class GridRegistryTest extends TestCase
 {
     /**
      * @var GridRegistry
@@ -17,10 +23,9 @@ class GridRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testAddTypeAlreadyExists()
     {
-        $this->setExpectedException('APY\DataGridBundle\Grid\Exception\TypeAlreadyExistsException');
+        $this->expectException(TypeAlreadyExistsException::class);
 
         $type = $this->createTypeMock();
-
         $this->registry->addType($type);
         $this->registry->addType($type);
     }
@@ -40,7 +45,7 @@ class GridRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetTypeUnknown()
     {
-        $this->setExpectedException('APY\DataGridBundle\Grid\Exception\TypeNotFoundException');
+        $this->expectException(TypeNotFoundException::class);
         $this->registry->getType('foo');
     }
 
@@ -54,7 +59,7 @@ class GridRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testAddColumnAlreadyExists()
     {
-        $this->setExpectedException('APY\DataGridBundle\Grid\Exception\ColumnAlreadyExistsException');
+        $this->expectException(ColumnAlreadyExistsException::class);
 
         $type = $this->createColumnTypeMock();
 
@@ -77,7 +82,7 @@ class GridRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetColumnTypeUnknown()
     {
-        $this->setExpectedException('APY\DataGridBundle\Grid\Exception\ColumnNotFoundException');
+        $this->expectException(ColumnNotFoundException::class);
         $this->registry->getColumn('type');
     }
 
@@ -96,7 +101,7 @@ class GridRegistryTest extends \PHPUnit_Framework_TestCase
 
     protected function createTypeMock()
     {
-        $mock = $this->getMock('APY\DataGridBundle\Grid\GridTypeInterface');
+        $mock = $this->createMock(GridTypeInterface::class);
         $mock->expects($this->any())
              ->method('getName')
              ->willReturn('foo');
@@ -106,7 +111,7 @@ class GridRegistryTest extends \PHPUnit_Framework_TestCase
 
     protected function createColumnTypeMock()
     {
-        $mock = $this->getMock('APY\DataGridBundle\Grid\Column\Column');
+        $mock = $this->createMock(Column::class);
         $mock->expects($this->any())
              ->method('getType')
              ->willReturn('type');

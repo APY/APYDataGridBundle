@@ -1,4 +1,5 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
@@ -10,7 +11,6 @@ use APY\DataGridBundle\Grid\Exception\TypeNotFoundException;
 /**
  * The central registry of the Grid component.
  *
- * @package APY\DataGridBundle\Grid
  * @author  Quentin Ferrer
  */
 class GridRegistry implements GridRegistryInterface
@@ -20,14 +20,14 @@ class GridRegistry implements GridRegistryInterface
      *
      * @var GridTypeInterface[]
      */
-    private $types = array();
+    private $types = [];
 
     /**
      * List of columns.
      *
      * @var Column[]
      */
-    private $columns = array();
+    private $columns = [];
 
     /**
      * Add a grid type.

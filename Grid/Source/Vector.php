@@ -12,10 +12,19 @@
 
 namespace APY\DataGridBundle\Grid\Source;
 
-use APY\DataGridBundle\Grid\Column;
+use APY\DataGridBundle\Grid\Column\ArrayColumn;
+use APY\DataGridBundle\Grid\Column\BooleanColumn;
+use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Column\DateColumn;
+use APY\DataGridBundle\Grid\Column\DateTimeColumn;
+use APY\DataGridBundle\Grid\Column\NumberColumn;
+use APY\DataGridBundle\Grid\Column\TextColumn;
+use APY\DataGridBundle\Grid\Column\UntypedColumn;
+use APY\DataGridBundle\Grid\Rows;
 
 /**
- * Vector is really an Array
+ * Vector is really an Array.
+ *
  * @author dellamowica
  */
 class Vector extends Source
@@ -23,26 +32,30 @@ class Vector extends Source
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * either a column name as a string
-     *  or an array of names of columns
+     *  or an array of names of columns.
+     *
      * @var mixed
      */
     protected $id = null;
 
     /**
-     * Array of columns
+     * Array of columns.
+     *
      * @var Column[]
      */
     protected $columns;
 
     /**
-     * Creates the Vector and sets its data
+     * Creates the Vector and sets its data.
+     *
      * @param array $data
+     * @param array $columns
      */
-    public function __construct(array $data, array $columns = array())
+    public function __construct(array $data, array $columns = [])
     {
         if (!empty($data)) {
             $this->setData($data);
@@ -60,21 +73,21 @@ class Vector extends Source
 
     protected function guessColumns()
     {
-        $guessedColumns = array();
+        $guessedColumns = [];
         $dataColumnIds = array_keys(reset($this->data));
 
         foreach ($dataColumnIds as $id) {
             if (!$this->hasColumn($id)) {
-                $params = array(
-                    'id' => $id,
-                    'title' => $id,
-                    'source' => true,
+                $params = [
+                    'id'         => $id,
+                    'title'      => $id,
+                    'source'     => true,
                     'filterable' => true,
-                    'sortable' => true,
-                    'visible' => true,
-                    'field' => $id,
-                );
-                $guessedColumns[] = new Column\UntypedColumn($params);
+                    'sortable'   => true,
+                    'visible'    => true,
+                    'field'      => $id,
+                ];
+                $guessedColumns[] = new UntypedColumn($params);
             }
         }
 
@@ -84,12 +97,12 @@ class Vector extends Source
         $iteration = min(10, count($this->data));
 
         foreach ($this->columns as $c) {
-            if (!$c instanceof Column\UntypedColumn) {
+            if (!$c instanceof UntypedColumn) {
                 continue;
             }
 
             $i = 0;
-            $fieldTypes = array();
+            $fieldTypes = [];
 
             foreach ($this->data as $row) {
                 if (!isset($row[$c->getId()])) {
@@ -101,13 +114,12 @@ class Vector extends Source
                 if ($fieldValue !== '' && $fieldValue !== null) {
                     if (is_array($fieldValue)) {
                         $fieldTypes['array'] = 1;
-                    } elseif($fieldValue instanceof \DateTime) {
+                    } elseif ($fieldValue instanceof \DateTime) {
                         if ($fieldValue->format('His') === '000000') {
                             $fieldTypes['date'] = 1;
                         } else {
                             $fieldTypes['datetime'] = 1;
                         }
-                        
                     } elseif (strlen($fieldValue) >= 3 && strtotime($fieldValue) !== false) {
                         $dt = new \DateTime($fieldValue);
                         if ($dt->format('His') === '000000') {
@@ -143,33 +155,32 @@ class Vector extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Columns $columns
-     * @return null
      */
     public function getColumns($columns)
     {
         $token = empty($this->id); //makes the first column primary by default
 
         foreach ($this->columns as $c) {
-            if ($c instanceof Column\UntypedColumn) {
+            if ($c instanceof UntypedColumn) {
                 switch ($c->getType()) {
                     case 'date':
-                        $column = new Column\DateColumn($c->getParams());
+                        $column = new DateColumn($c->getParams());
                         break;
                     case 'datetime':
-                        $column = new Column\DateTimeColumn($c->getParams());
+                        $column = new DateTimeColumn($c->getParams());
                         break;
                     case 'boolean':
-                        $column = new Column\BooleanColumn($c->getParams());
+                        $column = new BooleanColumn($c->getParams());
                         break;
                     case 'number':
-                        $column = new Column\NumberColumn($c->getParams());
+                        $column = new NumberColumn($c->getParams());
                         break;
                     case 'array':
-                        $column = new Column\ArrayColumn($c->getParams());
+                        $column = new ArrayColumn($c->getParams());
                         break;
                     case 'text':
                     default:
-                        $column = new Column\TextColumn($c->getParams());
+                        $column = new TextColumn($c->getParams());
                         break;
                 }
             } else {
@@ -188,10 +199,12 @@ class Vector extends Source
 
     /**
      * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int $page Page Number
-     * @param int $limit Rows Per Page
-     * @param int $gridDataJunction  Grid data junction
-     * @return \APY\DataGridBundle\Grid\Rows
+     * @param int                                      $page             Page Number
+     * @param int                                      $limit            Rows Per Page
+     * @param int                                      $maxResults       Max rows
+     * @param int                                      $gridDataJunction Grid data junction
+     *
+     * @return Rows
      */
     public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
     {
@@ -210,11 +223,12 @@ class Vector extends Source
 
     public function getHash()
     {
-        return __CLASS__.md5(implode('', array_map(function ($c) { return $c->getId(); }, $this->columns)));
+        return __CLASS__ . md5(implode('', array_map(function ($c) { return $c->getId(); }, $this->columns)));
     }
 
     /**
-     * sets the primary key
+     * sets the primary key.
+     *
      * @param mixed $id either a string or an array of strings
      */
     public function setId($id)
@@ -223,8 +237,18 @@ class Vector extends Source
     }
 
     /**
-     * Set a two-dimentional array
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set a two-dimentional array.
+     *
      * @param array $data
+     *
      * @throws \InvalidArgumentException
      */
     public function setData($data)
@@ -235,12 +259,14 @@ class Vector extends Source
             throw new \InvalidArgumentException('Data should be an array with content');
         }
 
+        // This seems to exclude ...
         if (is_object(reset($this->data))) {
             foreach ($this->data as $key => $object) {
                 $this->data[$key] = (array) $object;
             }
         }
 
+        // ... this other (or vice versa)
         $firstRaw = reset($this->data);
         if (!is_array($firstRaw) || empty($firstRaw)) {
             throw new \InvalidArgumentException('Data should be a two-dimentional array');
@@ -265,14 +291,5 @@ class Vector extends Source
         }
 
         return false;
-    }
-
-    protected function getColumn($id)
-    {
-        foreach ($this->columns as $c) {
-            if ($id === $c->getId()) {
-                return $c;
-            }
-        }
     }
 }

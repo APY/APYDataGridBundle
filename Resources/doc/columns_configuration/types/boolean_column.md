@@ -15,7 +15,7 @@ See [Select filter - additionnal attributes](../filters/select_filter.md#additio
 ## Filter
 ### Valid values
 
-1 and 0 ####### A vérifier pour les entier
+1 and 0 ####### A vÃ©rifier pour les entier
 
 ### Default Operator: `eq`
 

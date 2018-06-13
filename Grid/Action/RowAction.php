@@ -12,46 +12,72 @@
 
 namespace APY\DataGridBundle\Grid\Action;
 
+use APY\DataGridBundle\Grid\Row;
+
 class RowAction implements RowActionInterface
 {
+    /** @var string */
     protected $title;
+
+    /** @var string */
     protected $route;
+
+    /** @var bool */
     protected $confirm;
+
+    /** @var string */
     protected $confirmMessage;
+
+    /** @var string */
     protected $target;
+
+    /** @var string */
     protected $column = '__actions';
-    protected $routeParameters = array();
-    protected $routeParametersMapping = array();
-    protected $attributes = array();
+
+    /** @var array */
+    protected $routeParameters = [];
+
+    /** @var array */
+    protected $routeParametersMapping = [];
+
+    /** @var array */
+    protected $attributes = [];
+
+    /** @var string|null */
     protected $role;
-    protected $callback;
+
+    /** @var array */
+    protected $callbacks = [];
+
+    /** @var bool */
     protected $enabled = true;
 
     /**
-     * Default RowAction constructor
+     * Default RowAction constructor.
      *
-     * @param string $title Title of the row action
-     * @param string $route Route to the row action
-     * @param boolean $confirm Show confirm message if true
-     * @param string $target Set the target of this action (_self,_blank,_parent,_top)
-     * @param array $attributes Attributes of the anchor tag
-     * @param string $role Security role
+     * @param string $title      Title of the row action
+     * @param string $route      Route to the row action
+     * @param bool   $confirm    Show confirm message if true
+     * @param string $target     Set the target of this action (_self,_blank,_parent,_top)
+     * @param array  $attributes Attributes of the anchor tag
+     * @param string $role       Security role
      *
      * @return \APY\DataGridBundle\Grid\Action\RowAction
      */
-    public function __construct($title, $route, $confirm = false, $target = '_self', $attributes = array(), $role = null)
+    public function __construct($title, $route, $confirm = false, $target = '_self', $attributes = [], $role = null)
     {
         $this->title = $title;
         $this->route = $route;
         $this->confirm = $confirm;
-        $this->confirmMessage = 'Do you want to '.strtolower($title).' this row?';
+        $this->confirmMessage = 'Do you want to ' . strtolower($title) . ' this row?';
         $this->target = $target;
         $this->attributes = $attributes;
         $this->role = $role;
     }
 
+    // @todo: has this setter real sense? we passed this value from constructor
     /**
-     * Set action title
+     * Set action title.
      *
      * @param string $title
      *
@@ -65,19 +91,18 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action title
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getTitle()
     {
         return $this->title;
     }
 
+    // @todo: has this setter real sense? we passed this value from constructor
     /**
-     * Set action route
+     * Set action route.
      *
-     * @param  string $route
+     * @param string $route
      *
      * @return self
      */
@@ -89,19 +114,19 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action route
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getRoute()
     {
         return $this->route;
     }
 
+    // @todo: we should change this to something like "enableConfirm" as "false" is the default value and has pretty much
+    // nosense to use setConfirm with false parameter.
     /**
-     * Set action confirm
+     * Set action confirm.
      *
-     * @param  $confirm
+     * @param bool $confirm
      *
      * @return self
      */
@@ -113,9 +138,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action confirm
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function getConfirm()
     {
@@ -123,7 +146,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Set action confirmMessage
+     * Set action confirmMessage.
      *
      * @param string $confirmMessage
      *
@@ -137,9 +160,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action confirmMessage
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getConfirmMessage()
     {
@@ -147,7 +168,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Set action target
+     * Set action target.
      *
      * @param string $target
      *
@@ -161,9 +182,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action target
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getTarget()
     {
@@ -171,7 +190,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Set action column
+     * Set action column.
      *
      * @param string $column Identifier of the action column
      *
@@ -185,9 +204,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get action column
-     *
-     * @return \APY\DataGridBundle\Grid\Column\Column
+     * {@inheritdoc}
      */
     public function getColumn()
     {
@@ -195,7 +212,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Add route parameter
+     * Add route parameter.
      *
      * @param array|string $routeParameters
      *
@@ -206,7 +223,7 @@ class RowAction implements RowActionInterface
         $routeParameters = (array) $routeParameters;
 
         foreach ($routeParameters as $key => $routeParameter) {
-            if(is_int($key)) {
+            if (is_int($key)) {
                 $this->routeParameters[] = $routeParameter;
             } else {
                 $this->routeParameters[$key] = $routeParameter;
@@ -217,7 +234,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Set route parameters
+     * Set route parameters.
      *
      * @param array|string $routeParameters
      *
@@ -231,17 +248,16 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * get route parameters
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getRouteParameters()
     {
         return $this->routeParameters;
     }
 
+    // @todo: why is this accepting string? it seems pretty useless, isn't it?
     /**
-     * Set route parameters mapping
+     * Set route parameters mapping.
      *
      * @param array|string $routeParametersMapping
      *
@@ -255,18 +271,19 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Map the parameter
+     * Map the parameter.
      *
      * @param string $name parameter
+     *
      * @return null|string
      */
     public function getRouteParametersMapping($name)
     {
-        return (isset($this->routeParametersMapping[$name]) ? $this->routeParametersMapping[$name] : null);
+        return isset($this->routeParametersMapping[$name]) ? $this->routeParametersMapping[$name] : null;
     }
 
     /**
-     * Set attributes
+     * Set attributes.
      *
      * @param array $attributes
      *
@@ -280,7 +297,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Add attribute
+     * Add attribute.
      *
      * @param string $name
      * @param string $value
@@ -295,9 +312,7 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Get attributes
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getAttributes()
     {
@@ -305,9 +320,9 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * set role
+     * set role.
      *
-     * @param mixed $role
+     * @param string $role
      *
      * @return self
      */
@@ -319,9 +334,9 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Get role
+     * Get role.
      *
-     * @return mixed
+     * @return string
      */
     public function getRole()
     {
@@ -329,48 +344,69 @@ class RowAction implements RowActionInterface
     }
 
     /**
-     * Set render callback
+     * Set render callback.
      *
-     * @param  $callback
+     * @deprecated This is deprecated and will be removed in 3.0; use addManipulateRender instead.
+     *
+     * @param \Closure $callback
+     *
      * @return self
      */
-    public function manipulateRender($callback)
+    public function manipulateRender(\Closure $callback)
     {
-        $this->callback = $callback;
+        return $this->addManipulateRender($callback);
+    }
+
+    /**
+     * Add a callback to render callback stack.
+     *
+     * @param \Closure $callback
+     *
+     * @return self
+     */
+    public function addManipulateRender($callback)
+    {
+        $this->callbacks[] = $callback;
 
         return $this;
     }
 
     /**
-     * Render action for row
+     * Render action for row.
      *
-     * @param \APY\DataGridBundle\Grid\Row $row
-     * @return null|RowAction
+     * @param Row $row
+     *
+     * @return RowAction|null
      */
     public function render($row)
     {
-        if (is_callable($this->callback)) {
-            return call_user_func($this->callback, $this, $row);
+        foreach ($this->callbacks as $callback) {
+            if (is_callable($callback)) {
+                if (null === call_user_func($callback, $this, $row)) {
+                    return;
+                }
+            }
         }
 
         return $this;
     }
 
+    // @todo: should not this be "isEnabled"?
     /**
-     * Get the enabled state of this action.
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function getEnabled()
     {
         return $this->enabled;
     }
 
+    // @todo: should not this be "enable" as default value is false?
     /**
      * Set the enabled state of this action.
      *
-     * @param boolean $enabled
-     * @return \APY\DataGridBundle\Grid\Action\RowAction
+     * @param bool $enabled
+     *
+     * @return self
      */
     public function setEnabled($enabled)
     {
@@ -378,6 +414,4 @@ class RowAction implements RowActionInterface
 
         return $this;
     }
-
-
 }

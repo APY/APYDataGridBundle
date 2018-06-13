@@ -1,16 +1,16 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
-use APY\DataGridBundle\Grid\Source\Source;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
+use APY\DataGridBundle\Grid\Source\Source;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class GridFactory
+ * Class GridFactory.
  *
- * @package APY\DataGridBundle\Grid
  * @author  Quentin Ferrer
  */
 class GridFactory implements GridFactoryInterface
@@ -28,7 +28,7 @@ class GridFactory implements GridFactoryInterface
     private $registry;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Container             $container The service container
      * @param GridRegistryInterface $registry  The grid registry
@@ -36,13 +36,13 @@ class GridFactory implements GridFactoryInterface
     public function __construct(Container $container, GridRegistryInterface $registry)
     {
         $this->container = $container;
-        $this->registry  = $registry;
+        $this->registry = $registry;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create($type = null, Source $source = null, array $options = array())
+    public function create($type = null, Source $source = null, array $options = [])
     {
         return $this->createBuilder($type, $source, $options)->getGrid();
     }
@@ -50,9 +50,9 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createBuilder($type = 'grid', Source $source = null, array $options = array())
+    public function createBuilder($type = 'grid', Source $source = null, array $options = [])
     {
-        $type    = $this->resolveType($type);
+        $type = $this->resolveType($type);
         $options = $this->resolveOptions($type, $source, $options);
 
         $builder = new GridBuilder($this->container, $this, $type->getName(), $options);
@@ -66,7 +66,7 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createColumn($name, $type, array $options = array())
+    public function createColumn($name, $type, array $options = [])
     {
         if (!$type instanceof Column) {
             if (!is_string($type)) {
@@ -75,12 +75,12 @@ class GridFactory implements GridFactoryInterface
 
             $column = clone $this->registry->getColumn($type);
 
-            $column->__initialize(array_merge(array(
+            $column->__initialize(array_merge([
                 'id'     => $name,
                 'title'  => $name,
                 'field'  => $name,
                 'source' => true,
-            ), $options));
+            ], $options));
         } else {
             $column = $type;
             $column->setId($name);
@@ -118,13 +118,13 @@ class GridFactory implements GridFactoryInterface
      *
      * @return array
      */
-    private function resolveOptions(GridTypeInterface $type, Source $source = null, array $options = array())
+    private function resolveOptions(GridTypeInterface $type, Source $source = null, array $options = [])
     {
         $resolver = new OptionsResolver();
 
         $type->configureOptions($resolver);
 
-        if (null != $source && !isset($options['source'])) {
+        if (null !== $source && !isset($options['source'])) {
             $options['source'] = $source;
         }
 
