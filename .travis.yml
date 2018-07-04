@@ -17,7 +17,20 @@ matrix:
         SYMFONY_VERSION=^4.0
 
 before_install:
-  - sh -c 'if [ "${SYMFONY_VERSION}" != "" ]; then composer require --no-update symfony/symfony=${SYMFONY_VERSION}; fi;';
+  - |
+    if [ "${SYMFONY_VERSION}" != "" ]; then
+      packages="form dependency-injection config http-foundation http-kernel options-resolver security serializer"
+      devpackages="framework-bundle browser-kit templating expression-language"
+      for package in $packages
+        do
+          composer require --no-update symfony/"$package"=${SYMFONY_VERSION};
+         done
+      for package in $devpackages
+        do
+          composer require --dev --no-update symfony/"$package"=${SYMFONY_VERSION};
+        done
+    fi;
+
 
 before_script:
   - echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
