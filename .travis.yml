@@ -20,7 +20,7 @@ before_install:
   - |
     if [ "${SYMFONY_VERSION}" != "" ]; then
       packages="form dependency-injection config http-foundation http-kernel options-resolver security serializer"
-      devpackages="framework-bundle browser-kit templating"
+      devpackages="framework-bundle browser-kit templating expression-language"
       for package in $packages
         do
           composer require --no-update symfony/"$package"=${SYMFONY_VERSION};
