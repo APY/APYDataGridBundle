@@ -352,10 +352,10 @@ class Entity extends Source
      */
     protected function getQueryBuilder()
     {
-        //If a custom QB has been provided, use that
+        //If a custom QB has been provided, use a copy of that one
         //Otherwise create our own basic one
         if ($this->queryBuilder instanceof QueryBuilder) {
-            $qb = $this->queryBuilder;
+            $qb = clone $this->queryBuilder;
         } else {
             $qb = $this->manager->createQueryBuilder($this->class);
             $qb->from($this->class, $this->getTableAlias());
