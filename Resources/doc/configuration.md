@@ -15,5 +15,7 @@ apy_data_grid:
     pagerfanta:
         enable: false
         view_class: "Pagerfanta\View\DefaultView"
-        options: ["prev_message" => "«", "next_message" => "»"]
+        options:
+            prev_message: "«"
+            next_message: "»"
 ```
