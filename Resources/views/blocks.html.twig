@@ -367,6 +367,13 @@
 {% block grid_column_type_alert_number_cell %}
     {{ block('grid_column_alert_number_cell') }}
 {% endblock grid_column_type_alert_number_cell %}
+{# ---------------------- grid_column_type_customized_view ---- missing from bundle ---------------------- #}
+{% block grid_column_customized_view_cell %}
+    {% include value.template with {vars: value.vars} %}
+{% endblock grid_column_customized_view_cell %}
+{% block grid_column_type_customized_view_cell %}
+    {{ block('grid_column_customized_view_cell') }}
+{% endblock grid_column_type_customized_view_cell %}
 {# ------------------------------------------- grid_column_cell ---------------------------------------- #}
 {% block grid_column_cell %}
     {%- spaceless %}
