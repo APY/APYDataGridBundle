@@ -491,7 +491,7 @@ abstract class Source implements DriverInterface
     private function multiSort($columns, $items)
     {
         $columnsToSort = $this->getColumnsToSort($columns);
-        if (empty($columnsToSort)) {
+        if (empty($columnsToSort) || !count($items)) {
             return $items;
         }
 
