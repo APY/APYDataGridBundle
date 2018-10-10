@@ -885,7 +885,9 @@ class Grid implements GridInterface
         if ($this->getFromRequest(self::REQUEST_QUERY_ORDER) !== null
             || $this->getFromRequest(self::REQUEST_QUERY_LIMIT) !== null
             || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) !== null
-            || $filtering) {
+            || $filtering
+            || (int) $page < 0
+        ) {
             $this->set(self::REQUEST_QUERY_PAGE, 0);
         } else {
             $this->set(self::REQUEST_QUERY_PAGE, $page);
@@ -1020,7 +1022,8 @@ class Grid implements GridInterface
         }
 
         // Page
-        if (($page = $this->get(self::REQUEST_QUERY_PAGE)) !== null) {
+        $page = $this->get(self::REQUEST_QUERY_PAGE);
+        if ($this->isPageValid($page)) {
             $this->setPage($page);
         } else {
             $this->setPage(0);
@@ -1039,6 +1042,11 @@ class Grid implements GridInterface
         } else {
             $this->limit = key($this->limits);
         }
+    }
+
+    private function isPageValid($page): bool
+    {
+        return $page !== null && (int)$page > 0;
     }
 
     /**
