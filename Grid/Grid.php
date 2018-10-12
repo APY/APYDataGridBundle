@@ -899,6 +899,11 @@ class Grid implements GridInterface
         if ($order !== null) {
             list($columnId, $columnOrder) = explode('|', $order);
 
+            // Ignore invalid order column names instead of letting the exception to cause the entire request to fail
+            if(!$this->columns->hasColumnById($columnId)) {
+                return;
+            }
+
             $column = $this->columns->getColumnById($columnId);
             if ($column->isSortable() && in_array(strtolower($columnOrder), ['asc', 'desc'])) {
                 $this->set(self::REQUEST_QUERY_ORDER, $order);
