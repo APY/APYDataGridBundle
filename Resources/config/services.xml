@@ -10,8 +10,12 @@
         <parameter key="grid.manager.class">APY\DataGridBundle\Grid\GridManager</parameter>
     </parameters>
 
+    <imports>
+        <import resource="legacy_aliases.xml"/>
+    </imports>
+
     <services>
-        <service id="grid.twig_extension" class="%grid.twig_extension.class%" public="false">
+        <service id="%grid.twig_extension.class%" class="%grid.twig_extension.class%" public="false">
             <tag name="twig.extension" />
             <argument type="service" id="router" />
             <argument>%apy_data_grid.theme%</argument>
@@ -20,7 +24,7 @@
             </call>
         </service>
 
-        <service id="grid" class="%grid.class%" shared="false" public="true">
+        <service id="%grid.class%" class="%grid.class%" shared="false" public="true">
             <argument type="service" id="service_container" />
             <call method="setLimits">
                 <argument>%apy_data_grid.limits%</argument>
@@ -42,15 +46,15 @@
             </call>
         </service>
 
-        <service id="grid.manager" class="%grid.manager.class%">
+        <service id="%grid.manager.class%" class="%grid.manager.class%">
             <argument type="service" id="service_container" />
         </service>
 
-        <service id="grid.metadata.driver.annotation" class="APY\DataGridBundle\Grid\Mapping\Driver\Annotation">
+        <service id="APY\DataGridBundle\Grid\Mapping\Driver\Annotation" class="APY\DataGridBundle\Grid\Mapping\Driver\Annotation">
             <argument type="service" id="annotation_reader" />
         </service>
 
-        <service id="grid.mapping.manager" class="APY\DataGridBundle\Grid\Mapping\Metadata\Manager" shared="false" public="true">
+        <service id="APY\DataGridBundle\Grid\Mapping\Metadata\Manager" class="APY\DataGridBundle\Grid\Mapping\Metadata\Manager" shared="false" public="true">
             <argument type="service" id="form.factory"/>
             <call method="addDriver">
                 <argument type="service" id="grid.metadata.driver.annotation" />
