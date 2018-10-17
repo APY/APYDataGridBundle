@@ -20,6 +20,7 @@ use APY\DataGridBundle\Grid\Column\BooleanColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
 use APY\DataGridBundle\Grid\Column\NumberColumn;
+use APY\DataGridBundle\Grid\Column\TextColumn;
 use APY\DataGridBundle\Grid\Exception\NoActionSelectedException;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
 use APY\DataGridBundle\Grid\Source\Entity;
@@ -47,6 +48,7 @@ class Grid implements GridInterface
     /** CUSTOM COLUMNS HANDLED */
     const BOOLEAN_CUSTOM_COLUMN_TYPE = 'boolean';
     const NUMBER_CUSTOM_COLUMN_TYPE = 'number';
+    const TEXT_CUSTOM_COLUMN_TYPE = 'text';
 
     const SOURCE_ALREADY_SETTED_EX_MSG = 'The source of the grid is already set.';
     const SOURCE_NOT_SETTED_EX_MSG = 'The source of the grid must be set.';
@@ -1235,6 +1237,7 @@ class Grid implements GridInterface
         $handledCustomColumnsTypes = [
             self::BOOLEAN_CUSTOM_COLUMN_TYPE,
             self::NUMBER_CUSTOM_COLUMN_TYPE,
+            self::TEXT_CUSTOM_COLUMN_TYPE,
         ];
 
         if (false === in_array($columnType, $handledCustomColumnsTypes)) {
@@ -1270,6 +1273,18 @@ class Grid implements GridInterface
                 $column = new NumberColumn($columnAttributes);
                 if ($filterable) {
                     $this->createNumericFilterForCustomColumn($columnId, $callbackMethod, $callbackMethodParams, $entityRetrievalCallback);
+                }
+                break;
+            case self::TEXT_CUSTOM_COLUMN_TYPE:
+                $column = new TextColumn($columnAttributes);
+                if ($filterable) {
+                    $column->setOperators([
+                        Column::OPERATOR_LIKE,
+                        Column::OPERATOR_NLIKE,
+                        Column::OPERATOR_EQ,
+                        Column::OPERATOR_NEQ,
+                    ]);
+                    $this->createTextFilterForCustomColumn($columnId, $callbackMethod, $callbackMethodParams, $entityRetrievalCallback);
                 }
                 break;
             default:
@@ -1477,6 +1492,87 @@ class Grid implements GridInterface
                         $lowerBound = $filterValue['from'];
                         $upperBound = $filterValue['to'];
                         if ($methodValue <= $lowerBound || $methodValue >= $upperBound) {
+                            return;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                return $row;
+            }
+        );
+    }
+
+    /**
+     * Create the filtering function for custom text columns. Row is included/excluded by $callbackMethod result.
+     *
+     * @param int      $columnId
+     * @param string   $callbackMethod
+     * @param string   $callbackMethodParams
+     * @param \Closure $entityRetrievalCallback
+     */
+    protected function createTextFilterForCustomColumn($columnId, $callbackMethod, $callbackMethodParams, $entityRetrievalCallback)
+    {
+        /*
+         * As manipulateRow accept a callback and store it inside a protected member of Source class and as we're doing filtering
+         * operation onto a row (so, single row, multiple custom columns available for filtering operations), we simply cannot store
+         * more than one callBack inside a Source (row) [we could store an array of that calls but we would be forced to change
+         * all bundle implementation].
+         * The idea behind this is to retrieve (if stored before) the Closure callback stored before this and, if this is stored,
+         * store a new Closure callback composed by this and the previous one.
+         * We need to check/call previous callback as first operations because:
+         *  - if no callback is stored, we can go on with this filter logic
+         *  - if a callback is stored, we need to check its return value: if row isn't returned back, it's useless to keep going
+         *    with filtering operations.
+         */
+        $source = $this->getSource();
+        $previousCallback = $source->getRowCallback();
+
+        $this->getSource()->manipulateRow(
+            function (Row $row) use ($columnId, $callbackMethod, $callbackMethodParams, $previousCallback, $entityRetrievalCallback) {
+
+                if (null !== $previousCallback) {
+                    $previousCallbackResult = $previousCallback($row);
+                    if (!$previousCallbackResult) {
+                        return;
+                    }
+                }
+
+                $filter = $this->getFilter($columnId);
+
+                if (null === $filter) {
+                    return $row;
+                }
+
+                if ($entityRetrievalCallback) {
+                    $entity = $entityRetrievalCallback(null, $row, null);
+                } else {
+                    $entity = $row->getEntity();
+                }
+
+                $methodValue = call_user_func_array([$entity, $callbackMethod], $callbackMethodParams);
+                $filterValue = $filter->getValue();
+
+                $operator = $filter->getOperator();
+                switch ($operator) {
+                    case Column::OPERATOR_EQ:
+                        if ($methodValue != $filterValue) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_NEQ:
+                        if ($methodValue == $filterValue) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_LIKE:
+                        if (false === stripos($methodValue, $filterValue)) {
+                            return;
+                        }
+                        break;
+                    case Column::OPERATOR_NLIKE:
+                        if (false !== stripos($methodValue, $filterValue)) {
                             return;
                         }
                         break;
