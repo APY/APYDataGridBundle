@@ -115,9 +115,9 @@ In your twig template:
 <!-- MyProjectMyBundle::my_grid_template.html.twig -->
 {% extends 'APYDataGridBundle::blocks.html.twig' %}
 
-{% block grid_column_video_cell %}
+{% block grid_column_type_video_cell %}
     {# Show your player with the file path store in the variable {{ value }} #}
-{% endblock grid_column_video_cell %}
+{% endblock grid_column_type_video_cell %}
 ```
 
 ## Advanced column

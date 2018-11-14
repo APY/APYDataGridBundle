@@ -13,10 +13,8 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 /**
- *
  * PHPExcel 5 Export (97-2003) (.xls)
- * 52 columns maximum
- *
+ * 52 columns maximum.
  */
 class PHPExcel5Export extends Export
 {
@@ -26,9 +24,9 @@ class PHPExcel5Export extends Export
 
     public $objPHPExcel;
 
-    public function __construct($tilte, $fileName = 'export', $params = array(), $charset = 'UTF-8')
+    public function __construct($tilte, $fileName = 'export', $params = [], $charset = 'UTF-8')
     {
-        $this->objPHPExcel =  new \PHPExcel();
+        $this->objPHPExcel = new \PHPExcel();
 
         parent::__construct($tilte, $fileName, $params, $charset);
     }
@@ -41,18 +39,18 @@ class PHPExcel5Export extends Export
         foreach ($data as $line) {
             $column = 'A';
             foreach ($line as $cell) {
-                $this->objPHPExcel->getActiveSheet()->SetCellValue($column.$row, $cell);
+                $this->objPHPExcel->getActiveSheet()->SetCellValue($column . $row, $cell);
 
-                $column++;
+                ++$column;
             }
-            $row++;
+            ++$row;
         }
 
         $objWriter = $this->getWriter();
 
         ob_start();
 
-        $objWriter->save("php://output");
+        $objWriter->save('php://output');
 
         $this->content = ob_get_contents();
 

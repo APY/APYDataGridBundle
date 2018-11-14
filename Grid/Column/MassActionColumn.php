@@ -18,15 +18,15 @@ class MassActionColumn extends Column
 
     public function __construct()
     {
-        parent::__construct(array(
+        parent::__construct([
             'id'         => self::ID,
             'title'      => '',
             'size'       => 15,
             'filterable' => true,
             'sortable'   => false,
             'source'     => false,
-            'align'      => 'center'
-        ));
+            'align'      => Column::ALIGN_CENTER,
+        ]);
     }
 
     public function isVisible($isExported = false)

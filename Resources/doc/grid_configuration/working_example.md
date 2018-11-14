@@ -44,7 +44,7 @@ class DefaultController extends Controller
         $grid->setLimits(array(5, 10, 15));
 
         // Set the default page
-        $grid->setPage(1);
+        $grid->setDefaultPage(1);
 
         // Add a mass action with static callback
         $yourMassAction = new MassAction('Action 1', 'MyProject\MyBundle\Controller\DefaultController::myStaticMethod');

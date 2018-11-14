@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Column\ArrayColumn;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,7 +29,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected $mimeType = 'application/octet-stream';
 
-    protected $parameters = array();
+    protected $parameters = [];
 
     protected $container;
 
@@ -38,7 +39,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected $grid;
 
-    protected $params = array();
+    protected $params = [];
 
     protected $content;
 
@@ -47,17 +48,17 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     protected $role;
 
     /**
-     * Default Export constructor
+     * Default Export constructor.
      *
-     * @param string $title Title of the export
+     * @param string $title    Title of the export
      * @param string $fileName FileName of the export
-     * @param array $parameters Additionnal parameters for the export
-     * @param string $charset Charset of the exported data
-     * @param string $role Security role
+     * @param array  $params   Additionnal parameters for the export
+     * @param string $charset  Charset of the exported data
+     * @param string $role     Security role
      *
      * @return \APY\DataGridBundle\Grid\Export\Export
      */
-    public function __construct($title, $fileName = 'export', $params = array(), $charset = 'UTF-8', $role = null)
+    public function __construct($title, $fileName = 'export', $params = [], $charset = 'UTF-8', $role = null)
     {
         $this->title = $title;
         $this->fileName = $fileName;
@@ -70,6 +71,8 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      * Sets the Container associated with this Controller.
      *
      * @param ContainerInterface $container A ContainerInterface instance
+     *
+     * @return \APY\DataGridBundle\Grid\Export\Export
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -91,7 +94,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * gets the export Response
+     * gets the export Response.
      *
      * @return Response
      */
@@ -107,15 +110,15 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
             $this->charset = $kernelCharset;
         }
 
-        $headers = array(
-            'Content-Description' => 'File Transfer',
-            'Content-Type' => $this->getMimeType(),
-            'Content-Disposition' => sprintf('attachment; filename="%s"', $this->getBaseName()),
+        $headers = [
+            'Content-Description'       => 'File Transfer',
+            'Content-Type'              => $this->getMimeType(),
+            'Content-Disposition'       => sprintf('attachment; filename="%s"', $this->getBaseName()),
             'Content-Transfer-Encoding' => 'binary',
-            'Cache-Control' => 'must-revalidate',
-            'Pragma' => 'public',
-            'Content-Length' => $filesize
-        );
+            'Cache-Control'             => 'must-revalidate',
+            'Pragma'                    => 'public',
+            'Content-Length'            => $filesize,
+        ];
 
         $response = new Response($this->content, 200, $headers);
         $response->setCharset($this->charset);
@@ -125,7 +128,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * sets the Content of the export
+     * sets the Content of the export.
      *
      * @param string $content
      *
@@ -139,7 +142,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * gets the Content of the export
+     * gets the Content of the export.
      *
      * @return string
      */
@@ -149,7 +152,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * Get data form the grid
+     * Get data form the grid.
      *
      * @param Grid $grid
      *
@@ -174,7 +177,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      */
     protected function getGridData($grid)
     {
-        $result = array();
+        $result = [];
 
         $this->grid = $grid;
 
@@ -189,7 +192,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getRawGridData($grid)
     {
-        $result = array();
+        $result = [];
         $this->grid = $grid;
 
         if ($this->grid->isTitleSectionVisible()) {
@@ -202,7 +205,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * Get data form the grid in a flat array
+     * Get data form the grid in a flat array.
      *
      * @param Grid $grid
      *
@@ -227,7 +230,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     {
         $data = $this->getGridData($grid);
 
-        $flatData = array();
+        $flatData = [];
         if (isset($data['titles'])) {
             $flatData[] = $data['titles'];
         }
@@ -239,7 +242,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     {
         $data = $this->getRawGridData($grid);
 
-        $flatData = array();
+        $flatData = [];
         if (isset($data['titles'])) {
             $flatData[] = $data['titles'];
         }
@@ -249,7 +252,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getGridTitles()
     {
-        $titlesHTML = $this->renderBlock('grid_titles', array('grid' => $this->grid));
+        $titlesHTML = $this->renderBlock('grid_titles', ['grid' => $this->grid]);
 
         preg_match_all('#<th[^>]*?>(.*)?</th>#isU', $titlesHTML, $matches);
 
@@ -261,10 +264,11 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
             new \Exception('Table header (th or td) tags not found.');
         }
 
-        $titlesClean = array_map(array($this, 'cleanHTML'), $matches[0]);
+        $titlesClean = array_map([$this, 'cleanHTML'], $matches[0]);
 
         $i = 0;
-        $titles = array();
+        $titles = [];
+
         foreach ($this->grid->getColumns() as $column) {
             if ($column->isVisible(true)) {
                 if (!isset($titlesClean[$i])) {
@@ -281,10 +285,10 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     {
         $translator = $this->container->get('translator');
 
-        $titles = array();
+        $titles = [];
         foreach ($this->grid->getColumns() as $column) {
             if ($column->isVisible(true)) {
-                $titles[] = utf8_decode($translator->trans(/** @Ignore */$column->getTitle()));
+                $titles[] = utf8_decode($translator->trans(/* @Ignore */$column->getTitle()));
             }
         }
 
@@ -293,7 +297,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getGridRows()
     {
-        $rows = array();
+        $rows = [];
         foreach ($this->grid->getRows() as $i => $row) {
             foreach ($this->grid->getColumns() as $column) {
                 if ($column->isVisible(true)) {
@@ -308,7 +312,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getRawGridRows()
     {
-        $rows = array();
+        $rows = [];
         foreach ($this->grid->getRows() as $i => $row) {
             foreach ($this->grid->getColumns() as $column) {
                 if ($column->isVisible(true)) {
@@ -322,47 +326,65 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getGridCell($column, $row)
     {
+        $values = $row->getField($column->getId());
+
         // Cast a datetime won't work.
-        if (!is_array($values = $row->getField($column->getId()))) {
-            $values = array($values);
+        if ($column instanceof ArrayColumn || !is_array($values)) {
+            $values = [$values];
         }
 
+        $separator = $column->getSeparator();
+
         $block = null;
-        $return = array();
+        $return = [];
         foreach ($values as $sourceValue) {
             $value = $column->renderCell($sourceValue, $row, $this->container->get('router'));
 
             $id = $this->grid->getId();
 
             if (($id != '' && ($block !== null
-             || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getRenderBlockId().'_cell')
-             || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getType().'_cell')
-             || $this->hasBlock($block = 'grid_'.$id.'_column_'.$column->getParentType().'_cell')))
-             || $this->hasBlock($block = 'grid_column_'.$column->getRenderBlockId().'_cell')
-             || $this->hasBlock($block = 'grid_column_'.$column->getType().'_cell')
-             || $this->hasBlock($block = 'grid_column_'.$column->getParentType().'_cell'))
-            {
-                $return[] = $this->renderBlock($block, array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
+                        || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getRenderBlockId() . '_cell')
+                        || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getType() . '_cell')
+                        || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getParentType() . '_cell')))
+                || $this->hasBlock($block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_cell')
+                || $this->hasBlock($block = 'grid_' . $id . '_column_type_' . $column->getType() . '_cell')
+                || $this->hasBlock($block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_cell')
+                || $this->hasBlock($block = 'grid_column_' . $column->getRenderBlockId() . '_cell')
+                || $this->hasBlock($block = 'grid_column_' . $column->getType() . '_cell')
+                || $this->hasBlock($block = 'grid_column_' . $column->getParentType() . '_cell')
+                || $this->hasBlock($block = 'grid_column_id_' . $column->getRenderBlockId() . '_cell')
+                || $this->hasBlock($block = 'grid_column_type_' . $column->getType() . '_cell')
+                || $this->hasBlock($block = 'grid_column_type_' . $column->getParentType() . '_cell')) {
+                $html = $this->renderBlock($block, ['grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue]);
             } else {
-                $return[] = $this->renderBlock('grid_column_cell', array('grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue));
+                $html = $this->renderBlock('grid_column_cell', ['grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue]);
                 $block = null;
             }
 
+            // Fix blank separator. The <br /> will be removed by the HTML cleaner.
+            if (false !== strpos($separator, 'br')) {
+                $html = str_replace($separator, ',', $html);
+            }
+
+            $return[] = $html;
         }
 
-        return implode($column->getSeparator() , $return);
+        $value = implode($separator, $return);
+
+        return $value;
     }
 
     /**
-     * Has block
+     * Has block.
      *
      * @param $name string
-     * @return boolean
+     *
+     * @return bool
      */
     protected function hasBlock($name)
     {
         foreach ($this->getTemplates() as $template) {
-            if ($template->hasBlock($name)) {
+            if ($template->hasBlock($name, [])) {
                 return true;
             }
         }
@@ -371,16 +393,17 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * Render block
+     * Render block.
      *
      * @param $name string
      * @param $parameters string
+     *
      * @return string
      */
     protected function renderBlock($name, $parameters)
     {
         foreach ($this->getTemplates() as $template) {
-            if ($template->hasBlock($name)) {
+            if ($template->hasBlock($name, [])) {
                 return $template->renderBlock($name, array_merge($parameters, $this->params));
             }
         }
@@ -389,10 +412,11 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * Template Loader
+     * Template Loader.
+     *
+     * @throws \Exception
      *
      * @return \Twig_TemplateInterface[]
-     * @throws \Exception
      */
     protected function getTemplates()
     {
@@ -404,11 +428,13 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * set template
+     * set template.
      *
      * @param \Twig_TemplateInterface|string $template
      *
-     * @return self
+     * @throws \Exception
+     *
+     * @return \APY\DataGridBundle\Grid\Export\Export
      */
     public function setTemplate($template)
     {
@@ -430,12 +456,12 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getTemplatesFromString($theme)
     {
-        $templates = array();
+        $templates = [];
 
         $template = $this->twig->loadTemplate($theme);
-        while ($template != null) {
+        while ($template instanceof \Twig_Template) {
             $templates[] = $template;
-            $template = $template->getParent(array());
+            $template = $template->getParent([]);
         }
 
         return $templates;
@@ -455,6 +481,12 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         // Convert Special Characters in HTML
         $value = html_entity_decode($value, ENT_QUOTES);
 
+        // Remove whitespace
+        $value = preg_replace('/\s\s+/', ' ', $value);
+
+        // Fix space
+        $value = preg_replace('/\s,/', ',', $value);
+
         // Trim
         $value = trim($value);
 
@@ -462,7 +494,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * set title
+     * set title.
      *
      * @param string $title
      *
@@ -476,7 +508,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * get title
+     * get title.
      *
      * @return string
      */
@@ -486,7 +518,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * set file name
+     * set file name.
      *
      * @param string $fileName
      *
@@ -500,7 +532,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * get file name
+     * get file name.
      *
      * @return string
      */
@@ -510,7 +542,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * set file extension
+     * set file extension.
      *
      * @param string $fileExtension
      *
@@ -524,7 +556,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * get file extension
+     * get file extension.
      *
      * @return string
      */
@@ -534,17 +566,17 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * get base name
+     * get base name.
      *
      * @return string
      */
     public function getBaseName()
     {
-        return $this->fileName.(isset($this->fileExtension) ? ".$this->fileExtension" : '');
+        return $this->fileName . (isset($this->fileExtension) ? ".$this->fileExtension" : '');
     }
 
     /**
-     * set response mime type
+     * set response mime type.
      *
      * @param string $mimeType
      *
@@ -558,7 +590,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * get response mime type
+     * get response mime type.
      *
      * @return string
      */
@@ -568,7 +600,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * set response charset
+     * set response charset.
      *
      * @param string $charset
      *
@@ -582,7 +614,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * get response charset
+     * get response charset.
      *
      * @return string
      */
@@ -592,7 +624,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * set parameters
+     * set parameters.
      *
      * @param array $parameters
      *
@@ -605,8 +637,8 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         return $this;
     }
 
-        /**
-     * get parameters
+    /**
+     * get parameters.
      *
      * @return array
      */
@@ -615,8 +647,8 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         return $this->parameters;
     }
 
-        /**
-     * has parameter
+    /**
+     * has parameter.
      *
      * @return mixed
      */
@@ -626,11 +658,12 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * add parameter
+     * add parameter.
      *
-     * @param array $template
+     * @param $name
+     * @param $value
      *
-     * @return self
+     * @return \APY\DataGridBundle\Grid\Export\Export
      */
     public function addParameter($name, $value)
     {
@@ -640,13 +673,13 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * get parameter
+     * get parameter.
      *
      * @return mixed
      */
     public function getParameter($name)
     {
-        if (!hasParameter($name)) {
+        if (!$this->hasParameter($name)) {
             throw new \InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
         }
 
@@ -654,7 +687,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * set role
+     * set role.
      *
      * @param mixed $role
      *
@@ -668,7 +701,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     }
 
     /**
-     * Get role
+     * Get role.
      *
      * @return mixed
      */

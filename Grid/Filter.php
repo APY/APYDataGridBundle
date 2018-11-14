@@ -9,21 +9,32 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace APY\DataGridBundle\Grid;
 
 class Filter
 {
     protected $value;
     protected $operator;
-    protected $id;
+    protected $columnName;
 
-    public function __construct($operator, $value = null, $id = null)
+    /**
+     * @param string      $operator
+     * @param mixed|null  $value
+     * @param string|null $columnName
+     */
+    public function __construct($operator, $value = null, $columnName = null)
     {
         $this->value = $value;
         $this->operator = $operator;
-        $this->id = $id;
+        $this->columnName = $columnName;
     }
 
+    /**
+     * @param string $operator
+     *
+     * @return Filter
+     */
     public function setOperator($operator)
     {
         $this->operator = $operator;
@@ -31,11 +42,19 @@ class Filter
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getOperator()
     {
         return $this->operator;
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return Filter
+     */
     public function setValue($value)
     {
         $this->value = $value;
@@ -43,25 +62,39 @@ class Filter
         return $this;
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getValue()
     {
         return $this->value;
     }
 
-    public function hasId()
+    /**
+     * @return bool
+     */
+    public function hasColumnName()
     {
-        return $this->id !== null;
+        return $this->columnName !== null;
     }
 
-    public function setId($id)
+    /**
+     * @param string $columnName
+     *
+     * @return Filter
+     */
+    public function setColumnName($columnName)
     {
-        $this->id = $id;
+        $this->columnName = $columnName;
 
         return $this;
     }
 
-    public function getId()
+    /**
+     * @return string|null
+     */
+    public function getColumnName()
     {
-        return $this->id;
+        return $this->columnName;
     }
 }

@@ -12,18 +12,19 @@
 
 namespace APY\DataGridBundle\Grid\Source;
 
+use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Exception\PropertyAccessDeniedException;
+use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
-use Symfony\Component\Form\Exception\PropertyAccessDeniedException;
-use APY\DataGridBundle\Grid\Column;
-use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Grid\Rows;
 
 abstract class Source implements DriverInterface
 {
     protected $prepareQueryCallback = null;
     protected $prepareRowCallback = null;
     protected $data = null;
-    protected $items = array();
+    protected $items = [];
     protected $count;
 
     /**
@@ -38,6 +39,7 @@ abstract class Source implements DriverInterface
 
     /**
      * @param \APY\DataGridBundle\Grid\Row $row
+     *
      * @return \APY\DataGridBundle\Grid\Row|null
      */
     public function prepareRow($row)
@@ -50,9 +52,11 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * @param \Closure $callback
+     * @param callable $callback
+     *
+     * @return $this
      */
-    public function manipulateQuery(\Closure $callback = null)
+    public function manipulateQuery($callback = null)
     {
         $this->prepareQueryCallback = $callback;
 
@@ -70,77 +74,82 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * Find data for current page
+     * Find data for current page.
      *
      * @abstract
-     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int $page Page Number
-     * @param int $limit Rows Per Page
-     * @param int $gridDataJunction Grid data junction
+     *
+     * @param ColumnsIterator $columns
+     * @param int                                      $page             Page Number
+     * @param int                                      $limit            Rows Per Page
+     * @param int                                      $gridDataJunction Grid data junction
+     *
      * @return \APY\DataGridBundle\Grid\Rows
      */
+    // @todo: typehint?
     abstract public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION);
 
     /**
-     * Get Total count of data items
+     * Get Total count of data items.
      *
      * @param int $maxResults
+     *
      * @return int
      */
     abstract public function getTotalCount($maxResults = null);
 
     /**
-     * Set container
+     * Set container.
      *
      * @abstract
+     *
      * @param  $container
-     * @return void
      */
     abstract public function initialise($container);
 
     /**
      * @abstract
+     *
      * @param $columns
      */
     abstract public function getColumns($columns);
 
     public function getClassColumns($class, $group = 'default')
     {
-        return array();
+        return [];
     }
 
     public function getFieldsMetadata($class, $group = 'default')
     {
-        return array();
+        return [];
     }
 
     public function getGroupBy($class, $group = 'default')
     {
-        return array();
+        return [];
     }
 
     abstract public function populateSelectFilters($columns, $loop = false);
 
     /**
-    * Return source hash string
-    * @abstract
-    */
+     * Return source hash string.
+     *
+     * @abstract
+     */
     abstract public function getHash();
 
     /**
-     * Delete one or more objects
+     * Delete one or more objects.
      *
      * @abstract
+     *
      * @param array $ids
-     * @return void
      */
     abstract public function delete(array $ids);
 
     /**
-     * Use data instead of fetching the source
+     * Use data instead of fetching the source.
      *
      * @param array|object $data
-     * @return void
      */
     public function setData($data)
     {
@@ -150,7 +159,7 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * Get the loaded data
+     * Get the loaded data.
      *
      * @return array|object
      */
@@ -160,9 +169,9 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * Check if data is loaded
+     * Check if data is loaded.
      *
-     * @return boolean
+     * @return bool
      */
     public function isDataLoaded()
     {
@@ -170,13 +179,13 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * Gets an array of data items for rows from the set data
+     * Gets an array of data items for rows from the set data.
      *
      * @return array
      */
     protected function getItemsFromData($columns)
     {
-        $items = array();
+        $items = [];
 
         foreach ($this->data as $key => $item) {
             foreach ($columns as $column) {
@@ -193,7 +202,7 @@ abstract class Source implements DriverInterface
                         $elements = explode('.', $fieldName);
                         while ($element = array_shift($elements)) {
                             if (count($elements) > 0) {
-                                $itemEntity = call_user_func(array($itemEntity, 'get'.$element));
+                                $itemEntity = call_user_func([$itemEntity, 'get' . $element]);
                             } else {
                                 $functionName = ucfirst($element);
                             }
@@ -203,10 +212,10 @@ abstract class Source implements DriverInterface
                     // Get value of the column
                     if (isset($itemEntity->$fieldName)) {
                         $fieldValue = $itemEntity->$fieldName;
-                    } elseif (is_callable(array($itemEntity, $fullFunctionName = 'get'.$functionName))
-                           || is_callable(array($itemEntity, $fullFunctionName = 'has'.$functionName))
-                           || is_callable(array($itemEntity, $fullFunctionName = 'is'.$functionName))) {
-                        $fieldValue = call_user_func(array($itemEntity, $fullFunctionName));
+                    } elseif (is_callable([$itemEntity, $fullFunctionName = 'get' . $functionName])
+                           || is_callable([$itemEntity, $fullFunctionName = 'has' . $functionName])
+                           || is_callable([$itemEntity, $fullFunctionName = 'is' . $functionName])) {
+                        $fieldValue = call_user_func([$itemEntity, $fullFunctionName]);
                     } else {
                         throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
                     }
@@ -222,21 +231,22 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * Find data from array|object
+     * Find data from array|object.
      *
-     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int $page
-     * @param int $limit
-     * @return \APY\DataGridBundle\DataGrid\Rows
+     * @param Column[] $columns
+     * @param int      $page
+     * @param int      $limit
+     * @param int      $maxResults
+     *
+     * @return Rows
      */
     public function executeFromData($columns, $page = 0, $limit = 0, $maxResults = null)
     {
         // Populate from data
         $items = $this->getItemsFromData($columns);
-        $serializeColumns = array();
+        $serializeColumns = [];
 
         foreach ($this->data as $key => $item) {
-            $keep = true;
 
             foreach ($columns as $column) {
                 $fieldName = $column->getField();
@@ -252,7 +262,7 @@ abstract class Source implements DriverInterface
                     // Some attributes of the column can be changed in this function
                     $filters = $column->getFilters('vector');
 
-                    if ($column->getDataJunction() === Column\Column::DATA_DISJUNCTION) {
+                    if ($column->getDataJunction() === Column::DATA_DISJUNCTION) {
                         $disjunction = true;
                         $keep = false;
                     } else {
@@ -269,63 +279,79 @@ abstract class Source implements DriverInterface
                         if (!$dataIsNumeric && !($value instanceof \DateTime)) {
                             $value = $this->prepareStringForLikeCompare($value);
                             switch ($operator) {
-                                case Column\Column::OPERATOR_EQ:
-                                    $value = '/^'.preg_quote($value, '/').'$/i';
+                                case Column::OPERATOR_EQ:
+                                    $value = '/^' . preg_quote($value, '/') . '$/i';
                                     break;
-                                case Column\Column::OPERATOR_NEQ:
-                                    $value = '/^(?!'.preg_quote($value, '/').'$).*$/i';
+                                case Column::OPERATOR_NEQ:
+                                    $value = '/^(?!' . preg_quote($value, '/') . '$).*$/i';
                                     break;
-                                case Column\Column::OPERATOR_LIKE:
-                                    $value = '/'.preg_quote($value, '/').'/i';
+                                case Column::OPERATOR_LIKE:
+                                    $value = '/' . preg_quote($value, '/') . '/i';
                                     break;
-                                case Column\Column::OPERATOR_NLIKE:
-                                    $value = '/^((?!'.preg_quote($value, '/').').)*$/i';
+                                case Column::OPERATOR_NLIKE:
+                                    $value = '/^((?!' . preg_quote($value, '/') . ').)*$/i';
                                     break;
-                                case Column\Column::OPERATOR_LLIKE:
-                                    $value = '/'.preg_quote($value, '/').'$/i';
+                                case Column::OPERATOR_LLIKE:
+                                    $value = '/' . preg_quote($value, '/') . '$/i';
                                     break;
-                                case Column\Column::OPERATOR_RLIKE:
-                                    $value = '/^'.preg_quote($value, '/').'/i';
+                                case Column::OPERATOR_RLIKE:
+                                    $value = '/^' . preg_quote($value, '/') . '/i';
+                                    break;
+                                case Column::OPERATOR_SLIKE:
+                                    $value = '/' . preg_quote($value, '/') . '/';
+                                    break;
+                                case Column::OPERATOR_NSLIKE:
+                                    $value = '/^((?!' . preg_quote($value, '/') . ').)*$/';
+                                    break;
+                                case Column::OPERATOR_LSLIKE:
+                                    $value = '/' . preg_quote($value, '/') . '$/';
+                                    break;
+                                case Column::OPERATOR_RSLIKE:
+                                    $value = '/^' . preg_quote($value, '/') . '/';
                                     break;
                             }
                         }
 
                         // Test
                         switch ($operator) {
-                            case Column\Column::OPERATOR_EQ:
+                            case Column::OPERATOR_EQ:
                                 if ($dataIsNumeric) {
-                                    $found = abs($fieldValue-$value) < 0.00001;
+                                    $found = abs($fieldValue - $value) < 0.00001;
                                     break;
                                 }
-                            case Column\Column::OPERATOR_NEQ:
+                            case Column::OPERATOR_NEQ:
                                 if ($dataIsNumeric) {
-                                    $found = abs($fieldValue-$value) > 0.00001;
+                                    $found = abs($fieldValue - $value) > 0.00001;
                                     break;
                                 }
-                            case Column\Column::OPERATOR_LIKE:
-                            case Column\Column::OPERATOR_NLIKE:
-                            case Column\Column::OPERATOR_LLIKE:
-                            case Column\Column::OPERATOR_RLIKE:
+                            case Column::OPERATOR_LIKE:
+                            case Column::OPERATOR_NLIKE:
+                            case Column::OPERATOR_LLIKE:
+                            case Column::OPERATOR_RLIKE:
+                            case Column::OPERATOR_SLIKE:
+                            case Column::OPERATOR_NSLIKE:
+                            case Column::OPERATOR_LSLIKE:
+                            case Column::OPERATOR_RSLIKE:
                                 $fieldValue = $this->prepareStringForLikeCompare($fieldValue, $column->getType());
 
                                 $found = preg_match($value, $fieldValue);
                                 break;
-                            case Column\Column::OPERATOR_GT:
+                            case Column::OPERATOR_GT:
                                 $found = $fieldValue > $value;
                                 break;
-                            case Column\Column::OPERATOR_GTE:
+                            case Column::OPERATOR_GTE:
                                 $found = $fieldValue >= $value;
                                 break;
-                            case Column\Column::OPERATOR_LT:
+                            case Column::OPERATOR_LT:
                                 $found = $fieldValue < $value;
                                 break;
-                            case Column\Column::OPERATOR_LTE:
+                            case Column::OPERATOR_LTE:
                                 $found = $fieldValue <= $value;
                                 break;
-                            case Column\Column::OPERATOR_ISNULL:
+                            case Column::OPERATOR_ISNULL:
                                 $found = $fieldValue === null;
                                 break;
-                            case Column\Column::OPERATOR_ISNOTNULL:
+                            case Column::OPERATOR_ISNOTNULL:
                                 $found = $fieldValue !== null;
                                 break;
                         }
@@ -355,7 +381,7 @@ abstract class Source implements DriverInterface
         foreach ($columns as $column) {
             if ($column->isSorted()) {
                 $sortType = SORT_REGULAR;
-                $sortedItems = array();
+                $sortedItems = [];
                 foreach ($items as $key => $item) {
                     $value = $item[$column->getField()];
 
@@ -417,7 +443,7 @@ abstract class Source implements DriverInterface
             $row = new Row();
 
             if ($this instanceof Vector) {
-                $row->setPrimaryField($this->id);
+                $row->setPrimaryField($this->getId());
             }
 
             foreach ($item as $fieldName => $fieldValue) {
@@ -454,7 +480,7 @@ abstract class Source implements DriverInterface
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('vector') as $filter) {
-                        if (in_array($filter->getOperator(), array(Column\Column::OPERATOR_NEQ, Column\Column::OPERATOR_NLIKE))) {
+                        if (in_array($filter->getOperator(), [Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE, Column::OPERATOR_NSLIKE])) {
                             $selectFrom = 'source';
                             break;
                         }
@@ -464,7 +490,7 @@ abstract class Source implements DriverInterface
                 // Dynamic from query or not ?
                 $item = ($selectFrom === 'source') ? $this->data : $this->items;
 
-                $values = array();
+                $values = [];
                 foreach ($item as $row) {
                     $value = $row[$column->getField()];
 
@@ -481,7 +507,7 @@ abstract class Source implements DriverInterface
                             }
 
                             // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
-                            if (is_array($value) && array_keys($value) == array('t','i')) {
+                            if (is_array($value) && array_keys($value) == ['t', 'i']) {
                                 $value = $value['i'];
                             }
 
@@ -511,6 +537,7 @@ abstract class Source implements DriverInterface
                         natcasesort($values);
                     }
 
+                    $values = $this->prepareColumnValues($column, $values);
                     $column->setValues(array_unique($values));
                 }
             }
@@ -518,7 +545,7 @@ abstract class Source implements DriverInterface
     }
 
     /**
-     * Get Total count of data items
+     * Get Total count of data items.
      *
      * @return int
      */
@@ -529,9 +556,11 @@ abstract class Source implements DriverInterface
 
     /**
      * Prepares string to have almost the same behaviour as with a database,
-     * removing accents and latin special chars
-     * @param mixed $inputString
-     * @param string $type for array type, will serialize datas
+     * removing accents and latin special chars.
+     *
+     * @param mixed  $inputString
+     * @param string $type        for array type, will serialize datas
+     *
      * @return string the input, serialized for arrays or without accents for strings
      */
     protected function prepareStringForLikeCompare($input, $type = null)
@@ -541,14 +570,26 @@ abstract class Source implements DriverInterface
         } else {
             $outputString = $this->removeAccents($input);
         }
+
         return $outputString;
     }
 
     private function removeAccents($str)
     {
-        $entStr = htmlentities($str, ENT_NOQUOTES, "UTF-8");
+        $entStr = htmlentities($str, ENT_NOQUOTES, 'UTF-8');
         $noaccentStr = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $entStr);
 
         return preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $noaccentStr);
+    }
+
+    protected function prepareColumnValues(Column $column, $values)
+    {
+        $existingValues = $column->getValues();
+        if (!empty($existingValues)) {
+            $intersect = array_intersect_key($existingValues, $values);
+            $values = array_replace($values, $intersect);
+        }
+
+        return $values;
     }
 }

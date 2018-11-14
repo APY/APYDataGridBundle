@@ -3,7 +3,7 @@ SUMMARY
 
 1. [Introduction](https://github.com/Abhoryo/APYDataGridBundle/blob/master/README.md)
 
-1. [Installation](installation.md)
+1. [Installation](index.md)
 
 1. [Getting Started with APYDataGridBundle](getting_started.md)
 
@@ -42,6 +42,9 @@ SUMMARY
 		1. [Date Column](columns_configuration/types/date_column.md)
 		1. [_Time_](columns_configuration/types/time_column.md)
 		1. [Array Column](columns_configuration/types/array_column.md)
+		1. [Blank Column](columns_configuration/types/blank_column.md)
+		1. [Rank Column](columns_configuration/types/rank_column.md)
+		1. [Join Column](columns_configuration/types/join_column.md)
 		1. [Create your column](columns_configuration/types/create_column.md)
 	1. [Filters](columns_configuration/filters/)
 		1. [Input Filter](columns_configuration/filters/input_filter.md)
@@ -62,9 +65,11 @@ SUMMARY
 	1. [Manipulate rows data](grid_configuration/manipulate_rows_data.md)
 	1. [Manipulate column render cell](grid_configuration/manipulate_column_render_cell.md)
 	1. [Manipulate the source query](grid_configuration/manipulate_query.md)
+	1. [Manipulate the count query (source Entity only)](grid_configuration/manipulate_count_query.md)
 	1. [Manipulate columns](grid_configuration/manipulate_column.md)
 	1. [Manipulate row action rendering](grid_configuration/manipulate_row_action_rendering.md)
 	1. [Hide or show columns](grid_configuration/hide_show_columns.md)
+	1. [Set columns order](grid_configuration/set_columns_order.md)
 	1. [Set a default page](grid_configuration/set_default_page.md)
 	1. [Set a default order](grid_configuration/set_default_order.md)
 	1. [Set a default items per page](grid_configuration/set_default_limit.md)

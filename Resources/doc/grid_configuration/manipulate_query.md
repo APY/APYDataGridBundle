@@ -69,6 +69,36 @@ $grid->setSource($source);
 
 
 
+if you use [Gedmo\Translatable](https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/translatable.md) with default implementation. 
+```php
+<?php
+...
+use Gedmo\Mapping\Annotation as Gedmo;
+
+class Category implements Translatable
+{
+    ...
+    /**
+     * @var string
+     *
+     * @Gedmo\Translatable
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+...
+```
+You will notice that the grid does not show the good translation of entities( default locale / locale request ).
+For get the right translation of entities, please hint the query with :
+
+```php
+<?php
+...
+        $source = new Entity(AcmeCategoryBundle:Category);
+        $source->addHint(Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker');
+...
+```
+Now, the grid is loaded with the good translation/locale. Make sure you have a translation or you will have a empty string.
+
 
 ## 2. Injecting a custom QueryBuilder
 In rare situations, using the callback strategy is not possible because you do not have the full knowledge of how the query should be constructed (e.g. the business logic sits in an external repository/service). 
@@ -96,3 +126,25 @@ Injecting the QueryBuilder comes with the following risks -
 * Injecting a complex QueryBuilder can lead to clash of query namespaces/aliases between the original QB and what was added by the grid.
 
 If you are injecting your own QueryBuilder and having problems with the grid, please try removing the injection or using the callback method first as odds are your problem is caused by a complex query which could not be adopted accurately by the grid.
+
+## 3. Using aliased columns with manipulated or customer queries.
+Sometimes you may need to use an aliased (a*b AS c) column for more complex calculations.  Using these in conjunction with the filters and other grid functionality is not difficult!  
+
+The steps are fairly simple:
+
+1. Manipulate or inject a query with an aliased column such as `myTable.a*myTable.b AS my_calculated_total`.
+2. Create the grid column representation: 
+
+```php
+$myCol = new NumberColumn(array('id' => 'myTotal',
+                                'title' => 'My Aliased Field',
+                                'field' => 'my_calculated_total', // The aliased name
+                                'isManualField' => true, // Indicate it is a manual (or aliased) field
+                                'isAggregate' => false, // Defaults to false, set true if using aggregate func. like SUM()
+                                'source' => true, // Indicates the grid should retrieve it from the source (the query)
+                                ));
+$grid->addColumn($myCol,10);
+ 
+```
+
+And you are all set.  From there you will be able to use the field as if it was any other field in the grid, filters and all!

@@ -27,6 +27,10 @@ class GridManager implements \IteratorAggregate, \Countable
 
     protected $massActionGrid = null;
 
+    const NO_GRID_EX_MSG = 'No grid has been added to the manager.';
+
+    const SAME_GRID_HASH_EX_MSG = 'Some grids seem similar. Please set an Indentifier for your grids.';
+
     public function __construct($container)
     {
         $this->container = $container;
@@ -45,6 +49,7 @@ class GridManager implements \IteratorAggregate, \Countable
 
     /**
      * @param mixed $id
+     *
      * @return Grid
      */
     public function createGrid($id = null)
@@ -63,10 +68,10 @@ class GridManager implements \IteratorAggregate, \Countable
     public function isReadyForRedirect()
     {
         if ($this->grids->count() == 0) {
-            throw new \RuntimeException('No grid has been added to the manager.');
+            throw new \RuntimeException(self::NO_GRID_EX_MSG);
         }
 
-        $checkHash = array();
+        $checkHash = [];
 
         $isReadyForRedirect = false;
         $this->grids->rewind();
@@ -85,7 +90,7 @@ class GridManager implements \IteratorAggregate, \Countable
             }
 
             if (in_array($grid->getHash(), $checkHash)) {
-                throw new \RuntimeException('Some grids seem similar. Please set an Indentifier for your grids.');
+                throw new \RuntimeException(self::SAME_GRID_HASH_EX_MSG);
             }
 
             $checkHash[] = $grid->getHash();
@@ -99,17 +104,17 @@ class GridManager implements \IteratorAggregate, \Countable
     public function isReadyForExport()
     {
         if ($this->grids->count() == 0) {
-            throw new \RuntimeException('No grid has been added to the manager.');
+            throw new \RuntimeException(self::NO_GRID_EX_MSG);
         }
 
-        $checkHash = array();
+        $checkHash = [];
 
         $this->grids->rewind();
         while ($this->grids->valid()) {
             $grid = $this->grids->current();
 
             if (in_array($grid->getHash(), $checkHash)) {
-                throw new \RuntimeException('Some grids seem similar. Please set an Indentifier for your grids.');
+                throw new \RuntimeException(self::SAME_GRID_HASH_EX_MSG);
             }
 
             $checkHash[] = $grid->getHash();
@@ -147,9 +152,9 @@ class GridManager implements \IteratorAggregate, \Countable
     /**
      * Renders a view.
      *
-     * @param string|array $param1 The view name or an array of parameters to pass to the view
-     * @param string|array $param1 The view name or an array of parameters to pass to the view
-     * @param Response $response A response instance
+     * @param string|array $param1   The view name or an array of parameters to pass to the view
+     * @param string|array $param2   The view name or an array of parameters to pass to the view
+     * @param Response     $response A response instance
      *
      * @return Response A Response instance
      */
@@ -179,9 +184,9 @@ class GridManager implements \IteratorAggregate, \Countable
             $i = 1;
             $this->grids->rewind();
             while ($this->grids->valid()) {
-                $parameters = array_merge(array('grid'.$i => $this->grids->current()), $parameters);
+                $parameters = array_merge(['grid' . $i => $this->grids->current()], $parameters);
                 $this->grids->next();
-                $i++;
+                ++$i;
             }
 
             if ($view === null) {

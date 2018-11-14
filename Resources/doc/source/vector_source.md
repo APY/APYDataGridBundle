@@ -98,7 +98,10 @@ $source = new Vector(array(), $columns);
 ...
 ```
 
-**Note:** Columns are not sourcable and mapped with id by default, you have to define source=true and field=<id> if you want your data mapped on these columns.
+**Note:**
+
+* Attributes `id` and `field` are required. The `id` is the identifier of your column and `field` is the name of your field to map with you data.
+* Columns are not sourcable and mapped with id by default, you have to define source=true and field=<id> if you want your data mapped on these columns.
 
 <a name="set_id"/>
 ## Set a primary field
@@ -191,7 +194,7 @@ You can also do that using an array of Column:
 use APY\DataGridBundle\Grid\Column;
 ...
 $columns = array(
-    new Column\NumberColumn(array('id' => 'id', 'field' => 'id', 'filterable' => true, 'source' => true))
+    new Column\NumberColumn(array('id' => 'id', 'field' => 'id', 'filterable' => true, 'source' => true)),
     new Column\ArrayColumn(array('id' => 'authors', 'field' => 'authors', 'source' => true, 'filter' => 'select', 'selectFrom' => 'query', 'sortable' => false))
 );
 
