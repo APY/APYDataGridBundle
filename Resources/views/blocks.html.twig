@@ -267,7 +267,7 @@
                     <option value="{{key}}">{{ export.title|trans }}</option>
                 {% endfor %}
             </select>
-            <button class="btn btn-default btn-sm" type="submit">{{ 'Export'|trans }}</button>
+            <input class="btn btn-default btn-sm" type="submit" name="{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_EXPORT_SUBMIT') }}" value="{{ 'Export'|trans }}" />
         {% endspaceless %}
     </div>
 {% endblock grid_exports %}
