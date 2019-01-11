@@ -38,6 +38,7 @@ class Grid implements GridInterface
     const REQUEST_QUERY_MASS_ACTION = '__action_id';
     const REQUEST_QUERY_MASS_ACTION_SUBMIT = '__action_id_submit';
     const REQUEST_QUERY_EXPORT = '__export_id';
+    const REQUEST_QUERY_EXPORT_SUBMIT = '__export_id_submit';
     const REQUEST_QUERY_TWEAK = '__tweak_id';
     const REQUEST_QUERY_PAGE = '_page';
     const REQUEST_QUERY_LIMIT = '_limit';
@@ -355,6 +356,7 @@ class Grid implements GridInterface
 
         $this->columns = new Columns($this->authorizationChecker);
 
+        // @todo: maybe sould use ->get('_route_params') instead of ->all() and the unset cycle
         $this->routeParameters = $this->request->attributes->all();
         foreach (array_keys($this->routeParameters) as $key) {
             if (substr($key, 0, 1) == '_') {
@@ -654,9 +656,11 @@ class Grid implements GridInterface
      */
     protected function processMassActions($actionId)
     {
-        if ($this->request->get('hidden_' . self::REQUEST_QUERY_MASS_ACTION_SUBMIT) != null
-            && $actionId == -1
-        ) {
+        if(empty($this->request->get(self::REQUEST_QUERY_MASS_ACTION_SUBMIT))) {
+            return;
+        }
+
+        if ($actionId == -1) {
             throw new NoActionSelectedException();
         }
 
@@ -715,6 +719,14 @@ class Grid implements GridInterface
      */
     protected function processExports($exportId)
     {
+        if(empty($this->request->get(self::REQUEST_QUERY_EXPORT_SUBMIT))) {
+            return false;
+        }
+
+        if ($exportId == -1) {
+            throw new NoActionSelectedException("Selezionare un formato di esportazione");
+        }
+
         if ($exportId > -1 && '' !== $exportId) {
             if (array_key_exists($exportId, $this->exports)) {
                 $this->isReadyForExport = true;
