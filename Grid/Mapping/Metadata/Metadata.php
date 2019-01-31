@@ -77,9 +77,12 @@ class Metadata
 
     /**
      * @todo move to another place
+     *
      * @param $columnExtensions
-     * @return \SplObjectStorage
+     *
      * @throws \Exception
+     *
+     * @return \SplObjectStorage
      */
     public function getColumnsFromMapping($columnExtensions)
     {
@@ -89,13 +92,13 @@ class Metadata
             $params = $this->getFieldMapping($value);
             $type = $this->getFieldMappingType($value);
 
-            /** todo move available extensions from columns */
+            /* todo move available extensions from columns */
             if ($columnExtensions->hasExtensionForColumnType($type)) {
                 $column = clone $columnExtensions->getExtensionForColumnType($type);
                 $column->__initialize($params);
                 $columns->attach($column);
             } else {
-                throw new \Exception(sprintf("No suitable Column Extension found for column type: %s", $type));
+                throw new \Exception(sprintf('No suitable Column Extension found for column type: %s', $type));
             }
         }
 

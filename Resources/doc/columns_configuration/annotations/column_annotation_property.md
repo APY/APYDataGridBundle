@@ -31,8 +31,7 @@ class Product
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      *
-     * @GRID\Column(field="category.name", title="Category Name")
-     * @GRID\Column(field="category.children.name", type="array", title="Category Children")
+     * @GRID\Column(field="category.name", title="category.name", translation_domain="categories")
      */
     protected $category;
 }
@@ -65,9 +64,11 @@ class Product
 |searchOnClick|boolean|false|true or false|Sets the possibility to perform a search on the clicked cell (filterable has to be true)|
 |safe|string or false|html|false<br />or<br />see [Escape filters](http://twig.sensiolabs.org/doc/filters/escape.html)|Sets the escape filter|
 |usePrefixTitle|boolean|true|true or false|Use the prefixTitle of the grid to render title|
+|translation_domain|string|null||The translation domain that will be used for the title|
 **Note 1**: Every attribute has a setter and a getter method.  
 **Note 2**: With the `values` attributes, if `type1` is found, the grid displays the value `Type 1`.  
 **Note 3**: If operators are not visible, filtering is performed with the default operator.
+**Note 4**: If you have and `id` field and want to use another field as primary, you need to set `primary=false` on the id field.
 
 ## Title translation
 

@@ -13,7 +13,7 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 /**
- * PHPExcel HTML Export
+ * PHPExcel HTML Export.
  */
 class PHPExcelHTMLExport extends PHPExcel5Export
 {

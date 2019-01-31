@@ -40,7 +40,7 @@ From values:
 /**
  * @ORM\Column(type="string", length="32")
  *
- * @GRID\Column(filter="select", selectFrom="values", values={"type1"="Type 1","type1"="Type 2"})
+ * @GRID\Column(filter="select", selectFrom="values", values={"type1"="Type 1","type2"="Type 2"})
  */
 protected $type;
 ...

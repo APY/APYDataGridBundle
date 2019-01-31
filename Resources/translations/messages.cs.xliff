@@ -2,6 +2,54 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="1">
+                <source>Page</source>
+                <target>strana</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>, Display</source>
+                <target>, zobraz</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>of %count%</source>
+                <target>z %count%</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Items per page</source>
+                <target>položek na stranu</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Select visible</source>
+                <target>Označ viditelné</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Select all</source>
+                <target>Označ všechno</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Deselect visible</source>
+                <target>Odznač viditelné</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Deselect all</source>
+                <target>Odznač všechno</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>Action</source>
+                <target>Akce</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>Submit Action</source>
+                <target>Odeslat</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>From:</source>
+                <target>Od:</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>To:</source>
+                <target>Do:</target>
+            </trans-unit>
             <trans-unit id="13">
                 <source>eq</source>
                 <target>Rovná se</target>
@@ -64,7 +112,51 @@
             </trans-unit>
             <trans-unit id="28">
                 <source>%count% Results, </source>
-                <target>%count% Výsledek, |%count% Výsledků, </target>
+                <target>%count% výsledek, |%count% výsledky, |%count% výsledků, </target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>Search</source>
+                <target>Hledat</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>Reset</source>
+                <target>Resetovat</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>Order by</source>
+                <target>Řadit dle</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>slike</source>
+                <target>Obsahuje</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>nslike</source>
+                <target>Neobsahuje</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>rslike</source>
+                <target>Začíná na</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>lslike</source>
+                <target>Končí na</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>No data</source>
+                <target>Žádná data</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>No result</source>
+                <target>Žádné výsledky</target>
+            </trans-unit>
+            <trans-unit id="45">
+                <source>Selected _s_ rows</source>
+                <target>Označeno _s_ řádků</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>Actions</source>
+                <target>Akce</target>
             </trans-unit>
         </body>
     </file>

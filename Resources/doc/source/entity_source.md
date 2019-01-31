@@ -75,4 +75,4 @@ And the template:
 
 ## Known limitations
 
-* When you use a DQL fonction on a field, \*LIKE, \*NULL and REGEX operators don't work. They are desactivated. See [Doctrine issue](http://www.doctrine-project.org/jira/browse/DDC-1858)
+* When you use a DQL fonction on a field, \*LIKE, \*NULL and REGEX operators don't work. They are disabled if your version of doctrine is < `2.5`. See [Doctrine issue](http://www.doctrine-project.org/jira/browse/DDC-1858)

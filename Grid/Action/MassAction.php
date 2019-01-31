@@ -14,35 +14,48 @@ namespace APY\DataGridBundle\Grid\Action;
 
 class MassAction implements MassActionInterface
 {
+    /** @var string */
     protected $title;
+
+    /** @var string|null */
     protected $callback;
+
+    /** @var bool */
     protected $confirm;
-    protected $parameters = array();
+
+    /** @var string */
+    protected $confirmMessage;
+
+    /** @var array  */
+    protected $parameters = [];
+
+    /** @var string|null  */
     protected $role;
 
     /**
-     * Default MassAction constructor
+     * Default MassAction constructor.
      *
-     * @param string $title Title of the mass action
-     * @param string $callback Callback of the mass action
-     * @param boolean $confirm Show confirm message if true
-     * @param array $parameters Additional parameters
-     * @param string $role Security role
+     * @param string $title      Title of the mass action
+     * @param string $callback   Callback of the mass action
+     * @param bool   $confirm    Show confirm message if true
+     * @param array  $parameters Additional parameters
+     * @param string $role       Security role
      */
-    public function __construct($title, $callback = null, $confirm = false, $parameters = array(), $role = null)
+    public function __construct($title, $callback = null, $confirm = false, $parameters = [], $role = null)
     {
         $this->title = $title;
         $this->callback = $callback;
         $this->confirm = $confirm;
-        $this->confirmMessage = 'Do you want to '.strtolower($title).' the selected rows?';
+        $this->confirmMessage = 'Do you want to ' . strtolower($title) . ' the selected rows?';
         $this->parameters = $parameters;
         $this->role = $role;
     }
 
+    // @todo: has this setter sense? we passed the title from constructor
     /**
-     * Set action title
+     * Set action title.
      *
-     * @param $title
+     * @param string $title
      *
      * @return self
      */
@@ -54,7 +67,7 @@ class MassAction implements MassActionInterface
     }
 
     /**
-     * get action title
+     * get action title.
      *
      * @return string
      */
@@ -64,9 +77,9 @@ class MassAction implements MassActionInterface
     }
 
     /**
-     * Set action callback
+     * Set action callback.
      *
-     * @param  $callback
+     * @param string $callback
      *
      * @return self
      */
@@ -78,7 +91,7 @@ class MassAction implements MassActionInterface
     }
 
     /**
-     * get action callback
+     * get action callback.
      *
      * @return string
      */
@@ -87,10 +100,12 @@ class MassAction implements MassActionInterface
         return $this->callback;
     }
 
+    // @todo: we should change this to something like "enableConfirm" as "false" is the default value and has pretty much
+    // nosense to use setConfirm with false parameter.
     /**
-     * Set action confirm
+     * Set action confirm.
      *
-     * @param  $confirm
+     * @param bool $confirm
      *
      * @return self
      */
@@ -101,10 +116,11 @@ class MassAction implements MassActionInterface
         return $this;
     }
 
+    // @todo: could we change this to neddConfirm?
     /**
-     * Get action confirm
+     * Get action confirm.
      *
-     * @return boolean
+     * @return bool
      */
     public function getConfirm()
     {
@@ -112,7 +128,7 @@ class MassAction implements MassActionInterface
     }
 
     /**
-     * Set action confirmMessage
+     * Set action confirmMessage.
      *
      * @param string $confirmMessage
      *
@@ -126,7 +142,7 @@ class MassAction implements MassActionInterface
     }
 
     /**
-     * get action confirmMessage
+     * get action confirmMessage.
      *
      * @return string
      */
@@ -136,9 +152,10 @@ class MassAction implements MassActionInterface
     }
 
     /**
-     * Set action/controller parameters
+     * Set action/controller parameters.
      *
      * @param array $parameters
+     *
      * @return $this
      */
     public function setParameters(array $parameters)
@@ -149,7 +166,7 @@ class MassAction implements MassActionInterface
     }
 
     /**
-     * Get action/controller parameters
+     * Get action/controller parameters.
      *
      * @return array
      */
@@ -159,9 +176,9 @@ class MassAction implements MassActionInterface
     }
 
     /**
-     * set role
+     * set role.
      *
-     * @param mixed $role
+     * @param string $role
      *
      * @return self
      */
@@ -173,9 +190,9 @@ class MassAction implements MassActionInterface
     }
 
     /**
-     * Get role
+     * Get role.
      *
-     * @return mixed
+     * @return string
      */
     public function getRole()
     {
