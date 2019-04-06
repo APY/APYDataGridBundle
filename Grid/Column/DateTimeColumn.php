@@ -24,6 +24,10 @@ class DateTimeColumn extends Column
 
     protected $fallbackFormat = 'Y-m-d H:i:s';
 
+    protected $inputFormat;
+
+    protected $fallbackInputFormat = 'Y-m-d H:i:s';
+
     protected $timezone;
 
     public function __initialize(array $params)
@@ -31,6 +35,7 @@ class DateTimeColumn extends Column
         parent::__initialize($params);
 
         $this->setFormat($this->getParam('format'));
+        $this->setInputFormat($this->getParam('inputFormat', $this->fallbackInputFormat));
         $this->setOperators($this->getParam('operators', [
             self::OPERATOR_EQ,
             self::OPERATOR_NEQ,
@@ -56,7 +61,7 @@ class DateTimeColumn extends Column
 
     protected function isDateTime($query)
     {
-        return strtotime($query) !== false;
+        return false !== \DateTime::createFromFormat($this->inputFormat, $query);
     }
 
     public function getFilters($source)
@@ -65,7 +70,7 @@ class DateTimeColumn extends Column
 
         $filters = [];
         foreach ($parentFilters as $filter) {
-            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue(new \DateTime($filter->getValue()));
+            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue(\DateTime::createFromFormat($this->inputFormat, $filter->getValue()));
         }
 
         return $filters;
@@ -158,6 +163,18 @@ class DateTimeColumn extends Column
     public function getFormat()
     {
         return $this->format;
+    }
+
+    public function setInputFormat($inputFormat)
+    {
+        $this->inputFormat = $inputFormat;
+
+        return $this;
+    }
+
+    public function getInputFormat()
+    {
+        return $this->inputFormat;
     }
 
     public function getTimezone()
