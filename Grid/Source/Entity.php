@@ -603,6 +603,14 @@ class Entity extends Source
         // Doctrine Bug Workaround: http://www.doctrine-project.org/jira/browse/DDC-1927
         $countQueryBuilder = clone $this->query;
 
+        if (!empty($this->groupBy)) {
+            $countQueryBuilder->resetDQLPart('groupBy');
+
+            foreach ($this->groupBy as $field) {
+                $countQueryBuilder->addGroupBy($this->getGroupByFieldName($field));
+            }
+        }
+
         $this->prepareCountQuery($countQueryBuilder);
 
         foreach ($countQueryBuilder->getRootAliases() as $alias) {
