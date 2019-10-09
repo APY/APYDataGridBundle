@@ -3,6 +3,10 @@ services:
     apy_grid.factory:
         class: APY\DataGridBundle\Grid\GridFactory
         arguments: ['@service_container', '@apy_grid.registry']
+
+    APY\DataGridBundle\Grid\GridFactoryInterface:
+        alias: apy_grid.factory
+
     apy_grid.registry:
         class: APY\DataGridBundle\Grid\GridRegistry
 
