@@ -7,6 +7,7 @@ use APY\DataGridBundle\Grid\Exception\ColumnAlreadyExistsException;
 use APY\DataGridBundle\Grid\Exception\ColumnNotFoundException;
 use APY\DataGridBundle\Grid\Exception\TypeAlreadyExistsException;
 use APY\DataGridBundle\Grid\Exception\TypeNotFoundException;
+use APY\DataGridBundle\Grid\Helper\StringHelper;
 
 /**
  * The central registry of the Grid component.

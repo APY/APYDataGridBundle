@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="grid.twig_extension" alias="%grid.twig_extension.class%"/>
+        <service id="grid" alias="%grid.class%" public="true"/>
+        <service id="grid.manager" alias="%grid.manager.class%"/>
+        <service id="grid.metadata.driver.annotation" alias="APY\DataGridBundle\Grid\Mapping\Driver\Annotation"/>
+        <service id="grid.mapping.manager" alias="APY\DataGridBundle\Grid\Mapping\Metadata\Manager" public="true"/>
+
+        <service id="apy_grid.registry" alias="APY\DataGridBundle\Grid\GridRegistryInterface"/>
+        <service id="apy_grid.factory" alias="APY\DataGridBundle\Grid\GridFactoryInterface" public="true"/>
+    </services>
+
+</container>

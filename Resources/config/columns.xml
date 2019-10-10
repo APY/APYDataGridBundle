@@ -19,48 +19,49 @@
     </parameters>
 
     <services>
-        <service id="grid.column.text" class="%grid.column.text.class%" public="false">
-            <tag name="grid.column.extension" />
+        <!-- Columns -->
+        <service id="apy_grid.column.text" class="%grid.column.text.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.number" class="%grid.column.number.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.number" class="%grid.column.number.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.boolean" class="%grid.column.boolean.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.boolean" class="%grid.column.boolean.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.datetime" class="%grid.column.datetime.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.datetime" class="%grid.column.datetime.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.date" class="%grid.column.date.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.date" class="%grid.column.date.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.time" class="%grid.column.time.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.time" class="%grid.column.time.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.array" class="%grid.column.array.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.array" class="%grid.column.array.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.simple_array" class="%grid.column.simple_array.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.simple_array" class="%grid.column.simple_array.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.blank" class="%grid.column.blank.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.blank" class="%grid.column.blank.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.rank" class="%grid.column.rank.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.rank" class="%grid.column.rank.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
 
-        <service id="grid.column.join" class="%grid.column.join.class%" public="false">
-            <tag name="grid.column.extension" />
+        <service id="apy_grid.column.join" class="%grid.column.join.class%" public="false">
+            <tag name="apy_grid.column"/>
         </service>
     </services>
 </container>

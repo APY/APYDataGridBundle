@@ -2,6 +2,7 @@
 
 namespace APY\DataGridBundle\DependencyInjection\Compiler;
 
+use APY\DataGridBundle\Grid\GridRegistryInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -22,11 +23,11 @@ class GridPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('apy_grid.registry')) {
+        if (!$container->hasDefinition(GridRegistryInterface::class)) {
             return;
         }
 
-        $definition = $container->getDefinition('apy_grid.registry');
+        $definition = $container->getDefinition(GridRegistryInterface::class);
 
         $types = $container->findTaggedServiceIds('apy_grid.type');
         foreach ($types as $id => $tag) {
