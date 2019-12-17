@@ -26,6 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\TemplateWrapper;
 
 class Grid implements GridInterface
 {
@@ -1395,7 +1396,7 @@ class Grid implements GridInterface
     public function setTemplate($template)
     {
         if ($template !== null) {
-            if ($template instanceof \Twig_Template) {
+            if ($template instanceof TemplateWrapper) {
                 $template = '__SELF__' . $template->getTemplateName();
             } elseif (!is_string($template)) {
                 throw new \Exception(self::TWIG_TEMPLATE_LOAD_EX_MSG);

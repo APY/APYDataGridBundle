@@ -19,7 +19,7 @@ use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -31,6 +31,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
+use Twig\TemplateWrapper;
 
 class GridTest extends TestCase
 {
@@ -737,9 +739,8 @@ class GridTest extends TestCase
     public function testSetExportTwigTemplateInstance()
     {
         $templateName = 'templateName';
-
         $template = $this
-            ->getMockBuilder(\Twig_Template::class)
+            ->getMockBuilder(TemplateWrapper::class)
             ->disableOriginalConstructor()
             ->getMock();
         $template
@@ -800,7 +801,7 @@ class GridTest extends TestCase
         $templateName = 'templateName';
 
         $template = $this
-            ->getMockBuilder(\Twig_Template::class)
+            ->getMockBuilder(TemplateWrapper::class)
             ->disableOriginalConstructor()
             ->getMock();
         $template

@@ -29,7 +29,7 @@
         "symfony/options-resolver": "~2.8|~3.0|^4.0",
         "symfony/security": "~2.8|~3.0|^4.0",
         "symfony/serializer": "~2.8|~3.0|^4.0",
-        "twig/twig": ">=1.5.0"
+        "twig/twig": "^2.10"
     },
     "require-dev": {
         "symfony/framework-bundle": "~2.8|~3.0|^4.0",
