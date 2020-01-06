@@ -360,8 +360,10 @@ class Grid implements GridInterface
         $this->setPersistence($config->isPersisted());
 
         // Route parameters
-        $routeParameters = $config->getRouteParameters();
-        if (!empty($routeParameters)) {
+        $routeParameters = [];
+        $parameters = $config->getRouteParameters();
+        if (!empty($parameters)) {
+            $routeParameters = $parameters;
             foreach ($routeParameters as $parameter => $value) {
                 $this->setRouteParameter($parameter, $value);
             }
@@ -1136,7 +1138,7 @@ class Grid implements GridInterface
 
     protected function saveSession()
     {
-        if (!empty($this->sessionData)) {
+        if (!empty($this->sessionData) && !empty($this->hash)) {
             $this->session->set($this->hash, $this->sessionData);
         }
     }
@@ -1401,7 +1403,6 @@ class Grid implements GridInterface
             } elseif (!is_string($template)) {
                 throw new \Exception(self::TWIG_TEMPLATE_LOAD_EX_MSG);
             }
-
             $this->set(self::REQUEST_QUERY_TEMPLATE, $template);
             $this->saveSession();
         }

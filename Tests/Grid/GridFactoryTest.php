@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -172,6 +173,8 @@ class GridFactoryTest extends TestCase
                         break;
                     case 'request_stack':
                         $request = new Request([], [], ['key' => 'value']);
+                        $session = new Session();
+                        $request->setSession($session);
                         $requestStack = new RequestStack();
                         $requestStack->push($request);
 
