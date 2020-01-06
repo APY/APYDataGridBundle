@@ -55,10 +55,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "3.2-dev"
-        },
-        "symfony": {
-            "allow-contrib": true,
-            "require": "5.0.*"
         }
     },
     "provide": {
