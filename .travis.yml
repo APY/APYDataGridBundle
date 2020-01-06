@@ -12,6 +12,7 @@ matrix:
         SYMFONY_VERSION=^4.0
 
 before_install:
+  - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - |
     if [ "${SYMFONY_VERSION}" != "" ]; then
       packages="form dependency-injection config http-foundation http-kernel options-resolver security-guard serializer"
@@ -25,10 +26,6 @@ before_install:
           composer require --dev --no-update symfony/"$package"=${SYMFONY_VERSION};
         done
     fi;
-
-
-before_script:
-  - echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
 install:
   - travis_retry composer self-update
