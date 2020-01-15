@@ -203,11 +203,22 @@ class Entity extends Source
         }
 
         if (strpos($name, '.') !== false) {
-            [$tableAlias, $name] = $this->getJoinedTableField($column);
+            $previousParent = '';
+
+            $elements = explode('.', $name);
+            while ($element = array_shift($elements)) {
+                if (count($elements) > 0) {
+                    $parent = ($previousParent == '') ? $this->getTableAlias() : $previousParent;
+                    $previousParent .= '_' . $element;
+                    $this->joins[$previousParent] = ['field' => $parent . '.' . $element, 'type' => $column->getJoinType()];
+                } else {
+                    $name = $previousParent . '.' . $element;
+                }
+            }
 
             $alias = $this->fromColIdToAlias($column->getId());
         } elseif (strpos($name, ':') !== false) {
-            $tableAlias = $this->getTableAlias();
+            $previousParent = $this->getTableAlias();
             $alias = $name;
         } else {
             return $this->getTableAlias() . '.' . $name;
@@ -217,20 +228,20 @@ class Entity extends Source
         $matches = [];
         if ($column->hasDQLFunction($matches)) {
             if (strtolower($matches['parameters']) == 'distinct') {
-                $functionWithParameters = $matches['function'] . '(DISTINCT ' . $tableAlias . '.' . $matches['field'] . ')';
+                $functionWithParameters = $matches['function'] . '(DISTINCT ' . $previousParent . '.' . $matches['field'] . ')';
             } else {
                 $parameters = '';
                 if ($matches['parameters'] !== '') {
                     $parameters = ', ' . (is_numeric($matches['parameters']) ? $matches['parameters'] : "'" . $matches['parameters'] . "'");
                 }
 
-                $functionWithParameters = $matches['function'] . '(' . $tableAlias . '.' . $matches['field'] . $parameters . ')';
+                $functionWithParameters = $matches['function'] . '(' . $previousParent . '.' . $matches['field'] . $parameters . ')';
             }
 
             if ($withAlias) {
                 // Group by the primary field of the previous entity
-                $this->query->addGroupBy($tableAlias);
-                $this->querySelectfromSource->addGroupBy($tableAlias);
+                $this->query->addGroupBy($previousParent);
+                $this->querySelectfromSource->addGroupBy($previousParent);
 
                 return "$functionWithParameters as $alias";
             }
@@ -383,8 +394,6 @@ class Entity extends Source
         $serializeColumns = [];
         $where = $gridDataJunction === Column::DATA_CONJUNCTION ? $this->query->expr()->andx() : $this->query->expr()->orx();
 
-        $this->prepopulateExistingJoins();
-
         $columnsById = [];
         foreach ($columns as $column) {
             $columnsById[$column->getId()] = $column;
@@ -483,11 +492,7 @@ class Entity extends Source
             $this->query->andWhere($where);
         }
 
-        foreach ($this->joins as $field) {
-            if(isset($field['skip'])) {
-                continue;
-            }
-            $alias = $field['alias'];
+        foreach ($this->joins as $alias => $field) {
             if (null !== $field['type'] && strtolower($field['type']) === 'inner') {
                 $join = 'join';
             } else {
@@ -904,81 +909,5 @@ class Entity extends Source
         }
 
         return false;
-    }
-
-    private function getJoinedTableField(Column $column): array
-    {
-        $name = $column->getField();
-        $tableAlias = '';
-        $elements = explode('.', $name);
-        $path = '';
-        while ($element = array_shift($elements)) {
-            if (count($elements) > 0) {
-                if($tableAlias == '') {
-                    $path = $parentTableAlias = $this->getTableAlias();
-                } else {
-                    $parentTableAlias = $tableAlias;
-                }
-                $path .= '.' . $element;
-                $tableAlias .= '_' . $element;
-
-                if(!array_key_exists($path, $this->joins)) {
-
-                    // let's add a prefix to grid generated aliases to have less chance of collisions
-                    if(substr($tableAlias, 0, 1) !== '_') {
-                        $tableAlias = '_'.$tableAlias;
-                    }
-
-                    $this->joins[$path] = [
-                        'alias' => $tableAlias,
-                        'field' => $parentTableAlias . '.' . $element,
-                        'type' => $column->getJoinType()
-                    ];
-                } else {
-                    $tableAlias = $this->joins[$path]['alias'];
-                }
-            } else {
-                $name = $tableAlias . '.' . $element;
-            }
-        }
-        return [$tableAlias,  $name];
-    }
-
-    private function prepopulateExistingJoins(): void
-    {
-        $joinsByAlias = [];
-        /** @var Join $userDefinedJoin */
-        foreach ($this->query->getDQLPart('join') as $rootAlias => $userDefinedJoins) {
-            foreach ($userDefinedJoins as $userDefinedJoin) {
-                if ($userDefinedJoin->getCondition() !== null) {
-                    continue; // ignore custom joins
-                }
-                [$base, $field] = explode('.', $userDefinedJoin->getJoin());
-                $joinsByAlias[$userDefinedJoin->getAlias()] = [
-                    'base' => $base,
-                    'field' => $field,
-                    'type' => $userDefinedJoin->getJoinType()
-                ];
-            }
-        }
-
-        foreach ($joinsByAlias as $alias => $join) {
-
-            // Extract join path by going up the chain
-            $path = '.' . $join['field'];
-            $base = $join['base'];
-            while(array_key_exists($base, $joinsByAlias)) {
-                $path = '.' . $joinsByAlias[$base]['field'] . $path;
-                $base = $joinsByAlias[$base]['base'];
-            }
-            $path = $base . $path;
-
-            $this->joins[$path] = [
-                'alias' => $alias,
-                'field' => $join['base'].'.'.$join['field'],
-                'type' => $join['type'],
-                'skip' => true, // these joins are already in the query builder and must not be added again
-            ];
-        }
     }
 }
