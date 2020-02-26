@@ -525,6 +525,10 @@ abstract class Column
      */
     public function getData()
     {
+        if (!\is_array($this->data)){
+            return [];
+        }
+        
         $result = [];
 
         $hasValue = false;
@@ -685,6 +689,10 @@ abstract class Column
 
     public function getFilters($source)
     {
+        if (!\is_array($this->data)) {
+            return [];
+        }
+        
         $filters = [];
 
         if ($this->hasOperator($this->data['operator'])) {
