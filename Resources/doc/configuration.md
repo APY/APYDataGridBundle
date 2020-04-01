@@ -14,7 +14,7 @@ apy_data_grid:
     actions_columns_separator: "<br />"
     pagerfanta:
         enable: false
-        view_class: "Pagerfanta\View\DefaultView"
+        view_class: "Pagerfanta\\View\\DefaultView"
         options:
             prev_message: "«"
             next_message: "»"
