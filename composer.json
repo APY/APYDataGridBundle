@@ -1,8 +1,8 @@
 {
     "name": "apy/datagrid-bundle",
-    "description": "Symfony2 Datagrid Bundle",
+    "description": "Symfony Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
-    "homepage": "https://github.com/Abhoryo/APYDataGridBundle",
+    "homepage": "https://github.com/apy/APYDataGridBundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -20,24 +20,44 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "symfony/symfony": "~2.3",
-        "twig/twig": ">=1.23.0"
+        "php": ">=5.6",
+        "symfony/form": "~2.8|~3.0|^4.0",
+        "symfony/dependency-injection": "~2.8|~3.0|^4.0",
+        "symfony/config": "~2.8|~3.0|^4.0",
+        "symfony/http-foundation": "~2.8|~3.0|^4.0",
+        "symfony/http-kernel": "~2.8|~3.0|^4.0",
+        "symfony/options-resolver": "~2.8|~3.0|^4.0",
+        "symfony/security": "~2.8|~3.0|^4.0",
+        "symfony/serializer": "~2.8|~3.0|^4.0",
+        "twig/twig": ">=1.5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.1.1"
+        "symfony/framework-bundle": "~2.8|~3.0|^4.0",
+        "symfony/browser-kit": "~2.8|~3.0|^4.0",
+        "symfony/templating": "~2.8|~3.0|^4.0",
+        "symfony/expression-language": "~2.8|~3.0|^4.0",
+        "phpunit/phpunit": "~5.7",
+        "friendsofphp/php-cs-fixer": "^2.0",
+        "satooshi/php-coveralls": "^1.0",
+        "doctrine/orm": "~2.4,>=2.4.5",
+        "doctrine/mongodb-odm": "^1.1.5"
     },
     "suggest": {
         "ext-intl": "Translate the grid",
         "ext-mbstring": "Convert your data with the right charset",
-        "PHPExcel": "Export the grid (Excel, HTML or PDF)"
+        "PHPExcel": "Export the grid (Excel, HTML or PDF)",
+        "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm",
+        "doctrine/mongodb-odm": "If you want to use Document as source, please require doctrine/mongodb-odm"
     },
     "autoload": {
         "psr-4": { "APY\\DataGridBundle\\": "" }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1-dev"
+            "dev-master": "3.2-dev"
         }
+    },
+    "provide": {
+        "ext-mongo": "1.5"
     }
 }

@@ -13,9 +13,7 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 /**
- *
- * Delimiter-Separated Values
- *
+ * Delimiter-Separated Values.
  */
 class DSVExport extends Export
 {
@@ -27,7 +25,7 @@ class DSVExport extends Export
 
     protected $withBOM = true;
 
-    public function __construct($title, $fileName = 'export', $params = array(), $charset = 'UTF-8')
+    public function __construct($title, $fileName = 'export', $params = [], $charset = 'UTF-8')
     {
         $this->delimiter = isset($params['delimiter']) ? $params['delimiter'] : $this->delimiter;
         $this->withBOM = isset($params['withBOM']) ? $params['withBOM'] : $this->withBOM;
@@ -40,7 +38,7 @@ class DSVExport extends Export
         $data = $this->getFlatGridData($grid);
 
         // Array to dsv
-        $outstream = fopen("php://temp", 'r+');
+        $outstream = fopen('php://temp', 'r+');
 
         foreach ($data as $line) {
             fputcsv($outstream, $line, $this->delimiter, '"');
@@ -60,7 +58,7 @@ class DSVExport extends Export
     }
 
     /**
-     * get delimiter
+     * get delimiter.
      *
      * @return string
      */
@@ -70,9 +68,9 @@ class DSVExport extends Export
     }
 
     /**
-     * set delimiter
+     * set delimiter.
      *
-     * @param string $separator
+     * @param string $delimiter
      *
      * @return self
      */
@@ -84,7 +82,7 @@ class DSVExport extends Export
     }
 
     /**
-     * get BOM setting
+     * get BOM setting.
      *
      * @return string
      */
@@ -93,8 +91,7 @@ class DSVExport extends Export
         return $this->withBOM;
     }
 
-    /**
-     * set BOM setting
+    /*** set BOM setting.
      *
      * @param string $withBOM
      *

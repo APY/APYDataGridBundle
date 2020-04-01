@@ -1,4 +1,5 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
@@ -7,7 +8,6 @@ use APY\DataGridBundle\Grid\Source\Source;
 /**
  * A basic grid configuration.
  *
- * @package APY\DataGridBundle\Grid
  * @author  Quentin Ferrer
  */
 class GridConfigBuilder implements GridConfigBuilderInterface
@@ -35,7 +35,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * @var array
      */
-    protected $routeParameters = array();
+    protected $routeParameters = [];
 
     /**
      * @var bool
@@ -98,9 +98,9 @@ class GridConfigBuilder implements GridConfigBuilderInterface
      * @param string $name    The grid name
      * @param array  $options The grid options
      */
-    public function __construct($name, array $options = array())
+    public function __construct($name, array $options = [])
     {
-        $this->name    = $name;
+        $this->name = $name;
         $this->options = $options;
     }
 
@@ -121,7 +121,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set Source
+     * Set Source.
      *
      * @param Source $source
      *
@@ -143,7 +143,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set Type
+     * Set Type.
      *
      * @param GridTypeInterface $type
      *
@@ -165,7 +165,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set Route
+     * Set Route.
      *
      * @param mixed $route
      *
@@ -187,13 +187,13 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set RouteParameters
+     * Set RouteParameters.
      *
-     * @param mixed $routeParameters
+     * @param array $routeParameters
      *
      * @return $this
      */
-    public function setRouteParameters($routeParameters)
+    public function setRouteParameters(array $routeParameters)
     {
         $this->routeParameters = $routeParameters;
 
@@ -209,7 +209,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set Persistence
+     * Set Persistence.
      *
      * @param mixed $persistence
      *
@@ -231,7 +231,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set Page
+     * Set Page.
      *
      * @param int $page
      *
@@ -277,7 +277,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set Limit
+     * Set Limit.
      *
      * @param int $limit
      *
@@ -291,7 +291,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Get MaxResults
+     * Get MaxResults.
      *
      * @return int
      */
@@ -301,7 +301,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set MaxResults
+     * Set MaxResults.
      *
      * @param int $maxResults
      *
@@ -323,9 +323,9 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set Sortable
+     * Set Sortable.
      *
-     * @param boolean $sortable
+     * @param bool $sortable
      *
      * @return $this
      */
@@ -345,9 +345,9 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set Filterable
+     * Set Filterable.
      *
-     * @param boolean $filterable
+     * @param bool $filterable
      *
      * @return $this
      */
@@ -367,7 +367,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set Order
+     * Set Order.
      *
      * @param string $order
      *
@@ -389,7 +389,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set SortBy
+     * Set SortBy.
      *
      * @param string $sortBy
      *
@@ -411,7 +411,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     }
 
     /**
-     * Set GroupBy
+     * Set GroupBy.
      *
      * @param array|string $groupBy
      *

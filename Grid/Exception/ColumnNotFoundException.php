@@ -1,10 +1,10 @@
 <?php
+
 namespace APY\DataGridBundle\Grid\Exception;
 
 /**
- * Class ColumnNotFoundException
+ * Class ColumnNotFoundException.
  *
- * @package APY\DataGridBundle\Grid\Exception
  * @author  Quentin Ferrer
  */
 class ColumnNotFoundException extends \InvalidArgumentException

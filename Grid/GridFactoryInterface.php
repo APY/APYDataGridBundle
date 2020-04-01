@@ -1,13 +1,13 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Source\Source;
 
 /**
- * Interface GridFactoryInterface
+ * Interface GridFactoryInterface.
  *
- * @package APY\DataGridBundle\Grid
  * @author  Quentin Ferrer
  */
 interface GridFactoryInterface
@@ -21,7 +21,7 @@ interface GridFactoryInterface
      *
      * @return Grid
      */
-    public function create($type = null, Source $source = null, array $options = array());
+    public function create($type = null, Source $source = null, array $options = []);
 
     /**
      * Returns a grid builder.
@@ -32,7 +32,7 @@ interface GridFactoryInterface
      *
      * @return GridBuilder
      */
-    public function createBuilder($type = null, Source $source = null, array $options = array());
+    public function createBuilder($type = null, Source $source = null, array $options = []);
 
     /**
      * Returns a column.
@@ -43,5 +43,5 @@ interface GridFactoryInterface
      *
      * @return Column
      */
-    public function createColumn($name, $type, array $options = array());
+    public function createColumn($name, $type, array $options = []);
 }

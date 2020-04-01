@@ -23,7 +23,7 @@ class Column
     public function __construct($metadata)
     {
         $this->metadata = $metadata;
-        $this->groups = isset($metadata['groups']) ? (array) $metadata['groups'] : array('default');
+        $this->groups = isset($metadata['groups']) ? (array) $metadata['groups'] : ['default'];
     }
 
     public function getMetadata()

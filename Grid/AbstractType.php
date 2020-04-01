@@ -1,12 +1,12 @@
 <?php
+
 namespace APY\DataGridBundle\Grid;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class AbstractType
+ * Class AbstractType.
  *
- * @package APY\DataGridBundle
  * @author  Quentin Ferrer
  */
 abstract class AbstractType implements GridTypeInterface
@@ -14,7 +14,7 @@ abstract class AbstractType implements GridTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildGrid(GridBuilder $builder, array $options = array())
+    public function buildGrid(GridBuilder $builder, array $options = [])
     {
     }
 
