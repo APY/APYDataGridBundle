@@ -29,13 +29,13 @@ class VideoColumn extends Column
 
 ## Register your column type
 
-In a config file, registrer your column type as a service with the tag `grid.column.extension`
+In a config file, registrer your column type as a service with the tag `apy_grid.column`
 
 ```html
 <services>
     ...
     <service id="grid.column.video" class="MyProject\MyBundle\Grid\Column\VideoColumn" public="false">
-        <tag name="grid.column.extension" />
+        <tag name="apy_grid.column" />
     </service>
     ...
 </services>

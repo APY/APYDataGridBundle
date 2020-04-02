@@ -12,6 +12,8 @@
 
 namespace APY\DataGridBundle\DependencyInjection;
 
+use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\GridTypeInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -27,10 +29,20 @@ class APYDataGridExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+        $loader->load('grid.xml');
         $loader->load('columns.xml');
+        $loader->load('legacy_aliases.xml');
 
-        $ymlLoader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $ymlLoader->load('grid.yml');
+        /**
+         * Equivalent of _instanceof in yaml
+         * Automatically add tag to classes inheriting from APY\DataGridBundle\Grid\Column\Column
+         * or APY\DataGridBundle\Grid\GridTypeInterface
+         * Only available for Symfony DI 3.3+
+         */
+        if (method_exists($container, 'registerForAutoconfiguration')) {
+            $container->registerForAutoconfiguration(Column::class)->addTag('apy_grid.column');
+            $container->registerForAutoconfiguration(GridTypeInterface::class)->addTag('apy_grid.type');
+        }
 
         $container->setParameter('apy_data_grid.limits', $config['limits']);
         $container->setParameter('apy_data_grid.theme', $config['theme']);

@@ -132,23 +132,15 @@ It can be used to quickly build a grid object in the controller:
 class ProductController extends Controller
 {
 
-    public function listAction(Request $request)
+    public function listAction(Request $request, GridFactoryInterface $gridFactory)
     {
         // Creates the grid from the type
-        $grid = $this->createGrid(new ProductListType());
+        $grid = $gridFactory->create(ProductListType::class);
 
         // Handles filters, sorts, exports, ...
         $grid->handleRequest($request);
 
         return $this->render('MyProjectBundle:Product:list', ['grid' => $grid]);
-    }
-
-    /**
-     * @return Grid
-     */
-    public function createGrid($type, Source $source = null, array $options = [])
-    {
-        $this->container->get('apy_grid.factory')->create($type, $source, $options);
     }
 }
 ```

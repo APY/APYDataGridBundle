@@ -23,7 +23,6 @@ class APYDataGridBundle extends Bundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new GridExtensionPass());
         $container->addCompilerPass(new GridPass());
     }
 }

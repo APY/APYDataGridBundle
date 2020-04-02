@@ -4,6 +4,7 @@ namespace APY\DataGridBundle\Grid\Type;
 
 use APY\DataGridBundle\Grid\AbstractType;
 use APY\DataGridBundle\Grid\GridBuilder;
+use APY\DataGridBundle\Grid\Helper\StringHelper;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -87,6 +88,11 @@ class GridType extends AbstractType
      */
     public function getName()
     {
-        return 'grid';
+        $class = get_class($this);
+        if ($class === self::class) {
+            return 'grid';
+        }
+
+        return StringHelper::fqcnToBlockPrefix(get_class($this)) ?: '';
     }
 }

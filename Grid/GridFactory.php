@@ -4,6 +4,7 @@ namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
+use APY\DataGridBundle\Grid\Helper\StringHelper;
 use APY\DataGridBundle\Grid\Source\Source;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -101,6 +102,10 @@ class GridFactory implements GridFactoryInterface
         if (!$type instanceof GridTypeInterface) {
             if (!is_string($type)) {
                 throw new UnexpectedTypeException($type, 'string, APY\DataGridBundle\Grid\GridTypeInterface');
+            }
+
+            if (class_exists($type)) {
+                $type = StringHelper::fqcnToBlockPrefix($type);
             }
 
             $type = $this->registry->getType($type);
