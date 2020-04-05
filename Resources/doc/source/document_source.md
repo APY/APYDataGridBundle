@@ -70,11 +70,29 @@ And the template:
 {{ grid(grid) }}
 ```
 
+## Mapped fields (Referenced or embed) example
+
+```php
+/**
+ * @MongoDB\Document(collection="room")
+ * @GRID\Source(columns="id, gameParameters, gameParameters.maxPlayers")
+ */
+class Room
+{
+    /**
+     * @var GameParameters
+     * @MongoDB\EmbedOne(targetDocument=GameParameters::class)
+     * @GRID\Column(field="gameParameters", visible=false)
+     * @GRID\Column(field="gameParameters.maxPlayers", filterable=true, defaultOperator="eq", type="number")
+     */
+    private $gameParameters;
+}
+```
+
+
 ## Missing features
 
-* Mapped fileds (Referenced or embed)
 * GroupBy attributes and aggregate DQL functions (If someone is skilled with the mapReduce feature, contact us)
-* Array column
 * Filter doesn't work with a ODM timestamp but it is show as a date and it can be sort
 
 ## Unsupported features
