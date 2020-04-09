@@ -103,3 +103,15 @@ class Article {
 `sales.name:otherFunction:string` turns into `otherFunction(_sales.name, 'string')` in DQL
 
 `other:count:distinct` turns into `count(DISTINCT _a.other)` in DQL
+
+
+## Using GridBuilder
+```php
+<?php
+...
+/* Example BlogPost has many Comments */
+/** @var GridBuilder $builder */
+$builder
+->setGroupBy('id') //important to setGroupBy otherwise the column will not aggregate
+->add('comments.id:count', 'text' ['title' => 'Number of Comments']);
+```
