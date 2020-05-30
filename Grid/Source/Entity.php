@@ -17,11 +17,12 @@ use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\JoinColumn;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
+use Doctrine\ORM\Mapping\ReflectionEmbeddedProperty;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpKernel\Kernel;
@@ -200,6 +201,13 @@ class Entity extends Source
 
         if ($column->getIsManualField()) {
             return $column->getField();
+        }
+
+        $reflectionFields = $this->ormMetadata->getReflectionProperties();
+        $reflectionProperty = (isset($reflFields[$name])) ? $reflectionFields[$name] : null;
+
+        if ($reflectionProperty instanceof ReflectionEmbeddedProperty) {
+            return $this->getTableAlias() . '.' . $name;
         }
 
         if (strpos($name, '.') !== false) {
