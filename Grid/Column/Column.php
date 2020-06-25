@@ -14,7 +14,6 @@ namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Row;
-use Doctrine\Common\Version as DoctrineVersion;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 abstract class Column
@@ -786,7 +785,7 @@ abstract class Column
         // -------------------
         // @see http://www.doctrine-project.org/jira/browse/DDC-1857
         // @see http://www.doctrine-project.org/jira/browse/DDC-1858
-        if ($this->hasDQLFunction() && version_compare(DoctrineVersion::VERSION, '2.5') < 0) {
+        if ($this->hasDQLFunction()) {
             return array_intersect($this->operators, [self::OPERATOR_EQ,
                 self::OPERATOR_NEQ,
                 self::OPERATOR_LT,

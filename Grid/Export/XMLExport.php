@@ -27,8 +27,9 @@ class XMLExport extends Export
 
     public function computeData($grid)
     {
-        $xmlEncoder = new XmlEncoder();
-        $xmlEncoder->setRootNodeName('grid');
+        $xmlEncoder = new XmlEncoder([
+            XmlEncoder::ROOT_NODE_NAME => 'grid',
+        ]);
         $serializer = new Serializer([new GetSetMethodNormalizer()], ['xml' => $xmlEncoder]);
 
         $data = $this->getGridData($grid);

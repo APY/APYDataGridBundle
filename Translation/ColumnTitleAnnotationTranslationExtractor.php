@@ -11,6 +11,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Twig\Node\Node;
 
 class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor, ContainerAwareInterface
 {
@@ -84,7 +85,7 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
         }
     }
 
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $node)
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, Node $node)
     {
     }
 

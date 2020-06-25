@@ -31,6 +31,8 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
+use Twig\Template;
 
 class Grid implements GridInterface
 {
@@ -911,7 +913,7 @@ class Grid implements GridInterface
     protected function processOrder($order)
     {
         if ($order !== null) {
-            list($columnId, $columnOrder) = explode('|', $order);
+            [$columnId, $columnOrder] = explode('|', $order);
 
             // Ignore invalid order column names instead of letting the exception to cause the entire request to fail
             if(!$this->columns->hasColumnById($columnId)) {
@@ -948,7 +950,7 @@ class Grid implements GridInterface
 
         // Default order
         if ($this->defaultOrder !== null) {
-            list($columnId, $columnOrder) = explode('|', $this->defaultOrder);
+            [$columnId, $columnOrder] = explode('|', $this->defaultOrder);
 
             $this->columns->getColumnById($columnId);
             if (in_array(strtolower($columnOrder), ['asc', 'desc'])) {
@@ -1050,7 +1052,7 @@ class Grid implements GridInterface
 
         // Order
         if (($order = $this->get(self::REQUEST_QUERY_ORDER)) !== null) {
-            list($columnId, $columnOrder) = explode('|', $order);
+            [$columnId, $columnOrder] = explode('|', $order);
 
             $this->columns->getColumnById($columnId)->setOrder($columnOrder);
         }
@@ -1818,7 +1820,7 @@ class Grid implements GridInterface
     /**
      * Sets template for export.
      *
-     * @param \Twig_Template|string $template
+     * @param Template|string $template
      *
      * @throws \Exception
      *
@@ -1827,7 +1829,7 @@ class Grid implements GridInterface
     public function setTemplate($template)
     {
         if ($template !== null) {
-            if ($template instanceof \Twig_Template) {
+            if ($template instanceof Template) {
                 $template = '__SELF__' . $template->getTemplateName();
             } elseif (!is_string($template)) {
                 throw new \Exception(self::TWIG_TEMPLATE_LOAD_EX_MSG);
@@ -1843,7 +1845,7 @@ class Grid implements GridInterface
     /**
      * Returns template.
      *
-     * @return \Twig_Template|string
+     * @return Template|string
      */
     public function getTemplate()
     {
@@ -2606,23 +2608,33 @@ class Grid implements GridInterface
             }
 
             return new RedirectResponse($redirectUrl);
-        } else {
-            if (is_array($param1) || $param1 === null) {
-                $parameters = (array) $param1;
-                $view = $param2;
-            } else {
-                $parameters = (array) $param2;
-                $view = $param1;
-            }
-
-            $parameters = array_merge(['grid' => $this], $parameters);
-
-            if ($view === null) {
-                return $parameters;
-            } else {
-                return $this->container->get('templating')->renderResponse($view, $parameters, $response);
-            }
         }
+
+        if (is_array($param1) || $param1 === null) {
+            $parameters = (array) $param1;
+            $view = $param2;
+        } else {
+            $parameters = (array) $param2;
+            $view = $param1;
+        }
+
+        $parameters = array_merge(['grid' => $this], $parameters);
+
+        if ($view === null) {
+            return $parameters;
+        }
+
+        /** @var Environment $twig */
+        $twig = $this->container->get('twig');
+        $content = $twig->render($view, $parameters);
+
+        if (null === $response) {
+            $response = new Response();
+        }
+
+        $response->setContent($content);
+
+        return $response;
     }
 
     /**

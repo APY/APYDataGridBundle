@@ -4,8 +4,10 @@ namespace APY\DataGridBundle\Tests\Grid\Action;
 
 use APY\DataGridBundle\Grid\Action\RowAction;
 use APY\DataGridBundle\Grid\Row;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class RowActionTest extends \PHPUnit_Framework_TestCase
+class RowActionTest extends TestCase
 {
     /** @var string */
     private $title = 'title';
@@ -31,7 +33,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
     /** @var RowAction */
     private $rowAction;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var MockObject */
     private $row;
 
     public function testSetTitle()
@@ -246,8 +248,8 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $callback1 = function () { return 1; };
         $callback2 = function () { return 2; };
 
-        $this->rowAction->manipulateRender($callback1);
-        $this->rowAction->manipulateRender($callback2);
+        $this->rowAction->addManipulateRender($callback1);
+        $this->rowAction->addManipulateRender($callback2);
 
         $this->assertAttributeEquals([$callback1, $callback2], 'callbacks', $this->rowAction);
     }

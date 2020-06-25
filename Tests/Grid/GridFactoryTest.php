@@ -11,6 +11,7 @@ use APY\DataGridBundle\Grid\GridFactory;
 use APY\DataGridBundle\Grid\GridRegistryInterface;
 use APY\DataGridBundle\Grid\GridTypeInterface;
 use APY\DataGridBundle\Grid\Type\GridType;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,17 +26,17 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class GridFactoryTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $container;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $registry;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $builder;
 

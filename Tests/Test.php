@@ -2,7 +2,9 @@
 
 namespace APY\DataGridBundle\Tests;
 
-class Test extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class Test extends TestCase
 {
     public function testPHPUnit()
     {

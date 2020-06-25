@@ -14,6 +14,7 @@ namespace APY\DataGridBundle\Grid;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
 
 class GridManager implements \IteratorAggregate, \Countable
 {
@@ -193,7 +194,17 @@ class GridManager implements \IteratorAggregate, \Countable
                 return $parameters;
             }
 
-            return $this->container->get('templating')->renderResponse($view, $parameters, $response);
+            /** @var Environment $twig */
+            $twig = $this->container->get('twig');
+            $content = $twig->render($view, $parameters);
+
+            if (null === $response) {
+                $response = new Response();
+            }
+
+            $response->setContent($content);
+
+            return $response;
         }
     }
 

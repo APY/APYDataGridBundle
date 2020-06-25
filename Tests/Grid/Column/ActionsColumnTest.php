@@ -7,7 +7,6 @@ use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Row;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Role\Role;
 
 class ActionsColumnTest extends TestCase
 {
@@ -49,6 +48,7 @@ class ActionsColumnTest extends TestCase
         $rowAction1->method('render')->with($row)->willReturn(null);
         $rowAction2 = $this->createMock(RowAction::class);
         $rowAction2->method('render')->with($row)->willReturn($rowAction2);
+        $rowAction2->method('getAttributes')->willReturn(['class' => '']);
 
         $column = new ActionsColumn('columnId', 'columnTitle', [
             $rowAction1,
@@ -99,7 +99,7 @@ class ActionsColumnTest extends TestCase
 
     public function testIsVisibleIfAuthCheckerIsGranted()
     {
-        $role = $this->createMock(Role::class);
+        $role = 'role';
         $this->column->setRole($role);
 
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
@@ -111,7 +111,7 @@ class ActionsColumnTest extends TestCase
 
     public function testIsNotVisibleIfAuthCheckerIsNotGranted()
     {
-        $role = $this->createMock(Role::class);
+        $role = 'role';
         $this->column->setRole($role);
 
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);

@@ -8,7 +8,6 @@ use APY\DataGridBundle\Grid\Row;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Role\Role;
 
 class ColumnTest extends TestCase
 {
@@ -294,7 +293,7 @@ class ColumnTest extends TestCase
     public function testItIsVisibleIfNotExportedAndGranted()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
-        $role = $this->createMock(Role::class);
+        $role = 'role';
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authChecker->method('isGranted')->with($role)->willReturn(true);
 
@@ -310,7 +309,7 @@ class ColumnTest extends TestCase
     public function testItIsNotVisibleIfNotExportedButNotGranted()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
-        $role = $this->createMock(Role::class);
+        $role = 'role';
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authChecker->method('isGranted')->with($role)->willReturn(false);
 
@@ -360,7 +359,7 @@ class ColumnTest extends TestCase
     public function testItIsVisibleIfExportedAndGranted()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
-        $role = $this->createMock(Role::class);
+        $role = 'role';
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authChecker->method('isGranted')->with($role)->willReturn(true);
 
@@ -376,7 +375,7 @@ class ColumnTest extends TestCase
     public function testItIsNotVisibleIfExportedButNotGranted()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
-        $role = $this->createMock(Role::class);
+        $role = 'role';
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authChecker->method('isGranted')->with($role)->willReturn(false);
 
@@ -794,7 +793,7 @@ class ColumnTest extends TestCase
 
     public function testSetRole()
     {
-        $role = $this->createMock(Role::class);
+        $role = 'role';
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setRole($role);
 
@@ -803,7 +802,7 @@ class ColumnTest extends TestCase
 
     public function testGetRole()
     {
-        $role = $this->createMock(Role::class);
+        $role = 'role';
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setRole($role);
 

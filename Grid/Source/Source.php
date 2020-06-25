@@ -28,7 +28,7 @@ abstract class Source implements DriverInterface
     protected $count;
 
     /**
-     * @param \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
      */
     public function prepareQuery($queryBuilder)
     {
@@ -571,16 +571,6 @@ abstract class Source implements DriverInterface
                         case 'datetime':
                         case 'date':
                         case 'time':
-                            // For document
-                            if ($value instanceof \MongoDate || $value instanceof \MongoTimestamp) {
-                                $value = $value->sec;
-                            }
-
-                            // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
-                            if (is_array($value) && array_keys($value) == ['t', 'i']) {
-                                $value = $value['i'];
-                            }
-
                             $displayedValue = $column->getDisplayedValue($value);
                             $values[$displayedValue] = $displayedValue;
                             break;

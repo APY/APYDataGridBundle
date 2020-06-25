@@ -3,7 +3,7 @@ Getting Started With APYDataGridBundle
 
 ## Choose your source of data
 
-You can choose between an [Entity (ORM)](source/entity_source.md), a [Document (ODM)](source/document_source.md) or a [Vector (Array)](source/vector_source.md) source.
+You can choose between an [Entity (ORM)](source/entity_source.md) or a [Vector (Array)](source/vector_source.md) source.
 
 #### [Entity (ORM)](source/entity_source.md)
 
@@ -20,26 +20,6 @@ class DefaultController extends Controller
     {
         // Creates simple grid based on your entity (ORM)
         $source = new Entity('MyProjectMyBundle:MyEntity');
-        ...
-    }
-}
-```
-
-#### [Document (ODM)](source/document_source.md)
-
-```php
-<?php
-// MyProject\MyBundle\DefaultController.php
-namespace MyProject\MyBundle\Controller;
-
-use APY\DataGridBundle\Grid\Source\Document;
-
-class DefaultController extends Controller
-{
-    public function myGridAction()
-    {
-        // Creates simple grid based on your document (ODM)
-        $source = new Document('MyProjectMyBundle:MyDocument');
         ...
     }
 }

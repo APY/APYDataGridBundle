@@ -15,9 +15,6 @@
             <tag name="twig.extension" />
             <argument type="service" id="router" />
             <argument>%apy_data_grid.theme%</argument>
-            <call method="setPagerFanta">
-                <argument>%apy_data_grid.pagerfanta%</argument>
-            </call>
         </service>
 
         <service id="grid" class="%grid.class%" shared="false" public="true">
@@ -56,12 +53,6 @@
                 <argument type="service" id="grid.metadata.driver.annotation" />
                 <argument>1</argument>
             </call>
-        </service>
-
-        <service id="grid.subscriber.init_template_finalize_grid" class="APY\DataGridBundle\Subscriber\InitTemplateFinalizeGridSubscriber">
-            <argument type="service" id="templating" />
-            <argument type="service" id="router" />
-            <tag name="kernel.event_subscriber" />
         </service>
     </services>
 

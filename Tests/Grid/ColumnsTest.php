@@ -5,6 +5,7 @@ namespace APY\DataGridBundle\Grid\Tests;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Columns;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -210,7 +211,7 @@ class ColumnsTest extends TestCase
     /**
      * @param int $number
      *
-     * @return array|\PHPUnit_Framework_MockObject_MockObject[]|\PHPUnit_Framework_MockObject_MockObject
+     * @return array|MockObject[]|MockObject
      */
     private function buildColumnMocks($number)
     {

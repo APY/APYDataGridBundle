@@ -131,16 +131,6 @@ class DateTimeColumn extends Column
             $data = strtotime($data);
         }
 
-        // MongoDB Date and Timestamp
-        if ($data instanceof \MongoDate || $data instanceof \MongoTimestamp) {
-            $data = $data->sec;
-        }
-
-        // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
-        if (is_array($data) && array_keys($data) == ['t', 'i']) {
-            $data = $data['i'];
-        }
-
         $date = new \DateTime();
         $date->setTimestamp($data);
         $date->setTimezone($timezone);
