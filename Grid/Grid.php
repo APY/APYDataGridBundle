@@ -2597,8 +2597,8 @@ class Grid implements GridInterface
                 $redirectUrl = QueryStringHelper::appendParametersToQueryString(
                     $this->getRouteUrl(),
                     [
-                        ['name' => 'ajaxAction', 'value' => $ajaxAction],
-                        ['name' => 'followRedirect', 'value' => 0],
+                        'ajaxAction' => $ajaxAction,
+                        'followRedirect' => 0,
                     ]
                 );
             } else {
