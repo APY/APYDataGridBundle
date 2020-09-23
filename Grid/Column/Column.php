@@ -213,7 +213,7 @@ abstract class Column
 
         $value = is_bool($value) ? (int) $value : $value;
         if (array_key_exists((string) $value, $this->values)) {
-            $value = $this->values[$value];
+            $value = $this->values[(string) $value];
         }
 
         return $value;
