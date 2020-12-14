@@ -158,7 +158,7 @@
 {% endblock grid_pager %}
 {# ---------------------------------------------------- grid_pager_totalcount -------------------------------------------------- #}
 {% block grid_pager_totalcount %}
-{{ '%count% Results, ' | transchoice(grid.totalCount, {'%count%': grid.totalCount}) }}
+{{ '%count% Results, ' | trans({'%count%': grid.totalCount}) }}
 {% endblock grid_pager_totalcount %}
 {# ---------------------------------------------------- grid_pager_selectpage -------------------------------------------------- #}
 {% block grid_pager_selectpage %}
