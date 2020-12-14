@@ -36,6 +36,26 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($format, $column->getFormat());
     }
 
+    public function testSetInputFormat()
+    {
+        $inputFormat = 'Y-m-d';
+
+        $column = new DateTimeColumn();
+        $column->setInputFormat($inputFormat);
+
+        $this->assertAttributeEquals($inputFormat, 'inputFormat', $column);
+    }
+
+    public function testGetInputFormat()
+    {
+        $inputFormat = 'Y-m-d';
+
+        $column = new DateTimeColumn();
+        $column->setInputFormat($inputFormat);
+
+        $this->assertEquals($inputFormat, $column->getInputFormat());
+    }
+
     public function testSetTimezone()
     {
         $timezone = 'UTC';
@@ -98,11 +118,23 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
     public function testFilterWithValue()
     {
         $column = new DateTimeColumn();
-        $column->setData(['operator' => Column::OPERATOR_BTW, 'from' => '2017-03-22', 'to' => '2017-03-23']);
+        $column->setData(['operator' => Column::OPERATOR_BTW, 'from' => '2017-03-22 01:30:00', 'to' => '2017-03-23 19:00:00']);
 
         $this->assertEquals([
-            new Filter(Column::OPERATOR_GT, new \DateTime('2017-03-22')),
-            new Filter(Column::OPERATOR_LT, new \DateTime('2017-03-23')),
+            new Filter(Column::OPERATOR_GT, new \DateTime('2017-03-22 01:30:00')),
+            new Filter(Column::OPERATOR_LT, new \DateTime('2017-03-23 19:00:00')),
+        ], $column->getFilters('asource'));
+    }
+
+    public function testFilterWithFormattedValue()
+    {
+        $column = new DateTimeColumn();
+        $column->setInputFormat('m/d/Y H-i-s');
+        $column->setData(['operator' => Column::OPERATOR_BTW, 'from' => '03/22/2017 01-30-00', 'to' => '03/23/2017 19-00-00']);
+
+        $this->assertEquals([
+            new Filter(Column::OPERATOR_GT, new \DateTime('2017-03-22 01:30:00')),
+            new Filter(Column::OPERATOR_LT, new \DateTime('2017-03-23 19:00:00')),
         ], $column->getFilters('asource'));
     }
 
@@ -128,11 +160,28 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($column->isQueryValid('foo'));
     }
 
+    public function testInputFormattedQueryIsValid()
+    {
+        $column = new DateTimeColumn();
+        $column->setInputFormat('m/d/Y H-i-s');
+
+        $this->assertTrue($column->isQueryValid('03/22/2017 23-00-00'));
+    }
+
+    public function testInputFormattedQueryIsInvalid()
+    {
+        $column = new DateTimeColumn();
+        $column->setInputFormat('m/d/Y H-i-s');
+
+        $this->assertFalse($column->isQueryValid('2017-03-22 23:00:00'));
+    }
+
     public function testInitializeDefaultParams()
     {
         $column = new DateTimeColumn();
 
         $this->assertAttributeEquals(null, 'format', $column);
+        $this->assertAttributeEquals('Y-m-d H:i:s', 'inputFormat', $column);
         $this->assertAttributeEquals([
             Column::OPERATOR_EQ,
             Column::OPERATOR_NEQ,
@@ -152,10 +201,12 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
     public function testInitialize()
     {
         $format = 'Y-m-d H:i:s';
+        $inputFormat = 'Y-m-d H:i:s';
         $timezone = 'UTC';
 
         $params = [
             'format'          => $format,
+            'inputFormat'          => $inputFormat,
             'operators'       => [Column::OPERATOR_LT, Column::OPERATOR_LTE],
             'defaultOperator' => Column::OPERATOR_LT,
             'timezone'        => $timezone,
@@ -164,6 +215,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $column = new DateTimeColumn($params);
 
         $this->assertAttributeEquals($format, 'format', $column);
+        $this->assertAttributeEquals($inputFormat, 'inputFormat', $column);
         $this->assertAttributeEquals([
             Column::OPERATOR_LT, Column::OPERATOR_LTE,
         ], 'operators', $column);

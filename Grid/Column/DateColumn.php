@@ -20,6 +20,8 @@ class DateColumn extends DateTimeColumn
 
     protected $fallbackFormat = 'Y-m-d';
 
+    protected $fallbackInputFormat = 'Y-m-d';
+
     public function getFilters($source)
     {
         $parentFilters = parent::getFilters($source);
