@@ -17,8 +17,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('apy_data_grid');
+        $treeBuilder = new TreeBuilder('apy_data_grid');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()

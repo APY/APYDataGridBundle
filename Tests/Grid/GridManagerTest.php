@@ -5,10 +5,9 @@ namespace APY\DataGridBundle\Grid\Tests;
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridManager;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class GridManagerTest extends TestCase
 {

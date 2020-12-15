@@ -459,7 +459,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $templates = [];
 
         $template = $this->twig->loadTemplate($theme);
-        while ($template instanceof \Twig_Template) {
+        while ($template instanceof TemplateWrapper) {
             $templates[] = $template;
             $template = $template->getParent([]);
         }
