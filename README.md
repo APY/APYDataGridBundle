@@ -1,3 +1,5 @@
+new version for Symfoyn 5.2.3
+
 Datagrid for Symfony inspired by Zfdatagrid and Magento Grid.  
 This bundle was initiated by Stanislav Turza (Sorien).
 
