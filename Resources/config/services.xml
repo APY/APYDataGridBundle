@@ -41,6 +41,9 @@
                 <argument>%apy_data_grid.actions_columns_title%</argument>
             </call>
         </service>
+        </service>
+          <service id="%grid.class%" alias="grid" public="true">
+        </service>
 
         <service id="grid.manager" class="%grid.manager.class%">
             <argument type="service" id="service_container" />
