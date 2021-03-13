@@ -42,8 +42,7 @@
             </call>
         </service>
         
-        </service>
-          <service id="%grid.class%" alias="grid" public="true">
+        <service id="%grid.class%" alias="grid" public="true">
         </service>
 
         <service id="grid.manager" class="%grid.manager.class%">
