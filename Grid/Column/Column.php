@@ -14,7 +14,6 @@ namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Row;
-use Doctrine\Common\Version as DoctrineVersion;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 abstract class Column
@@ -777,21 +776,6 @@ abstract class Column
      */
     public function getOperators()
     {
-        // Issue with Doctrine
-        // -------------------
-        // @see http://www.doctrine-project.org/jira/browse/DDC-1857
-        // @see http://www.doctrine-project.org/jira/browse/DDC-1858
-        if ($this->hasDQLFunction() && version_compare(DoctrineVersion::VERSION, '2.5') < 0) {
-            return array_intersect($this->operators, [self::OPERATOR_EQ,
-                self::OPERATOR_NEQ,
-                self::OPERATOR_LT,
-                self::OPERATOR_LTE,
-                self::OPERATOR_GT,
-                self::OPERATOR_GTE,
-                self::OPERATOR_BTW,
-                self::OPERATOR_BTWE, ]);
-        }
-
         return $this->operators;
     }
 
