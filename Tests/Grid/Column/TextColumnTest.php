@@ -5,7 +5,7 @@ namespace APY\DataGridBundle\Tests\Grid\Column;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\TextColumn;
 use APY\DataGridBundle\Grid\Filter;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class TextColumnTest extends TestCase
 {
