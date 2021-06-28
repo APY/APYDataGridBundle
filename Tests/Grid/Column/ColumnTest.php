@@ -677,6 +677,28 @@ class ColumnTest extends TestCase
         }
     }
 
+    public function testGetNullData()
+    {
+        $mock = $this->getMockForAbstractClass(Column::class);
+
+        try {
+            $mock->getData();
+        } catch (\Exception $exception) {
+            $this->fail($exception->getMessage());
+        }
+    }
+
+    public function testGetFiltersWithoutData()
+    {
+        $mock = $this->getMockForAbstractClass(Column::class);
+
+        try {
+            $mock->getFilters('aSource');
+        } catch (\Exception $exception) {
+            $this->fail($exception->getMessage());
+        }
+    }
+
     public function testGetData()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
