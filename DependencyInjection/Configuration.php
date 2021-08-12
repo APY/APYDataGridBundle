@@ -32,7 +32,7 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
                 ->booleanNode('persistence')->defaultFalse()->end()
-                ->scalarNode('theme')->defaultValue('APYDataGridBundle::blocks.html.twig')->end()
+                ->scalarNode('theme')->defaultValue('@APYDataGrid/blocks.html.twig')->end()
                 ->scalarNode('no_data_message')->defaultValue('No data')->end()
                 ->scalarNode('no_result_message')->defaultValue('No result')->end()
                 ->scalarNode('actions_columns_size')->defaultValue(-1)->end()
