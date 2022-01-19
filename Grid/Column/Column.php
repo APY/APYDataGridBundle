@@ -528,12 +528,12 @@ abstract class Column
         $result = [];
 
         $hasValue = false;
-        if ($this->data['from'] != $this::DEFAULT_VALUE) {
+        if (isset($this->data['from']) && $this->data['from'] != $this::DEFAULT_VALUE) {
             $result['from'] = $this->data['from'];
             $hasValue = true;
         }
 
-        if ($this->data['to'] != $this::DEFAULT_VALUE) {
+        if (isset($this->data['to']) && $this->data['to'] != $this::DEFAULT_VALUE) {
             $result['to'] = $this->data['to'];
             $hasValue = true;
         }
