@@ -40,10 +40,7 @@ class GridFactoryTest extends TestCase
      */
     private $builder;
 
-    /**
-     * @var GridFactory
-     */
-    private $factory;
+    private \APY\DataGridBundle\Grid\GridFactory $factory;
 
     public function testCreateWithUnexpectedType()
     {
@@ -109,9 +106,7 @@ class GridFactoryTest extends TestCase
 
         $type->expects($this->once())
              ->method('buildGrid')
-             ->with($this->callback(function ($builder) {
-                 return $builder instanceof GridBuilder && $builder->getName() == 'TYPE';
-             }), $resolvedOptions);
+             ->with($this->callback(fn($builder) => $builder instanceof GridBuilder && $builder->getName() == 'TYPE'), $resolvedOptions);
 
         $builder = $this->factory->createBuilder($type, null, $givenOptions);
 
@@ -159,7 +154,7 @@ class GridFactoryTest extends TestCase
         $this->assertFalse($column->isVisibleForSource());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $self = $this;
 

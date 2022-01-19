@@ -11,10 +11,7 @@ use Symfony\Component\DependencyInjection\Container;
 
 class GridManagerTest extends TestCase
 {
-    /**
-     * @var GridManager
-     */
-    private $gridManager;
+    private \APY\DataGridBundle\Grid\GridManager $gridManager;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -480,7 +477,7 @@ class GridManagerTest extends TestCase
         $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view, $params));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = $this->createMock(Container::class);
         $this->gridManager = new GridManager($this->container);

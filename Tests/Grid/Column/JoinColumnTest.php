@@ -9,8 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class JoinColumnTest extends TestCase
 {
-    /** @var JoinColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\JoinColumn $column;
 
     public function testGetType()
     {
@@ -88,7 +87,7 @@ class JoinColumnTest extends TestCase
         ], $column->getFilters('asource'));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new JoinColumn();
     }

@@ -11,8 +11,7 @@ use Symfony\Component\Security\Core\Role\Role;
 
 class ActionsColumnTest extends TestCase
 {
-    /** @var ActionsColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\ActionsColumn $column;
 
     public function testConstructor()
     {
@@ -162,7 +161,7 @@ class ActionsColumnTest extends TestCase
         ], $this->column->getRouteParameters($row, $rowAction));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $rowAction1 = $this->createMock(RowAction::class);
         $rowAction2 = $this->createMock(RowAction::class);

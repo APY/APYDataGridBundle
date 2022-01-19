@@ -10,8 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class RankColumnTest extends TestCase
 {
-    /** @var RankColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\RankColumn $column;
 
     public function testGetType()
     {
@@ -81,7 +80,7 @@ class RankColumnTest extends TestCase
         $this->assertAttributeEquals(3, 'rank', $this->column);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new RankColumn();
     }

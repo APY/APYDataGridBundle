@@ -23,10 +23,7 @@ use Symfony\Component\DependencyInjection\Container;
 
 class DocumentTest extends TestCase
 {
-    /**
-     * @var Document
-     */
-    private $document;
+    private \APY\DataGridBundle\Grid\Source\Document $document;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -967,7 +964,7 @@ class DocumentTest extends TestCase
         // @todo Don't know how to move on with __clone method on stubs / mocks
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $name = 'name';
         $this->document = new Document($name);

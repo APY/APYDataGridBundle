@@ -9,8 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class DateColumnTest extends TestCase
 {
-    /** @var DateColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\DateColumn $column;
 
     public function testGetType()
     {
@@ -119,7 +118,7 @@ class DateColumnTest extends TestCase
         );
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new DateColumn();
     }

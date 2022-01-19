@@ -5,31 +5,23 @@ namespace APY\DataGridBundle\Tests\Grid\Action;
 use APY\DataGridBundle\Grid\Action\RowAction;
 use APY\DataGridBundle\Grid\Row;
 
-class RowActionTest extends \PHPUnit_Framework_TestCase
+class RowActionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var string */
-    private $title = 'title';
+    private string $title = 'title';
 
-    /** @var string */
-    private $route = 'vendor.bundle.controller.route_name';
+    private string $route = 'vendor.bundle.controller.route_name';
 
-    /** @var bool */
-    private $confirm = true;
+    private bool $confirm = true;
 
-    /** @var string */
-    private $target = '_parent';
+    private string $target = '_parent';
 
-    /** @var array */
-    private $attributes = ['foo' => 'foo', 'bar' => 'bar'];
+    private array $attributes = ['foo' => 'foo', 'bar' => 'bar'];
 
-    /** @var string */
-    private $role = 'ROLE_FOO';
+    private string $role = 'ROLE_FOO';
 
-    /** @var array */
-    private $callbacks = [];
+    private array $callbacks = [];
 
-    /** @var RowAction */
-    private $rowAction;
+    private \APY\DataGridBundle\Grid\Action\RowAction $rowAction;
 
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $row;
@@ -243,8 +235,8 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
 
     public function testManipulateRender()
     {
-        $callback1 = function () { return 1; };
-        $callback2 = function () { return 2; };
+        $callback1 = fn() => 1;
+        $callback2 = fn() => 2;
 
         $this->rowAction->manipulateRender($callback1);
         $this->rowAction->manipulateRender($callback2);
@@ -327,7 +319,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->rowAction->getEnabled());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->rowAction = new RowAction(
             $this->title, $this->route, $this->confirm, $this->target, $this->attributes, $this->role

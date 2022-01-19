@@ -311,10 +311,8 @@ class Grid implements GridInterface
 
     /**
      * The grid configuration.
-     *
-     * @var GridConfigInterface
      */
-    private $config;
+    private \APY\DataGridBundle\Grid\GridConfigInterface $config;
 
     /**
      * Constructor.

@@ -206,7 +206,7 @@ class Columns implements \IteratorAggregate, \Countable
         }
 
         if ($keepOtherColumns) {
-            $this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
+            $this->columns = [...$reorderedColumns, ...array_values($columnsIndexedByIds)];
         } else {
             $this->columns = $reorderedColumns;
         }

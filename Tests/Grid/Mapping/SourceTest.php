@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class SourceTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->source = new Source([]);
     }

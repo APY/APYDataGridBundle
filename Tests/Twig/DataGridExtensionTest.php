@@ -16,12 +16,9 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class DataGridExtensionTest extends TestCase
 {
-    /**
-     * @var DataGridExtension
-     */
-    private $extension;
+    private \APY\DataGridBundle\Twig\DataGridExtension $extension;
 
-    public function setUp()
+    public function setUp(): void
     {
         $router = $this->createMock(RouterInterface::class);
         $this->extension = new DataGridExtension($router, '');

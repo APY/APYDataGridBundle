@@ -35,10 +35,7 @@ use Twig\TemplateWrapper;
 
 class GridTest extends TestCase
 {
-    /**
-     * @var Grid
-     */
-    private $grid;
+    private \APY\DataGridBundle\Grid\Grid $grid;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -75,15 +72,9 @@ class GridTest extends TestCase
      */
     private $engine;
 
-    /**
-     * @var string
-     */
-    private $gridId;
+    private string $gridId;
 
-    /**
-     * @var string
-     */
-    private $gridHash;
+    private string $gridHash;
 
     public function testInitializeWithoutAnyConfiguration()
     {
@@ -4447,7 +4438,7 @@ class GridTest extends TestCase
         $this->assertEquals($response, $this->grid->getGridResponse($view, $params));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->arrange($this->createMock(GridConfigInterface::class));
     }
@@ -4736,9 +4727,7 @@ class GridTest extends TestCase
         $this->stubRequestWithData([Grid::REQUEST_QUERY_MASS_ACTION => 0]);
 
         $massAction = $this->stubMassActionWithCallback(
-            function () use ($callbackResponse) {
-                return $callbackResponse;
-            }
+            fn() => $callbackResponse
         );
         $this->grid->addMassAction($massAction);
 

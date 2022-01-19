@@ -11,15 +11,14 @@ use Symfony\Component\Routing\Router;
 
 class SimpleArrayColumnTest extends TestCase
 {
-    /** @var SimpleArrayColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\SimpleArrayColumn $column;
 
     public function testGetType()
     {
         $this->assertEquals('simple_array', $this->column->getType());
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new SimpleArrayColumn();
     }
@@ -111,9 +110,7 @@ class SimpleArrayColumnTest extends TestCase
     public function testRenderCellWithCallback()
     {
         $values = ['foo, bar'];
-        $this->column->manipulateRenderCell(function ($value, $row, $router) {
-            return ['foobar'];
-        });
+        $this->column->manipulateRenderCell(fn($value, $row, $router) => ['foobar']);
 
         $result = $this->column->renderCell(
             $values,

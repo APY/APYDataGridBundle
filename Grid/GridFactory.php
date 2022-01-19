@@ -17,15 +17,10 @@ class GridFactory implements GridFactoryInterface
 {
     /**
      * The service container.
-     *
-     * @var Container
      */
-    private $container;
+    private \Symfony\Component\DependencyInjection\Container $container;
 
-    /**
-     * @var GridRegistryInterface
-     */
-    private $registry;
+    private \APY\DataGridBundle\Grid\GridRegistryInterface $registry;
 
     /**
      * Constructor.

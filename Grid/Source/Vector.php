@@ -223,7 +223,7 @@ class Vector extends Source
 
     public function getHash()
     {
-        return __CLASS__ . md5(implode('', array_map(function ($c) { return $c->getId(); }, $this->columns)));
+        return __CLASS__ . md5(implode('', array_map(fn($c) => $c->getId(), $this->columns)));
     }
 
     /**

@@ -10,8 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class BooleanColumnTest extends TestCase
 {
-    /** @var BooleanColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\BooleanColumn $column;
 
     public function testGetType()
     {
@@ -102,18 +101,14 @@ class BooleanColumnTest extends TestCase
     public function testRenderCellWithCallback()
     {
         $this->column->manipulateRenderCell(
-            function ($value, $row, $router) {
-                return 'true';
-            }
+            fn($value, $row, $router) => 'true'
         );
         $this->assertEquals('true', $this->column->renderCell(
             0, $this->createMock(Row::class), $this->createMock(Router::class)
         ));
 
         $this->column->manipulateRenderCell(
-            function ($value, $row, $router) {
-                return 'false';
-            }
+            fn($value, $row, $router) => 'false'
         );
         $this->assertEquals('false', $this->column->renderCell(
             1, $this->createMock(Row::class), $this->createMock(Router::class)
@@ -129,7 +124,7 @@ class BooleanColumnTest extends TestCase
         ));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new BooleanColumn();
     }

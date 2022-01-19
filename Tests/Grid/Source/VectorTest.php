@@ -12,10 +12,7 @@ use Symfony\Component\DependencyInjection\Container;
 
 class VectorTest extends TestCase
 {
-    /**
-     * @var Vector
-     */
-    private $vector;
+    private \APY\DataGridBundle\Grid\Source\Vector $vector;
 
     public function testCreateVectorWithEmptyData()
     {
@@ -244,7 +241,7 @@ class VectorTest extends TestCase
         ];
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->vector = new Vector([], []);
     }

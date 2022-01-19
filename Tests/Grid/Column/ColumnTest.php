@@ -159,7 +159,7 @@ class ColumnTest extends TestCase
         $row = $this->createMock(Row::class);
         $router = $this->createMock(Router::class);
 
-        $mock->manipulateRenderCell(function ($value, $row, $router) { return 1; });
+        $mock->manipulateRenderCell(fn($value, $row, $router) => 1);
 
         $this->assertEquals(1, $mock->renderCell($value, $row, $router));
     }
@@ -197,7 +197,7 @@ class ColumnTest extends TestCase
         $row = $this->createMock(Row::class);
         $router = $this->createMock(Router::class);
 
-        $callback = function ($value, $row, $router) { return 1; };
+        $callback = fn($value, $row, $router) => 1;
         $mock->manipulateRenderCell($callback);
 
         $this->assertAttributeEquals($callback, 'callback', $mock);

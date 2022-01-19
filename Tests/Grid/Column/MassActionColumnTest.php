@@ -8,8 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class MassActionColumnTest extends TestCase
 {
-    /** @var MassActionColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\MassActionColumn $column;
 
     public function testGetType()
     {
@@ -40,7 +39,7 @@ class MassActionColumnTest extends TestCase
         ], 'params', $this->column);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new MassActionColumn();
     }

@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class ColumnTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->stringMetadata = 'foo';
         $this->arrayMetadata = ['foo' => 'bar', 'groups' => 'baz'];

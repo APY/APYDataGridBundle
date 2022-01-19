@@ -8,8 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class RowTest extends TestCase
 {
-    /** @var Row */
-    private $row;
+    private \APY\DataGridBundle\Grid\Row $row;
 
     public function testSetRepository()
     {
@@ -203,7 +202,7 @@ class RowTest extends TestCase
         $this->assertEquals($legend, $this->row->getLegend());
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->row = new Row();
     }

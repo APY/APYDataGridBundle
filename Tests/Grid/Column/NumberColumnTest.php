@@ -11,10 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class NumberColumnTest extends TestCase
 {
-    /**
-     * @var NumberColumn
-     */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\NumberColumn $column;
 
     public function testGetType()
     {
@@ -142,9 +139,7 @@ class NumberColumnTest extends TestCase
     public function testRenderCellWithCallback()
     {
         $value = 1.0;
-        $this->column->manipulateRenderCell(function ($value, $row, $router) {
-            return (int) $value;
-        });
+        $this->column->manipulateRenderCell(fn($value, $row, $router) => (int) $value);
 
         $result = $this->column->renderCell(
             $value,
@@ -307,7 +302,7 @@ class NumberColumnTest extends TestCase
         $this->assertEquals(3, $column->getMaxFractionDigits());
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new NumberColumn();
     }

@@ -9,8 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TextColumnTest extends WebTestCase
 {
-    /** @var TextColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\TextColumn $column;
 
     public function testGetType()
     {
@@ -55,7 +54,7 @@ class TextColumnTest extends WebTestCase
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new TextColumn();
     }

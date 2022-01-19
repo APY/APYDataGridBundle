@@ -7,23 +7,17 @@ use PHPUnit\Framework\TestCase;
 
 class MassActionTest extends TestCase
 {
-    /** @var MassAction */
-    private $massAction;
+    private \APY\DataGridBundle\Grid\Action\MassAction $massAction;
 
-    /** @var string */
-    private $title = 'foo';
+    private string $title = 'foo';
 
-    /** @var string */
-    private $callback = 'static::massAction';
+    private string $callback = 'static::massAction';
 
-    /** @var bool */
-    private $confirm = true;
+    private bool $confirm = true;
 
-    /** @var array */
-    private $parameters = ['foo' => 'foo', 'bar' => 'bar'];
+    private array $parameters = ['foo' => 'foo', 'bar' => 'bar'];
 
-    /** @var string */
-    private $role = 'ROLE_FOO';
+    private string $role = 'ROLE_FOO';
 
     public function testMassActionConstruct()
     {
@@ -135,7 +129,7 @@ class MassActionTest extends TestCase
         $this->assertEquals($role, $this->massAction->getRole());
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->massAction = new MassAction($this->title, $this->callback, $this->confirm, $this->parameters, $this->role);
     }

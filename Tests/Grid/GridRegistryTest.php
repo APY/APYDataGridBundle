@@ -16,10 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 class GridRegistryTest extends TestCase
 {
-    /**
-     * @var GridRegistry
-     */
-    private $registry;
+    private \APY\DataGridBundle\Grid\GridRegistry $registry;
 
     public function testAddTypeAlreadyExists()
     {
@@ -94,7 +91,7 @@ class GridRegistryTest extends TestCase
         $this->assertSame($expectedColumnType, $this->registry->getColumn('type'));
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->registry = new GridRegistry();
     }

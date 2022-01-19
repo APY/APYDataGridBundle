@@ -8,7 +8,7 @@ use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Row;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
-class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
+class DateTimeColumnTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetType()
     {
@@ -98,9 +98,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
     {
         $column = new DateTimeColumn();
         $column->setFormat('Y-m-d H:i:s');
-        $column->manipulateRenderCell(function ($value, $row, $router) {
-            return '01:00:00';
-        });
+        $column->manipulateRenderCell(fn($value, $row, $router) => '01:00:00');
 
         $dateTime = '2000-01-01 01:00:00';
         $now = new \DateTime($dateTime);

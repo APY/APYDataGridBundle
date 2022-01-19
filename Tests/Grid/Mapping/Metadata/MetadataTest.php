@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class MetadataTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->metadata = new Metadata();
     }

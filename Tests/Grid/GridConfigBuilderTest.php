@@ -13,11 +13,9 @@ class GridConfigBuilderTest extends TestCase
     /** @var string */
     private $name = 'foo';
 
-    /** @var array */
-    private $options = ['foo' => 'foo', 'bar' => 'bar'];
+    private array $options = ['foo' => 'foo', 'bar' => 'bar'];
 
-    /** @var GridConfigBuilder */
-    private $gridConfigBuilder;
+    private \APY\DataGridBundle\Grid\GridConfigBuilder $gridConfigBuilder;
 
     public function testGetName()
     {
@@ -277,7 +275,7 @@ class GridConfigBuilderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->gridConfigBuilder = new GridConfigBuilder($this->name, $this->options);
     }
