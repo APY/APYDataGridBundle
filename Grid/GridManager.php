@@ -193,7 +193,15 @@ class GridManager implements \IteratorAggregate, \Countable
                 return $parameters;
             }
 
-            return $this->container->get('templating')->renderResponse($view, $parameters, $response);
+            $content = $this->container->get('twig')->render($view, $parameters);
+
+            if (null === $response) {
+                 $response = new Response();
+            }
+
+            $response->setContent($content);
+
+            return $response;            
         }
     }
 
