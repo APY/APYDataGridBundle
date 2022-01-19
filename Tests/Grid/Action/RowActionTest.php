@@ -5,7 +5,7 @@ namespace APY\DataGridBundle\Tests\Grid\Action;
 use APY\DataGridBundle\Grid\Action\RowAction;
 use APY\DataGridBundle\Grid\Row;
 
-class RowActionTest extends \PHPUnit_Framework_TestCase
+class RowActionTest extends \PHPUnit\Framework\TestCase
 {
     /** @var string */
     private $title = 'title';
@@ -39,7 +39,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $title = 'foo_title';
         $this->rowAction->setTitle($title);
 
-        $this->assertAttributeEquals($title, 'title', $this->rowAction);
+        $this->assertEquals($title, $this->rowAction->getTitle());
     }
 
     public function testGetTitle()
@@ -55,7 +55,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $route = 'another_vendor.another_bundle.controller.route_name';
         $this->rowAction->setRoute($route);
 
-        $this->assertAttributeEquals($route, 'route', $this->rowAction);
+        $this->assertEquals($route, $this->rowAction->getRoute());
     }
 
     public function testGetRoute()
@@ -71,7 +71,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $confirm = true;
         $this->rowAction->setConfirm($confirm);
 
-        $this->assertAttributeEquals(true, 'confirm', $this->rowAction);
+        $this->assertEquals(true, $this->rowAction->getConfirm());
     }
 
     public function testGetConfirmation()
@@ -92,7 +92,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $message = 'A foo test message';
         $this->rowAction->setConfirmMessage($message);
 
-        $this->assertAttributeEquals($message, 'confirmMessage', $this->rowAction);
+        $this->assertEquals($message, $this->rowAction->getConfirmMessage());
     }
 
     public function testGetConfirmMessage()
@@ -108,7 +108,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $target = '_self';
         $this->rowAction->setTarget($target);
 
-        $this->assertAttributeEquals($target, 'target', $this->rowAction);
+        $this->assertEquals($target, $this->rowAction->getTarget());
     }
 
     public function testGetTarget()
@@ -124,7 +124,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $col = 'foo';
         $this->rowAction->setColumn($col);
 
-        $this->assertAttributeEquals($col, 'column', $this->rowAction);
+        $this->assertEquals($col, $this->rowAction->getColumn());
     }
 
     public function testGetColumn()
@@ -169,7 +169,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $params = ['foo' => 'foo_param', 'bar' => 'bar_param'];
         $this->rowAction->setRouteParameters($params);
 
-        $this->assertAttributeEquals($params, 'routeParameters', $this->rowAction);
+        $this->assertEquals($params, $this->rowAction->getRouteParameters());
     }
 
     public function testGetRouteParameters()
@@ -185,7 +185,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $routeParamsMapping = ['foo.bar.city' => 'cityId', 'foo.bar.country' => 'countryId'];
         $this->rowAction->setRouteParametersMapping($routeParamsMapping);
 
-        $this->assertAttributeEquals($routeParamsMapping, 'routeParametersMapping', $this->rowAction);
+        $this->assertEquals($routeParamsMapping, $this->rowAction->getRouteParametersMapping());
     }
 
     public function testGetRouteParametersMapping()
@@ -204,7 +204,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $attr = ['foo' => 'foo_val', 'bar' => 'bar_val'];
         $this->rowAction->setAttributes($attr);
 
-        $this->assertAttributeEquals($attr, 'attributes', $this->rowAction);
+        $this->assertEquals($attr, $this->rowAction->getAttributes());
     }
 
     public function testAddAttribute()
@@ -230,7 +230,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $role = 'ROLE_ADMIN';
         $this->rowAction->setRole($role);
 
-        $this->assertAttributeEquals($role, 'role', $this->rowAction);
+        $this->assertEquals($role, $this->rowAction->getRole());
     }
 
     public function testGetRole()
@@ -249,7 +249,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $this->rowAction->manipulateRender($callback1);
         $this->rowAction->manipulateRender($callback2);
 
-        $this->assertAttributeEquals([$callback1, $callback2], 'callbacks', $this->rowAction);
+        $this->assertEquals([$callback1, $callback2], $this->rowAction->getCallbacks());
     }
 
     public function testAddManipulateRender()
@@ -316,7 +316,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $enabled = true;
         $this->rowAction->setEnabled($enabled);
 
-        $this->assertAttributeEquals($enabled, 'enabled', $this->rowAction);
+        $this->assertEquals($enabled, $this->rowAction->getEnabled());
     }
 
     public function testGetEnabled()
@@ -327,7 +327,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->rowAction->getEnabled());
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->rowAction = new RowAction(
             $this->title, $this->route, $this->confirm, $this->target, $this->attributes, $this->role

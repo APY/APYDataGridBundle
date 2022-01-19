@@ -46,7 +46,7 @@ class GridBuilderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         //self::bootKernel();
 
@@ -186,7 +186,7 @@ class GridBuilderTest extends TestCase
         $this->assertInstanceOf(Grid::class, $this->builder->getGrid());
     }
 
-    protected function tearDown()
+    protected function tearDown() : void
     {
         $this->factory = null;
         $this->builder = null;

@@ -19,7 +19,7 @@ class SimpleArrayColumnTest extends TestCase
         $this->assertEquals('simple_array', $this->column->getType());
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->column = new SimpleArrayColumn();
     }

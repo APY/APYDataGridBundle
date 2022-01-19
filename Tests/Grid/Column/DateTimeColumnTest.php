@@ -8,7 +8,7 @@ use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Row;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
-class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
+class DateTimeColumnTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetType()
     {
@@ -23,7 +23,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $column = new DateTimeColumn();
         $column->setFormat($format);
 
-        $this->assertAttributeEquals($format, 'format', $column);
+        $this->assertEquals($format, $column->getFormat());
     }
 
     public function testGetFormat()
@@ -43,7 +43,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $column = new DateTimeColumn();
         $column->setInputFormat($inputFormat);
 
-        $this->assertAttributeEquals($inputFormat, 'inputFormat', $column);
+        $this->assertEquals($inputFormat, $column->getInputFormat());
     }
 
     public function testGetInputFormat()
@@ -63,7 +63,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $column = new DateTimeColumn();
         $column->setTimezone($timezone);
 
-        $this->assertAttributeEquals($timezone, 'timezone', $column);
+        $this->assertEquals($timezone, $column->getTimezone());
     }
 
     public function testGetTimezone()
@@ -180,7 +180,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
     {
         $column = new DateTimeColumn();
 
-        $this->assertAttributeEquals(null, 'format', $column);
+        $this->assertEquals(null, $column->getFormat());
         $this->assertAttributeEquals('Y-m-d H:i:s', 'inputFormat', $column);
         $this->assertAttributeEquals([
             Column::OPERATOR_EQ,
@@ -214,13 +214,13 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
 
         $column = new DateTimeColumn($params);
 
-        $this->assertAttributeEquals($format, 'format', $column);
-        $this->assertAttributeEquals($inputFormat, 'inputFormat', $column);
+        $this->assertEquals($format, $column->getFormat());
+        $this->assertEquals($inputFormat, $column->getInputFormat());
         $this->assertAttributeEquals([
             Column::OPERATOR_LT, Column::OPERATOR_LTE,
         ], 'operators', $column);
         $this->assertAttributeEquals(Column::OPERATOR_LT, 'defaultOperator', $column);
-        $this->assertAttributeEquals($timezone, 'timezone', $column);
+        $this->assertEquals($timezone, $column->getTimezone());
     }
 
     /**

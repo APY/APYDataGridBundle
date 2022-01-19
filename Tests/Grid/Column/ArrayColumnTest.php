@@ -142,7 +142,7 @@ class ArrayColumnTest extends TestCase
         $this->assertEquals($result, ['bar' => 'a', 'foo' => 'b']);
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->column = new ArrayColumn();
     }

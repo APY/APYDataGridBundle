@@ -35,7 +35,7 @@ class RowsTest extends TestCase
         $this->assertEquals($this->rows, $this->rowsSUT->toArray());
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->rows = [$this->createMock(Row::class), $this->createMock(Row::class), $this->createMock(Row::class)];
         $this->rowsSUT = new Rows($this->rows);

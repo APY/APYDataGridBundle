@@ -48,7 +48,7 @@ class DocumentTest extends TestCase
         $name = 'name';
         $document = new Document($name);
 
-        $this->assertAttributeEquals($name, 'documentName', $document);
+        $this->assertEquals($name, $document->getDocumentName());
         $this->assertAttributeEquals('default', 'group', $document);
     }
 
@@ -58,8 +58,8 @@ class DocumentTest extends TestCase
         $group = 'aGroup';
         $document = new Document($name, $group);
 
-        $this->assertAttributeEquals($name, 'documentName', $document);
-        $this->assertAttributeEquals($group, 'group', $document);
+        $this->assertEquals($name, $document->getDocumentName());
+        $this->assertEquals($group, $document->getGroup());
     }
 
     public function testInitQueryBuilder()
@@ -68,7 +68,7 @@ class DocumentTest extends TestCase
 
         $this->document->initQueryBuilder($qb);
 
-        $this->assertAttributeEquals($qb, 'query', $this->document);
+        $this->assertEquals($qb, $this->document->getQuery());
         $this->assertAttributeNotSame($qb, 'query', $this->document);
     }
 
@@ -94,7 +94,7 @@ class DocumentTest extends TestCase
 
         $this->assertEquals($metadata, $this->document->getFieldsMetadata('name', 'default'));
 
-        $this->assertAttributeEquals($referenceMappings, 'referencedMappings', $this->document);
+        $this->assertEquals($referenceMappings, $this->document->getReferencedMappings());
     }
 
     public function testGetFieldsMetadata()
@@ -967,7 +967,7 @@ class DocumentTest extends TestCase
         // @todo Don't know how to move on with __clone method on stubs / mocks
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $name = 'name';
         $this->document = new Document($name);

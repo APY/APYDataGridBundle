@@ -22,7 +22,7 @@ class UntypedColumnTest extends TestCase
         $column = new UntypedColumn();
         $column->setType($type);
 
-        $this->assertAttributeEquals($type, 'type', $column);
+        $this->assertEquals($type, $column->getType());
     }
 
     public function getType()

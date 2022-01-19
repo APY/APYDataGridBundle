@@ -222,6 +222,15 @@ class GridConfigBuilder implements GridConfigBuilderInterface
         return $this;
     }
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPersistence()
+    {
+        return $this->persistence;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -434,6 +443,14 @@ class GridConfigBuilder implements GridConfigBuilderInterface
         $this->actions[$action->getColumn()][] = $action;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getActions()
+    {
+        return $this->actions;
     }
 
     /**

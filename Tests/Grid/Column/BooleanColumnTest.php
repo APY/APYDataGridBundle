@@ -70,7 +70,7 @@ class BooleanColumnTest extends TestCase
         $values = [1 => 'foo', 0 => 'bar'];
         $params = ['values' => $values];
         $column = new BooleanColumn($params);
-        $this->assertAttributeEquals($values, 'values', $column);
+        $this->assertEquals($values, $column->getValues());
     }
 
     public function testIsQueryValid()
@@ -129,7 +129,7 @@ class BooleanColumnTest extends TestCase
         ));
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->column = new BooleanColumn();
     }

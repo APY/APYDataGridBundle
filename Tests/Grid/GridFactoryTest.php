@@ -159,7 +159,7 @@ class GridFactoryTest extends TestCase
         $this->assertFalse($column->isVisibleForSource());
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $self = $this;
 

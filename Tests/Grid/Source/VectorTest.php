@@ -44,7 +44,7 @@ class VectorTest extends TestCase
 
         $vector = new Vector([], $columns);
 
-        $this->assertAttributeEquals($columns, 'columns', $vector);
+        $this->assertEquals($columns, $vector->getColumns());
     }
 
     public function testInitialiseWithoutData()
@@ -94,7 +94,7 @@ class VectorTest extends TestCase
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$column, $column2, $uc1, $uc2], 'columns', $vector);
+        $this->assertEquals([$column, $column2, $uc1, $uc2], $vector->getColumns());
     }
 
     public function testInizialiseWithoutGuessedColumns()
@@ -115,7 +115,7 @@ class VectorTest extends TestCase
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$column, $column2], 'columns', $vector);
+        $this->assertEquals([$column, $column2], $vector->getColumns());
     }
 
     /**
@@ -128,7 +128,7 @@ class VectorTest extends TestCase
         $vector = new Vector($vectorValue);
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$untypedColumn], 'columns', $vector);
+        $this->assertEquals([$untypedColumn], $vector->getColumns());
     }
 
     public function testExecute()
@@ -195,7 +195,7 @@ class VectorTest extends TestCase
         $id = 'id';
         $this->vector->setId($id);
 
-        $this->assertAttributeEquals($id, 'id', $this->vector);
+        $this->assertEquals($id, $this->vector->getId());
     }
 
     public function testGetId()
@@ -244,7 +244,7 @@ class VectorTest extends TestCase
         ];
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->vector = new Vector([], []);
     }

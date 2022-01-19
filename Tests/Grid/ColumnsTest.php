@@ -112,7 +112,7 @@ class ColumnsTest extends TestCase
             ->addExtension($column1)
             ->addExtension($column2);
 
-        $this->assertAttributeEquals(['foo' => $column1, 'bar' => $column2], 'extensions', $this->columns);
+        $this->assertEquals(['foo' => $column1, 'bar' => $column2], 'extensions', $this->columns->getExtensionForColumnType());
     }
 
     public function testHasExtensionForColumnType()
@@ -232,7 +232,7 @@ class ColumnsTest extends TestCase
         return $mocks;
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $this->columns = new Columns($this->authChecker);

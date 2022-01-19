@@ -40,7 +40,7 @@ class MassActionColumnTest extends TestCase
         ], 'params', $this->column);
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->column = new MassActionColumn();
     }

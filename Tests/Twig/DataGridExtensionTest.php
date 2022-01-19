@@ -21,7 +21,7 @@ class DataGridExtensionTest extends TestCase
      */
     private $extension;
 
-    public function setUp()
+    public function setUp() : void
     {
         $router = $this->createMock(RouterInterface::class);
         $this->extension = new DataGridExtension($router, '');
