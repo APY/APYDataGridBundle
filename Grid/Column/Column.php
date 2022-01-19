@@ -687,7 +687,7 @@ abstract class Column
     {
         $filters = [];
 
-        if (isset($this->data) && $this->hasOperator($this->data['operator'])) {
+        if (isset($this->data['operator']) && $this->hasOperator($this->data['operator'])) {
             if ($this instanceof ArrayColumn && in_array($this->data['operator'], [self::OPERATOR_EQ, self::OPERATOR_NEQ])) {
                 $filters[] = new Filter($this->data['operator'], $this->data['from']);
             } else {

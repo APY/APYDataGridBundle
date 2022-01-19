@@ -12,15 +12,16 @@
 
 namespace APY\DataGridBundle\Twig;
 
+use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Grid;
 use Pagerfanta\Adapter\NullAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Routing\RouterInterface;
-use Twig_Environment;
-use Twig_Extension;
-use Twig_Extension_GlobalsInterface;
-use Twig_SimpleFunction;
-use Twig_Template;
+use Twig\TemplateWrapper;
+use Twig\Extension\AbstractExtension;
+use Twig\Extension\GlobalsInterface;
+use Twig\Environment;
+use Twig\TwigFunction;
 
 /**
  * DataGrid Twig Extension.
@@ -30,12 +31,12 @@ use Twig_Template;
  *
  * Updated by Nicolas Claverie <info@artscore-studio.fr>
  */
-class DataGridExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface
+class DataGridExtension extends AbstractExtension implements GlobalsInterface
 {
     const DEFAULT_TEMPLATE = 'APYDataGridBundle::blocks.html.twig';
 
     /**
-     * @var Twig_Template[]
+     * @var TemplateWrapper[]
      */
     protected $templates = [];
 
@@ -90,7 +91,7 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     /**
      * @return array
      */
-    public function getGlobals()
+    public function getGlobals(): array
     {
         return [
             'grid'           => null,
@@ -112,41 +113,41 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     public function getFunctions()
     {
         return [
-            new Twig_SimpleFunction('grid', [$this, 'getGrid'], [
+            new TwigFunction('grid', [$this, 'getGrid'], [
                 'needs_environment' => true,
                 'is_safe'           => ['html'],
             ]),
-            new Twig_SimpleFunction('grid_html', [$this, 'getGridHtml'], [
+            new TwigFunction('grid_html', [$this, 'getGridHtml'], [
                 'needs_environment' => true,
                 'is_safe'           => ['html'],
             ]),
-            new Twig_SimpleFunction('grid_url', [$this, 'getGridUrl'], [
+            new TwigFunction('grid_url', [$this, 'getGridUrl'], [
                 'is_safe' => ['html'],
             ]),
-            new Twig_SimpleFunction('grid_filter', [$this, 'getGridFilter'], [
+            new TwigFunction('grid_filter', [$this, 'getGridFilter'], [
                 'needs_environment' => true,
                 'is_safe'           => ['html'],
             ]),
-            new Twig_SimpleFunction('grid_column_operator', [$this, 'getGridColumnOperator'], [
+            new TwigFunction('grid_column_operator', [$this, 'getGridColumnOperator'], [
                 'needs_environment' => true,
                 'is_safe'           => ['html'],
             ]),
-            new Twig_SimpleFunction('grid_cell', [$this, 'getGridCell'], [
+            new TwigFunction('grid_cell', [$this, 'getGridCell'], [
                 'needs_environment' => true,
                 'is_safe'           => ['html'],
             ]),
-            new Twig_SimpleFunction('grid_search', [$this, 'getGridSearch'], [
+            new TwigFunction('grid_search', [$this, 'getGridSearch'], [
                 'needs_environment' => true,
                 'is_safe'           => ['html'],
             ]),
-            new Twig_SimpleFunction('grid_pager', [$this, 'getGridPager'], [
+            new TwigFunction('grid_pager', [$this, 'getGridPager'], [
                 'needs_environment' => true,
                 'is_safe'           => ['html'],
             ]),
-            new Twig_SimpleFunction('grid_pagerfanta', [$this, 'getPagerfanta'], [
+            new TwigFunction('grid_pagerfanta', [$this, 'getPagerfanta'], [
                 'is_safe' => ['html'],
             ]),
-            new Twig_SimpleFunction('grid_*', [$this, 'getGrid_'], [
+            new TwigFunction('grid_*', [$this, 'getGrid_'], [
                 'needs_environment' => true,
                 'is_safe'           => ['html'],
             ]),
@@ -171,14 +172,14 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     /**
      * Render grid block.
      *
-     * @param Twig_Environment              $environment
-     * @param \APY\DataGridBundle\Grid\Grid $grid
-     * @param string                        $theme
-     * @param string                        $id
+     * @param Environment $environment
+     * @param Grid        $grid
+     * @param string      $theme
+     * @param string      $id
      *
      * @return string
      */
-    public function getGrid(Twig_Environment $environment, $grid, $theme = null, $id = '', array $params = [], $withjs = true)
+    public function getGrid(Environment $environment, $grid, $theme = null, $id = '', array $params = [], $withjs = true)
     {
         $this->initGrid($grid, $theme, $id, $params);
 
@@ -191,37 +192,37 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     /**
      * Render grid block (html only).
      *
-     * @param Twig_Environment              $environment
-     * @param \APY\DataGridBundle\Grid\Grid $grid
-     * @param string                        $theme
-     * @param string                        $id
+     * @param Environment $environment
+     * @param Grid        $grid
+     * @param string      $theme
+     * @param string      $id
      *
      * @return string
      */
-    public function getGridHtml(Twig_Environment $environment, $grid, $theme = null, $id = '', array $params = [])
+    public function getGridHtml(Environment $environment, $grid, $theme = null, $id = '', array $params = [])
     {
         return $this->getGrid($environment, $grid, $theme, $id, $params, false);
     }
 
     /**
-     * @param Twig_Environment $environment
+     * @param Environment $environment
      * @param string           $name
      * @param unknown          $grid
      *
      * @return string
      */
-    public function getGrid_(Twig_Environment $environment, $name, $grid)
+    public function getGrid_(Environment $environment, $name, $grid)
     {
         return $this->renderBlock($environment, 'grid_' . $name, ['grid' => $grid]);
     }
 
     /**
-     * @param Twig_Environment $environment
+     * @param Environment $environment
      * @param unknown          $grid
      *
      * @return string
      */
-    public function getGridPager(Twig_Environment $environment, $grid)
+    public function getGridPager(Environment $environment, $grid)
     {
         return $this->renderBlock($environment, 'grid_pager', ['grid' => $grid, 'pagerfanta' => $this->pagerFantaDefs['enable']]);
     }
@@ -229,14 +230,14 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     /**
      * Cell Drawing override.
      *
-     * @param Twig_Environment                       $environment
-     * @param \APY\DataGridBundle\Grid\Column\Column $column
+     * @param Environment                            $environment
+     * @param Column $column
      * @param \APY\DataGridBundle\Grid\Row           $row
-     * @param \APY\DataGridBundle\Grid\Grid          $grid
+     * @param Grid                                   $grid
      *
      * @return string
      */
-    public function getGridCell(Twig_Environment $environment, $column, $row, $grid)
+    public function getGridCell(Environment $environment, $column, $row, $grid)
     {
         $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
 
@@ -264,13 +265,13 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     /**
      * Filter Drawing override.
      *
-     * @param Twig_Environment                       $environment
-     * @param \APY\DataGridBundle\Grid\Column\Column $column
-     * @param \APY\DataGridBundle\Grid\Grid          $grid
+     * @param Environment                            $environment
+     * @param Column $column
+     * @param Grid                                   $grid
      *
      * @return string
      */
-    public function getGridFilter(Twig_Environment $environment, $column, $grid, $submitOnChange = true)
+    public function getGridFilter(Environment $environment, $column, $grid, $submitOnChange = true)
     {
         $id = $this->names[$grid->getHash()];
 
@@ -294,21 +295,21 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     /**
      * Column Operator Drawing override.
      *
-     * @param Twig_Environment                       $environment
-     * @param \APY\DataGridBundle\Grid\Column\Column $column
-     * @param \APY\DataGridBundle\Grid\Grid          $grid
+     * @param Environment                            $environment
+     * @param Column $column
+     * @param Grid                                   $grid
      *
      * @return string
      */
-    public function getGridColumnOperator(Twig_Environment $environment, $column, $grid, $operator, $submitOnChange = true)
+    public function getGridColumnOperator(Environment $environment, $column, $grid, $operator, $submitOnChange = true)
     {
         return $this->renderBlock($environment, 'grid_column_operator', ['grid' => $grid, 'column' => $column, 'submitOnChange' => $submitOnChange, 'op' => $operator]);
     }
 
     /**
-     * @param string                                 $section
-     * @param \APY\DataGridBundle\Grid\Grid          $grid
-     * @param \APY\DataGridBundle\Grid\Column\Column $param
+     * @param string $section
+     * @param Grid   $grid
+     * @param Column $param
      *
      * @return string
      */
@@ -335,7 +336,7 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     }
 
     /**
-     * @param Twig_Environment $environment
+     * @param Environment $environment
      * @param unknown          $grid
      * @param unknown          $theme
      * @param string           $id
@@ -343,7 +344,7 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
      *
      * @return string
      */
-    public function getGridSearch(\Twig_Environment $environment, $grid, $theme = null, $id = '', array $params = [])
+    public function getGridSearch(Environment $environment, $grid, $theme = null, $id = '', array $params = [])
     {
         $this->initGrid($grid, $theme, $id, $params);
 
@@ -375,7 +376,7 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     /**
      * Render block.
      *
-     * @param Twig_Environment $environment
+     * @param Environment $environment
      * @param string           $name
      * @param array            $parameters
      *
@@ -383,7 +384,7 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
      *
      * @return string
      */
-    protected function renderBlock(Twig_Environment $environment, $name, $parameters)
+    protected function renderBlock(Environment $environment, $name, $parameters)
     {
         foreach ($this->getTemplates($environment) as $template) {
             if ($template->hasBlock($name, [])) {
@@ -397,12 +398,12 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     /**
      * Has block.
      *
-     * @param Twig_Environment $environment
+     * @param Environment $environment
      * @param $name string
      *
      * @return bool
      */
-    protected function hasBlock(Twig_Environment $environment, $name)
+    protected function hasBlock(Environment $environment, $name)
     {
         foreach ($this->getTemplates($environment) as $template) {
             /** @var $template Twig_Template */
@@ -417,18 +418,18 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     /**
      * Template Loader.
      *
-     * @param Twig_Environment $environment
+     * @param Environment $environment
      *
      * @throws \Exception
      *
-     * @return Twig_Template[]
+     * @return TemplateWrapper[]
      */
-    protected function getTemplates(Twig_Environment $environment)
+    protected function getTemplates(Environment $environment)
     {
         if (empty($this->templates)) {
-            if ($this->theme instanceof Twig_Template) {
+            if ($this->theme instanceof TemplateWrapper) {
                 $this->templates[] = $this->theme;
-                $this->templates[] = $environment->loadTemplate($this->defaultTemplate);
+                $this->templates[] = $environment->load($this->defaultTemplate);
             } elseif (is_string($this->theme)) {
                 $this->templates = $this->getTemplatesFromString($environment, $this->theme);
             } elseif ($this->theme === null) {
@@ -442,20 +443,17 @@ class DataGridExtension extends Twig_Extension implements Twig_Extension_Globals
     }
 
     /**
-     * @param Twig_Environment $environment
-     * @param unknown          $theme
+     * @param Environment $environment
+     * @param string      $theme
      *
-     * @return array|Twig_Template[]
+     * @return array
      */
-    protected function getTemplatesFromString(Twig_Environment $environment, $theme)
+    protected function getTemplatesFromString(Environment $environment, $theme)
     {
         $this->templates = [];
 
-        $template = $environment->loadTemplate($theme);
-        while ($template instanceof \Twig_Template) {
-            $this->templates[] = $template;
-            $template = $template->getParent([]);
-        }
+        $template = $environment->load($theme);
+        $this->templates[] = $template;
 
         return $this->templates;
     }
