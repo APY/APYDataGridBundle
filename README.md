@@ -109,8 +109,8 @@ class MyEntity
 And clear your cache.
 
 ## Bundle history
+
 Datagrid for Symfony inspired by Zfdatagrid and Magento Grid.  
 This bundle was initiated by Stanislav Turza (Sorien).
 
 See [CHANGELOG](https://github.com/APY/APYDataGridBundle/blob/master/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/APY/APYDataGridBundle/blob/master/UPGRADE-2.0.md)
-

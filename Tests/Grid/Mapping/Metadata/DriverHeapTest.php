@@ -1,6 +1,6 @@
 <?php
 
-namespace APY\DataGridBundle\Grid\Tests\Mapping\Metadata;
+namespace APY\DataGridBundle\Tests\Grid\Mapping\Metadata;
 
 use APY\DataGridBundle\Grid\Mapping\Metadata\DriverHeap;
 use PHPUnit\Framework\TestCase;

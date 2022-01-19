@@ -528,12 +528,12 @@ abstract class Column
         $result = [];
 
         $hasValue = false;
-        if ($this->data['from'] != $this::DEFAULT_VALUE) {
+        if (isset($this->data['from']) && $this->data['from'] != $this::DEFAULT_VALUE) {
             $result['from'] = $this->data['from'];
             $hasValue = true;
         }
 
-        if ($this->data['to'] != $this::DEFAULT_VALUE) {
+        if (isset($this->data['to']) && $this->data['to'] != $this::DEFAULT_VALUE) {
             $result['to'] = $this->data['to'];
             $hasValue = true;
         }
@@ -687,7 +687,7 @@ abstract class Column
     {
         $filters = [];
 
-        if ($this->hasOperator($this->data['operator'])) {
+        if (isset($this->data['operator']) && $this->hasOperator($this->data['operator'])) {
             if ($this instanceof ArrayColumn && in_array($this->data['operator'], [self::OPERATOR_EQ, self::OPERATOR_NEQ])) {
                 $filters[] = new Filter($this->data['operator'], $this->data['from']);
             } else {

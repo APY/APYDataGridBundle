@@ -31,10 +31,10 @@ function {{ grid.hash }}_submitForm(event, form)
                     if ($(this).attr('multiple') == 'multiple') {
                         for(var i= 0; i < value.length; i++)
                         {
-                            data += '&' + name + '=' + value[i];
+                            data += '&' + name + '=' + encodeURIComponent(value[i]);
                         }
                     } else {
-                        data += '&' + name + '=' + value;
+                        data += '&' + name + '=' + encodeURIComponent(value);
                     }
                 } else {
                     data += '&' + name + '=';
