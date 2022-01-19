@@ -45,7 +45,7 @@ class DocumentTest extends TestCase
         $name = 'name';
         $document = new Document($name);
 
-        $this->assertAttributeEquals($name, 'documentName', $document);
+        $this->assertEquals($name, $document->getDocumentName());
         $this->assertAttributeEquals('default', 'group', $document);
     }
 
@@ -55,8 +55,8 @@ class DocumentTest extends TestCase
         $group = 'aGroup';
         $document = new Document($name, $group);
 
-        $this->assertAttributeEquals($name, 'documentName', $document);
-        $this->assertAttributeEquals($group, 'group', $document);
+        $this->assertEquals($name, $document->getDocumentName());
+        $this->assertEquals($group, $document->getGroup());
     }
 
     public function testInitQueryBuilder()
@@ -65,8 +65,8 @@ class DocumentTest extends TestCase
 
         $this->document->initQueryBuilder($qb);
 
-        $this->assertAttributeEquals($qb, 'query', $this->document);
-        $this->assertAttributeNotSame($qb, 'query', $this->document);
+        $this->assertEquals($qb, $this->document->getQuery());
+        $this->assertNotSame($qb, $this->document->getQuery());
     }
 
     /**
@@ -91,7 +91,7 @@ class DocumentTest extends TestCase
 
         $this->assertEquals($metadata, $this->document->getFieldsMetadata('name', 'default'));
 
-        $this->assertAttributeEquals($referenceMappings, 'referencedMappings', $this->document);
+        $this->assertEquals($referenceMappings, $this->document->getReferencedMappings());
     }
 
     public function testGetFieldsMetadata()
@@ -870,7 +870,7 @@ class DocumentTest extends TestCase
 
         $this->assertEquals(1, $result->count());
         foreach ($columnsIterator as $row) {
-            $this->assertAttributeEquals([$colId => 'subColValue'], 'fields', $row);
+            $this->assertEquals([$colId => 'subColValue'], $row->getFields());
         }
     }
 

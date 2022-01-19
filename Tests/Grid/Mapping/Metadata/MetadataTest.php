@@ -20,7 +20,7 @@ class MetadataTest extends TestCase
 
         $this->metadata->setFields($field);
 
-        $this->assertAttributeEquals($field, 'fields', $this->metadata);
+        $this->assertEquals($field, $this->metadata->getFields());
     }
 
     public function testGetFields()
@@ -63,7 +63,7 @@ class MetadataTest extends TestCase
 
         $this->metadata->setFieldsMappings($fieldMapping);
 
-        $this->assertAttributeEquals($fieldMapping, 'fieldsMappings', $this->metadata);
+        $this->assertEquals($fieldMapping, $this->metadata->getFieldsMappings());
     }
 
     public function testGetterMappingFieldWithType()
@@ -82,7 +82,7 @@ class MetadataTest extends TestCase
 
         $this->metadata->setGroupBy($groupBy);
 
-        $this->assertAttributeEquals($groupBy, 'groupBy', $this->metadata);
+        $this->assertEquals($groupBy, $this->metadata->getGroupBy());
     }
 
     public function testGetterGroupBy()
@@ -99,7 +99,7 @@ class MetadataTest extends TestCase
 
         $this->metadata->setName($name);
 
-        $this->assertAttributeEquals($name, 'name', $this->metadata);
+        $this->assertEquals($name, $this->metadata->getName());
     }
 
     public function testGetterName()

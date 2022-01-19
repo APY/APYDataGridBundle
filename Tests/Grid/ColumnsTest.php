@@ -110,7 +110,7 @@ class ColumnsTest extends TestCase
             ->addExtension($column1)
             ->addExtension($column2);
 
-        $this->assertAttributeEquals(['foo' => $column1, 'bar' => $column2], 'extensions', $this->columns);
+        $this->assertEquals(['foo' => $column1, 'bar' => $column2], 'extensions', $this->columns->getExtensionForColumnType());
     }
 
     public function testHasExtensionForColumnType()

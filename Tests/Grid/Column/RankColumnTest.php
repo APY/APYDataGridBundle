@@ -36,7 +36,7 @@ class RankColumnTest extends TestCase
             'filterable' => false,
             'sortable'   => false,
             'source'     => false,
-        ], 'params', $column);
+        ], 'params', $column->getParams);
     }
 
     public function testSetId()
@@ -74,10 +74,10 @@ class RankColumnTest extends TestCase
     public function testRenderCell()
     {
         $this->assertEquals(1, $this->column->renderCell(true, $this->createMock(Row::class), $this->createMock(Router::class)));
-        $this->assertAttributeEquals(2, 'rank', $this->column);
+        $this->assertEquals(2, $this->column->getRank());
 
         $this->assertEquals(2, $this->column->renderCell(true, $this->createMock(Row::class), $this->createMock(Router::class)));
-        $this->assertAttributeEquals(3, 'rank', $this->column);
+        $this->assertEquals(3, $this->column->getRank());
     }
 
     public function setUp(): void

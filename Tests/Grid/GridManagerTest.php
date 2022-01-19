@@ -41,7 +41,7 @@ class GridManagerTest extends TestCase
 
         $this->assertEquals($grid, $this->gridManager->createGrid());
 
-        $this->assertAttributeEquals($grids, 'grids', $this->gridManager);
+        $this->assertEquals($grids, $this->gridManager->getGrids());
     }
 
     public function testCreateGridWithId()
@@ -64,7 +64,7 @@ class GridManagerTest extends TestCase
 
         $this->assertEquals($grid, $this->gridManager->createGrid($gridId));
 
-        $this->assertAttributeEquals($grids, 'grids', $this->gridManager);
+        $this->assertEquals($grids, $this->gridManager->getGrids());
     }
 
     public function testReturnsManagedGridCount()
@@ -86,7 +86,7 @@ class GridManagerTest extends TestCase
         $routeUrl = 'aRouteUrl';
         $this->gridManager->setRouteUrl($routeUrl);
 
-        $this->assertAttributeEquals($routeUrl, 'routeUrl', $this->gridManager);
+        $this->assertEquals($routeUrl, $this->gridManager->getRouteUrl());
     }
 
     public function testGetRouteUrl()
@@ -184,7 +184,7 @@ class GridManagerTest extends TestCase
 
         $this->gridManager->isReadyForRedirect();
 
-        $this->assertAttributeEquals($route1Url, 'routeUrl', $this->gridManager);
+        $this->assertEquals($route1Url, $this->gridManager->getRouteUrl());
     }
 
     public function testItIgnoresEveryGridUrlIfRouteUrlAlreadySetted()
@@ -202,7 +202,7 @@ class GridManagerTest extends TestCase
 
         $this->gridManager->isReadyForRedirect();
 
-        $this->assertAttributeEquals($settedRouteUrl, 'routeUrl', $this->gridManager);
+        $this->assertEquals($settedRouteUrl, $this->gridManager->getRouteUrl());
     }
 
     public function testItThrowsExceptionWhenCheckForExportAndGridsNotSetted()
@@ -244,7 +244,7 @@ class GridManagerTest extends TestCase
 
         $this->assertTrue($this->gridManager->isReadyForExport());
 
-        $this->assertAttributeEquals($grid2, 'exportGrid', $this->gridManager);
+        $this->assertEquals($grid2, $this->gridManager->getExportGrid());
     }
 
     public function testItRewindGridListWhenCheckingTwoTimesIfReadyForExport()
@@ -301,7 +301,7 @@ class GridManagerTest extends TestCase
 
         $this->assertTrue($this->gridManager->isMassActionRedirect());
 
-        $this->assertAttributeEquals($grid2, 'massActionGrid', $this->gridManager);
+        $this->assertEquals($grid2, $this->gridManager->getMassActionGrid());
     }
 
     public function testItRewindGridListWhenCheckingTwoTimesIfHasMassActionRedirect()

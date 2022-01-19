@@ -20,14 +20,14 @@ class ArrayColumnTest extends TestCase
 
     public function testInitializeDefaultParams()
     {
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             Column::OPERATOR_LIKE,
             Column::OPERATOR_NLIKE,
             Column::OPERATOR_EQ,
             Column::OPERATOR_NEQ,
             Column::OPERATOR_ISNULL,
             Column::OPERATOR_ISNOTNULL,
-        ], 'operators', $this->column);
+        ], $this->column->getOperators());
     }
 
     public function testDocumentFilters()

@@ -549,4 +549,24 @@ class Document extends Source
     {
         return $this->documentName;
     }
+
+    /**
+     * Get the value of query
+     *
+     * @return  \Doctrine\ODM\MongoDB\Query\Builder;
+     */ 
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * Get the value of referencedMappings
+     *
+     * @return  array
+     */ 
+    public function getReferencedMappings()
+    {
+        return $this->referencedMappings;
+    }
 }

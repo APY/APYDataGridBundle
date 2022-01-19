@@ -1057,4 +1057,12 @@ abstract class Column
     {
         return self::$availableOperators;
     }
+
+    /**
+     * Get the value of params
+     */ 
+    public function getParams()
+    {
+        return $this->params;
+    }
 }

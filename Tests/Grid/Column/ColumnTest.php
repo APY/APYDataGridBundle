@@ -20,27 +20,27 @@ class ColumnTest extends TestCase
 
         $mock->__initialize(['field' => $field]);
 
-        $this->assertAttributeEquals($field, 'title', $mock);
-        $this->assertAttributeEquals(true, 'sortable', $mock);
-        $this->assertAttributeEquals(true, 'visible', $mock);
+        $this->assertEquals($field, $mock->getTitle());
+        $this->assertEquals(true, $mock->getSortable());
+        $this->assertEquals(true, $mock->getVisible());
         $this->assertAttributeEquals(-1, 'size', $mock);
-        $this->assertAttributeEquals(true, 'filterable', $mock);
-        $this->assertAttributeEquals(false, 'visibleForSource', $mock);
-        $this->assertAttributeEquals(false, 'primary', $mock);
+        $this->assertEquals(true, $mock->getFilterable());
+        $this->assertEquals(false, $mock->getVisibleForSource());
+        $this->assertEquals(false, $mock->getPrimary());
         $this->assertAttributeEquals(Column::ALIGN_LEFT, 'align', $mock);
         $this->assertAttributeEquals('text', 'inputType', $mock);
         $this->assertAttributeEquals('input', 'filterType', $mock);
         $this->assertAttributeEquals('query', 'selectFrom', $mock);
-        $this->assertAttributeEquals([], 'values', $mock);
-        $this->assertAttributeEquals(true, 'operatorsVisible', $mock);
-        $this->assertAttributeEquals(false, 'isManualField', $mock);
-        $this->assertAttributeEquals(false, 'isAggregate', $mock);
-        $this->assertAttributeEquals(true, 'usePrefixTitle', $mock);
+        $this->assertEquals([], $mock->getValues());
+        $this->assertEquals(true, $mock->getOperatorsVisible());
+        $this->assertEquals(false, $mock->getIsManualField());
+        $this->assertEquals(false, $mock->getIsAggregate());
+        $this->assertEquals(true, $mock->getUsePrefixTitle());
         $this->assertAttributeEquals(Column::getAvailableOperators(), 'operators', $mock);
         $this->assertAttributeEquals(Column::OPERATOR_LIKE, 'defaultOperator', $mock);
-        $this->assertAttributeEquals(false, 'selectMulti', $mock);
-        $this->assertAttributeEquals(false, 'selectExpanded', $mock);
-        $this->assertAttributeEquals(false, 'searchOnClick', $mock);
+        $this->assertEquals(false, $mock->getSelectMulti());
+        $this->assertEquals(false, $mock->getSelectExpanded());
+        $this->assertEquals(false, $mock->getSearchOnClick());
         $this->assertAttributeEquals('html', 'safe', $mock);
         $this->assertAttributeEquals('<br />', 'separator', $mock);
     }
@@ -117,38 +117,38 @@ class ColumnTest extends TestCase
 
         $mock->__initialize($params);
 
-        $this->assertAttributeEquals($params, 'params', $mock);
-        $this->assertAttributeEquals($id, 'id', $mock);
-        $this->assertAttributeEquals($title, 'title', $mock);
-        $this->assertAttributeEquals($sortable, 'sortable', $mock);
-        $this->assertAttributeEquals($visible, 'visible', $mock);
-        $this->assertAttributeEquals($size, 'size', $mock);
-        $this->assertAttributeEquals($filterable, 'filterable', $mock);
-        $this->assertAttributeEquals($source, 'visibleForSource', $mock);
-        $this->assertAttributeEquals($primary, 'primary', $mock);
-        $this->assertAttributeEquals($align, 'align', $mock);
-        $this->assertAttributeEquals($inputType, 'inputType', $mock);
-        $this->assertAttributeEquals($field, 'field', $mock);
-        $this->assertAttributeEquals($role, 'role', $mock);
-        $this->assertAttributeEquals($order, 'order', $mock);
-        $this->assertAttributeEquals($joinType, 'joinType', $mock);
-        $this->assertAttributeEquals($filter, 'filterType', $mock);
-        $this->assertAttributeEquals($selectFrom, 'selectFrom', $mock);
-        $this->assertAttributeEquals($values, 'values', $mock);
-        $this->assertAttributeEquals($operatorsVisible, 'operatorsVisible', $mock);
-        $this->assertAttributeEquals($isManualField, 'isManualField', $mock);
-        $this->assertAttributeEquals($isAggregate, 'isAggregate', $mock);
-        $this->assertAttributeEquals($usePrefixText, 'usePrefixTitle', $mock);
-        $this->assertAttributeEquals($operators, 'operators', $mock);
-        $this->assertAttributeEquals($defaultOperator, 'defaultOperator', $mock);
-        $this->assertAttributeEquals($selectMulti, 'selectMulti', $mock);
-        $this->assertAttributeEquals($selectExpanded, 'selectExpanded', $mock);
-        $this->assertAttributeEquals($searchOnClick, 'searchOnClick', $mock);
-        $this->assertAttributeEquals($safe, 'safe', $mock);
-        $this->assertAttributeEquals($separator, 'separator', $mock);
-        $this->assertAttributeEquals($export, 'export', $mock);
-        $this->assertAttributeEquals($class, 'class', $mock);
-        $this->assertAttributeEquals($translationDomain, 'translationDomain', $mock);
+        $this->assertEquals($params, $mock->getParams());
+        $this->assertEquals($id, $mock->getId());
+        $this->assertEquals($title, $mock->getTitle());
+        $this->assertEquals($sortable, $mock->getSortable());
+        $this->assertEquals($visible, $mock->getVisible());
+        $this->assertEquals($size, $mock->getSize());
+        $this->assertEquals($filterable, $mock->getFilterable());
+        $this->assertEquals($source, $mock->getVisibleForSource());
+        $this->assertEquals($primary, $mock->getPrimary());
+        $this->assertEquals($align, $mock->getAlign());
+        $this->assertEquals($inputType, $mock->getInputType());
+        $this->assertEquals($field, $mock->getField());
+        $this->assertEquals($role, $mock->getRole());
+        $this->assertEquals($order, $mock->getOrder());
+        $this->assertEquals($joinType, $mock->getJoinType());
+        $this->assertEquals($filter, $mock->getFilterType());
+        $this->assertEquals($selectFrom, $mock->getSelectFrom());
+        $this->assertEquals($values, $mock->getValues());
+        $this->assertEquals($operatorsVisible, $mock->getOperatorsVisible());
+        $this->assertEquals($isManualField, $mock->getIsManualField());
+        $this->assertEquals($isAggregate, $mock->getIsAggregate());
+        $this->assertEquals($usePrefixText, $mock->getUsePrefixTitle());
+        $this->assertEquals($operators, $mock->getOperators());
+        $this->assertEquals($defaultOperator, $mock->getDefaultOperator());
+        $this->assertEquals($selectMulti, $mock->getSelectMulti());
+        $this->assertEquals($selectExpanded, $mock->getSelectExpanded());
+        $this->assertEquals($searchOnClick, $mock->getSearchOnClick());
+        $this->assertEquals($safe, $mock->getSafe());
+        $this->assertEquals($separator, $mock->getSeparator());
+        $this->assertEquals($export, $mock->getExport());
+        $this->assertEquals($class, $mock->getClass());
+        $this->assertEquals($translationDomain, $mock->getTranslationDomain());
     }
 
     public function testRenderCellWithCallback()
@@ -200,7 +200,7 @@ class ColumnTest extends TestCase
         $callback = fn($value, $row, $router) => 1;
         $mock->manipulateRenderCell($callback);
 
-        $this->assertAttributeEquals($callback, 'callback', $mock);
+        $this->assertEquals($callback, $mock->getCallback());
     }
 
     public function testSetId()
@@ -208,7 +208,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setId(1);
 
-        $this->assertAttributeEquals(1, 'id', $mock);
+        $this->assertEquals(1, $mock->getId());
     }
 
     public function testGetId()
@@ -234,7 +234,7 @@ class ColumnTest extends TestCase
         $title = 'title';
         $mock->setTitle($title);
 
-        $this->assertAttributeEquals($title, 'title', $mock);
+        $this->assertEquals($title, $mock->getTitle());
     }
 
     public function testGetTitle()
@@ -254,7 +254,7 @@ class ColumnTest extends TestCase
         $isVisible = true;
         $mock->setVisible($isVisible);
 
-        $this->assertAttributeEquals($isVisible, 'visible', $mock);
+        $this->assertEquals($isVisible, $mock->getVisible());
     }
 
     public function testItIsNotVisibleWhenNotExported()
@@ -294,7 +294,7 @@ class ColumnTest extends TestCase
     public function testItIsVisibleIfNotExportedAndGranted()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
-        $role = $this->createMock(Role::class);
+        $role = 'ROLE_USER';
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authChecker->method('isGranted')->with($role)->willReturn(true);
 
@@ -310,7 +310,7 @@ class ColumnTest extends TestCase
     public function testItIsNotVisibleIfNotExportedButNotGranted()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
-        $role = $this->createMock(Role::class);
+        $role = 'ROLE_USER';
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authChecker->method('isGranted')->with($role)->willReturn(false);
 
@@ -360,7 +360,7 @@ class ColumnTest extends TestCase
     public function testItIsVisibleIfExportedAndGranted()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
-        $role = $this->createMock(Role::class);
+        $role = 'ROLE_USER';
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authChecker->method('isGranted')->with($role)->willReturn(true);
 
@@ -376,7 +376,7 @@ class ColumnTest extends TestCase
     public function testItIsNotVisibleIfExportedButNotGranted()
     {
         $mock = $this->getMockForAbstractClass(Column::class);
-        $role = $this->createMock(Role::class);
+        $role = 'ROLE_USER';
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authChecker->method('isGranted')->with($role)->willReturn(false);
 
@@ -393,7 +393,7 @@ class ColumnTest extends TestCase
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
-        $this->assertAttributeEquals(false, 'isSorted', $mock);
+        $this->assertEquals(false, $mock->getIsSorted());
     }
 
     public function testIsSortedWhenOrdered()
@@ -401,7 +401,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOrder(1);
 
-        $this->assertAttributeEquals(true, 'isSorted', $mock);
+        $this->assertEquals(true, $mock->getIsSorted());
     }
 
     public function testSetSortable()
@@ -409,7 +409,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSortable(true);
 
-        $this->assertAttributeEquals(true, 'sortable', $mock);
+        $this->assertEquals(true, $mock->getSortable());
     }
 
     public function testIsSortable()
@@ -488,7 +488,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setFilterable(true);
 
-        $this->assertAttributeEquals(true, 'filterable', $mock);
+        $this->assertEquals(true, $mock->getFilterable());
     }
 
     public function testIsFilterable()
@@ -504,8 +504,8 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOrder(null);
 
-        $this->assertAttributeEquals(null, 'order', $mock);
-        $this->assertAttributeEquals(false, 'isSorted', $mock);
+        $this->assertEquals(null, $mock->getOrder());
+        $this->assertEquals(false, $mock->getIsSorted());
     }
 
     public function testItDoesSetOrderIfZero()
@@ -514,7 +514,7 @@ class ColumnTest extends TestCase
         $mock->setOrder(0);
 
         $this->assertAttributeEquals(0, 'order', $mock);
-        $this->assertAttributeEquals(true, 'isSorted', $mock);
+        $this->assertEquals(true, $mock->getIsSorted());
     }
 
     public function testItDoesSetOrder()
@@ -522,8 +522,8 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOrder(1);
 
-        $this->assertAttributeEquals(1, 'order', $mock);
-        $this->assertAttributeEquals(true, 'isSorted', $mock);
+        $this->assertEquals(1, $mock->getOrder());
+        $this->assertEquals(true, $mock->getIsSorted());
     }
 
     public function testGetOrder()
@@ -556,7 +556,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSize(2);
 
-        $this->assertAttributeEquals(2, 'size', $mock);
+        $this->assertEquals(2, $mock->getSize());
     }
 
     public function testGetSize()
@@ -730,7 +730,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setVisibleForSource(true);
 
-        $this->assertAttributeEquals(true, 'visibleForSource', $mock);
+        $this->assertEquals(true, $mock->getVisibleForSource());
     }
 
     public function testIsVisibleForSource()
@@ -746,7 +746,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setPrimary(true);
 
-        $this->assertAttributeEquals(true, 'primary', $mock);
+        $this->assertEquals(true, $mock->getPrimary());
     }
 
     public function testIsPrimary()
@@ -816,16 +816,16 @@ class ColumnTest extends TestCase
 
     public function testSetRole()
     {
-        $role = $this->createMock(Role::class);
+        $role = 'ROLE_USER';
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setRole($role);
 
-        $this->assertAttributeEquals($role, 'role', $mock);
+        $this->assertEquals($role, $mock->getRole());
     }
 
     public function testGetRole()
     {
-        $role = $this->createMock(Role::class);
+        $role = 'ROLE_USER';
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setRole($role);
 
@@ -902,7 +902,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOperatorsVisible(false);
 
-        $this->assertAttributeEquals(false, 'operatorsVisible', $mock);
+        $this->assertEquals(false, $mock->getOperatorsVisible());
     }
 
     public function testGetOperatorsVisible()
@@ -920,7 +920,7 @@ class ColumnTest extends TestCase
         $values = [0 => 'foo', 1 => 'bar'];
         $mock->setValues($values);
 
-        $this->assertAttributeEquals($values, 'values', $mock);
+        $this->assertEquals($values, $mock->getValues());
     }
 
     public function testGetValues()
@@ -954,7 +954,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSelectMulti(true);
 
-        $this->assertAttributeEquals(true, 'selectMulti', $mock);
+        $this->assertEquals(true, $mock->getSelectMulti());
     }
 
     public function testGetSelectMulti()
@@ -970,7 +970,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSelectExpanded(true);
 
-        $this->assertAttributeEquals(true, 'selectExpanded', $mock);
+        $this->assertEquals(true, $mock->getSelectExpanded());
     }
 
     public function testGetSelectExpanded()
@@ -988,7 +988,7 @@ class ColumnTest extends TestCase
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $mock->setAuthorizationChecker($authChecker);
 
-        $this->assertAttributeEquals($authChecker, 'authorizationChecker', $mock);
+        $this->assertEquals($authChecker, $mock->getAuthorizationChecker());
     }
 
     public function testNoParentType()
@@ -1023,7 +1023,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSearchOnClick(false);
 
-        $this->assertAttributeEquals(false, 'searchOnClick', $mock);
+        $this->assertEquals(false, $mock->getSearchOnClick());
     }
 
     public function testGetSearchOnClick()
@@ -1087,7 +1087,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setExport(true);
 
-        $this->assertAttributeEquals(true, 'export', $mock);
+        $this->assertEquals(true, $mock->getExport());
     }
 
     public function testGetExport()
@@ -1119,7 +1119,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setIsManualField(true);
 
-        $this->assertAttributeEquals(true, 'isManualField', $mock);
+        $this->assertEquals(true, $mock->getIsManualField());
     }
 
     public function testGetIsManualField()
@@ -1135,7 +1135,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setIsAggregate(true);
 
-        $this->assertAttributeEquals(true, 'isAggregate', $mock);
+        $this->assertEquals(true, $mock->getIsAggregate());
     }
 
     public function testGetIsAggregate()
@@ -1151,7 +1151,7 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setUsePrefixTitle(false);
 
-        $this->assertAttributeEquals(false, 'usePrefixTitle', $mock);
+        $this->assertEquals(false, $mock->getUsePrefixTitle());
     }
 
     public function testGetUsePrefixTitle()
@@ -1339,10 +1339,10 @@ class ColumnTest extends TestCase
             Column::OPERATOR_ISNOTNULL,
         ]);
 
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             Column::OPERATOR_ISNULL,
             Column::OPERATOR_ISNOTNULL,
-        ], 'operators', $mock);
+        ], $mock->getOperators());
     }
 
     public function testGetOperators()

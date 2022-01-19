@@ -61,4 +61,12 @@ class Source
     {
         return $this->groupBy;
     }
+
+    /**
+     * Get the value of sortable
+     */ 
+    public function getSortable()
+    {
+        return $this->sortable;
+    }
 }
