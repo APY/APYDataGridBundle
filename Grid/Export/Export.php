@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class Export implements ExportInterface, ContainerAwareInterface
 {
-    const DEFAULT_TEMPLATE = 'APYDataGridBundle::blocks.html.twig';
+    const DEFAULT_TEMPLATE = '@APYDataGrid/blocks.html.twig';
 
     protected $title;
 
@@ -459,7 +459,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $templates = [];
 
         $template = $this->twig->loadTemplate($theme);
-        while ($template instanceof \Twig_Template) {
+        while ($template instanceof TemplateWrapper) {
             $templates[] = $template;
             $template = $template->getParent([]);
         }

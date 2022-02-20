@@ -1,6 +1,6 @@
 <?php
 
-namespace APY\DataGridBundle\Tests\Grid\Action;
+namespace APY\DataGridBundle\Tests\Action;
 
 use APY\DataGridBundle\Grid\Action\MassAction;
 use PHPUnit\Framework\TestCase;

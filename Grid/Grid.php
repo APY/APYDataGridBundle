@@ -26,6 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\TemplateWrapper;
 
 class Grid implements GridInterface
 {
@@ -359,8 +360,10 @@ class Grid implements GridInterface
         $this->setPersistence($config->isPersisted());
 
         // Route parameters
-        $routeParameters = $config->getRouteParameters();
-        if (!empty($routeParameters)) {
+        $routeParameters = [];
+        $parameters = $config->getRouteParameters();
+        if (!empty($parameters)) {
+            $routeParameters = $parameters;
             foreach ($routeParameters as $parameter => $value) {
                 $this->setRouteParameter($parameter, $value);
             }
@@ -1135,7 +1138,7 @@ class Grid implements GridInterface
 
     protected function saveSession()
     {
-        if (!empty($this->sessionData)) {
+        if (!empty($this->sessionData) && !empty($this->hash)) {
             $this->session->set($this->hash, $this->sessionData);
         }
     }
@@ -1395,12 +1398,11 @@ class Grid implements GridInterface
     public function setTemplate($template)
     {
         if ($template !== null) {
-            if ($template instanceof \Twig_Template) {
+            if ($template instanceof TemplateWrapper) {
                 $template = '__SELF__' . $template->getTemplateName();
             } elseif (!is_string($template)) {
                 throw new \Exception(self::TWIG_TEMPLATE_LOAD_EX_MSG);
             }
-
             $this->set(self::REQUEST_QUERY_TEMPLATE, $template);
             $this->saveSession();
         }
@@ -2147,7 +2149,7 @@ class Grid implements GridInterface
             if ($view === null) {
                 return $parameters;
             } else {
-                return $this->container->get('templating')->renderResponse($view, $parameters, $response);
+                return new Response($this->container->get('twig')->render($view, $parameters, $response));
             }
         }
     }

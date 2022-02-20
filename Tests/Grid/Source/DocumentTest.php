@@ -1,6 +1,6 @@
 <?php
 
-namespace APY\DataGridBundle\Grid\Tests\Source;
+namespace APY\DataGridBundle\Tests\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Columns;
@@ -10,9 +10,9 @@ use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Metadata;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Document;
-use Doctrine\ODM\MongoDB\Cursor;
+use MongoDB\Driver\Cursor;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\DocumentRepository;
+use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
@@ -1033,7 +1033,7 @@ class DocumentTest extends TestCase
         $builder
             ->method('getQuery')
             ->willReturn($query);
-        
+
         $this
             ->manager
             ->method('createQueryBuilder')

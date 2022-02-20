@@ -1,6 +1,6 @@
 <?php
 
-namespace APY\DataGridBundle\Grid\Tests;
+namespace APY\DataGridBundle\Tests\Grid;
 
 use APY\DataGridBundle\Grid\Action\MassAction;
 use APY\DataGridBundle\Grid\Action\RowAction;
@@ -18,7 +18,7 @@ use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\Templating\EngineInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\HeaderBag;
@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\TemplateWrapper;
 
 class GridTest extends TestCase
 {
@@ -177,7 +178,7 @@ class GridTest extends TestCase
         $this
             ->router
             ->method('generate')
-            ->with($route, null)
+            ->with($route, [])
             ->willReturn($url);
 
         $this->grid->initialize();
@@ -737,9 +738,8 @@ class GridTest extends TestCase
     public function testSetExportTwigTemplateInstance()
     {
         $templateName = 'templateName';
-
         $template = $this
-            ->getMockBuilder(\Twig_Template::class)
+            ->getMockBuilder(TemplateWrapper::class)
             ->disableOriginalConstructor()
             ->getMock();
         $template
@@ -767,6 +767,10 @@ class GridTest extends TestCase
             ->method('set')
             ->with($this->anything(), [Grid::REQUEST_QUERY_TEMPLATE => $template]);
 
+
+        $this->arrangeGridSourceDataLoadedWithEmptyRows();
+        $this->arrangeGridPrimaryColumn();
+        $this->grid->handleRequest($this->request);
         $this->grid->setTemplate($template);
     }
 
@@ -800,7 +804,7 @@ class GridTest extends TestCase
         $templateName = 'templateName';
 
         $template = $this
-            ->getMockBuilder(\Twig_Template::class)
+            ->getMockBuilder(TemplateWrapper::class)
             ->disableOriginalConstructor()
             ->getMock();
         $template
@@ -2593,6 +2597,9 @@ class GridTest extends TestCase
         $tweakId = 'aValidTweakId';
         $tweak = ['filters' => [], 'order' => 'columnId', 'page' => 1, 'limit' => 50, 'export' => 1, 'massAction' => 1];
 
+        $routeUrl = 'http://www.foo.com';
+        $this->grid->setRouteUrl($routeUrl);
+
         $this->grid->addTweak('title', $tweak, $tweakId, 'group');
 
         $this->grid->getTweak($nonExistentTweak);
@@ -2603,8 +2610,12 @@ class GridTest extends TestCase
         $title = 'aTweak';
         $id = 'aValidTweakId';
         $group = 'tweakGroup';
+
+        $routeUrl = 'http://www.foo.com';
+        $this->grid->setRouteUrl($routeUrl);
+
         $tweak = ['filters' => [], 'order' => 'columnId', 'page' => 1, 'limit' => 50, 'export' => 1, 'massAction' => 1];
-        $tweakUrl = sprintf('?[%s]=%s', Grid::REQUEST_QUERY_TWEAK, $id);
+        $tweakUrl = $routeUrl.sprintf('?[%s]=%s', Grid::REQUEST_QUERY_TWEAK, $id);
 
         $this->grid->addTweak($title, $tweak, $id, $group);
 
@@ -2615,11 +2626,14 @@ class GridTest extends TestCase
 
     public function testGetTweaksByGroupExcludingThoseWhoDoNotHaveTheGroup()
     {
+        $routeUrl = 'http://www.foo.com';
+        $this->grid->setRouteUrl($routeUrl);
+
         $title = 'aTweak';
         $id = 'aValidTweakId';
         $group = 'tweakGroup';
         $tweak = ['filters' => [], 'order' => 'columnId', 'page' => 1, 'limit' => 50, 'export' => 1, 'massAction' => 1];
-        $tweakUrl = sprintf('?[%s]=%s', Grid::REQUEST_QUERY_TWEAK, $id);
+        $tweakUrl = $routeUrl.sprintf('?[%s]=%s', Grid::REQUEST_QUERY_TWEAK, $id);
         $tweakResult = [$id => array_merge(['title' => $title, 'id' => $id, 'group' => $group, 'url' => $tweakUrl], $tweak)];
 
         $this->grid->addTweak($title, $tweak, $id, $group);
