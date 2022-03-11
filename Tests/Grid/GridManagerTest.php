@@ -5,9 +5,9 @@ namespace APY\DataGridBundle\Tests\Grid;
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridManager;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\BrowserKit\Response;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\DependencyInjection\Container;
+use Twig\Environment;
 
 class GridManagerTest extends TestCase
 {
@@ -417,11 +417,11 @@ class GridManagerTest extends TestCase
             ->method('getHash')
             ->willReturn($grid1Hash);
 
-        $engine = $this->createMock(EngineInterface::class);
+        $twig = $this->createMock(Environment::class);
 
         $containerGetMap = [
             ['grid', Container::EXCEPTION_ON_INVALID_REFERENCE, $grid],
-            ['templating', Container::EXCEPTION_ON_INVALID_REFERENCE, $engine],
+            ['twig', Container::EXCEPTION_ON_INVALID_REFERENCE, $twig],
         ];
 
         $this
@@ -433,13 +433,15 @@ class GridManagerTest extends TestCase
 
         $view = 'aView';
 
-        $response = $this->createMock(Response::class);
-        $engine
-            ->method('renderResponse')
-            ->with($view, ['grid1' => $grid], null)
-            ->willReturn($response);
+        $content = "test123";
 
-        $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view));
+        $twig
+            ->method('render')
+            ->with($view, ['grid1' => $grid])
+            ->willReturn($content);
+
+        // Can't mock the Response object, just check for the content Twig does return
+        $this->assertEquals($content, $this->gridManager->getGridManagerResponse($view)->getContent());
     }
 
     public function testGetGridWithViewWithViewAndParams()
@@ -451,11 +453,11 @@ class GridManagerTest extends TestCase
             ->method('getHash')
             ->willReturn($grid1Hash);
 
-        $engine = $this->createMock(EngineInterface::class);
+        $twig = $this->createMock(Environment::class);
 
         $containerGetMap = [
             ['grid', Container::EXCEPTION_ON_INVALID_REFERENCE, $grid],
-            ['templating', Container::EXCEPTION_ON_INVALID_REFERENCE, $engine],
+            ['twig', Container::EXCEPTION_ON_INVALID_REFERENCE, $twig],
         ];
 
         $this
@@ -472,12 +474,14 @@ class GridManagerTest extends TestCase
         $params = [$param1, $param2];
 
         $response = $this->createMock(Response::class);
-        $engine
-            ->method('renderResponse')
-            ->with($view, ['grid1' => $grid, $param1, $param2], null)
+
+        $twig
+            ->method('render')
+            ->with($view, ['grid1' => $grid, $param1, $param2])
             ->willReturn($response);
 
-        $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view, $params));
+        // TODO grid Manager response makes a new Response object internal, so i can't mock it
+        $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view, $params, $response));
     }
 
     public function setUp()

@@ -10,7 +10,6 @@ use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Metadata;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Document;
-use MongoDB\Driver\Cursor;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
@@ -18,6 +17,7 @@ use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
 use Doctrine\ODM\MongoDB\Query\Query;
 use MongoDB\BSON\Regex;
+use MongoDB\Driver\CursorInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -1157,7 +1157,7 @@ class DocumentTest extends TestCase
      */
     private function mockCursor(array $resources)
     {
-        $cursor = $this->createMock(Cursor::class);
+        $cursor = $this->createMock(CursorInterface::class);
 
         if (empty($resources)) {
             return $cursor;
@@ -1195,7 +1195,7 @@ class DocumentTest extends TestCase
      */
     private function mockHelperCursor(array $resources)
     {
-        $cursor = $this->createMock(Cursor::class);
+        $cursor = $this->createMock(CursorInterface::class);
 
         if (empty($resources)) {
             return $cursor;

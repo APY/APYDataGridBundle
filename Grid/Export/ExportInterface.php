@@ -12,6 +12,9 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Grid;
+use Symfony\Component\HttpFoundation\Response;
+
 interface ExportInterface
 {
     /**
@@ -19,21 +22,21 @@ interface ExportInterface
      *
      * @param Grid $grid The grid
      */
-    public function computeData($grid);
+    public function computeData(Grid $grid);
 
     /**
      * Get the export Response.
      *
      * @return Response
      */
-    public function getResponse();
+    public function getResponse(): Response;
 
     /**
      * Get the export title.
      *
      * @return string
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
      * Get the export role.

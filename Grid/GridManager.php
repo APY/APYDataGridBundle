@@ -12,10 +12,14 @@
 
 namespace APY\DataGridBundle\Grid;
 
+use Countable;
+use IteratorAggregate;
+use RuntimeException;
+use SplObjectStorage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class GridManager implements \IteratorAggregate, \Countable
+class GridManager implements IteratorAggregate, Countable
 {
     protected $container;
 
@@ -34,7 +38,7 @@ class GridManager implements \IteratorAggregate, \Countable
     public function __construct($container)
     {
         $this->container = $container;
-        $this->grids = new \SplObjectStorage();
+        $this->grids = new SplObjectStorage();
     }
 
     public function getIterator()
@@ -42,7 +46,7 @@ class GridManager implements \IteratorAggregate, \Countable
         return $this->grids;
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->grids->count();
     }
@@ -52,7 +56,7 @@ class GridManager implements \IteratorAggregate, \Countable
      *
      * @return Grid
      */
-    public function createGrid($id = null)
+    public function createGrid($id = null): Grid
     {
         $grid = $this->container->get('grid');
 
@@ -65,10 +69,10 @@ class GridManager implements \IteratorAggregate, \Countable
         return $grid;
     }
 
-    public function isReadyForRedirect()
+    public function isReadyForRedirect(): bool
     {
         if ($this->grids->count() == 0) {
-            throw new \RuntimeException(self::NO_GRID_EX_MSG);
+            throw new RuntimeException(self::NO_GRID_EX_MSG);
         }
 
         $checkHash = [];
@@ -90,7 +94,7 @@ class GridManager implements \IteratorAggregate, \Countable
             }
 
             if (in_array($grid->getHash(), $checkHash)) {
-                throw new \RuntimeException(self::SAME_GRID_HASH_EX_MSG);
+                throw new RuntimeException(self::SAME_GRID_HASH_EX_MSG);
             }
 
             $checkHash[] = $grid->getHash();
@@ -101,10 +105,10 @@ class GridManager implements \IteratorAggregate, \Countable
         return $isReadyForRedirect;
     }
 
-    public function isReadyForExport()
+    public function isReadyForExport(): bool
     {
         if ($this->grids->count() == 0) {
-            throw new \RuntimeException(self::NO_GRID_EX_MSG);
+            throw new RuntimeException(self::NO_GRID_EX_MSG);
         }
 
         $checkHash = [];
@@ -114,7 +118,7 @@ class GridManager implements \IteratorAggregate, \Countable
             $grid = $this->grids->current();
 
             if (in_array($grid->getHash(), $checkHash)) {
-                throw new \RuntimeException(self::SAME_GRID_HASH_EX_MSG);
+                throw new RuntimeException(self::SAME_GRID_HASH_EX_MSG);
             }
 
             $checkHash[] = $grid->getHash();
@@ -131,7 +135,7 @@ class GridManager implements \IteratorAggregate, \Countable
         return false;
     }
 
-    public function isMassActionRedirect()
+    public function isMassActionRedirect(): bool
     {
         $this->grids->rewind();
         while ($this->grids->valid()) {
@@ -152,11 +156,11 @@ class GridManager implements \IteratorAggregate, \Countable
     /**
      * Renders a view.
      *
-     * @param string|array $param1   The view name or an array of parameters to pass to the view
-     * @param string|array $param2   The view name or an array of parameters to pass to the view
-     * @param Response     $response A response instance
+     * @param string|array  $param1   The view name or an array of parameters to pass to the view
+     * @param string|array  $param2   The view name or an array of parameters to pass to the view
+     * @param Response|null $response A response instance
      *
-     * @return Response A Response instance
+     * @return Response|array A Response instance
      */
     public function getGridManagerResponse($param1 = null, $param2 = null, Response $response = null)
     {
