@@ -3,6 +3,7 @@ language: php
 php:
   - 7.2
   - 7.3
+  - 7.4
 
 matrix:
   include:
@@ -10,6 +11,12 @@ matrix:
       env: |
         SYMFONY_VERSION=^3.0
     - php: 7.2
+      env: |
+        SYMFONY_VERSION=^4.0
+    - php: 7.4
+      env: |
+        SYMFONY_VERSION=^3.0
+    - php: 7.4
       env: |
         SYMFONY_VERSION=^4.0
 
