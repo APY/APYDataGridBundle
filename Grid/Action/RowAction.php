@@ -61,8 +61,6 @@ class RowAction implements RowActionInterface
      * @param string $target     Set the target of this action (_self,_blank,_parent,_top)
      * @param array  $attributes Attributes of the anchor tag
      * @param string $role       Security role
-     *
-     * @return \APY\DataGridBundle\Grid\Action\RowAction
      */
     public function __construct($title, $route, $confirm = false, $target = '_self', $attributes = [], $role = null)
     {
@@ -383,7 +381,7 @@ class RowAction implements RowActionInterface
         foreach ($this->callbacks as $callback) {
             if (is_callable($callback)) {
                 if (null === call_user_func($callback, $this, $row)) {
-                    return;
+                    return null;
                 }
             }
         }

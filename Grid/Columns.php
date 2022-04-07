@@ -24,14 +24,8 @@ class Columns implements \IteratorAggregate, \Countable
 
     const MISSING_COLUMN_EX_MSG = 'Column with id "%s" doesn\'t exists';
 
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    protected $authorizationChecker;
+    protected AuthorizationCheckerInterface $authorizationChecker;
 
-    /**
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->authorizationChecker = $authorizationChecker;
@@ -42,7 +36,7 @@ class Columns implements \IteratorAggregate, \Countable
      *
      * @return ColumnsIterator
      */
-    public function getIterator($showOnlySourceColumns = false)
+    public function getIterator($showOnlySourceColumns = false): \Traversable
     {
         return new ColumnsIterator(new \ArrayIterator($this->columns), $showOnlySourceColumns);
     }
@@ -125,10 +119,7 @@ class Columns implements \IteratorAggregate, \Countable
         throw new \InvalidArgumentException('Primary column doesn\'t exists');
     }
 
-    /**
-     * @return int
-     */
-    public function count()
+    public function count(): int
     {
         return count($this->columns);
     }

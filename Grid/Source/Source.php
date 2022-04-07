@@ -27,9 +27,6 @@ abstract class Source implements DriverInterface
     protected $items = [];
     protected $count;
 
-    /**
-     * @param \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder
-     */
     public function prepareQuery($queryBuilder)
     {
         if (is_callable($this->prepareQueryCallback)) {
