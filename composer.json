@@ -27,7 +27,7 @@
         "symfony/http-foundation": "^4.0|^5.0",
         "symfony/http-kernel": "^4.0|^5.0",
         "symfony/options-resolver": "^4.0|^5.0",
-        "symfony/security": "^4.0|^5.0",
+        "symfony/security-core": "^5.0",
         "symfony/serializer": "^4.0|^5.0",
         "twig/twig": ">=1.5.0"
     },
