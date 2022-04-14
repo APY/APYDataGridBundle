@@ -10,14 +10,14 @@ Pass the $grid object to the view and call your grid render in your template.
 ...
 $grid = $this->get('grid');
 
-return $grid->getGridResponse('MyProjectMyBundle::my_grid.html.twig');
+return $grid->getGridResponse('grid.html.twig');
 ...
 ```
 
 And the template
 
 ```janjo
-<!-- MyProjectMyBundle::grid.html.twig -->
+<!-- grid.html.twig -->
 
 {{ grid_search(grid, theme, id, params) }}
 ...
@@ -29,7 +29,7 @@ And the template
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|
 |grid|APY/DataGridBundle/Grid/Grid||The grid object|
-|theme|string|APYDataGridBundle::blocks.html.twig|Template used to render the filters blocks|
+|theme|string|@APYDataGrid/blocks.html.twig|Template used to render the filters blocks|
 |id|string|_none_|Set the identifier of the grid.|
 |params|array|array()|Additional parameters passed to each block.|
 
@@ -38,7 +38,7 @@ And the template
 #### Example
 
 ```janjo
-<!-- MyProjectMyBundle::grid.html.twig -->
+<!-- grid.html.twig -->
 
 {{ grid_search(grid) }}
 
@@ -52,9 +52,9 @@ And the template
 
 If you don't want to show the filter in the grid columns, you can disable the grid_filters blocks with an external template.
 
-`{{ grid(grid, 'MyProjectMyBundle::grid.html.twig') }}`
+`{{ grid(grid, 'grid.html.twig') }}`
 
-And in your MyProjectMyBundle::grid.html.twig template
+And in your `grid.html.twig` template
 
 ```janjo
 {% block grid_filters %}{% endblock %}
