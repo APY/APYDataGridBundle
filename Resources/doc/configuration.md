@@ -6,7 +6,7 @@ All available configuration options are listed below with their default values.
 apy_data_grid:
     limits: [20, 50, 100]
     persistence: false
-    theme: 'APYDataGridBundle::blocks.html.twig'
+    theme: '@APYDataGrid/blocks.html.twig'
     no_data_message: "No data"
     no_result_message: "No result"
     actions_columns_size: -1
