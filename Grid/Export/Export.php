@@ -13,9 +13,11 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 use APY\DataGridBundle\Grid\Column\ArrayColumn;
+use APY\DataGridBundle\Grid\Grid;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\TemplateWrapper;
 
 abstract class Export implements ExportInterface, ContainerAwareInterface
 {
@@ -441,12 +443,12 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         if (is_string($template)) {
             if (substr($template, 0, 8) === '__SELF__') {
                 $this->templates = $this->getTemplatesFromString(substr($template, 8));
-                $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+                $this->templates[] = $this->twig->load(static::DEFAULT_TEMPLATE);
             } else {
                 $this->templates = $this->getTemplatesFromString($template);
             }
         } elseif ($this->templates === null) {
-            $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+            $this->templates[] = $this->twig->load(static::DEFAULT_TEMPLATE);
         } else {
             throw new \Exception('Unable to load template');
         }
@@ -457,13 +459,10 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     protected function getTemplatesFromString($theme)
     {
         $templates = [];
-
-        $template = $this->twig->loadTemplate($theme);
-        while ($template instanceof TemplateWrapper) {
+        $template = $this->twig->load($theme);
+        if ($template instanceof TemplateWrapper) {
             $templates[] = $template;
-            $template = $template->getParent([]);
         }
-
         return $templates;
     }
 
