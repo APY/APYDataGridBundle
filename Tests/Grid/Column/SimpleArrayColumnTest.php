@@ -19,23 +19,23 @@ class SimpleArrayColumnTest extends TestCase
         $this->assertEquals('simple_array', $this->column->getType());
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->column = new SimpleArrayColumn();
     }
 
     public function testInitializeDefaultParams()
     {
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             Column::OPERATOR_LIKE,
             Column::OPERATOR_NLIKE,
             Column::OPERATOR_EQ,
             Column::OPERATOR_NEQ,
             Column::OPERATOR_ISNULL,
             Column::OPERATOR_ISNOTNULL,
-        ], 'operators', $this->column);
+        ], $this->column->getOperators());
 
-        $this->assertAttributeEquals(Column::OPERATOR_LIKE, 'defaultOperator', $this->column);
+        $this->assertEquals(Column::OPERATOR_LIKE, $this->column->getDefaultOperator());
     }
 
     public function testEqualFilter()
@@ -82,7 +82,7 @@ class SimpleArrayColumnTest extends TestCase
             new Filter(Column::OPERATOR_ISNULL),
             new Filter(Column::OPERATOR_EQ, ''),
         ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+        $this->assertEquals(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testIsNotNullFilter()

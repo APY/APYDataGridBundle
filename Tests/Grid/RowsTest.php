@@ -1,6 +1,6 @@
 <?php
 
-namespace APY\DataGridBundle\Grid\Tests;
+namespace APY\DataGridBundle\Tests\Grid;
 
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
@@ -35,7 +35,7 @@ class RowsTest extends TestCase
         $this->assertEquals($this->rows, $this->rowsSUT->toArray());
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->rows = [$this->createMock(Row::class), $this->createMock(Row::class), $this->createMock(Row::class)];
         $this->rowsSUT = new Rows($this->rows);

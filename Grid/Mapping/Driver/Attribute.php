@@ -14,9 +14,8 @@ namespace APY\DataGridBundle\Grid\Mapping\Driver;
 
 use APY\DataGridBundle\Grid\Mapping\Column;
 use APY\DataGridBundle\Grid\Mapping\Source;
-use Doctrine\Common\Annotations\Reader;
 
-class Annotation implements DriverInterface
+class Attribute implements DriverInterface
 {
     protected array $columns;
     protected array $filterable;
@@ -25,26 +24,16 @@ class Annotation implements DriverInterface
     protected array $loaded;
     protected array $groupBy;
 
-    protected Reader $reader;
-
-    public function __construct($reader)
+    public function __construct()
     {
-        $this->reader = $reader;
         $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = $this->sortable = [];
     }
 
     public function supports(string $class): bool
     {
         $reflection = new \ReflectionClass($class);
-        $result = false;
-        foreach ($this->reader->getClassAnnotations($reflection) as $annotation) {
-            if ($annotation instanceof Source) {
-                $result = true;
-                break;
-            }
-        }
 
-        return $result;
+        return 0 < \count($reflection->getAttributes(Source::class));
     }
 
     public function getClassColumns($class, $group = 'default'): array
@@ -80,17 +69,16 @@ class Annotation implements DriverInterface
         }
 
         while (!empty($reflectionCollection)) {
-            $reflection = array_pop($reflectionCollection);
-
-            foreach ($this->reader->getClassAnnotations($reflection) as $class) {
-                $this->getMetadataFromClass($className, $class, $group);
+            $reflection = \array_pop($reflectionCollection);
+            foreach ($reflection->getAttributes(Source::class) as $attribute) {
+                $this->getMetadataFromClass($className, $attribute, $group);
             }
 
             foreach ($reflection->getProperties() as $property) {
                 $this->fields[$className][$group][$property->getName()] = [];
 
-                foreach ($this->reader->getPropertyAnnotations($property) as $class) {
-                    $this->getMetadataFromClassProperty($className, $class, $property->getName(), $group);
+                foreach ($property->getAttributes(Column::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    $this->getMetadataFromClassProperty($className, $attribute, $property->getName(), $group);
                 }
             }
         }
@@ -114,10 +102,10 @@ class Annotation implements DriverInterface
         $this->loaded[$className][$group] = true;
     }
 
-    protected function getMetadataFromClassProperty($className, $class, $name = null, $group = 'default'): void
+    protected function getMetadataFromClassProperty($className, $attribute, $name = null, $group = 'default'): void
     {
-        if ($class instanceof Column) {
-            $metadata = $class->getMetadata();
+        if (Column::class === $attribute->getName()) {
+            $metadata = $attribute->getArguments() ?? [];
 
             if (isset($metadata['id']) && $name !== null) {
                 throw new \RuntimeException(\sprintf('Parameter `id` can\'t be used in annotations for property `%s`, please remove it from class %s', $name, $className));
@@ -170,17 +158,19 @@ class Annotation implements DriverInterface
         }
     }
 
-    protected function getMetadataFromClass($className, $class, $group): void
+    protected function getMetadataFromClass($className, $attribute, $group): void
     {
-        if ($class instanceof Source) {
-            foreach ($class->getGroups() as $sourceGroup) {
-                $this->columns[$className][$sourceGroup] = $class->getColumns();
-                $this->filterable[$className][$sourceGroup] = $class->isFilterable();
-                $this->sortable[$className][$sourceGroup] = $class->isSortable();
-                $this->groupBy[$className][$sourceGroup] = $class->getGroupBy();
+        if (Source::class === $attribute->getName()) {
+            $metadata = $attribute->getArguments();
+            $groups = (isset($metadata['groups']) && !empty($metadata['groups'])) ? (array) $metadata['groups'] : ['default'];
+            foreach ($groups as $sourceGroup) {
+                $this->columns[$className][$sourceGroup] = (isset($metadata['columns']) && !empty($metadata['columns'])) ? \array_map('trim', $metadata['columns']) : [];
+                $this->filterable[$className][$sourceGroup] = $metadata['filterable'] ?? true;
+                $this->sortable[$className][$sourceGroup] = $metadata['sortable'] ?? true;
+                $this->groupBy[$className][$sourceGroup] = (isset($metadata['groupBy']) && !empty($metadata['groupBy'])) ? (array) $metadata['groupBy'] : [];
             }
-        } elseif ($class instanceof Column) {
-            $this->getMetadataFromClassProperty($className, $class, null, $group);
+        } elseif (Column::class === $attribute->getName()) {
+            $this->getMetadataFromClassProperty($className, $attribute, null, $group);
         }
     }
 }

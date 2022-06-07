@@ -5,7 +5,7 @@ namespace APY\DataGridBundle\Tests\Grid\Column;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\TextColumn;
 use APY\DataGridBundle\Grid\Filter;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class TextColumnTest extends TestCase
 {
@@ -31,7 +31,7 @@ class TextColumnTest extends TestCase
             new Filter(Column::OPERATOR_ISNULL),
             new Filter(Column::OPERATOR_EQ, ''),
         ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+        $this->assertEquals(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testNotNullOperatorFilters()
@@ -55,7 +55,7 @@ class TextColumnTest extends TestCase
         }
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->column = new TextColumn();
     }

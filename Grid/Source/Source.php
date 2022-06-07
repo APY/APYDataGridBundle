@@ -110,17 +110,22 @@ abstract class Source implements DriverInterface
      */
     abstract public function getColumns($columns);
 
-    public function getClassColumns($class, $group = 'default')
+    public function supports(string $class): bool
+    {
+        return true;
+    }
+
+    public function getClassColumns($class, $group = 'default'): array
     {
         return [];
     }
 
-    public function getFieldsMetadata($class, $group = 'default')
+    public function getFieldsMetadata($class, $group = 'default'): array
     {
         return [];
     }
 
-    public function getGroupBy($class, $group = 'default')
+    public function getGroupBy($class, $group = 'default'): array
     {
         return [];
     }

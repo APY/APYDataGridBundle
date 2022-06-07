@@ -1,6 +1,6 @@
 <?php
 
-namespace APY\DataGridBundle\Grid\Tests\Mapping\Metadata;
+namespace APY\DataGridBundle\Tests\Grid\Mapping\Metadata;
 
 use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
 use APY\DataGridBundle\Grid\Mapping\Metadata\DriverHeap;
@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ManagerTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->manager = new Manager();
     }
@@ -25,7 +25,7 @@ class ManagerTest extends TestCase
 
         $this->manager->addDriver($driverInterfaceMock, $priority);
 
-        $this->assertAttributeEquals($driverHeap, 'drivers', $this->manager);
+        $this->assertEquals($driverHeap, $this->manager->getDrivers());
     }
 
     public function testGetDrivers()
@@ -81,13 +81,14 @@ class ManagerTest extends TestCase
 
         $driverInterfaceMock->method('getGroupBy')
                             ->willReturn($groupBy);
+        $driverInterfaceMock->expects(self::once())->method('supports')->willReturn(true);
 
         $this->manager->addDriver($driverInterfaceMock, 1);
 
         $metadata = $this->manager->getMetadata('foo');
 
-        $this->assertAttributeEquals($fields, 'fields', $metadata);
-        $this->assertAttributeEquals($groupBy, 'groupBy', $metadata);
-        $this->assertAttributeEquals($mapping, 'fieldsMappings', $metadata);
+        $this->assertEquals($fields, $metadata->getFields());
+        $this->assertEquals($groupBy, $metadata->getGroupBy());
+        $this->assertEquals($mapping['bar'], $metadata->getFieldMapping('bar'));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace APY\DataGridBundle\Grid\Tests\Mapping\Metadata;
+namespace APY\DataGridBundle\Tests\Grid\Mapping\Metadata;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Columns;
@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class MetadataTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->metadata = new Metadata();
     }
@@ -20,7 +20,7 @@ class MetadataTest extends TestCase
 
         $this->metadata->setFields($field);
 
-        $this->assertAttributeEquals($field, 'fields', $this->metadata);
+        $this->assertEquals($field, $this->metadata->getFields());
     }
 
     public function testGetFields()
@@ -63,7 +63,7 @@ class MetadataTest extends TestCase
 
         $this->metadata->setFieldsMappings($fieldMapping);
 
-        $this->assertAttributeEquals($fieldMapping, 'fieldsMappings', $this->metadata);
+        $this->assertEquals($fieldMapping[$field], $this->metadata->getFieldMapping($field));
     }
 
     public function testGetterMappingFieldWithType()
@@ -76,30 +76,12 @@ class MetadataTest extends TestCase
         $this->assertEquals($value, $this->metadata->getFieldMappingType($field));
     }
 
-    public function testSetterGroupBy()
-    {
-        $groupBy = 'groupBy';
-
-        $this->metadata->setGroupBy($groupBy);
-
-        $this->assertAttributeEquals($groupBy, 'groupBy', $this->metadata);
-    }
-
     public function testGetterGroupBy()
     {
         $groupBy = 'groupBy';
 
         $this->metadata->setGroupBy($groupBy);
         $this->assertEquals($groupBy, $this->metadata->getGroupBy());
-    }
-
-    public function testSetterName()
-    {
-        $name = 'name';
-
-        $this->metadata->setName($name);
-
-        $this->assertAttributeEquals($name, 'name', $this->metadata);
     }
 
     public function testGetterName()

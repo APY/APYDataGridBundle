@@ -79,10 +79,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         $this->pagerFantaDefs = $def;
     }
 
-    /**
-     * @return array
-     */
-    public function getGlobals()
+    public function getGlobals(): array
     {
         return [
             'grid'           => null,

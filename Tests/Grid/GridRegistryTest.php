@@ -94,7 +94,7 @@ class GridRegistryTest extends TestCase
         $this->assertSame($expectedColumnType, $this->registry->getColumn('type'));
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->registry = new GridRegistry();
     }

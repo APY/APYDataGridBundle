@@ -158,7 +158,7 @@ class GridManager implements \IteratorAggregate, \Countable
      *
      * @return Response A Response instance
      */
-    public function getGridManagerResponse($param1 = null, $param2 = null, Response $response = null)
+    public function getGridManagerResponse($param1 = null, $param2 = null)
     {
         $isReadyForRedirect = $this->isReadyForRedirect();
 
@@ -193,7 +193,7 @@ class GridManager implements \IteratorAggregate, \Countable
                 return $parameters;
             }
 
-            return $this->container->get('templating')->renderResponse($view, $parameters, $response);
+            return $this->container->get('templating')->render($view, $parameters);
         }
     }
 

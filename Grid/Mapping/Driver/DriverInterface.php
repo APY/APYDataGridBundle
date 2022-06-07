@@ -14,9 +14,11 @@ namespace APY\DataGridBundle\Grid\Mapping\Driver;
 
 interface DriverInterface
 {
-    public function getClassColumns($class, $group = 'default');
+    public function getClassColumns(string $class, string $group = 'default'): array;
 
-    public function getFieldsMetadata($class, $group = 'default');
+    public function getFieldsMetadata(string $class, string $group = 'default'): array;
 
-    public function getGroupBy($class, $group = 'default');
+    public function getGroupBy(string $class, string $group = 'default'): array;
+
+    public function supports(string $class): bool;
 }

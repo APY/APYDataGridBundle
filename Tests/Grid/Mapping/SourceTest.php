@@ -1,52 +1,42 @@
 <?php
 
-namespace APY\DataGridBundle\Grid\Tests\Mapping;
+namespace APY\DataGridBundle\Tests\Grid\Mapping;
 
 use APY\DataGridBundle\Grid\Mapping\Source;
 use PHPUnit\Framework\TestCase;
 
 class SourceTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->source = new Source([]);
     }
 
     public function testColumnsHasDefaultValue()
     {
-        $this->assertAttributeEquals([], 'columns', $this->source);
+        $this->assertEquals([], $this->source->getColumns());
     }
 
     public function testFilterableHasDefaultValue()
     {
-        $this->assertAttributeEquals(true, 'filterable', $this->source);
+        $this->assertEquals(true, $this->source->isFilterable());
     }
 
     public function testSortableHasDefaultValue()
     {
-        $this->assertAttributeEquals(true, 'sortable', $this->source);
+        $this->assertEquals(true, $this->source->isSortable());
     }
 
     public function testGroupsHasDefaultValue()
     {
         $expectedGroups = ['0' => 'default'];
 
-        $this->assertAttributeEquals($expectedGroups, 'groups', $this->source);
+        $this->assertEquals($expectedGroups, $this->source->getGroups());
     }
 
     public function testGroupByHasDefaultValue()
     {
-        $this->assertAttributeEquals([], 'groupBy', $this->source);
-    }
-
-    public function testSetterColumns()
-    {
-        $columns = 'columns';
-        $expectedColumns = [$columns];
-
-        $this->source = new Source(['columns' => $columns]);
-
-        $this->assertAttributeEquals($expectedColumns, 'columns', $this->source);
+        $this->assertEquals([], $this->source->getGroupBy());
     }
 
     public function testGetterColumns()
@@ -68,15 +58,6 @@ class SourceTest extends TestCase
         $this->assertTrue($this->source->hasColumns());
     }
 
-    public function testSetterFilterable()
-    {
-        $filterable = false;
-
-        $this->source = new Source(['filterable' => $filterable]);
-
-        $this->assertAttributeEquals($filterable, 'filterable', $this->source);
-    }
-
     public function testGetterFilterable()
     {
         $filterable = false;
@@ -84,15 +65,6 @@ class SourceTest extends TestCase
         $this->source = new Source(['filterable' => $filterable]);
 
         $this->assertEquals($filterable, $this->source->isFilterable());
-    }
-
-    public function testSetterSortable()
-    {
-        $sortable = false;
-
-        $this->source = new Source(['sortable' => $sortable]);
-
-        $this->assertAttributeEquals($sortable, 'sortable', $this->source);
     }
 
     public function testGetterSortable()
@@ -104,16 +76,6 @@ class SourceTest extends TestCase
         $this->assertEquals($sortable, $this->source->isSortable());
     }
 
-    public function testSetterGroups()
-    {
-        $groups = 'groups';
-        $expectedGroups = [$groups];
-
-        $this->source = new Source(['groups' => $groups]);
-
-        $this->assertAttributeEquals($expectedGroups, 'groups', $this->source);
-    }
-
     public function testGetterGroups()
     {
         $groups = 'groups';
@@ -122,16 +84,6 @@ class SourceTest extends TestCase
         $this->source = new Source(['groups' => $groups]);
 
         $this->assertEquals($expectedGroups, $this->source->getGroups());
-    }
-
-    public function testSetterGroupBy()
-    {
-        $groupsBy = 'groupBy';
-        $expectedGroupsBy = [$groupsBy];
-
-        $this->source = new Source(['groupBy' => $groupsBy]);
-
-        $this->assertAttributeEquals($expectedGroupsBy, 'groupBy', $this->source);
     }
 
     public function testGetterGroupBy()

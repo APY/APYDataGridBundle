@@ -48,9 +48,12 @@ class Manager
         $columns = $fieldsMetadata = $groupBy = [];
 
         foreach ($this->getDrivers() as $driver) {
-            $columns = array_merge($columns, $driver->getClassColumns($className, $group));
+            if (!$driver->supports($className)) {
+                continue;
+            }
+            $columns = \array_merge($columns, $driver->getClassColumns($className, $group));
             $fieldsMetadata[] = $driver->getFieldsMetadata($className, $group);
-            $groupBy = array_merge($groupBy, $driver->getGroupBy($className, $group));
+            $groupBy = \array_merge($groupBy, $driver->getGroupBy($className, $group));
         }
 
         $mappings = $cols = [];
@@ -59,8 +62,8 @@ class Manager
             $map = [];
 
             foreach ($fieldsMetadata as $field) {
-                if (isset($field[$fieldName]) && (!isset($field[$fieldName]['groups']) || in_array($group, (array) $field[$fieldName]['groups']))) {
-                    $map = array_merge($map, $field[$fieldName]);
+                if (isset($field[$fieldName]) && (!isset($field[$fieldName]['groups']) || \in_array($group, (array) $field[$fieldName]['groups'], true))) {
+                    $map = \array_merge($map, $field[$fieldName]);
                 }
             }
 

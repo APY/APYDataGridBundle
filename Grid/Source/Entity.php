@@ -637,7 +637,7 @@ class Entity extends Source
         return $count;
     }
 
-    public function getFieldsMetadata($class, $group = 'default')
+    public function getFieldsMetadata($class, $group = 'default'): array
     {
         $result = [];
         foreach ($this->ormMetadata->getFieldNames() as $name) {

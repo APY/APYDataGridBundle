@@ -1,6 +1,6 @@
 <?php
 
-namespace APY\DataGridBundle\Grid\Tests;
+namespace APY\DataGridBundle\Tests\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\InvalidArgumentException;
@@ -8,10 +8,12 @@ use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridBuilder;
 use APY\DataGridBundle\Grid\GridFactoryInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -21,12 +23,12 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class GridBuilderTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $container;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $factory;
 
@@ -143,7 +145,7 @@ class GridBuilderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $self = $this;
 
@@ -157,6 +159,7 @@ class GridBuilderTest extends TestCase
                         break;
                     case 'request_stack':
                         $request = new Request([], [], ['key' => 'value']);
+                        $request->setSession(new Session());
                         $requestStack = new RequestStack();
                         $requestStack->push($request);
 
@@ -172,7 +175,7 @@ class GridBuilderTest extends TestCase
         $this->builder = new GridBuilder($this->container, $this->factory, 'name');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->factory = null;
         $this->builder = null;

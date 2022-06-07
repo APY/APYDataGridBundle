@@ -26,6 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Template;
 
 class Grid implements GridInterface
 {
@@ -339,7 +340,7 @@ class Grid implements GridInterface
 
         $this->routeParameters = $this->request->attributes->all();
         foreach (array_keys($this->routeParameters) as $key) {
-            if (substr($key, 0, 1) == '_') {
+            if (\str_starts_with($key, '_')) {
                 unset($this->routeParameters[$key]);
             }
         }
@@ -359,7 +360,7 @@ class Grid implements GridInterface
         $this->setPersistence($config->isPersisted());
 
         // Route parameters
-        $routeParameters = $config->getRouteParameters();
+        $routeParameters = $config->getRouteParameters() ?? [];
         if (!empty($routeParameters)) {
             foreach ($routeParameters as $parameter => $value) {
                 $this->setRouteParameter($parameter, $value);
@@ -551,7 +552,7 @@ class Grid implements GridInterface
 
     protected function processPersistence()
     {
-        $referer = strtok($this->request->headers->get('referer'), '?');
+        $referer = strtok($this->request->headers->get('referer') ?? '', '?');
 
         // Persistence or reset - kill previous session
         if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $referer != $this->getCurrentUri())
@@ -649,7 +650,7 @@ class Grid implements GridInterface
 
                 if (is_callable($action->getCallback())) {
                     $this->massActionResponse = call_user_func($action->getCallback(), $actionKeys, $actionAllKeys, $this->session, $action->getParameters());
-                } elseif (strpos($action->getCallback(), ':') !== false) {
+                } elseif (\str_contains($action->getCallback(), ':')) {
                     $path = array_merge(
                         [
                             'primaryKeys'    => $actionKeys,
@@ -864,7 +865,7 @@ class Grid implements GridInterface
     protected function processOrder($order)
     {
         if ($order !== null) {
-            list($columnId, $columnOrder) = explode('|', $order);
+            [$columnId, $columnOrder] = explode('|', $order);
 
             $column = $this->columns->getColumnById($columnId);
             if ($column->isSortable() && in_array(strtolower($columnOrder), ['asc', 'desc'])) {
@@ -896,7 +897,7 @@ class Grid implements GridInterface
 
         // Default order
         if ($this->defaultOrder !== null) {
-            list($columnId, $columnOrder) = explode('|', $this->defaultOrder);
+            [$columnId, $columnOrder] = explode('|', $this->defaultOrder);
 
             $this->columns->getColumnById($columnId);
             if (in_array(strtolower($columnOrder), ['asc', 'desc'])) {
@@ -997,7 +998,7 @@ class Grid implements GridInterface
 
         // Order
         if (($order = $this->get(self::REQUEST_QUERY_ORDER)) !== null) {
-            list($columnId, $columnOrder) = explode('|', $order);
+            [$columnId, $columnOrder] = explode('|', $order);
 
             $this->columns->getColumnById($columnId)->setOrder($columnOrder);
         }
@@ -1136,7 +1137,7 @@ class Grid implements GridInterface
     protected function saveSession()
     {
         if (!empty($this->sessionData)) {
-            $this->session->set($this->hash, $this->sessionData);
+            $this->session->set($this->hash ?? '', $this->sessionData);
         }
     }
 
@@ -1354,7 +1355,7 @@ class Grid implements GridInterface
     {
         $tweaks = $this->getActiveTweaks();
 
-        return isset($tweaks[$group]) ? $tweaks[$group] : -1;
+        return $tweaks[$group] ?? -1;
     }
 
     /**
@@ -1386,7 +1387,7 @@ class Grid implements GridInterface
     /**
      * Sets template for export.
      *
-     * @param \Twig_Template|string $template
+     * @param Template|string $template
      *
      * @throws \Exception
      *
@@ -1395,7 +1396,7 @@ class Grid implements GridInterface
     public function setTemplate($template)
     {
         if ($template !== null) {
-            if ($template instanceof \Twig_Template) {
+            if ($template instanceof Template) {
                 $template = '__SELF__' . $template->getTemplateName();
             } elseif (!is_string($template)) {
                 throw new \Exception(self::TWIG_TEMPLATE_LOAD_EX_MSG);
@@ -1411,7 +1412,7 @@ class Grid implements GridInterface
     /**
      * Returns template.
      *
-     * @return \Twig_Template|string
+     * @return Template|string
      */
     public function getTemplate()
     {
@@ -1511,7 +1512,7 @@ class Grid implements GridInterface
     public function getRouteUrl()
     {
         if ($this->routeUrl === null) {
-            $this->routeUrl = $this->router->generate($this->request->get('_route'), $this->getRouteParameters());
+            $this->routeUrl = $this->router->generate($this->request->get('_route') ?? '', $this->getRouteParameters());
         }
 
         return $this->routeUrl;
@@ -2147,7 +2148,7 @@ class Grid implements GridInterface
             if ($view === null) {
                 return $parameters;
             } else {
-                return $this->container->get('templating')->renderResponse($view, $parameters, $response);
+                return $this->container->get('templating')->render($view, $parameters);
             }
         }
     }
@@ -2256,7 +2257,7 @@ class Grid implements GridInterface
 
         $sessionFilters = $this->getFilters();
 
-        return isset($sessionFilters[$columnId]) ? $sessionFilters[$columnId] : null;
+        return $sessionFilters[$columnId] ?? null;
     }
 
     /**

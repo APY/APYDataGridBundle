@@ -10,3 +10,5 @@ catalog.xml
 .project
 .settings/
 .idea
+.phpunit.result.cache
+build/logs/

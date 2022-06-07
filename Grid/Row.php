@@ -138,7 +138,7 @@ class Row
      */
     public function getField($columnId)
     {
-        return isset($this->fields[$columnId]) ? $this->fields[$columnId] : '';
+        return $this->fields[$columnId] ?? '';
     }
 
     /**

@@ -192,7 +192,7 @@ abstract class Column
 
     protected function getParam($id, $default = null)
     {
-        return isset($this->params[$id]) ? $this->params[$id] : $default;
+        return $this->params[$id] ?? $default;
     }
 
     /**
@@ -527,7 +527,7 @@ abstract class Column
         if (!\is_array($this->data)){
             return [];
         }
-        
+
         $result = [];
 
         $hasValue = false;
@@ -691,7 +691,7 @@ abstract class Column
         if (!\is_array($this->data)) {
             return [];
         }
-        
+
         $filters = [];
 
         if ($this->hasOperator($this->data['operator'])) {

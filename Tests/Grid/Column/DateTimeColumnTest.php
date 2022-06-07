@@ -6,24 +6,15 @@ use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\DateTimeColumn;
 use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Row;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
-class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
+class DateTimeColumnTest extends TestCase
 {
     public function testGetType()
     {
         $column = new DateTimeColumn();
         $this->assertEquals('datetime', $column->getType());
-    }
-
-    public function testSetFormat()
-    {
-        $format = 'Y-m-d';
-
-        $column = new DateTimeColumn();
-        $column->setFormat($format);
-
-        $this->assertAttributeEquals($format, 'format', $column);
     }
 
     public function testGetFormat()
@@ -34,16 +25,6 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $column->setFormat($format);
 
         $this->assertEquals($format, $column->getFormat());
-    }
-
-    public function testSetTimezone()
-    {
-        $timezone = 'UTC';
-
-        $column = new DateTimeColumn();
-        $column->setTimezone($timezone);
-
-        $this->assertAttributeEquals($timezone, 'timezone', $column);
     }
 
     public function testGetTimezone()
@@ -132,8 +113,8 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
     {
         $column = new DateTimeColumn();
 
-        $this->assertAttributeEquals(null, 'format', $column);
-        $this->assertAttributeEquals([
+        $this->assertEquals(null, $column->getFormat());
+        $this->assertEquals([
             Column::OPERATOR_EQ,
             Column::OPERATOR_NEQ,
             Column::OPERATOR_LT,
@@ -144,9 +125,9 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
             Column::OPERATOR_BTWE,
             Column::OPERATOR_ISNULL,
             Column::OPERATOR_ISNOTNULL,
-        ], 'operators', $column);
-        $this->assertAttributeEquals(Column::OPERATOR_EQ, 'defaultOperator', $column);
-        $this->assertAttributeEquals(date_default_timezone_get(), 'timezone', $column);
+        ], $column->getOperators());
+        $this->assertEquals(Column::OPERATOR_EQ, $column->getDefaultOperator());
+        $this->assertEquals(date_default_timezone_get(), $column->getTimezone());
     }
 
     public function testInitialize()
@@ -163,12 +144,12 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
 
         $column = new DateTimeColumn($params);
 
-        $this->assertAttributeEquals($format, 'format', $column);
-        $this->assertAttributeEquals([
+        $this->assertEquals($format, $column->getFormat());
+        $this->assertEquals([
             Column::OPERATOR_LT, Column::OPERATOR_LTE,
-        ], 'operators', $column);
-        $this->assertAttributeEquals(Column::OPERATOR_LT, 'defaultOperator', $column);
-        $this->assertAttributeEquals($timezone, 'timezone', $column);
+        ], $column->getOperators());
+        $this->assertEquals(Column::OPERATOR_LT, $column->getDefaultOperator());
+        $this->assertEquals($timezone, $column->getTimezone());
     }
 
     /**
