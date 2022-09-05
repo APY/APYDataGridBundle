@@ -15,8 +15,13 @@ namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\JoinColumn;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\DB2Platform;
+use Doctrine\DBAL\Platforms\OraclePlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -24,7 +29,9 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpKernel\Kernel;
+use Doctrine\ORM\Tools\Pagination\CountOutputWalker;
 
 class Entity extends Source
 {
@@ -136,20 +143,16 @@ class Entity extends Source
         $this->setTableAlias(self::TABLE_ALIAS);
     }
 
-    public function initialise($container)
+    public function initialise(ManagerRegistry $doctrine, Manager $manager)
     {
-        $doctrine = $container->get('doctrine');
-
-        $this->manager = version_compare(Kernel::VERSION, '2.1.0', '>=') ? $doctrine->getManager($this->managerName) : $doctrine->getEntityManager($this->managerName);
+        $this->manager = $doctrine->getManager($this->managerName);
         $this->ormMetadata = $this->manager->getClassMetadata($this->entityName);
 
         $this->class = $this->ormMetadata->getReflectionClass()->name;
 
-        $mapping = $container->get('grid.mapping.manager');
-
         /* todo autoregister mapping drivers with tag */
-        $mapping->addDriver($this, -1);
-        $this->metadata = $mapping->getMetadata($this->class, $this->group);
+        $manager->addDriver($this, -1);
+        $this->metadata = $manager->getMetadata($this->class, $this->group);
 
         $this->groupBy = $this->metadata->getGroupBy();
     }
@@ -609,9 +612,9 @@ class Entity extends Source
             $platform = $countQuery->getEntityManager()->getConnection()->getDatabasePlatform(); // law of demeter win
 
             $rsm = new ResultSetMapping();
-            $rsm->addScalarResult($platform->getSQLResultCasing('dctrn_count'), 'count');
+            $rsm->addScalarResult($this->getSQLResultCasing($platform, 'dctrn_count'), 'count');
 
-            $countQuery->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, 'Doctrine\ORM\Tools\Pagination\CountOutputWalker');
+            $countQuery->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, CountOutputWalker::class);
             $countQuery->setResultSetMapping($rsm);
         } else {
             $hints = $countQuery->getHint(Query::HINT_CUSTOM_TREE_WALKERS);
@@ -620,7 +623,7 @@ class Entity extends Source
                 $hints = [];
             }
 
-            $hints[] = 'Doctrine\ORM\Tools\Pagination\CountWalker';
+            $hints[] = CountWalker::class;
             //$hints[] = 'APY\DataGridBundle\Grid\Helper\ORMCountWalker';
             $countQuery->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $hints);
         }
@@ -884,5 +887,22 @@ class Entity extends Source
         }
 
         return false;
+    }
+
+    private function getSQLResultCasing(AbstractPlatform $platform, string $column): string
+    {
+        if ($platform instanceof DB2Platform || $platform instanceof OraclePlatform) {
+            return strtoupper($column);
+        }
+
+        if ($platform instanceof PostgreSQLPlatform) {
+            return strtolower($column);
+        }
+
+        if (method_exists($platform, 'getSQLResultCasing')) {
+            return $platform->getSQLResultCasing($column);
+        }
+
+        return $column;
     }
 }

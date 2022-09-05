@@ -19,13 +19,19 @@ use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernel;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
 use Twig\Template;
 
 class Grid implements GridInterface
@@ -323,8 +329,16 @@ class Grid implements GridInterface
      * @param string                   $id        set if you are using more then one grid inside controller
      * @param GridConfigInterface|null $config    The grid configuration.
      */
-    public function __construct($container, $id = '', GridConfigInterface $config = null)
-    {
+    public function __construct(
+        $container,
+        AuthorizationCheckerInterface $checker,
+        protected ManagerRegistry $doctrine,
+        protected Manager $manager,
+        protected HttpKernelInterface $kernel,
+        protected Environment $twig,
+        string $id = '',
+        GridConfigInterface $config = null
+    ) {
         // @todo: why the whole container is injected?
         $this->container = $container;
         $this->config = $config;
@@ -332,7 +346,7 @@ class Grid implements GridInterface
         $this->router = $container->get('router');
         $this->request = $container->get('request_stack')->getCurrentRequest();
         $this->session = $this->request->getSession();
-        $this->securityContext = $container->get('security.authorization_checker');
+        $this->securityContext = $checker;
 
         $this->id = $id;
 
@@ -397,7 +411,7 @@ class Grid implements GridInterface
         if (null !== $source) {
             $this->source = $source;
 
-            $source->initialise($this->container);
+            $source->initialise($this->doctrine, $this->manager);
 
             if ($source instanceof Entity) {
                 $groupBy = $config->getGroupBy();
@@ -484,7 +498,7 @@ class Grid implements GridInterface
 
         $this->source = $source;
 
-        $this->source->initialise($this->container);
+        $this->source->initialise($this->doctrine, $this->manager);
 
         // Get columns from the source
         $this->source->getColumns($this->columns);
@@ -662,7 +676,7 @@ class Grid implements GridInterface
 
                     $subRequest = $this->request->duplicate([], null, $path);
 
-                    $this->massActionResponse = $this->container->get('http_kernel')->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
+                    $this->massActionResponse = $this->kernel->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
                 } else {
                     throw new \RuntimeException(sprintf(self::MASS_ACTION_CALLBACK_NOT_VALID_EX_MSG, $action->getCallback()));
                 }
@@ -696,6 +710,7 @@ class Grid implements GridInterface
                 if ($export instanceof ContainerAwareInterface) {
                     $export->setContainer($this->container);
                 }
+                $export->setTwig($this->twig);
                 $export->computeData($this);
 
                 $this->exportResponse = $export->getResponse();
@@ -1582,7 +1597,7 @@ class Grid implements GridInterface
      */
     public function setDefaultOrder($columnId, $order)
     {
-        $order = strtolower($order);
+        $order = strtolower($order ?? '');
         $this->defaultOrder = "$columnId|$order";
 
         return $this;
@@ -1805,15 +1820,13 @@ class Grid implements GridInterface
     /**
      * Sets the max results of the grid.
      *
-     * @param int $maxResults
-     *
      * @throws \InvalidArgumentException
      *
      * @return self
      */
-    public function setMaxResults($maxResults = null)
+    public function setMaxResults(int $maxResults = null)
     {
-        if ((is_int($maxResults) && $maxResults < 0) && $maxResults !== null) {
+        if ($maxResults < 0 && $maxResults !== null) {
             throw new \InvalidArgumentException(self::NOT_VALID_MAX_RESULT_EX_MSG);
         }
 
@@ -2148,7 +2161,9 @@ class Grid implements GridInterface
             if ($view === null) {
                 return $parameters;
             } else {
-                return $this->container->get('templating')->render($view, $parameters);
+                $content = $this->twig->render($view, $parameters);
+
+                return new Response($content);
             }
         }
     }
@@ -2277,5 +2292,75 @@ class Grid implements GridInterface
         }
 
         return $this->getFilter($columnId) !== null;
+    }
+
+    public function getDefaultOrder(): ?string
+    {
+        return $this->defaultOrder;
+    }
+
+    public function getMaxResults(): ?int
+    {
+        return $this->maxResults;
+    }
+
+    public function getLazyAddColumn(): ?array
+    {
+        return $this->lazyAddColumn;
+    }
+
+    public function getLazyHiddenColumns(): ?array
+    {
+        return $this->lazyHiddenColumns;
+    }
+
+    public function getLazyVisibleColumns(): ?array
+    {
+        return $this->lazyVisibleColumns;
+    }
+
+    public function getLazyHideShowColumns(): ?array
+    {
+        return $this->lazyHideShowColumns;
+    }
+
+    public function getDefaultTweak(): ?string
+    {
+        return $this->defaultTweak;
+    }
+
+    public function isShowFilters(): ?bool
+    {
+        return $this->showFilters;
+    }
+
+    public function isShowTitles(): ?bool
+    {
+        return $this->showTitles;
+    }
+
+    public function getActionsColumnSize(): ?int
+    {
+        return $this->actionsColumnSize;
+    }
+
+    public function getActionsColumnTitle(): ?string
+    {
+        return $this->actionsColumnTitle;
+    }
+
+    public function getPermanentFilters(): ?array
+    {
+        return $this->permanentFilters;
+    }
+
+    public function getDefaultFilters(): ?array
+    {
+        return $this->defaultFilters;
+    }
+
+    public function isNewSession(): ?bool
+    {
+        return $this->newSession;
     }
 }

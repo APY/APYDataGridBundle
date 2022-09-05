@@ -22,6 +22,11 @@
 
         <service id="grid" class="%grid.class%" shared="false" public="true">
             <argument type="service" id="service_container" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="grid.mapping.manager" />
+            <argument type="service" id="http_kernel" />
+            <argument type="service" id="twig" />
             <call method="setLimits">
                 <argument>%apy_data_grid.limits%</argument>
             </call>

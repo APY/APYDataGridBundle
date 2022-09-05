@@ -326,7 +326,6 @@ class GridTest extends TestCase
 
     public function testInizializeDefaultOrder()
     {
-        self::markTestSkipped();
         $sortBy = 'SORTBY';
         $orderBy = 'ORDERBY';
 
@@ -342,12 +341,11 @@ class GridTest extends TestCase
 
         $this->grid->initialize();
 
-        $this->assertAttributeEquals(sprintf('%s|%s', $sortBy, strtolower($orderBy)), 'defaultOrder', $this->grid);
+        $this->assertEquals(sprintf('%s|%s', $sortBy, strtolower($orderBy)), $this->grid->getDefaultOrder());
     }
 
     public function testInizializeDefaultOrderWithoutOrder()
     {
-        self::markTestSkipped();
         $sortBy = 'SORTBY';
 
         $gridConfig = $this->createMock(GridConfigInterface::class);
@@ -360,7 +358,7 @@ class GridTest extends TestCase
         $this->grid->initialize();
 
         // @todo: is this an admitted case?
-        $this->assertAttributeEquals("$sortBy|", 'defaultOrder', $this->grid);
+        $this->assertEquals("$sortBy|", $this->grid->getDefaultOrder());
     }
 
     public function testInizializeLimits()
@@ -381,7 +379,6 @@ class GridTest extends TestCase
 
     public function testInizializeMaxResults()
     {
-        self::markTestSkipped();
         $maxResults = 50;
 
         $gridConfig = $this->createMock(GridConfigInterface::class);
@@ -393,7 +390,7 @@ class GridTest extends TestCase
 
         $this->grid->initialize();
 
-        $this->assertAttributeEquals($maxResults, 'maxResults', $this->grid);
+        $this->assertEquals($maxResults, $this->grid->getMaxResults());
     }
 
     public function testInizializePage()
@@ -470,36 +467,32 @@ class GridTest extends TestCase
 
     public function testAddColumnToLazyColumnsWithoutPosition()
     {
-        self::markTestSkipped();
         $column = $this->stubColumn();
         $this->grid->addColumn($column);
 
-        $this->assertAttributeEquals([['column' => $column, 'position' => 0]], 'lazyAddColumn', $this->grid);
+        $this->assertEquals([['column' => $column, 'position' => 0]], $this->grid->getLazyAddColumn());
     }
 
     public function testAddColumnToLazyColumnsWithPosition()
     {
-        self::markTestSkipped();
         $column = $this->stubColumn();
         $this->grid->addColumn($column, 1);
 
-        $this->assertAttributeEquals([['column' => $column, 'position' => 1]], 'lazyAddColumn', $this->grid);
+        $this->assertEquals([['column' => $column, 'position' => 1]], $this->grid->getLazyAddColumn());
     }
 
     public function testAddColumnsToLazyColumnsWithSamePosition()
     {
-        self::markTestSkipped();
         $column1 = $this->stubColumn();
         $column2 = $this->stubColumn();
 
         $this->grid->addColumn($column1, 1);
         $this->grid->addColumn($column2, 1);
 
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             ['column' => $column1, 'position' => 1],
             ['column' => $column2, 'position' => 1], ],
-            'lazyAddColumn',
-            $this->grid
+            $this->grid->getLazyAddColumn()
         );
     }
 
@@ -1005,11 +998,10 @@ class GridTest extends TestCase
 
     public function testSetDefaultTweak()
     {
-        self::markTestSkipped();
         $tweakId = 1;
         $this->grid->setDefaultTweak($tweakId);
 
-        $this->assertAttributeEquals($tweakId, 'defaultTweak', $this->grid);
+        $this->assertEquals($tweakId, $this->grid->getDefaultTweak());
     }
 
     public function testSetPageWithInvalidValueRaiseException()
@@ -1039,9 +1031,8 @@ class GridTest extends TestCase
 
     public function testSetMaxResultWithNullValue()
     {
-        self::markTestSkipped();
         $this->grid->setMaxResults();
-        $this->assertAttributeEquals(null, 'maxResults', $this->grid);
+        $this->assertNull($this->grid->getMaxResults());
     }
 
     public function testSetMaxResultWithInvalidValueRaiseException()
@@ -1052,23 +1043,12 @@ class GridTest extends TestCase
         $this->grid->setMaxResults(-1);
     }
 
-    // @todo: has this case sense? Should not raise exception?
-    public function testSetMaxResultWithStringValue()
-    {
-        self::markTestSkipped();
-        $maxResult = 'foo';
-        $this->grid->setMaxResults($maxResult);
-
-        $this->assertAttributeEquals($maxResult, 'maxResults', $this->grid);
-    }
-
     public function testSetMaxResult()
     {
-        self::markTestSkipped();
         $maxResult = 1;
         $this->grid->setMaxResults($maxResult);
 
-        $this->assertAttributeEquals($maxResult, 'maxResults', $this->grid);
+        $this->assertEquals($maxResult, $this->grid->getMaxResults());
     }
 
     public function testIsNotFilteredIfNoColumnIsFiltered()
@@ -1201,18 +1181,16 @@ class GridTest extends TestCase
 
     public function testHideFilters()
     {
-        self::markTestSkipped();
         $this->grid->hideFilters();
 
-        $this->assertAttributeEquals(false, 'showFilters', $this->grid);
+        $this->assertFalse($this->grid->isShowFilters());
     }
 
     public function testHideTitles()
     {
-        self::markTestSkipped();
         $this->grid->hideTitles();
 
-        $this->assertAttributeEquals(false, 'showTitles', $this->grid);
+        $this->assertFalse($this->grid->isShowTitles());
     }
 
     public function testAddsColumnExtension()
@@ -1267,92 +1245,82 @@ class GridTest extends TestCase
 
     public function testSetHiddenColumnsWithIntegerId()
     {
-        self::markTestSkipped();
         $id = 1;
         $this->grid->setHiddenColumns($id);
 
-        $this->assertAttributeEquals([$id], 'lazyHiddenColumns', $this->grid);
+        $this->assertEquals([$id], $this->grid->getLazyHiddenColumns());
     }
 
     public function testSetHiddenColumnWithArrayOfIds()
     {
-        self::markTestSkipped();
         $ids = [1, 2, 3];
         $this->grid->setHiddenColumns($ids);
 
-        $this->assertAttributeEquals($ids, 'lazyHiddenColumns', $this->grid);
+        $this->assertEquals($ids, $this->grid->getLazyHiddenColumns());
     }
 
     public function testSetVisibleColumnsWithIntegerId()
     {
-        self::markTestSkipped();
         $id = 1;
         $this->grid->setVisibleColumns($id);
 
-        $this->assertAttributeEquals([$id], 'lazyVisibleColumns', $this->grid);
+        $this->assertEquals([$id], $this->grid->getLazyVisibleColumns());
     }
 
     public function testSetVisibleColumnWithArrayOfIds()
     {
-        self::markTestSkipped();
         $ids = [1, 2, 3];
         $this->grid->setVisibleColumns($ids);
 
-        $this->assertAttributeEquals($ids, 'lazyVisibleColumns', $this->grid);
+        $this->assertEquals($ids, $this->grid->getLazyVisibleColumns());
     }
 
     public function testShowColumnsWithIntegerId()
     {
-        self::markTestSkipped();
         $id = 1;
         $this->grid->showColumns($id);
 
-        $this->assertAttributeEquals([$id => true], 'lazyHideShowColumns', $this->grid);
+        $this->assertEquals([$id => true], $this->grid->getLazyHideShowColumns());
     }
 
     public function testShowColumnsArrayOfIds()
     {
-        self::markTestSkipped();
         $ids = [1, 2, 3];
         $this->grid->showColumns($ids);
 
-        $this->assertAttributeEquals([1 => true, 2 => true, 3 => true], 'lazyHideShowColumns', $this->grid);
+        $this->assertEquals([1 => true, 2 => true, 3 => true], $this->grid->getLazyHideShowColumns());
     }
 
     public function testHideColumnsWithIntegerId()
     {
-        self::markTestSkipped();
         $id = 1;
         $this->grid->hideColumns($id);
 
-        $this->assertAttributeEquals([$id => false], 'lazyHideShowColumns', $this->grid);
+        $this->assertEquals([$id => false], $this->grid->getLazyHideShowColumns());
     }
 
     public function testHideColumnsArrayOfIds()
     {
-        self::markTestSkipped();
         $ids = [1, 2, 3];
         $this->grid->hideColumns($ids);
 
-        $this->assertAttributeEquals([1 => false, 2 => false, 3 => false], 'lazyHideShowColumns', $this->grid);
+        $this->assertEquals([1 => false, 2 => false, 3 => false], $this->grid->getLazyHideShowColumns());
     }
 
     public function testSetActionsColumnSize()
     {
-        self::markTestSkipped();
         $size = 2;
         $this->grid->setActionsColumnSize($size);
 
-        $this->assertAttributeEquals($size, 'actionsColumnSize', $this->grid);
+        $this->assertEquals($size, $this->grid->getActionsColumnSize());
     }
 
     public function testSetActionsColumnTitle()
     {
-        self::markTestSkipped();
         $title = 'aTitle';
         $this->grid->setActionsColumnTitle($title);
 
-        $this->assertAttributeEquals($title, 'actionsColumnTitle', $this->grid);
+        $this->assertEquals($title, $this->grid->getActionsColumnTitle());
     }
 
     public function testClone()
@@ -1497,18 +1465,16 @@ class GridTest extends TestCase
 
     public function testStartNewSessionDuringHandleRequestOnFirstGridRequest()
     {
-        self::markTestSkipped();
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
 
         $this->grid->handleRequest($this->request);
 
-        $this->assertAttributeEquals(true, 'newSession', $this->grid);
+        $this->assertTrue($this->grid->isNewSession());
     }
 
     public function testStartKeepSessionDuringHandleRequestNotOnFirstGridRequest()
     {
-        self::markTestSkipped();
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
 
@@ -1520,7 +1486,7 @@ class GridTest extends TestCase
 
         $this->grid->handleRequest($this->request);
 
-        $this->assertAttributeEquals(false, 'newSession', $this->grid);
+        $this->assertFalse($this->grid->isNewSession());
     }
 
     public function testMassActionRedirect()
@@ -2693,7 +2659,6 @@ class GridTest extends TestCase
 
     public function testSetPermanentFilters()
     {
-        self::markTestSkipped();
         $filters = [
             'colId1' => 'value',
             'colId2' => 'value',
@@ -2701,12 +2666,11 @@ class GridTest extends TestCase
 
         $this->grid->setPermanentFilters($filters);
 
-        $this->assertAttributeEquals($filters, 'permanentFilters', $this->grid);
+        $this->assertEquals($filters, $this->grid->getPermanentFilters());
     }
 
     public function testSetDefaultFilters()
     {
-        self::markTestSkipped();
         $filters = [
             'colId1' => 'value',
             'colId2' => 'value',
@@ -2714,18 +2678,17 @@ class GridTest extends TestCase
 
         $this->grid->setDefaultFilters($filters);
 
-        $this->assertAttributeEquals($filters, 'defaultFilters', $this->grid);
+        $this->assertEquals($filters, $this->grid->getDefaultFilters());
     }
 
     public function testSetDefaultOrder()
     {
-        self::markTestSkipped();
         $colId = 'COLID';
         $order = 'ASC';
 
         $this->grid->setDefaultOrder($colId, $order);
 
-        $this->assertAttributeEquals(sprintf("$colId|%s", strtolower($order)), 'defaultOrder', $this->grid);
+        $this->assertEquals(sprintf("$colId|%s", strtolower($order)), $this->grid->getDefaultOrder());
     }
 
     public function testGetRows()
@@ -3218,18 +3181,16 @@ class GridTest extends TestCase
 
     public function testStartNewSessionDuringRedirectOnFirstRequest()
     {
-        self::markTestSkipped();
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
 
         $this->grid->isReadyForRedirect();
 
-        $this->assertAttributeEquals(true, 'newSession', $this->grid);
+        $this->assertTrue($this->grid->isNewSession());
     }
 
     public function testStartKeepSessionDuringRedirectNotOnFirstRequest()
     {
-        self::markTestSkipped();
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
 
@@ -3241,7 +3202,7 @@ class GridTest extends TestCase
 
         $this->grid->isReadyForRedirect();
 
-        $this->assertAttributeEquals(false, 'newSession', $this->grid);
+        $this->assertFalse($this->grid->isNewSession());
     }
 
     public function testProcessHiddenColumnsDuringRedirect()
@@ -4351,14 +4312,15 @@ class GridTest extends TestCase
 
         $view = 'aView';
 
-        $response = $this->createMock(Response::class);
         $this
             ->engine
             ->method('render')
             ->with($view, ['grid' => $this->grid])
-            ->willReturn($response);
+            ->willReturn('string');
 
-        $this->assertEquals($response, $this->grid->getGridResponse($view));
+        $response = $this->grid->getGridResponse($view);
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('string', $response->getContent());
     }
 
     public function testGetGridWithViewWithViewAndParams()
@@ -4372,14 +4334,15 @@ class GridTest extends TestCase
         $param2 = 'bar';
         $params = [$param1, $param2];
 
-        $response = $this->createMock(Response::class);
         $this
             ->engine
             ->method('render')
             ->with($view, ['grid' => $this->grid, $param1, $param2])
-            ->willReturn($response);
+            ->willReturn('string');
 
-        $this->assertEquals($response, $this->grid->getGridResponse($view, $params));
+        $response = $this->grid->getGridResponse($view, $params);
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('string', $response->getContent());
     }
 
     protected function setUp(): void

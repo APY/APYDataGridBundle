@@ -16,8 +16,10 @@ use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\PropertyAccessDeniedException;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
+use Doctrine\Persistence\ManagerRegistry;
 
 abstract class Source implements DriverInterface
 {
@@ -98,10 +100,8 @@ abstract class Source implements DriverInterface
      * Set container.
      *
      * @abstract
-     *
-     * @param  $container
      */
-    abstract public function initialise($container);
+    abstract public function initialise(ManagerRegistry $doctrine, Manager $manager);
 
     /**
      * @abstract

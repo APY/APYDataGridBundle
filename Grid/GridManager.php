@@ -193,7 +193,9 @@ class GridManager implements \IteratorAggregate, \Countable
                 return $parameters;
             }
 
-            return $this->container->get('templating')->render($view, $parameters);
+            $content = $this->container->get('templating')->render($view, $parameters);
+
+            return new Response($content);
         }
     }
 
@@ -205,5 +207,15 @@ class GridManager implements \IteratorAggregate, \Countable
     public function setRouteUrl($routeUrl)
     {
         $this->routeUrl = $routeUrl;
+    }
+
+    public function getMassActionGrid()
+    {
+        return $this->massActionGrid;
+    }
+
+    public function getExportGrid()
+    {
+        return $this->exportGrid;
     }
 }

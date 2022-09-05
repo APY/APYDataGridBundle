@@ -20,7 +20,9 @@ use APY\DataGridBundle\Grid\Column\DateTimeColumn;
 use APY\DataGridBundle\Grid\Column\NumberColumn;
 use APY\DataGridBundle\Grid\Column\TextColumn;
 use APY\DataGridBundle\Grid\Column\UntypedColumn;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Rows;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Vector is really an Array.
@@ -64,7 +66,7 @@ class Vector extends Source
         $this->setColumns($columns);
     }
 
-    public function initialise($container)
+    public function initialise(ManagerRegistry $doctrine, Manager $manager)
     {
         if (!empty($this->data)) {
             $this->guessColumns();

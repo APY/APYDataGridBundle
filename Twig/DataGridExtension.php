@@ -417,7 +417,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         if (empty($this->templates)) {
             if ($this->theme instanceof Template) {
                 $this->templates[] = $this->theme;
-                $this->templates[] = $environment->loadTemplate($this->defaultTemplate);
+                $this->templates[] = $environment->loadTemplate($environment->getTemplateClass($this->defaultTemplate), $this->defaultTemplate);
             } elseif (is_string($this->theme)) {
                 $this->templates = $this->getTemplatesFromString($environment, $this->theme);
             } elseif ($this->theme === null) {
@@ -440,8 +440,8 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     {
         $this->templates = [];
 
-        $template = $environment->loadTemplate($theme);
-        while ($template instanceof \Twig_Template) {
+        $template = $environment->loadTemplate($environment->getTemplateClass($this->theme), $theme);
+        while ($template instanceof Template) {
             $this->templates[] = $template;
             $template = $template->getParent([]);
         }

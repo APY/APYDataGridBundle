@@ -29,7 +29,6 @@ class GridManagerTest extends TestCase
 
     public function testCreateGridWithoutId()
     {
-        self::markTestSkipped();
         $grid = $this->createMock(Grid::class);
         $this
             ->container
@@ -45,13 +44,11 @@ class GridManagerTest extends TestCase
             ->method('setId');
 
         $this->assertEquals($grid, $this->gridManager->createGrid());
-
-        $this->assertAttributeEquals($grids, 'grids', $this->gridManager);
+        $this->assertEquals($grids, $this->gridManager->getIterator());
     }
 
     public function testCreateGridWithId()
     {
-        self::markTestSkipped();
         $grid = $this->createMock(Grid::class);
         $this
             ->container
@@ -69,8 +66,7 @@ class GridManagerTest extends TestCase
             ->with($gridId);
 
         $this->assertEquals($grid, $this->gridManager->createGrid($gridId));
-
-        $this->assertAttributeEquals($grids, 'grids', $this->gridManager);
+        $this->assertEquals($grids, $this->gridManager->getIterator());
     }
 
     public function testReturnsManagedGridCount()
@@ -235,15 +231,14 @@ class GridManagerTest extends TestCase
 
     public function testAtLeastOneGridReadyForExport()
     {
-        self::markTestSkipped();
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
 
-        [$grid, $grid2] = $this->stubTwoGridsForExport($grid1Hash, false, $grid2Hash, true);
+        [, $grid2] = $this->stubTwoGridsForExport($grid1Hash, false, $grid2Hash, true);
 
         $this->assertTrue($this->gridManager->isReadyForExport());
 
-        $this->assertAttributeEquals($grid2, 'exportGrid', $this->gridManager);
+        $this->assertEquals($grid2, $this->gridManager->getExportGrid());
     }
 
     public function testItRewindGridListWhenCheckingTwoTimesIfReadyForExport()
@@ -293,15 +288,14 @@ class GridManagerTest extends TestCase
 
     public function testAtLeastOneGridHasMassActionRedirect()
     {
-        self::markTestSkipped();
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
 
-        [$grid, $grid2] = $this->stubTwoGridForMassAction($grid1Hash, false, $grid2Hash, true);
+        [, $grid2] = $this->stubTwoGridForMassAction($grid1Hash, false, $grid2Hash, true);
 
         $this->assertTrue($this->gridManager->isMassActionRedirect());
 
-        $this->assertAttributeEquals($grid2, 'massActionGrid', $this->gridManager);
+        $this->assertEquals($grid2, $this->gridManager->getMassActionGrid());
     }
 
     public function testItRewindGridListWhenCheckingTwoTimesIfHasMassActionRedirect()
@@ -430,13 +424,14 @@ class GridManagerTest extends TestCase
 
         $view = 'aView';
 
-        $response = new Response();
         $engine
             ->method('render')
             ->with($view, ['grid1' => $grid])
-            ->willReturn($response);
+            ->willReturn('string');
 
-        $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view));
+        $response = $this->gridManager->getGridManagerResponse($view);
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('string', $response->getContent());
     }
 
     public function testGetGridWithViewWithViewAndParams()
@@ -468,13 +463,14 @@ class GridManagerTest extends TestCase
         $param2 = 'bar';
         $params = [$param1, $param2];
 
-        $response = new Response();
         $engine
             ->method('render')
             ->with($view, ['grid1' => $grid, $param1, $param2])
-            ->willReturn($response);
+            ->willReturn('string');
 
-        $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view, $params));
+        $response = $this->gridManager->getGridManagerResponse($view, $params);
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('string', $response->getContent());
     }
 
     protected function setUp(): void
