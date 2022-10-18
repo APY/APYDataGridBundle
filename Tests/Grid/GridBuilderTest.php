@@ -8,14 +8,18 @@ use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridBuilder;
 use APY\DataGridBundle\Grid\GridFactoryInterface;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
+use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
 
 /**
  * Class GridBuilderTest.
@@ -171,8 +175,13 @@ class GridBuilderTest extends TestCase
                 }
             }));
 
+        $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $registry = $this->createMock(ManagerRegistry::class);
+        $manager = $this->createMock(Manager::class);
+        $kernel = $this->createMock(KernelInterface::class);
+        $twig = $this->createMock(Environment::class);
         $this->factory = $this->createMock(GridFactoryInterface::class);
-        $this->builder = new GridBuilder($this->container, $this->factory, 'name');
+        $this->builder = new GridBuilder($this->container, $authChecker, $registry, $manager, $kernel, $twig, $this->factory, 'name');
     }
 
     protected function tearDown(): void

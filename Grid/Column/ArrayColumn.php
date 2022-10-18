@@ -30,13 +30,13 @@ class ArrayColumn extends Column
         ]));
     }
 
-    public function getFilters($source)
+    public function getFilters($source): array
     {
         $parentFilters = parent::getFilters($source);
 
         $filters = [];
         foreach ($parentFilters as $filter) {
-            if ($source === 'document') {
+            if ('document' === $source) {
                 $filters[] = $filter;
             } else {
                 switch ($filter->getOperator()) {
@@ -46,16 +46,16 @@ class ArrayColumn extends Column
                         $value = '';
                         $counter = 1;
                         foreach ($filterValues as $filterValue) {
-                            $len = strlen($filterValue);
-                            $value .= 'i:' . $counter++ . ';s:' . $len . ':"' . $filterValue . '";';
+                            $len = \strlen($filterValue);
+                            $value .= 'i:'.$counter++.';s:'.$len.':"'.$filterValue.'";';
                         }
 
-                        $filters[] = new Filter($filter->getOperator(), 'a:' . count($filterValues) . ':{' . $value . '}');
+                        $filters[] = new Filter($filter->getOperator(), 'a:'.\count($filterValues).':{'.$value.'}');
                         break;
                     case self::OPERATOR_LIKE:
                     case self::OPERATOR_NLIKE:
-                        $len = strlen($filter->getValue());
-                        $value = 's:' . $len . ':"' . $filter->getValue() . '";';
+                        $len = \strlen($filter->getValue());
+                        $value = 's:'.$len.':"'.$filter->getValue().'";';
                         $filters[] = new Filter($filter->getOperator(), $value);
                         break;
                     case self::OPERATOR_ISNULL:
@@ -76,28 +76,16 @@ class ArrayColumn extends Column
         return $filters;
     }
 
-    public function renderCell($values, $row, $router)
+    public function renderCell($value, $row, $router): mixed
     {
-        if (is_callable($this->callback)) {
-            return call_user_func($this->callback, $values, $row, $router);
+        if (\is_callable($this->callback)) {
+            return \call_user_func($this->callback, $value, $row, $router);
         }
 
-        $return = [];
-        if (is_array($values) || $values instanceof \Traversable) {
-            foreach ($values as $key => $value) {
-                // @todo: this seems like dead code
-                if (!is_array($value) && isset($this->values[(string) $value])) {
-                    $value = $this->values[$value];
-                }
-
-                $return[$key] = $value;
-            }
-        }
-
-        return $return;
+        return $value;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'array';
     }

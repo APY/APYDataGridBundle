@@ -336,7 +336,7 @@ class Grid implements GridInterface
         protected Manager $manager,
         protected HttpKernelInterface $kernel,
         protected Environment $twig,
-        string $id = '',
+        ?string $id = '',
         GridConfigInterface $config = null
     ) {
         // @todo: why the whole container is injected?

@@ -10,16 +10,20 @@ use APY\DataGridBundle\Grid\GridBuilderInterface;
 use APY\DataGridBundle\Grid\GridFactory;
 use APY\DataGridBundle\Grid\GridRegistryInterface;
 use APY\DataGridBundle\Grid\GridTypeInterface;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Type\GridType;
+use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
 
 /**
  * Class GridFactoryTest.
@@ -181,7 +185,12 @@ class GridFactoryTest extends TestCase
                 }
             }));
 
+        $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $registry = $this->createMock(ManagerRegistry::class);
+        $manager = $this->createMock(Manager::class);
+        $kernel = $this->createMock(KernelInterface::class);
+        $twig = $this->createMock(Environment::class);
         $this->registry = $this->createMock(GridRegistryInterface::class);
-        $this->factory = new GridFactory($this->container, $this->registry);
+        $this->factory = new GridFactory($this->container, $authChecker, $registry, $manager, $kernel, $twig, $this->registry);
     }
 }

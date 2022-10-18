@@ -16,10 +16,12 @@ use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridConfigInterface;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
+use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
@@ -31,9 +33,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\HttpKernel;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 use Twig\Template;
 
 class GridTest extends TestCase
@@ -240,8 +243,7 @@ class GridTest extends TestCase
 
         $source
             ->expects($this->once())
-            ->method('initialise')
-            ->with($this->container);
+            ->method('initialise');
 
         $this->grid->initialize();
     }
@@ -259,8 +261,7 @@ class GridTest extends TestCase
 
         $source
             ->expects($this->once())
-            ->method('initialise')
-            ->with($this->container);
+            ->method('initialise');
         $source
             ->expects($this->never())
             ->method('setGroupBy');
@@ -286,8 +287,7 @@ class GridTest extends TestCase
 
         $source
             ->expects($this->once())
-            ->method('initialise')
-            ->with($this->container);
+            ->method('initialise');
         $source
             ->expects($this->atLeastOnce())
             ->method('setGroupBy')
@@ -314,8 +314,7 @@ class GridTest extends TestCase
 
         $source
             ->expects($this->once())
-            ->method('initialise')
-            ->with($this->container);
+            ->method('initialise');
         $source
             ->expects($this->atLeastOnce())
             ->method('setGroupBy')
@@ -427,8 +426,7 @@ class GridTest extends TestCase
 
         $source
             ->expects($this->once())
-            ->method('initialise')
-            ->with($this->container);
+            ->method('initialise');
         $source
             ->expects($this->once())
             ->method('getColumns')
@@ -2621,7 +2619,7 @@ class GridTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $export = $this->createMock(ExportInterface::class);
+        $export = $this->createMock(Export::class);
         $export
             ->method('getResponse')
             ->willReturn($response);
@@ -2645,7 +2643,7 @@ class GridTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $export = $this->createMock(ExportInterface::class);
+        $export = $this->createMock(Export::class);
         $export
             ->method('getResponse')
             ->willReturn($response);
@@ -4392,7 +4390,7 @@ class GridTest extends TestCase
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $this->authChecker = $authChecker;
 
-        $engine = $this->createMock(EngineInterface::class);
+        $engine = $this->createMock(Environment::class);
         $this->engine = $engine;
 
         $containerGetMap = [
@@ -4411,11 +4409,14 @@ class GridTest extends TestCase
             ->method('get')
             ->will($this->returnValueMap($containerGetMap));
         $this->container = $container;
+        $registry = $this->createMock(ManagerRegistry::class);
+        $manager = $this->createMock(Manager::class);
 
         $this->gridId = $id;
         $this->gridHash = 'grid_' . $this->gridId;
 
-        $this->grid = new Grid($container, $this->gridId, $gridConfigInterface);
+        $httpKernel = $httpKernel ?? $this->createMock(HttpKernelInterface::class);
+        $this->grid = new Grid($container, $this->authChecker, $registry, $manager, $httpKernel, $this->engine, $this->gridId, $gridConfigInterface);
     }
 
     private function mockResetGridSessionWhenResetFilterIsPressed()
