@@ -315,12 +315,12 @@ abstract class Source implements DriverInterface
                         // Test
                         switch ($operator) {
                             case Column::OPERATOR_EQ:
-                                if ($dataIsNumeric) {
+                                if ($dataIsNumeric && is_numeric($value)) {
                                     $found = abs($fieldValue - $value) < 0.00001;
                                     break;
                                 }
                             case Column::OPERATOR_NEQ:
-                                if ($dataIsNumeric) {
+                                if ($dataIsNumeric && is_numeric($value)) {
                                     $found = abs($fieldValue - $value) > 0.00001;
                                     break;
                                 }
