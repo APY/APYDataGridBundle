@@ -165,7 +165,7 @@ class Grid implements GridInterface
     protected $massActions = [];
 
     /**
-     * @var \APY\DataGridBundle\Grid\Action\RowAction[]
+     * @var \APY\DataGridBundle\Grid\Action\RowAction[][]
      */
     protected $rowActions = [];
 
@@ -1810,7 +1810,7 @@ class Grid implements GridInterface
     /**
      * Returns Row Actions.
      *
-     * @return Action\RowAction[]
+     * @return Action\RowAction[][]
      */
     public function getRowActions()
     {
