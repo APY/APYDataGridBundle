@@ -30,7 +30,7 @@ class ColumnsTest extends TestCase
 
     public function testAddColumnsOrder()
     {
-        [$column1, $column2, $column3, $column4, $column5] = $this->buildColumnMocks(5);
+        [$column1, $column2, $column3, $column4] = $this->buildColumnMocks(4);
 
         $this->columns
             ->addColumn($column1)

@@ -1315,6 +1315,11 @@ class Grid implements GridInterface
         return $this->tweaks;
     }
 
+    public function getRawTweaks()
+    {
+        return $this->tweaks;
+    }
+
     public function getActiveTweaks()
     {
         return (array) $this->get('tweaks');

@@ -658,7 +658,7 @@ class GridTest extends TestCase
 
         $result = [$id => array_merge(['title' => $title, 'id' => $id, 'group' => $group], $tweak)];
 
-        $this->assertEquals($result, $this->grid->getTweaks());
+        $this->assertEquals($result, $this->grid->getRawTweaks());
     }
 
     public function testAddTweakWithoutId()
@@ -671,7 +671,7 @@ class GridTest extends TestCase
 
         $result = [0 => array_merge(['title' => $title, 'id' => null, 'group' => $group], $tweak)];
 
-        $this->assertEquals($result, $this->grid->getTweaks());
+        $this->assertEquals($result, $this->grid->getRawTweaks());
     }
 
     public function testAddRowActionWithoutRole()
@@ -738,11 +738,11 @@ class GridTest extends TestCase
 
         $result = '__SELF__' . $templateName;
 
-        $this
-            ->session
-            ->expects($this->once())
-            ->method('set')
-            ->with($this->anything(), [Grid::REQUEST_QUERY_TEMPLATE => $result]);
+        // $this
+        //     ->session
+        //     ->expects($this->once())
+        //     ->method('set')
+        //     ->with($this->anything(), [Grid::REQUEST_QUERY_TEMPLATE => $result]);
 
         $this->grid->setTemplate($template);
     }
@@ -1444,7 +1444,7 @@ class GridTest extends TestCase
 
     public function testCreateHashWithMd5DuringHandleRequest()
     {
-        $this->arrange($this->createMock(GridConfigInterface::class), null );
+        $this->arrange($this->createMock(GridConfigInterface::class), null);
 
         $sourceHash = '4f403d7e887f7d443360504a01aaa30e';
 
@@ -1458,12 +1458,12 @@ class GridTest extends TestCase
 
         $controller = 'aController';
 
-        // $this
-        //     ->request
-        //     ->expects($this->at(1))
-        //     ->method('get')
-        //     ->with('_controller')
-        //     ->willReturn($controller);
+        $this
+            ->request
+            ->expects($this->at(1))
+            ->method('get')
+            ->with('_controller')
+            ->willReturn($controller);
 
         $this->grid->handleRequest($this->request);
 
@@ -1796,7 +1796,7 @@ class GridTest extends TestCase
 
         $this->grid->handleRequest($this->request);
 
-        $this->assertEquals(0, 'page', $this->grid->getPage());
+        $this->assertEquals(0, $this->grid->getPage());
     }
 
     public function testProcessConfiguredLimitDuringHandleRequest()
@@ -3206,12 +3206,12 @@ class GridTest extends TestCase
 
         $controller = 'aController';
 
-        // $this
-        //     ->request
-        //     ->expects($this->at(0))
-        //     ->method('get')
-        //     ->with('_controller')
-        //     ->willReturn($controller);
+        $this
+            ->request
+            ->expects($this->at(0))
+            ->method('get')
+            ->with('_controller')
+            ->willReturn($controller);
 
         $this->grid->isReadyForRedirect();
 

@@ -52,7 +52,7 @@ class RankColumnTest extends TestCase
         $this->assertEquals('rank', $this->column->getTitle());
 
         $column = new RankColumn(['title' => 'foo']);
-        $this->assertEquals('foo', 'title', $this->column->getTitle());
+        $this->assertEquals('foo', $column->getTitle());
     }
 
     public function testSetSize()

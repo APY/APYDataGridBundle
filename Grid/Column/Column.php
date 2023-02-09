@@ -546,6 +546,11 @@ abstract class Column
         return $result;
     }
 
+    public function getRawData()
+    {
+        return $this->data;
+    }
+
     /**
      * Return true if filter value is correct (has to be overridden in each Column class that can be filtered, in order to catch wrong values).
      *

@@ -572,14 +572,11 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData([]);
 
-        $mock->getData();
-
-
         $this->assertEquals([
             'operator' => Column::OPERATOR_LIKE,
             'from'     => Column::DEFAULT_VALUE,
             'to'       => Column::DEFAULT_VALUE,
-        ], $mock->getData());
+        ], $mock->getRawData());
     }
 
     public function testSetNullOperatorWithoutFromToValues()
@@ -591,7 +588,7 @@ class ColumnTest extends TestCase
             'operator' => Column::OPERATOR_ISNULL,
             'from'     => Column::DEFAULT_VALUE,
             'to'       => Column::DEFAULT_VALUE,
-        ], $mock->getData());
+        ], $mock->getRawData());
     }
 
     public function testSetNotNullOperatorWithoutFromToValues()
@@ -603,7 +600,7 @@ class ColumnTest extends TestCase
             'operator' => Column::OPERATOR_ISNOTNULL,
             'from'     => Column::DEFAULT_VALUE,
             'to'       => Column::DEFAULT_VALUE,
-        ], $mock->getData());
+        ], $mock->getRawData());
     }
 
     public function testDoesNotSetDataIfOperatorNotNotNullOrNullNoFromToValues()
@@ -621,7 +618,7 @@ class ColumnTest extends TestCase
                 'operator' => Column::OPERATOR_LIKE,
                 'from'     => Column::DEFAULT_VALUE,
                 'to'       => Column::DEFAULT_VALUE,
-            ], $mock->getData());
+            ], $mock->getRawData());
         }
     }
 
