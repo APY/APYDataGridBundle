@@ -184,7 +184,7 @@ class VectorTest extends TestCase
 
         $vector = new Vector([], [$column1, $column2]);
 
-        $this->assertEquals('APY\DataGridBundle\Grid\Source\Vector' . md5($idCol1.$idCol2), $vector->getHash());
+        $this->assertEquals(\APY\DataGridBundle\Grid\Source\Vector::class . md5($idCol1.$idCol2), $vector->getHash());
     }
 
     public function testSetId()

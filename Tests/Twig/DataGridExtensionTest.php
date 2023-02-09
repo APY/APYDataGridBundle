@@ -30,7 +30,7 @@ class DataGridExtensionTest extends TestCase
         $gridHash = 'my_grid';
 
         // Creates grid
-        $grid = $this->createMock(Grid::class, [], [], '', false);
+        $grid = $this->createMock(Grid::class);
         $grid->expects($this->any())->method('getRouteUrl')->willReturn($baseUrl);
         $grid->expects($this->any())->method('getHash')->willReturn($gridHash);
 

@@ -48,27 +48,27 @@ class NumberColumnTest extends TestCase
     public function testInitializeStyle()
     {
         $column = new NumberColumn(['style' => 'decimal']);
-        $this->assertAttributeEquals(\NumberFormatter::DECIMAL, 'style', $column);
+        $this->assertEquals(\NumberFormatter::DECIMAL, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'percent']);
-        $this->assertAttributeEquals(\NumberFormatter::PERCENT, 'style', $column);
+        $this->assertEquals(\NumberFormatter::PERCENT, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'money']);
-        $this->assertAttributeEquals(\NumberFormatter::CURRENCY, 'style', $column);
+        $this->assertEquals(\NumberFormatter::CURRENCY, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'currency']);
-        $this->assertAttributeEquals(\NumberFormatter::CURRENCY, 'style', $column);
+        $this->assertEquals(\NumberFormatter::CURRENCY, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'duration']);
-        $this->assertAttributeEquals(\NumberFormatter::DURATION, 'style', $column);
-        $this->assertAttributeEquals('en', 'locale', $column);
-        $this->assertAttributeEquals('%in-numerals', 'ruleSet', $column);
+        $this->assertEquals(\NumberFormatter::DURATION, $column->getStyle());
+        $this->assertEquals('en', $column->getLocale());
+        $this->assertEquals('%in-numerals', $column->getRuleSet());
 
         $column = new NumberColumn(['style' => 'scientific']);
-        $this->assertAttributeEquals(\NumberFormatter::SCIENTIFIC, 'style', $column);
+        $this->assertEquals(\NumberFormatter::SCIENTIFIC, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'spellout']);
-        $this->assertAttributeEquals(\NumberFormatter::SPELLOUT, 'style', $column);
+        $this->assertEquals(\NumberFormatter::SPELLOUT, $column->getStyle());
     }
 
     public function testInitializeStyleWithInvalidValue()
@@ -80,7 +80,7 @@ class NumberColumnTest extends TestCase
     public function testInitializeLocale()
     {
         $column = new NumberColumn(['locale' => 'it']);
-        $this->assertAttributeEquals('it', 'locale', $column);
+        $this->assertEquals('it',  $column->getLocale());
     }
 
     public function testInitializePrecision()
@@ -98,19 +98,19 @@ class NumberColumnTest extends TestCase
     public function testInitializeRoundingMode()
     {
         $column = new NumberColumn(['roundingMode' => \NumberFormatter::ROUND_HALFDOWN]);
-        $this->assertAttributeEquals(\NumberFormatter::ROUND_HALFDOWN, 'roundingMode', $column);
+        $this->assertEquals(\NumberFormatter::ROUND_HALFDOWN, $column->getRoundingMode());
     }
 
     public function testInitializeRuleSet()
     {
         $column = new NumberColumn(['ruleSet' => \NumberFormatter::PUBLIC_RULESETS]);
-        $this->assertAttributeEquals(\NumberFormatter::PUBLIC_RULESETS, 'ruleSet', $column);
+        $this->assertEquals(\NumberFormatter::PUBLIC_RULESETS, $column->getRuleSet());
     }
 
     public function testInitializeCurrencyCode()
     {
         $column = new NumberColumn(['currencyCode' => 'EUR']);
-        $this->assertAttributeEquals('EUR', 'currencyCode', $column);
+        $this->assertEquals('EUR',  $column->getCurrencyCode());
     }
 
     public function testInizializeFractional()

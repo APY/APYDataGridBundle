@@ -1065,4 +1065,20 @@ abstract class Column
     {
         return $this->params;
     }
+
+    /**
+     * Get the value of callback
+     */ 
+    public function getCallback()
+    {
+        return $this->callback;
+    }
+
+    /**
+     * Get the value of authorizationChecker
+     */ 
+    public function getAuthorizationChecker()
+    {
+        return $this->authorizationChecker;
+    }
 }

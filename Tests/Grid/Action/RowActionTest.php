@@ -76,7 +76,7 @@ class RowActionTest extends \PHPUnit\Framework\TestCase
 
     public function testDefaultConfirmMessage()
     {
-        $this->assertInternalType('string', $this->rowAction->getConfirmMessage());
+        $this->assertIsString($this->rowAction->getConfirmMessage());
     }
 
     public function testSetConfirmMessage()
@@ -141,10 +141,9 @@ class RowActionTest extends \PHPUnit\Framework\TestCase
         $associativeParam = ['foo' => 'fooParam', 'bar' => 'barParam'];
         $this->rowAction->addRouteParameters($associativeParam);
 
-        $this->assertAttributeEquals(
+        $this->assertEquals(
             array_merge([0 => $stringParam, 1 => $string2Param, 2 => $intKeyParam[1], 3 => $intKeyParam[2]], $associativeParam),
-            'routeParameters',
-            $this->rowAction
+            $this->rowAction->getRouteParameters()
         );
     }
 
@@ -153,7 +152,7 @@ class RowActionTest extends \PHPUnit\Framework\TestCase
         $param = 'param';
         $this->rowAction->setRouteParameters($param);
 
-        $this->assertAttributeEquals([0 => $param], 'routeParameters', $this->rowAction);
+        $this->assertEquals([0 => $param], $this->rowAction->getRouteParameters());
     }
 
     public function testSetArrayRouteParameters()
@@ -177,7 +176,8 @@ class RowActionTest extends \PHPUnit\Framework\TestCase
         $routeParamsMapping = ['foo.bar.city' => 'cityId', 'foo.bar.country' => 'countryId'];
         $this->rowAction->setRouteParametersMapping($routeParamsMapping);
 
-        $this->assertEquals($routeParamsMapping, $this->rowAction->getRouteParametersMapping());
+        $this->assertEquals($routeParamsMapping['foo.bar.city'], $this->rowAction->getRouteParametersMapping('foo.bar.city'));
+        $this->assertEquals($routeParamsMapping['foo.bar.country'], $this->rowAction->getRouteParametersMapping('foo.bar.country'));
     }
 
     public function testGetRouteParametersMapping()
@@ -205,10 +205,9 @@ class RowActionTest extends \PHPUnit\Framework\TestCase
         $attrVal = 'foo_val1';
         $this->rowAction->addAttribute($attrName, $attrVal);
 
-        $this->assertAttributeEquals(
+        $this->assertEquals(
             array_merge($this->attributes, [$attrName => $attrVal]),
-            'attributes',
-            $this->rowAction
+            $this->rowAction->getAttributes()
         );
     }
 
@@ -247,7 +246,7 @@ class RowActionTest extends \PHPUnit\Framework\TestCase
     public function testAddManipulateRender()
     {
         $this->addCalbacks();
-        $this->assertAttributeEquals($this->callbacks, 'callbacks', $this->rowAction);
+        $this->assertEquals($this->callbacks, $this->rowAction->getCallbacks());
     }
 
     private function addCalbacks()

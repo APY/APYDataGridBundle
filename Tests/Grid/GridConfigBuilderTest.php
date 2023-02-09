@@ -27,7 +27,7 @@ class GridConfigBuilderTest extends TestCase
         $source = $this->createMock(Source::class);
         $this->gridConfigBuilder->setSource($source);
 
-        $this->assertAttributeSame($source, 'source', $this->gridConfigBuilder);
+        $this->assertSame($source, $this->gridConfigBuilder->getSource());
     }
 
     public function testGetSource()
@@ -43,7 +43,7 @@ class GridConfigBuilderTest extends TestCase
         $type = $this->createMock(GridTypeInterface::class);
         $this->gridConfigBuilder->setType($type);
 
-        $this->assertAttributeSame($type, 'type', $this->gridConfigBuilder);
+        $this->assertSame($type, $this->gridConfigBuilder->getType());
     }
 
     public function testGetType()

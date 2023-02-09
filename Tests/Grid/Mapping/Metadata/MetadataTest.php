@@ -159,6 +159,6 @@ class MetadataTest extends TestCase
         $this->metadata->setFieldsMappings($fieldMapping);
         $columns = $this->metadata->getColumnsFromMapping($columnsMock);
 
-        $this->assertInstanceOf('\SplObjectStorage', $columns);
+        $this->assertInstanceOf(\SplObjectStorage::class, $columns);
     }
 }

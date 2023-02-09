@@ -25,9 +25,9 @@ class ActionsColumnTest extends TestCase
         $this->assertEquals([$rowAction1, $rowAction2], $column->getRowActions());
         $this->assertEquals($columnId, $column->getId());
         $this->assertEquals($columnTitle, $column->getTitle());
-        $this->assertEquals(false, $column->getSortable());
-        $this->assertEquals(false, $column->getVisibleForSource());
-        $this->assertEquals(true, $column->getFilterable());
+        $this->assertEquals(false, $column->isSortable());
+        $this->assertEquals(false, $column->isVisibleForSource());
+        $this->assertEquals(true, $column->isFilterable());
     }
 
     public function testGetType()

@@ -78,7 +78,7 @@ class MassActionTest extends TestCase
 
     public function testDefaultConfirmMessage()
     {
-        $this->assertInternalType('string', $this->massAction->getConfirmMessage());
+        $this->assertIsString($this->massAction->getConfirmMessage());
     }
 
     public function testSetConfirmMessage()

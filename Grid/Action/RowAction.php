@@ -414,4 +414,12 @@ class RowAction implements RowActionInterface
 
         return $this;
     }
+
+    /**
+     * Get the value of callbacks
+     */ 
+    public function getCallbacks()
+    {
+        return $this->callbacks;
+    }
 }

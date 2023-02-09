@@ -98,7 +98,7 @@ class ArrayColumnTest extends TestCase
             new Filter(Column::OPERATOR_ISNULL),
             new Filter(Column::OPERATOR_EQ, 'a:0:{}'),
         ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+        $this->assertEquals(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testIsNotNullFilter()

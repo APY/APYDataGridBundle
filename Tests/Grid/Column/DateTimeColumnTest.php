@@ -192,8 +192,8 @@ class DateTimeColumnTest extends \PHPUnit\Framework\TestCase
             Column::OPERATOR_ISNULL,
             Column::OPERATOR_ISNOTNULL,
         ], $column->getOperators());
-        $this->assertAttributeEquals(Column::OPERATOR_EQ, 'defaultOperator', $column);
-        $this->assertAttributeEquals(date_default_timezone_get(), 'timezone', $column);
+        $this->assertEquals(Column::OPERATOR_EQ,  $column->getDefaultOperator());
+        $this->assertEquals(date_default_timezone_get(), $column->getTimezone());
     }
 
     public function testInitialize()

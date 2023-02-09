@@ -23,8 +23,8 @@ class JoinColumnTest extends TestCase
 
         $this->assertEquals([], $column->getParams());
         $this->assertEquals([], $column->getJoinColumns());
-        $this->assertAttributeEquals('&nbsp;', 'separator', $column);
-        $this->assertEquals(true, $column->getVisibleForSource());
+        $this->assertEquals('&nbsp;', $column->getSeparator());
+        $this->assertEquals(true, $column->isVisibleForSource());
         $this->assertEquals(true, $column->getIsManualField());
     }
 

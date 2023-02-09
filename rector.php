@@ -2,26 +2,24 @@
 
 declare(strict_types=1);
 
-use Rector\Set\ValueObject\SetList;
+use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
+use Rector\Config\RectorConfig;
+use Rector\Set\ValueObject\LevelSetList;
 use Rector\PHPUnit\Set\PHPUnitSetList;
-use Rector\Core\Configuration\Option;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    // get parameters
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PATHS, [
-        __DIR__
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->paths([
+        //__DIR__ . '/src',
+        __DIR__ . '/Tests'
     ]);
 
-    // Define what rule sets will be applied
-    $containerConfigurator->import(SetList::PHP_74);
-    $containerConfigurator->import(SetList::PHP_80);
-    $containerConfigurator->import(PHPUnitSetList::PHPUNIT_90);
-
-    // get services (needed for register a single rule)
-    // $services = $containerConfigurator->services();
-
     // register a single rule
-    // $services->set(TypedPropertyRector::class);
+    $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
+
+    // define sets of rules
+       $rectorConfig->sets([
+           LevelSetList::UP_TO_PHP_74,
+           LevelSetList::UP_TO_PHP_80,
+           PHPUnitSetList::PHPUNIT_91
+       ]);
 };

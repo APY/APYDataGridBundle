@@ -25,12 +25,13 @@ class BlankColumnTest extends TestCase
 
         $column = new BlankColumn($params);
 
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             'filterable' => false,
             'sortable'   => false,
             'source'     => false,
             'foo'        => false,
             'bar'        => true,
-        ], 'params', $column);
+        ], 
+        $column->getparams());
     }
 }

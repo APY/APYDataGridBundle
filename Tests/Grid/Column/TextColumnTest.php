@@ -30,7 +30,7 @@ class TextColumnTest extends WebTestCase
             new Filter(Column::OPERATOR_ISNULL),
             new Filter(Column::OPERATOR_EQ, ''),
         ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+        $this->assertEquals(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testNotNullOperatorFilters()

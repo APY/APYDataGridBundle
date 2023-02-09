@@ -28,7 +28,7 @@ class MassActionColumnTest extends TestCase
 
     public function testInitialize()
     {
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             'id'         => MassActionColumn::ID,
             'title'      => '',
             'size'       => 15,
@@ -36,7 +36,7 @@ class MassActionColumnTest extends TestCase
             'sortable'   => false,
             'source'     => false,
             'align'      => Column::ALIGN_CENTER,
-        ], 'params', $this->column);
+        ], $this->column->getParams());
     }
 
     public function setUp(): void

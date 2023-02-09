@@ -118,8 +118,7 @@ class GridBuilderTest extends TestCase
     public function testGetUnknown()
     {
         $this->expectException(
-            InvalidArgumentException::class,
-            'The column with the name "foo" does not exist.'
+            InvalidArgumentException::class
         );
 
         $this->builder->get('foo');
@@ -186,6 +185,6 @@ class GridBuilderTest extends TestCase
     protected function tearDown(): void
     {
         $this->factory = null;
-        $this->builder = null;
+        //$this->builder = null;
     }
 }

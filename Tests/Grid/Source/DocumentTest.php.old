@@ -46,7 +46,7 @@ class DocumentTest extends TestCase
         $document = new Document($name);
 
         $this->assertEquals($name, $document->getDocumentName());
-        $this->assertAttributeEquals('default', 'group', $document);
+        $this->assertEquals('default', $document->getGroup());
     }
 
     public function testConstructedWithAGroup()
@@ -321,7 +321,7 @@ class DocumentTest extends TestCase
 
         $this->assertEquals(1, $result->count());
         foreach ($iterator as $row) {
-            $this->assertAttributeEquals([$colId => 'subColValue'], 'fields', $row);
+            $this->assertEquals([$colId => 'subColValue'], $row->getFields());
         }
     }
 

@@ -312,7 +312,7 @@ class Grid implements GridInterface
     /**
      * The grid configuration.
      */
-    private \APY\DataGridBundle\Grid\GridConfigInterface $config;
+    private ?\APY\DataGridBundle\Grid\GridConfigInterface $config;
 
     /**
      * Constructor.
@@ -349,11 +349,13 @@ class Grid implements GridInterface
      */
     public function initialize()
     {
-        $config = $this->config;
-
-        if (!$config) {
+        if (!$this->config) {
             return $this;
         }
+
+        $config = $this->config;
+
+
 
         $this->setPersistence($config->isPersisted());
 
@@ -1511,7 +1513,7 @@ class Grid implements GridInterface
     public function getRouteUrl()
     {
         if ($this->routeUrl === null) {
-            $this->routeUrl = $this->router->generate($this->request->get('_route'), $this->getRouteParameters());
+            $this->routeUrl = $this->router->generate((string) $this->request->get('_route'), $this->getRouteParameters());
         }
 
         return $this->routeUrl;
@@ -2296,5 +2298,113 @@ class Grid implements GridInterface
     public function getMaxResults()
     {
         return $this->maxResults;
+    }
+
+    /**
+     * Get the value of lazyAddColumn
+     */ 
+    public function getLazyAddColumn()
+    {
+        return $this->lazyAddColumn;
+    }
+
+    /**
+     * Get default Tweak.
+     *
+     * @return  string
+     */ 
+    public function getDefaultTweak()
+    {
+        return $this->defaultTweak;
+    }
+
+    /**
+     * Get the value of lazyVisibleColumns
+     */ 
+    public function getLazyVisibleColumns()
+    {
+        return $this->lazyVisibleColumns;
+    }
+
+    /**
+     * Get the value of lazyHideShowColumns
+     */ 
+    public function getLazyHideShowColumns()
+    {
+        return $this->lazyHideShowColumns;
+    }
+
+    /**
+     * Get the value of actionsColumnSize
+     */ 
+    public function getActionsColumnSize()
+    {
+        return $this->actionsColumnSize;
+    }
+
+    /**
+     * Get the value of actionsColumnTitle
+     */ 
+    public function getActionsColumnTitle()
+    {
+        return $this->actionsColumnTitle;
+    }
+
+    /**
+     * Get the value of showFilters
+     *
+     * @return  bool
+     */ 
+    public function getShowFilters()
+    {
+        return $this->showFilters;
+    }
+
+    /**
+     * Get the value of showTitles
+     *
+     * @return  bool
+     */ 
+    public function getShowTitles()
+    {
+        return $this->showTitles;
+    }
+
+    /**
+     * Get the value of lazyHiddenColumns
+     */ 
+    public function getLazyHiddenColumns()
+    {
+        return $this->lazyHiddenColumns;
+    }
+
+    /**
+     * Get the value of newSession
+     *
+     * @return  bool
+     */ 
+    public function getNewSession()
+    {
+        return $this->newSession;
+    }
+
+    /**
+     * Get default filters.
+     *
+     * @return  array
+     */ 
+    public function getDefaultFilters()
+    {
+        return $this->defaultFilters;
+    }
+
+    /**
+     * Get permanent filters.
+     *
+     * @return  array
+     */ 
+    public function getPermanentFilters()
+    {
+        return $this->permanentFilters;
     }
 }

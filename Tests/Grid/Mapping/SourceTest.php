@@ -19,12 +19,12 @@ class SourceTest extends TestCase
 
     public function testFilterableHasDefaultValue()
     {
-        $this->assertEquals(true, $this->source->getFilterable());
+        $this->assertEquals(true, $this->source->isFilterable());
     }
 
     public function testSortableHasDefaultValue()
     {
-        $this->assertEquals(true, $this->source->getSortable());
+        $this->assertEquals(true, $this->source->isSortable());
     }
 
     public function testGroupsHasDefaultValue()
@@ -74,7 +74,7 @@ class SourceTest extends TestCase
 
         $this->source = new Source(['filterable' => $filterable]);
 
-        $this->assertEquals($filterable, $this->source->getFilterable());
+        $this->assertEquals($filterable, $this->source->isFilterable());
     }
 
     public function testGetterFilterable()
@@ -92,7 +92,7 @@ class SourceTest extends TestCase
 
         $this->source = new Source(['sortable' => $sortable]);
 
-        $this->assertEquals($sortable, $this->source->getSortable());
+        $this->assertEquals($sortable, $this->source->isSortable());
     }
 
     public function testGetterSortable()

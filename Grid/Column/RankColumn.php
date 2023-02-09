@@ -35,4 +35,12 @@ class RankColumn extends BlankColumn
     {
         return 'rank';
     }
+
+    /**
+     * Get the value of rank
+     */ 
+    public function getRank()
+    {
+        return $this->rank;
+    }
 }

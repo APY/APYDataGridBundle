@@ -213,4 +213,20 @@ class Columns implements \IteratorAggregate, \Countable
 
         return $this;
     }
+
+    /**
+     * Get the value of columns
+     */ 
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    /**
+     * Get the value of extensions
+     */ 
+    public function getExtensions()
+    {
+        return $this->extensions;
+    }
 }
