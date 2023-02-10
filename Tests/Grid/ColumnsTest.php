@@ -210,7 +210,7 @@ class ColumnsTest extends TestCase
      *
      * @return array|\PHPUnit_Framework_MockObject_MockObject[]|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function buildColumnMocks($number): array|\PHPUnit_Framework_MockObject_MockObject|\APY\DataGridBundle\Grid\Column\Column
+    private function buildColumnMocks($number) //: array|\PHPUnit_Framework_MockObject_MockObject|\APY\DataGridBundle\Grid\Column\Column
     {
         $mocks = [];
         for ($i = 0; $i < $number; ++$i) {
