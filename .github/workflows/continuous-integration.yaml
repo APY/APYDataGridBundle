@@ -12,7 +12,7 @@ jobs:
       with:
         php-version: '8.0'
         coverage: 'none'
-        extensions: 'curl, json, mbstring, mongodb, openssl'    
+        extensions: 'curl, json, intl, mbstring, mongodb, openssl'    
     - uses: php-actions/composer@v6
       with:
         php_extensions: mongodb
