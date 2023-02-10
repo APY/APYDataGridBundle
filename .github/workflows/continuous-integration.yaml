@@ -35,6 +35,7 @@ jobs:
       uses : 'ramsey/composer-install@v2'
       with:
         dependency-versions: "${{ matrix.dependencies }}"
+        composer-options: "--no-interaction" 
 
     # - uses: php-actions/phpunit@v3
     #   with:
