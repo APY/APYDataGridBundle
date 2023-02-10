@@ -33,7 +33,7 @@ class DSVExport extends Export
         parent::__construct($title, $fileName, $params, $charset);
     }
 
-    public function computeData($grid)
+    public function computeData(Grid $grid)
     {
         $data = $this->getFlatGridData($grid);
 

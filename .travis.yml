@@ -3,6 +3,7 @@ language: php
 php:
   - 7.2
   - 7.3
+  - 7.4
 
 matrix:
   include:
@@ -12,13 +13,19 @@ matrix:
     - php: 7.2
       env: |
         SYMFONY_VERSION=^4.0
+    - php: 7.4
+      env: |
+        SYMFONY_VERSION=^3.0
+    - php: 7.4
+      env: |
+        SYMFONY_VERSION=^4.0
 
 before_install:
   - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - |
     if [ "${SYMFONY_VERSION}" != "" ]; then
       packages="form dependency-injection config http-foundation http-kernel options-resolver security-guard serializer"
-      devpackages="framework-bundle browser-kit templating expression-language"
+      devpackages="framework-bundle security-bundle twig-bundle expression-language"
       for package in $packages
         do
           composer require --no-update symfony/"$package"=${SYMFONY_VERSION};
