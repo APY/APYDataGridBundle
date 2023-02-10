@@ -14,5 +14,7 @@ jobs:
         coverage: 'none'
         extensions: 'curl, json, mbstring, mongodb, openssl'    
     - uses: php-actions/composer@v6
+      with:
+        composer-options: "--ignore-platform-req=ext-mongodb"
     - uses: php-actions/phpunit@v3
     # ... then your own project steps ...
