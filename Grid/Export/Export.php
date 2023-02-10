@@ -98,7 +98,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      *
      * @return Response
      */
-    public function getResponse()
+    public function getResponse() : \Symfony\Component\HttpFoundation\Response
     {
         // Response
         $kernelCharset = $this->container->getParameter('kernel.charset');
@@ -512,7 +512,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle() : string
     {
         return $this->title;
     }
