@@ -43,7 +43,7 @@
         "phpunit/phpunit": "^9.5",
         "friendsofphp/php-cs-fixer": "^2.0",
         "php-coveralls/php-coveralls": "^2.0",
-        "doctrine/orm": "~2.4,>=2.4.5",
+        "doctrine/orm": "~2.10,>=2.10.0",
         "doctrine/mongodb-odm": "^2.2",
         "rector/rector": "^0.12.13",
         "dg/bypass-finals": "^1.3",
