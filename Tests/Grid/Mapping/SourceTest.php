@@ -1,6 +1,6 @@
 <?php
 
-namespace APY\DataGridBundle\Grid\Tests\Mapping;
+namespace APY\DataGridBundle\Tests\Grid\Mapping;
 
 use APY\DataGridBundle\Grid\Mapping\Source;
 use PHPUnit\Framework\TestCase;
