@@ -3,6 +3,8 @@
 namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Export\Export;
+use APY\DataGridBundle\Grid\Source\Source;
 
 /**
  * The central registry of the Grid component.

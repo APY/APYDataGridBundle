@@ -25,7 +25,7 @@ class XMLExport extends Export
 
     protected $mimeType = 'application/xml';
 
-    public function computeData($grid)
+    public function computeData(Grid $grid)
     {
         $xmlEncoder = new XmlEncoder();
         $xmlEncoder->setRootNodeName('grid');

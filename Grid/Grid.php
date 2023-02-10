@@ -18,6 +18,7 @@ use APY\DataGridBundle\Grid\Action\RowActionInterface;
 use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
+use APY\DataGridBundle\Grid\Export\Export;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
@@ -333,6 +334,11 @@ class Grid implements GridInterface
         $this->securityContext = $container->get('security.authorization_checker');
 
         $this->id = $id;
+
+        // even id is set, do create hash early
+        if (!empty($this->id)) {
+            $this->createHash();
+        }
 
         $this->columns = new Columns($this->securityContext);
 
@@ -1100,6 +1106,7 @@ class Grid implements GridInterface
         if (isset($this->requestData[$key])) {
             return $this->requestData[$key];
         }
+        return null;
     }
 
     /**
@@ -1114,6 +1121,7 @@ class Grid implements GridInterface
         if (isset($this->sessionData[$key])) {
             return $this->sessionData[$key];
         }
+        return null;
     }
 
     /**
@@ -1394,7 +1402,7 @@ class Grid implements GridInterface
     /**
      * Sets template for export.
      *
-     * @param \Twig_Template|string $template
+     * @param TemplateWrapper|string $template
      *
      * @throws \Exception
      *
@@ -1418,7 +1426,7 @@ class Grid implements GridInterface
     /**
      * Returns template.
      *
-     * @return \Twig_Template|string
+     * @return string
      */
     public function getTemplate()
     {
@@ -1454,9 +1462,9 @@ class Grid implements GridInterface
     /**
      * Returns the export response.
      *
-     * @return Export[]
+     * @return Response
      */
-    public function getExportResponse()
+    public function getExportResponse(): Response
     {
         return $this->exportResponse;
     }
@@ -1464,9 +1472,9 @@ class Grid implements GridInterface
     /**
      * Returns the mass action response.
      *
-     * @return Export[]
+     * @return Response
      */
-    public function getMassActionResponse()
+    public function getMassActionResponse(): Response
     {
         return $this->massActionResponse;
     }
@@ -2124,7 +2132,7 @@ class Grid implements GridInterface
      * @param string|array $param2   The view name or an array of parameters to pass to the view
      * @param Response     $response A response instance
      *
-     * @return Response A Response instance
+     * @return Response|array A Response instance
      */
     public function getGridResponse($param1 = null, $param2 = null, Response $response = null)
     {
@@ -2154,7 +2162,15 @@ class Grid implements GridInterface
             if ($view === null) {
                 return $parameters;
             } else {
-                return new Response($this->container->get('twig')->render($view, $parameters, $response));
+                $content = $this->container->get('twig')->render($view, $parameters);
+
+                if (null === $response) {
+                    $response = new Response();
+                }
+
+                $response->setContent($content);
+
+                return $response;
             }
         }
     }
