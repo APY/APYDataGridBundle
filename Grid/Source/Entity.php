@@ -17,6 +17,7 @@ use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\JoinColumn;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
+use Doctrine\ORM\Internal\SQLResultCasing;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -28,6 +29,8 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
 {
+    use SQLResultCasing;
+
     const DOT_DQL_ALIAS_PH = '__dot__';
     const COLON_DQL_ALIAS_PH = '__col__';
 
@@ -609,7 +612,7 @@ class Entity extends Source
             $platform = $countQuery->getEntityManager()->getConnection()->getDatabasePlatform(); // law of demeter win
 
             $rsm = new ResultSetMapping();
-            $rsm->addScalarResult($platform->getSQLResultCasing('dctrn_count'), 'count');
+            $rsm->addScalarResult($this->getSQLResultCasing($platform,'dctrn_count'), 'count');
 
             $countQuery->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, 'Doctrine\ORM\Tools\Pagination\CountOutputWalker');
             $countQuery->setResultSetMapping($rsm);
