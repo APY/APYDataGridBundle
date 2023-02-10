@@ -104,4 +104,12 @@ class Metadata
 
         return $columns;
     }
+
+    /**
+     * Get the value of fieldsMappings
+     */ 
+    public function getFieldsMappings()
+    {
+        return $this->fieldsMappings;
+    }
 }

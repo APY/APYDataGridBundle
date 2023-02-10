@@ -363,9 +363,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         $pagerfanta->setCurrentPage($grid->getPage() + 1);
 
         $url = $this->getGridUrl('page', $grid, '');
-        $routeGenerator = function ($page) use ($url) {
-            return sprintf('%s%d', $url, $page - 1);
-        };
+        $routeGenerator = fn($page) => sprintf('%s%d', $url, $page - 1);
 
         $view = new $this->pagerFantaDefs['view_class']();
         $html = $view->render($pagerfanta, $routeGenerator, $this->pagerFantaDefs['options']);

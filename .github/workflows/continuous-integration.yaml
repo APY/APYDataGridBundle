@@ -1,0 +1,47 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    name: 'PHPUnit (PHP ${{ matrix.php }})'
+    strategy:
+      matrix:
+        php:
+          - '7.4'
+          - '8.0'
+          - '8.1'
+        dependencies:
+          - 'highest'
+        include:
+          - php: '7.4'
+            dependencies: 'lowest'
+        exclude:
+          - php: '7.4'
+            dependencies: 'highest'               
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v3
+
+    - name: 'Setup PHP'
+      uses: 'shivammathur/setup-php@v2'
+      with:
+        php-version: '${{ matrix.php }}'
+        coverage: 'none'
+        extensions: 'curl, json, intl, mbstring, mongodb, openssl'    
+
+    - name: 'Install Composer dependencies' 
+      uses : 'ramsey/composer-install@v2'
+      with:
+        dependency-versions: "${{ matrix.dependencies }}"
+        composer-options: "--no-interaction" 
+
+    # - uses: php-actions/phpunit@v3
+    #   with:
+    #     version
+    - name: 'Run unit tests'
+      run: |
+        vendor/bin/phpunit
+ 
+    # ... then your own project steps ...

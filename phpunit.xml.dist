@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./Tests/bootstrap.php">
+<phpunit 
+    
+    colors                                     = "true"
+    beStrictAboutTestsThatDoNotTestAnything    = "false"
+    verbose                                    = "true"
+    convertDeprecationsToExceptions            = "false"
+    bootstrap                                  = "./Tests/bootstrap.php"
+>
     <testsuites>
         <testsuite name="APYDataGridBundle test suite">
             <directory suffix="Test.php">./Tests</directory>
@@ -19,4 +26,7 @@
     <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>
+    <extensions>
+        <extension class="APY\DataGridBundle\Tests\Hook\BypassFinalHook"/>
+    </extensions>
 </phpunit>

@@ -9,8 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class DateColumnTest extends TestCase
 {
-    /** @var DateColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\DateColumn $column;
 
     public function testGetType()
     {
@@ -68,7 +67,7 @@ class DateColumnTest extends TestCase
             new Filter(Column::OPERATOR_LT, new \DateTime($from . ' 00:00:00')),
             new Filter(Column::OPERATOR_GT, new \DateTime($from . '23:59:59')),
         ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+        $this->assertEquals(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testGetFiltersOperatorLt()
@@ -119,7 +118,7 @@ class DateColumnTest extends TestCase
         );
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new DateColumn();
     }

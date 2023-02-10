@@ -52,6 +52,14 @@ class Row
     }
 
     /**
+     * @return EntityRepository
+     */
+    public function getRepository()
+    {
+        return $this->repository;
+    }
+
+    /**
      * @return null|object
      */
     public function getEntity()
@@ -139,6 +147,14 @@ class Row
     public function getField($columnId)
     {
         return isset($this->fields[$columnId]) ? $this->fields[$columnId] : '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getFields()
+    {
+        return $this->fields;
     }
 
     /**

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ManagerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->manager = new Manager();
     }
@@ -25,7 +25,7 @@ class ManagerTest extends TestCase
 
         $this->manager->addDriver($driverInterfaceMock, $priority);
 
-        $this->assertAttributeEquals($driverHeap, 'drivers', $this->manager);
+        $this->assertEquals($driverHeap, $this->manager->getDrivers());
     }
 
     public function testGetDrivers()
@@ -86,8 +86,8 @@ class ManagerTest extends TestCase
 
         $metadata = $this->manager->getMetadata('foo');
 
-        $this->assertAttributeEquals($fields, 'fields', $metadata);
-        $this->assertAttributeEquals($groupBy, 'groupBy', $metadata);
-        $this->assertAttributeEquals($mapping, 'fieldsMappings', $metadata);
+        $this->assertEquals($fields, $metadata->getFields());
+        $this->assertEquals($groupBy, $metadata->getGroupBy());
+        $this->assertEquals($mapping, $metadata->getFieldsMappings());
     }
 }

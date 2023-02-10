@@ -206,11 +206,27 @@ class Columns implements \IteratorAggregate, \Countable
         }
 
         if ($keepOtherColumns) {
-            $this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
+            $this->columns = [...$reorderedColumns, ...array_values($columnsIndexedByIds)];
         } else {
             $this->columns = $reorderedColumns;
         }
 
         return $this;
+    }
+
+    /**
+     * Get the value of columns
+     */ 
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    /**
+     * Get the value of extensions
+     */ 
+    public function getExtensions()
+    {
+        return $this->extensions;
     }
 }

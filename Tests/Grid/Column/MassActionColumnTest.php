@@ -8,8 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class MassActionColumnTest extends TestCase
 {
-    /** @var MassActionColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\MassActionColumn $column;
 
     public function testGetType()
     {
@@ -29,7 +28,7 @@ class MassActionColumnTest extends TestCase
 
     public function testInitialize()
     {
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             'id'         => MassActionColumn::ID,
             'title'      => '',
             'size'       => 15,
@@ -37,10 +36,10 @@ class MassActionColumnTest extends TestCase
             'sortable'   => false,
             'source'     => false,
             'align'      => Column::ALIGN_CENTER,
-        ], 'params', $this->column);
+        ], $this->column->getParams());
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new MassActionColumn();
     }

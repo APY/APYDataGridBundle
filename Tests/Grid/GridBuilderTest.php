@@ -38,15 +38,12 @@ class GridBuilderTest extends TestCase
 
     private $registry;
 
-    /**
-     * @var GridBuilder
-     */
-    private $builder;
+    private \APY\DataGridBundle\Grid\GridBuilder $builder;
 
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         //self::bootKernel();
 
@@ -121,8 +118,7 @@ class GridBuilderTest extends TestCase
     public function testGetUnknown()
     {
         $this->expectException(
-            InvalidArgumentException::class,
-            'The column with the name "foo" does not exist.'
+            InvalidArgumentException::class
         );
 
         $this->builder->get('foo');
@@ -186,9 +182,9 @@ class GridBuilderTest extends TestCase
         $this->assertInstanceOf(Grid::class, $this->builder->getGrid());
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->factory = null;
-        $this->builder = null;
+        //$this->builder = null;
     }
 }

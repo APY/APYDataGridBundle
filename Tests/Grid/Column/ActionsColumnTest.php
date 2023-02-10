@@ -11,8 +11,7 @@ use Symfony\Component\Security\Core\Role\Role;
 
 class ActionsColumnTest extends TestCase
 {
-    /** @var ActionsColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\ActionsColumn $column;
 
     public function testConstructor()
     {
@@ -23,12 +22,12 @@ class ActionsColumnTest extends TestCase
         $rowAction2 = $this->createMock(RowAction::class);
         $column = new ActionsColumn($columnId, $columnTitle, [$rowAction1, $rowAction2]);
 
-        $this->assertAttributeEquals([$rowAction1, $rowAction2], 'rowActions', $column);
-        $this->assertAttributeEquals($columnId, 'id', $column);
-        $this->assertAttributeEquals($columnTitle, 'title', $column);
-        $this->assertAttributeEquals(false, 'sortable', $column);
-        $this->assertAttributeEquals(false, 'visibleForSource', $column);
-        $this->assertAttributeEquals(true, 'filterable', $column);
+        $this->assertEquals([$rowAction1, $rowAction2], $column->getRowActions());
+        $this->assertEquals($columnId, $column->getId());
+        $this->assertEquals($columnTitle, $column->getTitle());
+        $this->assertEquals(false, $column->isSortable());
+        $this->assertEquals(false, $column->isVisibleForSource());
+        $this->assertEquals(true, $column->isFilterable());
     }
 
     public function testGetType()
@@ -77,7 +76,7 @@ class ActionsColumnTest extends TestCase
         $column = new ActionsColumn('columnId', 'columnTitle', []);
         $column->setRowActions([$rowAction1, $rowAction2]);
 
-        $this->assertAttributeEquals([$rowAction1, $rowAction2], 'rowActions', $column);
+        $this->assertEquals([$rowAction1, $rowAction2], $column->getRowActions());
     }
 
     public function testIsNotVisibleIfExported()
@@ -99,7 +98,7 @@ class ActionsColumnTest extends TestCase
 
     public function testIsVisibleIfAuthCheckerIsGranted()
     {
-        $role = $this->createMock(Role::class);
+        $role = 'ROLE_USER';
         $this->column->setRole($role);
 
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
@@ -111,7 +110,7 @@ class ActionsColumnTest extends TestCase
 
     public function testIsNotVisibleIfAuthCheckerIsNotGranted()
     {
-        $role = $this->createMock(Role::class);
+        $role = 'ROLE_USER';
         $this->column->setRole($role);
 
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
@@ -162,7 +161,7 @@ class ActionsColumnTest extends TestCase
         ], $this->column->getRouteParameters($row, $rowAction));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $rowAction1 = $this->createMock(RowAction::class);
         $rowAction2 = $this->createMock(RowAction::class);

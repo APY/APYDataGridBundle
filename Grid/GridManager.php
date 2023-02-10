@@ -214,4 +214,28 @@ class GridManager implements \IteratorAggregate, \Countable
     {
         $this->routeUrl = $routeUrl;
     }
+
+    /**
+     * Get the value of grids
+     */ 
+    public function getGrids()
+    {
+        return $this->grids;
+    }
+
+    /**
+     * Get the value of exportGrid
+     */ 
+    public function getExportGrid()
+    {
+        return $this->exportGrid;
+    }
+
+    /**
+     * Get the value of massActionGrid
+     */ 
+    public function getMassActionGrid()
+    {
+        return $this->massActionGrid;
+    }
 }

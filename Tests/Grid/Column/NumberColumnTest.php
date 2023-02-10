@@ -11,10 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class NumberColumnTest extends TestCase
 {
-    /**
-     * @var NumberColumn
-     */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\NumberColumn $column;
 
     public function testGetType()
     {
@@ -23,17 +20,17 @@ class NumberColumnTest extends TestCase
 
     public function testInitializeDefaultParams()
     {
-        $this->assertAttributeEquals(Column::ALIGN_RIGHT, 'align', $this->column);
-        $this->assertAttributeEquals(\NumberFormatter::DECIMAL, 'style', $this->column);
-        $this->assertAttributeEquals(\Locale::getDefault(), 'locale', $this->column);
-        $this->assertAttributeEquals(null, 'precision', $this->column);
-        $this->assertAttributeEquals(false, 'grouping', $this->column);
-        $this->assertAttributeEquals(\NumberFormatter::ROUND_HALFUP, 'roundingMode', $this->column);
-        $this->assertAttributeEquals(null, 'ruleSet', $this->column);
-        $this->assertAttributeEquals(null, 'currencyCode', $this->column);
-        $this->assertAttributeEquals(false, 'fractional', $this->column);
-        $this->assertAttributeEquals(null, 'maxFractionDigits', $this->column);
-        $this->assertAttributeEquals([
+        $this->assertEquals(Column::ALIGN_RIGHT, $this->column->getAlign());
+        $this->assertEquals(\NumberFormatter::DECIMAL, $this->column->getStyle());
+        $this->assertEquals(\Locale::getDefault(), $this->column->getLocale());
+        $this->assertEquals(null, $this->column->getPrecision());
+        $this->assertEquals(false, $this->column->getGrouping());
+        $this->assertEquals(\NumberFormatter::ROUND_HALFUP, $this->column->getRoundingMode());
+        $this->assertEquals(null, $this->column->getRuleSet());
+        $this->assertEquals(null, $this->column->getCurrencyCode());
+        $this->assertEquals(false, $this->column->getFractional());
+        $this->assertEquals(null, $this->column->getMaxFractionDigits());
+        $this->assertEquals([
             Column::OPERATOR_EQ,
             Column::OPERATOR_NEQ,
             Column::OPERATOR_LT,
@@ -44,34 +41,34 @@ class NumberColumnTest extends TestCase
             Column::OPERATOR_BTWE,
             Column::OPERATOR_ISNULL,
             Column::OPERATOR_ISNOTNULL,
-        ], 'operators', $this->column);
-        $this->assertAttributeEquals(Column::OPERATOR_EQ, 'defaultOperator', $this->column);
+        ], $this->column->getOperators());
+        $this->assertEquals(Column::OPERATOR_EQ, $this->column->getDefaultOperator());
     }
 
     public function testInitializeStyle()
     {
         $column = new NumberColumn(['style' => 'decimal']);
-        $this->assertAttributeEquals(\NumberFormatter::DECIMAL, 'style', $column);
+        $this->assertEquals(\NumberFormatter::DECIMAL, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'percent']);
-        $this->assertAttributeEquals(\NumberFormatter::PERCENT, 'style', $column);
+        $this->assertEquals(\NumberFormatter::PERCENT, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'money']);
-        $this->assertAttributeEquals(\NumberFormatter::CURRENCY, 'style', $column);
+        $this->assertEquals(\NumberFormatter::CURRENCY, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'currency']);
-        $this->assertAttributeEquals(\NumberFormatter::CURRENCY, 'style', $column);
+        $this->assertEquals(\NumberFormatter::CURRENCY, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'duration']);
-        $this->assertAttributeEquals(\NumberFormatter::DURATION, 'style', $column);
-        $this->assertAttributeEquals('en', 'locale', $column);
-        $this->assertAttributeEquals('%in-numerals', 'ruleSet', $column);
+        $this->assertEquals(\NumberFormatter::DURATION, $column->getStyle());
+        $this->assertEquals('en', $column->getLocale());
+        $this->assertEquals('%in-numerals', $column->getRuleSet());
 
         $column = new NumberColumn(['style' => 'scientific']);
-        $this->assertAttributeEquals(\NumberFormatter::SCIENTIFIC, 'style', $column);
+        $this->assertEquals(\NumberFormatter::SCIENTIFIC, $column->getStyle());
 
         $column = new NumberColumn(['style' => 'spellout']);
-        $this->assertAttributeEquals(\NumberFormatter::SPELLOUT, 'style', $column);
+        $this->assertEquals(\NumberFormatter::SPELLOUT, $column->getStyle());
     }
 
     public function testInitializeStyleWithInvalidValue()
@@ -83,49 +80,49 @@ class NumberColumnTest extends TestCase
     public function testInitializeLocale()
     {
         $column = new NumberColumn(['locale' => 'it']);
-        $this->assertAttributeEquals('it', 'locale', $column);
+        $this->assertEquals('it',  $column->getLocale());
     }
 
     public function testInitializePrecision()
     {
         $column = new NumberColumn(['precision' => 2]);
-        $this->assertAttributeEquals(2, 'precision', $column);
+        $this->assertEquals(2, $column->getPrecision());
     }
 
     public function testInitializeGrouping()
     {
         $column = new NumberColumn(['grouping' => 3]);
-        $this->assertAttributeEquals(3, 'grouping', $column);
+        $this->assertEquals(3, $column->getGrouping());
     }
 
     public function testInitializeRoundingMode()
     {
         $column = new NumberColumn(['roundingMode' => \NumberFormatter::ROUND_HALFDOWN]);
-        $this->assertAttributeEquals(\NumberFormatter::ROUND_HALFDOWN, 'roundingMode', $column);
+        $this->assertEquals(\NumberFormatter::ROUND_HALFDOWN, $column->getRoundingMode());
     }
 
     public function testInitializeRuleSet()
     {
         $column = new NumberColumn(['ruleSet' => \NumberFormatter::PUBLIC_RULESETS]);
-        $this->assertAttributeEquals(\NumberFormatter::PUBLIC_RULESETS, 'ruleSet', $column);
+        $this->assertEquals(\NumberFormatter::PUBLIC_RULESETS, $column->getRuleSet());
     }
 
     public function testInitializeCurrencyCode()
     {
         $column = new NumberColumn(['currencyCode' => 'EUR']);
-        $this->assertAttributeEquals('EUR', 'currencyCode', $column);
+        $this->assertEquals('EUR',  $column->getCurrencyCode());
     }
 
     public function testInizializeFractional()
     {
         $column = new NumberColumn(['fractional' => true]);
-        $this->assertAttributeEquals(true, 'fractional', $column);
+        $this->assertEquals(true, $column->getFractional());
     }
 
     public function testInizializeMaxFractionalDigits()
     {
         $column = new NumberColumn(['maxFractionDigits' => 2]);
-        $this->assertAttributeEquals(2, 'maxFractionDigits', $column);
+        $this->assertEquals(2, $column->getMaxFractionDigits());
     }
 
     public function testIsQueryValid()
@@ -142,9 +139,7 @@ class NumberColumnTest extends TestCase
     public function testRenderCellWithCallback()
     {
         $value = 1.0;
-        $this->column->manipulateRenderCell(function ($value, $row, $router) {
-            return (int) $value;
-        });
+        $this->column->manipulateRenderCell(fn($value, $row, $router) => (int) $value);
 
         $result = $this->column->renderCell(
             $value,
@@ -307,7 +302,7 @@ class NumberColumnTest extends TestCase
         $this->assertEquals(3, $column->getMaxFractionDigits());
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new NumberColumn();
     }

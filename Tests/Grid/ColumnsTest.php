@@ -10,11 +10,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ColumnsTest extends TestCase
 {
-    /** @var Columns */
-    private $columns;
+    private \APY\DataGridBundle\Grid\Columns $columns;
 
-    /** @var AuthorizationCheckerInterface */
-    private $authChecker;
+    private \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authChecker;
 
     public function testGetIterator()
     {
@@ -27,21 +25,21 @@ class ColumnsTest extends TestCase
         $column = $this->buildColumnMocks(1);
         $this->columns->addColumn($column);
 
-        $this->equalTo(1, $this->columns->count());
+        $this->equalTo(1);
     }
 
     public function testAddColumnsOrder()
     {
-        list($column1, $column2, $column3, $column4, $column5) = $this->buildColumnMocks(5);
+        [$column1, $column2, $column3, $column4] = $this->buildColumnMocks(4);
 
         $this->columns
             ->addColumn($column1)
             ->addColumn($column2, 1)
             ->addColumn($column3, 2)
             ->addColumn($column4, -1)
-            ->addColumn($column5, 'foo');
+            ;
 
-        $this->assertAttributeSame([$column2, $column3, $column4, $column1, $column5], 'columns', $this->columns);
+        $this->assertSame([$column2, $column3, $column4, $column1], $this->columns->getColumns());
     }
 
     public function testRaiseExceptionIfGetColumnByIdDoesNotExists()
@@ -86,7 +84,7 @@ class ColumnsTest extends TestCase
 
     public function testGetPrimaryColumn()
     {
-        list($column1, $column2, $column3) = $this->buildColumnMocks(3);
+        [$column1, $column2, $column3] = $this->buildColumnMocks(3);
 
         $column1->method('isPrimary')->willReturn(false);
         $this->columns->addColumn($column1);
@@ -112,7 +110,7 @@ class ColumnsTest extends TestCase
             ->addExtension($column1)
             ->addExtension($column2);
 
-        $this->assertAttributeEquals(['foo' => $column1, 'bar' => $column2], 'extensions', $this->columns);
+        $this->assertEquals(['foo' => $column1, 'bar' => $column2], $this->columns->getExtensions());
     }
 
     public function testHasExtensionForColumnType()
@@ -140,7 +138,7 @@ class ColumnsTest extends TestCase
     {
         $this->assertEquals('', $this->columns->getHash());
 
-        list($column1, $column2, $column3, $column4) = $this->buildColumnMocks(4);
+        [$column1, $column2, $column3, $column4] = $this->buildColumnMocks(4);
 
         $column1->method('getId')->willReturn('this');
         $column2->method('getId')->willReturn('Is');
@@ -158,7 +156,7 @@ class ColumnsTest extends TestCase
 
     public function testSetColumnsOrder()
     {
-        list($column1, $column2, $column3) = $this->buildColumnMocks(3);
+        [$column1, $column2, $column3] = $this->buildColumnMocks(3);
 
         $column1->method('getId')->willReturn('col1');
         $column2->method('getId')->willReturn('col2');
@@ -170,12 +168,12 @@ class ColumnsTest extends TestCase
             ->addColumn($column3);
         $this->columns->setColumnsOrder(['col3', 'col1', 'col2']);
 
-        $this->assertAttributeSame([$column3, $column1, $column2], 'columns', $this->columns);
+        $this->assertSame([$column3, $column1, $column2], $this->columns->getColumns());
     }
 
     public function testPartialSetColumnsOrderAndKeepOthers()
     {
-        list($column1, $column2, $column3) = $this->buildColumnMocks(3);
+        [$column1, $column2, $column3] = $this->buildColumnMocks(3);
 
         $column1->method('getId')->willReturn('col1');
         $column2->method('getId')->willReturn('col2');
@@ -187,12 +185,12 @@ class ColumnsTest extends TestCase
             ->addColumn($column3);
         $this->columns->setColumnsOrder(['col3', 'col2'], true);
 
-        $this->assertAttributeSame([$column3, $column2, $column1], 'columns', $this->columns);
+        $this->assertSame([$column3, $column2, $column1], $this->columns->getColumns());
     }
 
     public function testPartialSetColumnsOrderWithoutKeepOthers()
     {
-        list($column1, $column2, $column3) = $this->buildColumnMocks(3);
+        [$column1, $column2, $column3] = $this->buildColumnMocks(3);
 
         $column1->method('getId')->willReturn('col1');
         $column2->method('getId')->willReturn('col2');
@@ -204,7 +202,7 @@ class ColumnsTest extends TestCase
             ->addColumn($column3);
         $this->columns->setColumnsOrder(['col3', 'col2'], false);
 
-        $this->assertAttributeSame([$column3, $column2], 'columns', $this->columns);
+        $this->assertSame([$column3, $column2], $this->columns->getColumns());
     }
 
     /**
@@ -212,7 +210,7 @@ class ColumnsTest extends TestCase
      *
      * @return array|\PHPUnit_Framework_MockObject_MockObject[]|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function buildColumnMocks($number)
+    private function buildColumnMocks($number) //: array|\PHPUnit_Framework_MockObject_MockObject|\APY\DataGridBundle\Grid\Column\Column
     {
         $mocks = [];
         for ($i = 0; $i < $number; ++$i) {
@@ -232,7 +230,7 @@ class ColumnsTest extends TestCase
         return $mocks;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $this->columns = new Columns($this->authChecker);

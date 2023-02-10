@@ -11,9 +11,9 @@ class FilterTest extends TestCase
     {
         $filter1 = new Filter('like', 'foo', 'column1');
 
-        $this->assertAttributeEquals('like', 'operator', $filter1);
-        $this->assertAttributeEquals('foo', 'value', $filter1);
-        $this->assertAttributeEquals('column1', 'columnName', $filter1);
+        $this->assertEquals('like', $filter1->getOperator());
+        $this->assertEquals('foo', $filter1->getValue());
+        $this->assertEquals('column1', $filter1->getColumnName());
     }
 
     public function testSetOperator()
@@ -21,7 +21,7 @@ class FilterTest extends TestCase
         $filter = new Filter('like');
         $filter->setOperator('nlike');
 
-        $this->assertAttributeEquals('nlike', 'operator', $filter);
+        $this->assertEquals('nlike', $filter->getOperator());
     }
 
     public function testGetOperator()
@@ -36,7 +36,7 @@ class FilterTest extends TestCase
         $filter = new Filter('like');
         $filter->setValue('foo');
 
-        $this->assertAttributeEquals('foo', 'value', $filter);
+        $this->assertEquals('foo', $filter->getValue());
     }
 
     public function testGetValue()
@@ -51,7 +51,7 @@ class FilterTest extends TestCase
         $filter = new Filter('like');
         $filter->setColumnName('col1');
 
-        $this->assertAttributeEquals('col1', 'columnName', $filter);
+        $this->assertEquals('col1', $filter->getColumnName());
     }
 
     public function testGetColumnName()

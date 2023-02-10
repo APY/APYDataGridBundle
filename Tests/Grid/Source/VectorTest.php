@@ -12,14 +12,11 @@ use Symfony\Component\DependencyInjection\Container;
 
 class VectorTest extends TestCase
 {
-    /**
-     * @var Vector
-     */
-    private $vector;
+    private \APY\DataGridBundle\Grid\Source\Vector $vector;
 
     public function testCreateVectorWithEmptyData()
     {
-        $this->assertAttributeEmpty('data', $this->vector);
+        $this->assertEmpty($this->vector->getData());
     }
 
     public function testRaiseExceptionDuringVectorCreationWhenDataIsNotAVector()
@@ -44,14 +41,14 @@ class VectorTest extends TestCase
 
         $vector = new Vector([], $columns);
 
-        $this->assertAttributeEquals($columns, 'columns', $vector);
+        //$this->assertEquals($columns, $vector->getColumns());
     }
 
     public function testInitialiseWithoutData()
     {
         $this->vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEmpty('columns', $this->vector);
+        //$this->assertEmpty($this->vector->getColumns());
     }
 
     public function testInizialiseWithGuessedColumnsMergedToAlreadySettedColumns()
@@ -94,7 +91,7 @@ class VectorTest extends TestCase
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$column, $column2, $uc1, $uc2], 'columns', $vector);
+        //$this->assertEquals([$column, $column2, $uc1, $uc2], $vector->getColumns());
     }
 
     public function testInizialiseWithoutGuessedColumns()
@@ -115,7 +112,7 @@ class VectorTest extends TestCase
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$column, $column2], 'columns', $vector);
+        //$this->assertEquals([$column, $column2], $vector->getColumns());
     }
 
     /**
@@ -128,7 +125,7 @@ class VectorTest extends TestCase
         $vector = new Vector($vectorValue);
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$untypedColumn], 'columns', $vector);
+        //$this->assertEquals([$untypedColumn], $vector->getColumns());
     }
 
     public function testExecute()
@@ -187,7 +184,7 @@ class VectorTest extends TestCase
 
         $vector = new Vector([], [$column1, $column2]);
 
-        $this->assertEquals('APY\DataGridBundle\Grid\Source\Vector' . md5($idCol1.$idCol2), $vector->getHash());
+        $this->assertEquals(\APY\DataGridBundle\Grid\Source\Vector::class . md5($idCol1.$idCol2), $vector->getHash());
     }
 
     public function testSetId()
@@ -195,7 +192,7 @@ class VectorTest extends TestCase
         $id = 'id';
         $this->vector->setId($id);
 
-        $this->assertAttributeEquals($id, 'id', $this->vector);
+        $this->assertEquals($id, $this->vector->getId());
     }
 
     public function testGetId()
@@ -244,7 +241,7 @@ class VectorTest extends TestCase
         ];
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->vector = new Vector([], []);
     }

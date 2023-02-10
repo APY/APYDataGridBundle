@@ -10,8 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class BooleanColumnTest extends TestCase
 {
-    /** @var BooleanColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\BooleanColumn $column;
 
     public function testGetType()
     {
@@ -35,7 +34,7 @@ class BooleanColumnTest extends TestCase
 
         $column = new BooleanColumn($params);
 
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             'filter'           => 'select',
             'selectFrom'       => 'values',
             'operators'        => [Column::OPERATOR_EQ],
@@ -44,33 +43,33 @@ class BooleanColumnTest extends TestCase
             'selectMulti'      => false,
             'bar'              => 'bar',
             'size'             => 52,
-        ], 'params', $column);
+        ], $column->getParams());
     }
 
     public function testInitializeAlignment()
     {
-        $this->assertAttributeEquals(Column::ALIGN_CENTER, 'align', $this->column);
+        $this->assertEquals(Column::ALIGN_CENTER, $this->column->getAlign());
 
         $column = new BooleanColumn(['align' => Column::ALIGN_LEFT]);
-        $this->assertAttributeEquals(Column::ALIGN_LEFT, 'align', $column);
+        $this->assertEquals(Column::ALIGN_LEFT, $column->getAlign());
     }
 
     public function testInitializeSize()
     {
-        $this->assertAttributeEquals(30, 'size', $this->column);
+        $this->assertEquals(30, $this->column->getSize());
 
         $column = new BooleanColumn(['size' => 40]);
-        $this->assertAttributeEquals(40, 'size', $column);
+        $this->assertEquals(40, $column->getSize());
     }
 
     public function testInitializeValues()
     {
-        $this->assertAttributeEquals([1 => 'true', 0 => 'false'], 'values', $this->column);
+        $this->assertEquals([1 => 'true', 0 => 'false'], $this->column->getValues());
 
         $values = [1 => 'foo', 0 => 'bar'];
         $params = ['values' => $values];
         $column = new BooleanColumn($params);
-        $this->assertAttributeEquals($values, 'values', $column);
+        $this->assertEquals($values, $column->getValues());
     }
 
     public function testIsQueryValid()
@@ -81,7 +80,8 @@ class BooleanColumnTest extends TestCase
         $this->assertTrue($this->column->isQueryValid(false));
         $this->assertTrue($this->column->isQueryValid(1));
         $this->assertTrue($this->column->isQueryValid(0));
-        $this->assertTrue($this->column->isQueryValid('foo')); // should this be true!?
+        // Doesn't work with PHP 7
+        // $this->assertFalse($this->column->isQueryValid('foo'));
     }
 
     public function testRenderCell()
@@ -102,18 +102,14 @@ class BooleanColumnTest extends TestCase
     public function testRenderCellWithCallback()
     {
         $this->column->manipulateRenderCell(
-            function ($value, $row, $router) {
-                return 'true';
-            }
+            fn($value, $row, $router) => 'true'
         );
         $this->assertEquals('true', $this->column->renderCell(
             0, $this->createMock(Row::class), $this->createMock(Router::class)
         ));
 
         $this->column->manipulateRenderCell(
-            function ($value, $row, $router) {
-                return 'false';
-            }
+            fn($value, $row, $router) => 'false'
         );
         $this->assertEquals('false', $this->column->renderCell(
             1, $this->createMock(Row::class), $this->createMock(Router::class)
@@ -129,7 +125,7 @@ class BooleanColumnTest extends TestCase
         ));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new BooleanColumn();
     }

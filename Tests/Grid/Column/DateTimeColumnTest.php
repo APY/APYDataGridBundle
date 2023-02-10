@@ -8,7 +8,7 @@ use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Row;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
-class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
+class DateTimeColumnTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetType()
     {
@@ -23,7 +23,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $column = new DateTimeColumn();
         $column->setFormat($format);
 
-        $this->assertAttributeEquals($format, 'format', $column);
+        $this->assertEquals($format, $column->getFormat());
     }
 
     public function testGetFormat()
@@ -43,7 +43,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $column = new DateTimeColumn();
         $column->setInputFormat($inputFormat);
 
-        $this->assertAttributeEquals($inputFormat, 'inputFormat', $column);
+        $this->assertEquals($inputFormat, $column->getInputFormat());
     }
 
     public function testGetInputFormat()
@@ -63,7 +63,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
         $column = new DateTimeColumn();
         $column->setTimezone($timezone);
 
-        $this->assertAttributeEquals($timezone, 'timezone', $column);
+        $this->assertEquals($timezone, $column->getTimezone());
     }
 
     public function testGetTimezone()
@@ -98,9 +98,7 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
     {
         $column = new DateTimeColumn();
         $column->setFormat('Y-m-d H:i:s');
-        $column->manipulateRenderCell(function ($value, $row, $router) {
-            return '01:00:00';
-        });
+        $column->manipulateRenderCell(fn($value, $row, $router) => '01:00:00');
 
         $dateTime = '2000-01-01 01:00:00';
         $now = new \DateTime($dateTime);
@@ -180,9 +178,9 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
     {
         $column = new DateTimeColumn();
 
-        $this->assertAttributeEquals(null, 'format', $column);
-        $this->assertAttributeEquals('Y-m-d H:i:s', 'inputFormat', $column);
-        $this->assertAttributeEquals([
+        $this->assertEquals(null, $column->getFormat());
+        $this->assertEquals('Y-m-d H:i:s', $column->getInputFormat());
+        $this->assertEquals([
             Column::OPERATOR_EQ,
             Column::OPERATOR_NEQ,
             Column::OPERATOR_LT,
@@ -193,9 +191,9 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
             Column::OPERATOR_BTWE,
             Column::OPERATOR_ISNULL,
             Column::OPERATOR_ISNOTNULL,
-        ], 'operators', $column);
-        $this->assertAttributeEquals(Column::OPERATOR_EQ, 'defaultOperator', $column);
-        $this->assertAttributeEquals(date_default_timezone_get(), 'timezone', $column);
+        ], $column->getOperators());
+        $this->assertEquals(Column::OPERATOR_EQ,  $column->getDefaultOperator());
+        $this->assertEquals(date_default_timezone_get(), $column->getTimezone());
     }
 
     public function testInitialize()
@@ -214,13 +212,13 @@ class DateTimeColumnTest extends \PHPUnit_Framework_TestCase
 
         $column = new DateTimeColumn($params);
 
-        $this->assertAttributeEquals($format, 'format', $column);
-        $this->assertAttributeEquals($inputFormat, 'inputFormat', $column);
-        $this->assertAttributeEquals([
+        $this->assertEquals($format, $column->getFormat());
+        $this->assertEquals($inputFormat, $column->getInputFormat());
+        $this->assertEquals([
             Column::OPERATOR_LT, Column::OPERATOR_LTE,
-        ], 'operators', $column);
-        $this->assertAttributeEquals(Column::OPERATOR_LT, 'defaultOperator', $column);
-        $this->assertAttributeEquals($timezone, 'timezone', $column);
+        ], $column->getOperators());
+        $this->assertEquals(Column::OPERATOR_LT, $column->getDefaultOperator());
+        $this->assertEquals($timezone, $column->getTimezone());
     }
 
     /**

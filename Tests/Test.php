@@ -2,7 +2,7 @@
 
 namespace APY\DataGridBundle\Tests;
 
-class Test extends \PHPUnit_Framework_TestCase
+class Test extends \PHPUnit\Framework\TestCase
 {
     public function testPHPUnit()
     {

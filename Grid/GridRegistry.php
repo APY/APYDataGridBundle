@@ -20,14 +20,14 @@ class GridRegistry implements GridRegistryInterface
      *
      * @var GridTypeInterface[]
      */
-    private $types = [];
+    private array $types = [];
 
     /**
      * List of columns.
      *
      * @var Column[]
      */
-    private $columns = [];
+    private array $columns = [];
 
     /**
      * Add a grid type.

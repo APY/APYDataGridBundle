@@ -11,8 +11,7 @@ use Symfony\Component\Routing\Router;
 
 class ArrayColumnTest extends TestCase
 {
-    /** @var ArrayColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\ArrayColumn $column;
 
     public function testGetType()
     {
@@ -21,14 +20,14 @@ class ArrayColumnTest extends TestCase
 
     public function testInitializeDefaultParams()
     {
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             Column::OPERATOR_LIKE,
             Column::OPERATOR_NLIKE,
             Column::OPERATOR_EQ,
             Column::OPERATOR_NEQ,
             Column::OPERATOR_ISNULL,
             Column::OPERATOR_ISNOTNULL,
-        ], 'operators', $this->column);
+        ], $this->column->getOperators());
     }
 
     public function testDocumentFilters()
@@ -99,7 +98,7 @@ class ArrayColumnTest extends TestCase
             new Filter(Column::OPERATOR_ISNULL),
             new Filter(Column::OPERATOR_EQ, 'a:0:{}'),
         ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+        $this->assertEquals(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testIsNotNullFilter()
@@ -129,9 +128,7 @@ class ArrayColumnTest extends TestCase
     public function testRenderCellWithCallback()
     {
         $values = ['foo' => 'a', 'bar' => 'b', 'foobar' => ['c', 'd']];
-        $this->column->manipulateRenderCell(function ($value, $row, $router) {
-            return ['bar' => 'a', 'foo' => 'b'];
-        });
+        $this->column->manipulateRenderCell(fn($value, $row, $router) => ['bar' => 'a', 'foo' => 'b']);
 
         $result = $this->column->renderCell(
             $values,
@@ -142,7 +139,7 @@ class ArrayColumnTest extends TestCase
         $this->assertEquals($result, ['bar' => 'a', 'foo' => 'b']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new ArrayColumn();
     }

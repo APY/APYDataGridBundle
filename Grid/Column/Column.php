@@ -546,6 +546,11 @@ abstract class Column
         return $result;
     }
 
+    public function getRawData()
+    {
+        return $this->data;
+    }
+
     /**
      * Return true if filter value is correct (has to be overridden in each Column class that can be filtered, in order to catch wrong values).
      *
@@ -1056,5 +1061,29 @@ abstract class Column
     public static function getAvailableOperators()
     {
         return self::$availableOperators;
+    }
+
+    /**
+     * Get the value of params
+     */ 
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * Get the value of callback
+     */ 
+    public function getCallback()
+    {
+        return $this->callback;
+    }
+
+    /**
+     * Get the value of authorizationChecker
+     */ 
+    public function getAuthorizationChecker()
+    {
+        return $this->authorizationChecker;
     }
 }

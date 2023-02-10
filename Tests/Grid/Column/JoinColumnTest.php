@@ -9,8 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class JoinColumnTest extends TestCase
 {
-    /** @var JoinColumn */
-    private $column;
+    private \APY\DataGridBundle\Grid\Column\JoinColumn $column;
 
     public function testGetType()
     {
@@ -22,11 +21,11 @@ class JoinColumnTest extends TestCase
         $params = [];
         $column = new JoinColumn($params);
 
-        $this->assertAttributeEquals([], 'params', $column);
-        $this->assertAttributeEquals([], 'joinColumns', $column);
-        $this->assertAttributeEquals('&nbsp;', 'separator', $column);
-        $this->assertAttributeEquals(true, 'visibleForSource', $column);
-        $this->assertAttributeEquals(true, 'isManualField', $column);
+        $this->assertEquals([], $column->getParams());
+        $this->assertEquals([], $column->getJoinColumns());
+        $this->assertEquals('&nbsp;', $column->getSeparator());
+        $this->assertEquals(true, $column->isVisibleForSource());
+        $this->assertEquals(true, $column->getIsManualField());
     }
 
     public function testInitialize()
@@ -41,9 +40,9 @@ class JoinColumnTest extends TestCase
         ];
         $column = new JoinColumn($params);
 
-        $this->assertAttributeEquals($params, 'params', $column);
-        $this->assertAttributeEquals([$col1, $col2], 'joinColumns', $column);
-        $this->assertAttributeEquals($separator, 'separator', $column);
+        $this->assertEquals($params, $column->getParams());
+        $this->assertEquals([$col1, $col2], $column->getJoinColumns());
+        $this->assertEquals($separator, $column->getSeparator());
     }
 
     public function testSetJoinColumns()
@@ -53,7 +52,7 @@ class JoinColumnTest extends TestCase
 
         $this->column->setJoinColumns([$col1, $col2]);
 
-        $this->assertAttributeEquals([$col1, $col2], 'joinColumns', $this->column);
+        $this->assertEquals([$col1, $col2], $this->column->getJoinColumns());
     }
 
     public function testGetjoinColumns()
@@ -88,7 +87,7 @@ class JoinColumnTest extends TestCase
         ], $column->getFilters('asource'));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->column = new JoinColumn();
     }
