@@ -32,10 +32,9 @@ jobs:
         extensions: 'curl, json, intl, mbstring, mongodb, openssl'    
 
     - name: 'Install Composer dependencies' 
-      uses : 'php-actions/composer@v6'
+      uses : 'ramsey/composer-install@v2'
       with:
         dependency-versions: "${{ matrix.dependencies }}"
-        php_extensions: mongodb
 
     # - uses: php-actions/phpunit@v3
     #   with:
