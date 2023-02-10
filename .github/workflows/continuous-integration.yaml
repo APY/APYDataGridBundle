@@ -12,6 +12,14 @@ jobs:
           - '7.4'
           - '8.0'
           - '8.1'
+        dependencies:
+          - 'highest'
+        include:
+          - php: '7.4'
+            dependencies: 'lowest'
+        exclude:
+          - php: '7.4'
+            dependencies: 'highest'               
     steps:
     - name: 'Checkout'
       uses: actions/checkout@v3
@@ -26,6 +34,7 @@ jobs:
     - name: 'Install Composer dependencies' 
       uses : 'php-actions/composer@v6'
       with:
+        dependency-versions: "${{ matrix.dependencies }}"
         php_extensions: mongodb
 
     # - uses: php-actions/phpunit@v3
