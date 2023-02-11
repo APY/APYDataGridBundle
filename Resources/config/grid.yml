@@ -5,6 +5,10 @@ services:
         arguments: ['@service_container', '@apy_grid.registry']
     apy_grid.registry:
         class: APY\DataGridBundle\Grid\GridRegistry
+    APY\DataGridBundle\Grid\GridFactoryInterface:
+        alias: 'apy_grid.factory'
+    APY\DataGridBundle\Grid\GridRegistryInterface:
+        alias: 'apy_grid.registry'
 
     # Types
     apy_grid.type.grid:
