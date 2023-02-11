@@ -108,10 +108,10 @@ class Article {
 ## Using GridBuilder
 ```php
 <?php
-...
-/* Example BlogPost has many Comments */
-/** @var GridBuilder $builder */
-$builder
-->setGroupBy('id') //important to setGroupBy otherwise the column will not aggregate
-->add('comments.id:count', 'text' ['title' => 'Number of Comments']);
+    ...
+    /* Example BlogPost has many Comments */
+    /** @var GridBuilder $builder */
+    $builder
+        ->setGroupBy('id') //important to setGroupBy otherwise the column will not aggregate
+        ->add('comments.id:count', 'text' ['title' => 'Number of Comments']);
 ```
