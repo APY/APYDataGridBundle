@@ -5,13 +5,18 @@ on: [push]
 jobs:
   build-test:
     runs-on: ubuntu-latest
-    name: 'PHPUnit (PHP ${{ matrix.php }})'
+    name: 'PHPUnit (PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} + ${{ matrix.dependencies }} deps, ES ${{ matrix.elasticsearch }})'
+    env:
+      SYMFONY_REQUIRE: "${{ matrix.symfony }}"    
     strategy:
       matrix:
         php:
           - '7.4'
           - '8.0'
           - '8.1'
+        symfony:
+          - '4.4.*'
+          - '5.4.*'       
         dependencies:
           - 'highest'
         include:
