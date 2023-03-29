@@ -12,6 +12,8 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Grid;
+
 /**
  * JSON.
  */
