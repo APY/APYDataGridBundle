@@ -17,7 +17,7 @@ class MassAction implements MassActionInterface
     /** @var string */
     protected $title;
 
-    /** @var string|null */
+    /** @var string|array<int, object|string>|null */
     protected $callback;
 
     /** @var bool */
@@ -36,7 +36,7 @@ class MassAction implements MassActionInterface
      * Default MassAction constructor.
      *
      * @param string $title      Title of the mass action
-     * @param string $callback   Callback of the mass action
+     * @param string|array<int, object|string>|null $callback   Callback of the mass action
      * @param bool   $confirm    Show confirm message if true
      * @param array  $parameters Additional parameters
      * @param string $role       Security role
