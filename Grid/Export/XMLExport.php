@@ -15,6 +15,7 @@ namespace APY\DataGridBundle\Grid\Export;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use APY\DataGridBundle\Grid\Grid;
 
 /**
  * XML.
