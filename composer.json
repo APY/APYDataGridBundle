@@ -37,7 +37,7 @@
         "symfony/templating": "^5.0|^6.0",
         "symfony/expression-language": "^5.0|^6.0",
         "phpunit/phpunit": "^9.0",
-        "friendsofphp/php-cs-fixer": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.0",
         "doctrine/orm": "^2.5"
     },
     "suggest": {

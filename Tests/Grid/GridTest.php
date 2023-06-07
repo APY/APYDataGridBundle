@@ -21,6 +21,7 @@ use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
+use APY\DataGridBundle\Tests\PhpunitTrait;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -41,6 +42,8 @@ use Twig\Template;
 
 class GridTest extends TestCase
 {
+    use PhpunitTrait;
+
     /**
      * @var Grid
      */
@@ -2199,7 +2202,7 @@ class GridTest extends TestCase
         $columns
             ->expects($this->exactly(2))
             ->method('addColumn')
-            ->withConsecutive([$missingActionsColumn1], [$missingActionsColumn2]);
+            ->with(...self::withConsecutive([$missingActionsColumn1], [$missingActionsColumn2]));
 
         $this->grid->handleRequest($this->request);
     }
@@ -2937,7 +2940,7 @@ class GridTest extends TestCase
         $this->grid->getFilters();
     }
 
-    public function testGetFilters()
+    public function testGetFilters(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -2976,18 +2979,24 @@ class GridTest extends TestCase
             $col2Id => ['from' => $filter2From],
         ]);
 
+        $hash = $this->gridHash;
         $this
             ->session
             ->expects($this->atLeastOnce())
             ->method('set')
-            ->withConsecutive(
-                [$this->gridHash, [Grid::REQUEST_QUERY_PAGE => 0]],
-                [$this->gridHash, [
+            ->with(...self::withConsecutive(
+                [$hash, [Grid::REQUEST_QUERY_PAGE => 0]],
+                [$hash, [
                     Grid::REQUEST_QUERY_PAGE => 0,
                     $col1Id                  => ['operator' => $filter1Operator, 'from' => $filter1From, 'to' => $filter1To],
                     $col2Id                  => ['from' => $filter2From], ],
-                ]
-            );
+                ],
+                [$hash, [
+                    Grid::REQUEST_QUERY_PAGE => 0,
+                    $col1Id                  => ['operator' => $filter1Operator, 'from' => $filter1From, 'to' => $filter1To],
+                    $col2Id                  => ['from' => $filter2From], ],
+                ],
+            ));
 
         $this->grid->handleRequest($this->request);
 
@@ -3631,7 +3640,7 @@ class GridTest extends TestCase
             ->session
             ->expects($this->atLeastOnce())
             ->method('set')
-            ->withConsecutive(
+            ->with(...self::withConsecutive(
                 [$this->gridHash, [Grid::REQUEST_QUERY_PAGE => $page]],
                 [$this->gridHash, [
                     $col1Id                  => ['from' => $col1FilterValue],
@@ -3640,7 +3649,16 @@ class GridTest extends TestCase
                     $col4Id                  => ['from' => 0],
                     $col5Id                  => ['from' => [$col5From], 'to' => [$col5To]],
                     Grid::REQUEST_QUERY_PAGE => $page, ],
-                ]);
+                ],
+                [$this->gridHash, [
+                    $col1Id                  => ['from' => $col1FilterValue],
+                    $col2Id                  => ['from' => $col2FilterValue],
+                    $col3Id                  => ['from' => 1],
+                    $col4Id                  => ['from' => 0],
+                    $col5Id                  => ['from' => [$col5From], 'to' => [$col5To]],
+                    Grid::REQUEST_QUERY_PAGE => $page, ],
+                ],
+            ));
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
@@ -3969,10 +3987,11 @@ class GridTest extends TestCase
             ->session
             ->expects($this->atLeastOnce())
             ->method('set')
-            ->withConsecutive(
+            ->with(...self::withConsecutive(
                 [$this->gridHash, [Grid::REQUEST_QUERY_PAGE => $page]],
+                [$this->gridHash, [Grid::REQUEST_QUERY_ORDER => "$columnId|$order", Grid::REQUEST_QUERY_PAGE => $page]],
                 [$this->gridHash, [Grid::REQUEST_QUERY_ORDER => "$columnId|$order", Grid::REQUEST_QUERY_PAGE => $page]]
-            );
+            ));
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
@@ -4103,10 +4122,11 @@ class GridTest extends TestCase
             ->session
             ->expects($this->atLeastOnce())
             ->method('set')
-            ->withConsecutive(
+            ->with(...self::withConsecutive(
                 [$this->gridHash, [Grid::REQUEST_QUERY_PAGE => $page]],
+                [$this->gridHash, [Grid::REQUEST_QUERY_LIMIT => $limit, Grid::REQUEST_QUERY_PAGE => $page]],
                 [$this->gridHash, [Grid::REQUEST_QUERY_LIMIT => $limit, Grid::REQUEST_QUERY_PAGE => $page]]
-            );
+            ));
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
@@ -4197,10 +4217,12 @@ class GridTest extends TestCase
             ->session
             ->expects($this->atLeastOnce())
             ->method('set')
-            ->withConsecutive(
+            ->with(...self::withConsecutive(
                 [$this->gridHash, [Grid::REQUEST_QUERY_PAGE => $requestPage]],
+                [$this->gridHash, ['tweaks' => [$group => $tweakId], Grid::REQUEST_QUERY_PAGE => $tweakPage]],
+                [$this->gridHash, ['tweaks' => [$group => $tweakId], Grid::REQUEST_QUERY_PAGE => $tweakPage]],
                 [$this->gridHash, ['tweaks' => [$group => $tweakId], Grid::REQUEST_QUERY_PAGE => $tweakPage]]
-            );
+            ));
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }

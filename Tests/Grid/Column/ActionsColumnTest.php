@@ -5,12 +5,15 @@ namespace APY\DataGridBundle\Tests\Grid\Column;
 use APY\DataGridBundle\Grid\Action\RowAction;
 use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Tests\PhpunitTrait;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Role\Role;
 
 class ActionsColumnTest extends TestCase
 {
+    use PhpunitTrait;
+
     /** @var ActionsColumn */
     private $column;
 
@@ -138,13 +141,13 @@ class ActionsColumnTest extends TestCase
         $row = $this->createMock(Row::class);
         $row
             ->method('getField')
-            ->withConsecutive(['foo.bar'], ['barFoo'])
+            ->with(...self::withConsecutive(['foo.bar'], ['barFoo']))
             ->willReturnOnConsecutiveCalls('testValue', 'aValue');
 
         $rowAction = $this->createMock(RowAction::class);
         $rowAction
             ->method('getRouteParametersMapping')
-            ->withConsecutive(['foo.bar'], ['barFoo'])
+            ->with(...self::withConsecutive(['foo.bar'], ['barFoo']))
             ->willReturnOnConsecutiveCalls(null, 'aName');
 
         $rowAction->method('getRouteParameters')->willReturn([

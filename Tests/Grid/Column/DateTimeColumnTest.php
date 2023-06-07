@@ -11,13 +11,13 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class DateTimeColumnTest extends TestCase
 {
-    public function testGetType()
+    public function testGetType(): void
     {
         $column = new DateTimeColumn();
         $this->assertEquals('datetime', $column->getType());
     }
 
-    public function testGetFormat()
+    public function testGetFormat(): void
     {
         $format = 'Y-m-d';
 
@@ -27,7 +27,7 @@ class DateTimeColumnTest extends TestCase
         $this->assertEquals($format, $column->getFormat());
     }
 
-    public function testGetTimezone()
+    public function testGetTimezone(): void
     {
         $timezone = 'UTC';
 
@@ -37,7 +37,7 @@ class DateTimeColumnTest extends TestCase
         $this->assertEquals($timezone, $column->getTimezone());
     }
 
-    public function testRenderCellWithoutCallback()
+    public function testRenderCellWithoutCallback(): void
     {
         $column = new DateTimeColumn();
         $column->setFormat('Y-m-d H:i:s');
@@ -55,7 +55,7 @@ class DateTimeColumnTest extends TestCase
         );
     }
 
-    public function testRenderCellWithCallback()
+    public function testRenderCellWithCallback(): void
     {
         $column = new DateTimeColumn();
         $column->setFormat('Y-m-d H:i:s');
@@ -76,7 +76,7 @@ class DateTimeColumnTest extends TestCase
         );
     }
 
-    public function testFilterWithValue()
+    public function testFilterWithValue(): void
     {
         $column = new DateTimeColumn();
         $column->setData(['operator' => Column::OPERATOR_BTW, 'from' => '2017-03-22', 'to' => '2017-03-23']);
@@ -87,7 +87,7 @@ class DateTimeColumnTest extends TestCase
         ], $column->getFilters('asource'));
     }
 
-    public function testFilterWithoutValue()
+    public function testFilterWithoutValue(): void
     {
         $column = new DateTimeColumn();
         $column->setData(['operator' => Column::OPERATOR_ISNULL]);
@@ -95,21 +95,21 @@ class DateTimeColumnTest extends TestCase
         $this->assertEquals([new Filter(Column::OPERATOR_ISNULL)], $column->getFilters('asource'));
     }
 
-    public function testQueryIsValid()
+    public function testQueryIsValid(): void
     {
         $column = new DateTimeColumn();
 
         $this->assertTrue($column->isQueryValid('2017-03-22 23:00:00'));
     }
 
-    public function testQueryIsInvalid()
+    public function testQueryIsInvalid(): void
     {
         $column = new DateTimeColumn();
 
         $this->assertFalse($column->isQueryValid('foo'));
     }
 
-    public function testInitializeDefaultParams()
+    public function testInitializeDefaultParams(): void
     {
         $column = new DateTimeColumn();
 
@@ -130,7 +130,7 @@ class DateTimeColumnTest extends TestCase
         $this->assertEquals(date_default_timezone_get(), $column->getTimezone());
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $format = 'Y-m-d H:i:s';
         $timezone = 'UTC';
@@ -155,7 +155,7 @@ class DateTimeColumnTest extends TestCase
     /**
      * @dataProvider provideDisplayInput
      */
-    public function testCorrectDisplayOut($value, $expectedOutput, $timeZone = null)
+    public function testCorrectDisplayOut($value, $expectedOutput, $timeZone = null): void
     {
         $column = new DateTimeColumn();
         $column->setFormat('Y-m-d H:i:s');
@@ -167,7 +167,7 @@ class DateTimeColumnTest extends TestCase
         $this->assertEquals($expectedOutput, $column->getDisplayedValue($value));
     }
 
-    public function testDisplayValueForDateTimeImmutable()
+    public function testDisplayValueForDateTimeImmutable(): void
     {
         if (PHP_VERSION_ID < 50500) {
             $this->markTestSkipped('\\DateTimeImmutable was introduced in PHP 5.5');
@@ -180,7 +180,7 @@ class DateTimeColumnTest extends TestCase
         $this->assertEquals($now->format('Y-m-d H:i:s'), $column->getDisplayedValue($now));
     }
 
-    public function testDateTimeZoneForDisplayValueIsTheSameAsTheColumn()
+    public function testDateTimeZoneForDisplayValueIsTheSameAsTheColumn(): void
     {
         $column = new DateTimeColumn();
         $column->setFormat('Y-m-d H:i:s');
@@ -219,7 +219,7 @@ class DateTimeColumnTest extends TestCase
 //        $this->assertEquals('2017-03-22 20:52:00', $column->getDisplayedValue($now));
 //    }
 
-    public function provideDisplayInput()
+    public static function provideDisplayInput(): array
     {
         $now = new \DateTime();
 
