@@ -34,7 +34,7 @@ class Rows implements \IteratorAggregate, \Countable
      *
      * @see IteratorAggregate::getIterator()
      */
-    public function getIterator()
+    public function getIterator():\Traversable
     {
         return $this->rows;
     }
@@ -58,7 +58,7 @@ class Rows implements \IteratorAggregate, \Countable
      *
      * @see Countable::count()
      */
-    public function count()
+    public function count():int
     {
         return $this->rows->count();
     }

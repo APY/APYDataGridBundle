@@ -28,6 +28,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\TemplateWrapper;
+use Twig\Environment ;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class Grid implements GridInterface
 {
@@ -86,6 +88,8 @@ class Grid implements GridInterface
      * @var \Symfony\Component\Security\Core\Authorization\AuthorizationChecker
      */
     protected $securityContext;
+
+    protected $twig;
 
     /**
      * @var string
@@ -322,7 +326,7 @@ class Grid implements GridInterface
      * @param string                   $id        set if you are using more then one grid inside controller
      * @param GridConfigInterface|null $config    The grid configuration.
      */
-    public function __construct($container, $id = '', GridConfigInterface $config = null)
+    public function __construct($container, AuthorizationCheckerInterface $securityContext,  Environment $twig, $id = '', GridConfigInterface $config = null)
     {
         // @todo: why the whole container is injected?
         $this->container = $container;
@@ -331,8 +335,8 @@ class Grid implements GridInterface
         $this->router = $container->get('router');
         $this->request = $container->get('request_stack')->getCurrentRequest();
         $this->session = $this->request->getSession();
-        $this->securityContext = $container->get('security.authorization_checker');
-
+        $this->securityContext = $securityContext;
+        $this->twig= $twig;
         $this->id = $id;
 
         // even id is set, do create hash early
@@ -360,8 +364,6 @@ class Grid implements GridInterface
         }
 
         $config = $this->config;
-
-
 
         $this->setPersistence($config->isPersisted());
 
@@ -500,7 +502,7 @@ class Grid implements GridInterface
         return $this;
     }
 
-    public function getSource()
+    public function getSource(): Source
     {
         return $this->source;
     }
@@ -703,6 +705,7 @@ class Grid implements GridInterface
                 $export = $this->exports[$exportId];
                 if ($export instanceof ContainerAwareInterface) {
                     $export->setContainer($this->container);
+                    $export->setTwig($this->twig);
                 }
                 $export->computeData($this);
 
@@ -2162,7 +2165,7 @@ class Grid implements GridInterface
             if ($view === null) {
                 return $parameters;
             } else {
-                $content = $this->container->get('twig')->render($view, $parameters);
+                $content = $this->twig->render($view, $parameters);
 
                 if (null === $response) {
                     $response = new Response();

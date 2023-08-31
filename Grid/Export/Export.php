@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\TemplateWrapper;
+use Twig\Environment;
 
 abstract class Export implements ExportInterface, ContainerAwareInterface
 {
@@ -60,13 +61,14 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      *
      * @return \APY\DataGridBundle\Grid\Export\Export
      */
-    public function __construct($title, $fileName = 'export', $params = [], $charset = 'UTF-8', $role = null)
+    public function __construct( $title, $fileName = 'export', $params = [], $charset = 'UTF-8', $role = null)
     {
         $this->title = $title;
         $this->fileName = $fileName;
         $this->params = $params;
         $this->charset = $charset;
         $this->role = $role;
+        // $this->twig = $twig;
     }
 
     /**
@@ -80,11 +82,15 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     {
         $this->container = $container;
 
-        $this->twig = $this->container->get('twig');
+        
 
         return $this;
     }
 
+    public function setTwig(Environment $twig) 
+    {
+        $this->twig=$twig;
+    }
     /**
      * gets the Container associated with this Controller.
      *

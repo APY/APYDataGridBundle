@@ -18,10 +18,16 @@ use RuntimeException;
 use SplObjectStorage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
+
 
 class GridManager implements IteratorAggregate, Countable
 {
     protected $container;
+
+    protected $securityContext;
+
+    protected $twig;
 
     protected $grids;
 
@@ -35,9 +41,10 @@ class GridManager implements IteratorAggregate, Countable
 
     const SAME_GRID_HASH_EX_MSG = 'Some grids seem similar. Please set an Indentifier for your grids.';
 
-    public function __construct($container)
+    public function __construct($container, Environment $twig)
     {
         $this->container = $container;
+        $this->twig= $twig;
         $this->grids = new SplObjectStorage();
     }
 
@@ -197,7 +204,7 @@ class GridManager implements IteratorAggregate, Countable
                 return $parameters;
             }
 
-            $content = $this->container->get('twig')->render($view, $parameters);
+            $content = $this->twig->render($view, $parameters);
 
             if (null === $response) {
                  $response = new Response();

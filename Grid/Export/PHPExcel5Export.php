@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the DataGridBundle.
  *
  * (c) Abhoryo <abhoryo@free.fr>

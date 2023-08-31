@@ -14,7 +14,6 @@
 namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
-use APY\DataGridBundle\Grid\Column\JoinColumn;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 use Doctrine\ORM\Internal\SQLResultCasing;
@@ -627,7 +626,7 @@ class Entity extends Source
             //$hints[] = 'APY\DataGridBundle\Grid\Helper\ORMCountWalker';
             $countQuery->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $hints);
         }
-        $countQuery->setFirstResult(null)->setMaxResults($maxResults);
+        $countQuery->setFirstResult(0)->setMaxResults($maxResults);
 
         try {
             $data = $countQuery->getScalarResult();
