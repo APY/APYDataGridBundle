@@ -35,6 +35,10 @@ class GridFactoryTest extends TestCase
      */
     private $registry;
 
+    private $authChecker;
+
+    private $twig;
+
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
@@ -106,7 +110,7 @@ class GridFactoryTest extends TestCase
 
         $type->expects($this->once())
              ->method('buildGrid')
-             ->with($this->callback(fn($builder) => $builder instanceof GridBuilder && $builder->getName() == 'TYPE'), $resolvedOptions);
+             ->with($this->callback(fn ($builder) => $builder instanceof GridBuilder && $builder->getName() == 'TYPE'), $resolvedOptions);
 
         $builder = $this->factory->createBuilder($type, null, $givenOptions);
 
@@ -159,6 +163,8 @@ class GridFactoryTest extends TestCase
         $self = $this;
 
         $this->container = $this->createMock(Container::class);
+        $this->authChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $this->twig = $this->createMock(Environment::class);
         $this->container->expects($this->any())
             ->method('get')
             ->will($this->returnCallback(function ($param) use ($self) {
@@ -176,13 +182,13 @@ class GridFactoryTest extends TestCase
                         return $requestStack;
                         break;
                     case 'security.authorization_checker':
-                        return $self->createMock(AuthorizationCheckerInterface::class);
+                        return $this->authChecker;
                         break;
                 }
             }));
 
         $this->registry = $this->createMock(GridRegistryInterface::class);
         $this->builder = $this->createMock(GridBuilderInterface::class);
-        $this->factory = new GridFactory($this->container, $this->registry);
+        $this->factory = new GridFactory($this->container, $this->authChecker, $this->twig, $this->registry);
     }
 }
