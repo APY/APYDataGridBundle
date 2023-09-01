@@ -112,7 +112,7 @@ class Grid implements GridInterface
     /**
      * @var \APY\DataGridBundle\Grid\Source\Source
      */
-    protected ?Source $source;
+    protected ?Source $source = null;
 
     /**
      * @var bool
