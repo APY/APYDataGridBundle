@@ -18,6 +18,8 @@ class GridManagerTest extends TestCase
      */
     private $container;
 
+    private $twig;
+
     public function testGetIterator()
     {
         $this->assertInstanceOf(\SplObjectStorage::class, $this->gridManager->getIterator());
@@ -487,7 +489,8 @@ class GridManagerTest extends TestCase
     public function setUp(): void
     {
         $this->container = $this->createMock(Container::class);
-        $this->gridManager = new GridManager($this->container);
+        $this->twig = $this->createMock(Environment::class);
+        $this->gridManager = new GridManager($this->container, $this->twig);
     }
 
     /**

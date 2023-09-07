@@ -7,6 +7,8 @@ use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use APY\DataGridBundle\Grid\Source\Source;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Twig\Environment ;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class GridFactory.
@@ -20,6 +22,10 @@ class GridFactory implements GridFactoryInterface
      */
     private \Symfony\Component\DependencyInjection\Container $container;
 
+    private AuthorizationCheckerInterface $securityContext;
+
+    private Environment $twig;
+
     private \APY\DataGridBundle\Grid\GridRegistryInterface $registry;
 
     /**
@@ -28,10 +34,12 @@ class GridFactory implements GridFactoryInterface
      * @param Container             $container The service container
      * @param GridRegistryInterface $registry  The grid registry
      */
-    public function __construct(Container $container, GridRegistryInterface $registry)
+    public function __construct(Container $container, AuthorizationCheckerInterface $securityContext, Environment $twig, GridRegistryInterface $registry)
     {
         $this->container = $container;
         $this->registry = $registry;
+        $this->securityContext = $securityContext;
+        $this->twig = $twig;
     }
 
     /**
@@ -50,7 +58,7 @@ class GridFactory implements GridFactoryInterface
         $type = $this->resolveType($type);
         $options = $this->resolveOptions($type, $source, $options);
 
-        $builder = new GridBuilder($this->container, $this, $type->getName(), $options);
+        $builder = new GridBuilder($this->container, $this->securityContext, $this->twig, $this, $type->getName(), $options);
         $builder->setType($type);
 
         $type->buildGrid($builder, $options);

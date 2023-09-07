@@ -437,10 +437,10 @@ class GridTest extends TestCase
         $this->assertEquals($source, $this->grid->getSource());
     }
 
-//    public function testGetNullHashIfNotCreated()
-//    {
-//        $this->assertNull($this->grid->getHash());
-//    }
+    //    public function testGetNullHashIfNotCreated()
+    //    {
+    //        $this->assertNull($this->grid->getHash());
+    //    }
 
     public function testHandleRequestRaiseExceptionIfSourceNotSetted()
     {
@@ -478,7 +478,8 @@ class GridTest extends TestCase
         $this->grid->addColumn($column1, 1);
         $this->grid->addColumn($column2, 1);
 
-        $this->assertEquals([
+        $this->assertEquals(
+            [
             ['column' => $column1, 'position' => 1],
             ['column' => $column2, 'position' => 1], ],
             $this->grid->getLazyAddColumn()
@@ -1620,7 +1621,7 @@ class GridTest extends TestCase
 
         $this->grid->handleRequest($this->request);
 
-        $this->assertEquals(0,  $this->grid->getLimit());
+        $this->assertEquals(0, $this->grid->getLimit());
     }
 
     public function testMassActionResponseFromCallbackDuringHandleRequest()
@@ -3023,13 +3024,13 @@ class GridTest extends TestCase
         );
     }
 
-//    public function testGetFiltersRaiseExceptionIfNoRequestProcessed()
-//    {
-//        $this->expectException(\Exception::class);
-//        $this->expectExceptionMessage(Grid::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
-//
-//        $this->grid->getFilters();
-//    }
+    //    public function testGetFiltersRaiseExceptionIfNoRequestProcessed()
+    //    {
+    //        $this->expectException(\Exception::class);
+    //        $this->expectExceptionMessage(Grid::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
+    //
+    //        $this->grid->getFilters();
+    //    }
 
     public function testGetFilters()
     {
@@ -3091,13 +3092,13 @@ class GridTest extends TestCase
         );
     }
 
-//    public function testGetFilterRaiseExceptionIfNoRequestProcessed()
-//    {
-//        $this->expectException(\Exception::class);
-//        $this->expectExceptionMessage(Grid::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
-//
-//        $this->grid->getFilter('foo');
-//    }
+    //    public function testGetFilterRaiseExceptionIfNoRequestProcessed()
+    //    {
+    //        $this->expectException(\Exception::class);
+    //        $this->expectExceptionMessage(Grid::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
+    //
+    //        $this->grid->getFilter('foo');
+    //    }
 
     public function testGetFilterReturnNullIfRequestedColumnHasNoFilter()
     {
@@ -3132,13 +3133,13 @@ class GridTest extends TestCase
         $this->assertEquals($filter, $this->grid->getFilter($colId));
     }
 
-//    public function testHasFilterRaiseExceptionIfNoRequestProcessed()
-//    {
-//        $this->expectException(\Exception::class);
-//        $this->expectExceptionMessage(Grid::HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG);
-//
-//        $this->grid->hasFilter('foo');
-//    }
+    //    public function testHasFilterRaiseExceptionIfNoRequestProcessed()
+    //    {
+    //        $this->expectException(\Exception::class);
+    //        $this->expectExceptionMessage(Grid::HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG);
+    //
+    //        $this->grid->hasFilter('foo');
+    //    }
 
     public function testHasFilterReturnNullIfRequestedColumnHasNoFilter()
     {
@@ -3735,7 +3736,8 @@ class GridTest extends TestCase
                     $col4Id                  => ['from' => 0],
                     $col5Id                  => ['from' => [$col5From], 'to' => [$col5To]],
                     Grid::REQUEST_QUERY_PAGE => $page, ],
-                ]);
+                ]
+            );
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
@@ -4505,7 +4507,7 @@ class GridTest extends TestCase
         $this->gridId = (string) $id;
         $this->gridHash = 'grid_' . $this->gridId;
 
-        $this->grid = new Grid($container, $this->gridId, $gridConfigInterface);
+        $this->grid = new Grid($container, $this->authChecker, $this->twig, $this->gridId, $gridConfigInterface);
     }
 
     private function mockResetGridSessionWhenResetFilterIsPressed()
@@ -4724,7 +4726,7 @@ class GridTest extends TestCase
         $this->stubRequestWithData([Grid::REQUEST_QUERY_MASS_ACTION => 0]);
 
         $massAction = $this->stubMassActionWithCallback(
-            fn() => $callbackResponse
+            fn () => $callbackResponse
         );
         $this->grid->addMassAction($massAction);
 
@@ -4798,7 +4800,10 @@ class GridTest extends TestCase
         $this
             ->request
             ->method('duplicate')
-            ->with([], null, [
+            ->with(
+                [],
+                null,
+                [
                     'primaryKeys'    => [$rowPrimaryFieldValue, $rowPrimaryFieldValue2],
                     'allPrimaryKeys' => true,
                     '_controller'    => $controllerCb,

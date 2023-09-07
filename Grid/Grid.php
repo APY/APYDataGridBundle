@@ -28,39 +28,41 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\TemplateWrapper;
+use Twig\Environment ;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class Grid implements GridInterface
 {
-    const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
-    const REQUEST_QUERY_MASS_ACTION = '__action_id';
-    const REQUEST_QUERY_EXPORT = '__export_id';
-    const REQUEST_QUERY_TWEAK = '__tweak_id';
-    const REQUEST_QUERY_PAGE = '_page';
-    const REQUEST_QUERY_LIMIT = '_limit';
-    const REQUEST_QUERY_ORDER = '_order';
-    const REQUEST_QUERY_TEMPLATE = '_template';
-    const REQUEST_QUERY_RESET = '_reset';
+    public const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
+    public const REQUEST_QUERY_MASS_ACTION = '__action_id';
+    public const REQUEST_QUERY_EXPORT = '__export_id';
+    public const REQUEST_QUERY_TWEAK = '__tweak_id';
+    public const REQUEST_QUERY_PAGE = '_page';
+    public const REQUEST_QUERY_LIMIT = '_limit';
+    public const REQUEST_QUERY_ORDER = '_order';
+    public const REQUEST_QUERY_TEMPLATE = '_template';
+    public const REQUEST_QUERY_RESET = '_reset';
 
-    const SOURCE_ALREADY_SETTED_EX_MSG = 'The source of the grid is already set.';
-    const SOURCE_NOT_SETTED_EX_MSG = 'The source of the grid must be set.';
-    const TWEAK_MALFORMED_ID_EX_MSG = 'Tweak id "%s" is malformed. The id have to match this regex ^[0-9a-zA-Z_\+-]+';
-    const TWIG_TEMPLATE_LOAD_EX_MSG = 'Unable to load template';
-    const NOT_VALID_LIMIT_EX_MSG = 'Limit has to be array or integer';
-    const NOT_VALID_PAGE_NUMBER_EX_MSG = 'Page must be a positive number';
-    const NOT_VALID_MAX_RESULT_EX_MSG = 'Max results must be a positive number.';
-    const MASS_ACTION_NOT_DEFINED_EX_MSG = 'Action %s is not defined.';
-    const MASS_ACTION_CALLBACK_NOT_VALID_EX_MSG = 'Callback %s is not callable or Controller action';
-    const EXPORT_NOT_DEFINED_EX_MSG = 'Export %s is not defined.';
-    const PAGE_NOT_VALID_EX_MSG = 'Page must be a positive number';
-    const COLUMN_ORDER_NOT_VALID_EX_MSG = '%s is not a valid order.';
-    const DEFAULT_LIMIT_NOT_VALID_EX_MSG = 'Limit must be a positive number';
-    const LIMIT_NOT_DEFINED_EX_MSG = 'Limit %s is not defined in limits.';
-    const NO_ROWS_RETURNED_EX_MSG = 'Source have to return Rows object.';
-    const INVALID_TOTAL_COUNT_EX_MSG = 'Source function getTotalCount need to return integer result, returned: %s';
-    const NOT_VALID_TWEAK_ID_EX_MSG = 'Tweak with id "%s" doesn\'t exists';
-    const GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG = 'getFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
-    const HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG = 'hasFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
-    const TWEAK_NOT_DEFINED_EX_MSG = 'Tweak %s is not defined.';
+    public const SOURCE_ALREADY_SETTED_EX_MSG = 'The source of the grid is already set.';
+    public const SOURCE_NOT_SETTED_EX_MSG = 'The source of the grid must be set.';
+    public const TWEAK_MALFORMED_ID_EX_MSG = 'Tweak id "%s" is malformed. The id have to match this regex ^[0-9a-zA-Z_\+-]+';
+    public const TWIG_TEMPLATE_LOAD_EX_MSG = 'Unable to load template';
+    public const NOT_VALID_LIMIT_EX_MSG = 'Limit has to be array or integer';
+    public const NOT_VALID_PAGE_NUMBER_EX_MSG = 'Page must be a positive number';
+    public const NOT_VALID_MAX_RESULT_EX_MSG = 'Max results must be a positive number.';
+    public const MASS_ACTION_NOT_DEFINED_EX_MSG = 'Action %s is not defined.';
+    public const MASS_ACTION_CALLBACK_NOT_VALID_EX_MSG = 'Callback %s is not callable or Controller action';
+    public const EXPORT_NOT_DEFINED_EX_MSG = 'Export %s is not defined.';
+    public const PAGE_NOT_VALID_EX_MSG = 'Page must be a positive number';
+    public const COLUMN_ORDER_NOT_VALID_EX_MSG = '%s is not a valid order.';
+    public const DEFAULT_LIMIT_NOT_VALID_EX_MSG = 'Limit must be a positive number';
+    public const LIMIT_NOT_DEFINED_EX_MSG = 'Limit %s is not defined in limits.';
+    public const NO_ROWS_RETURNED_EX_MSG = 'Source have to return Rows object.';
+    public const INVALID_TOTAL_COUNT_EX_MSG = 'Source function getTotalCount need to return integer result, returned: %s';
+    public const NOT_VALID_TWEAK_ID_EX_MSG = 'Tweak with id "%s" doesn\'t exists';
+    public const GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG = 'getFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
+    public const HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG = 'hasFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
+    public const TWEAK_NOT_DEFINED_EX_MSG = 'Tweak %s is not defined.';
 
     /**
      * @var \Symfony\Component\DependencyInjection\Container
@@ -82,10 +84,10 @@ class Grid implements GridInterface
      */
     protected $request;
 
-    /**
-     * @var \Symfony\Component\Security\Core\Authorization\AuthorizationChecker
-     */
-    protected $securityContext;
+
+    protected AuthorizationCheckerInterface $securityContext;
+
+    protected Environment $twig;
 
     /**
      * @var string
@@ -110,7 +112,7 @@ class Grid implements GridInterface
     /**
      * @var \APY\DataGridBundle\Grid\Source\Source
      */
-    protected $source;
+    protected ?Source $source = null;
 
     /**
      * @var bool
@@ -322,7 +324,7 @@ class Grid implements GridInterface
      * @param string                   $id        set if you are using more then one grid inside controller
      * @param GridConfigInterface|null $config    The grid configuration.
      */
-    public function __construct($container, $id = '', GridConfigInterface $config = null)
+    public function __construct($container, AuthorizationCheckerInterface $securityContext, Environment $twig, $id = '', GridConfigInterface $config = null)
     {
         // @todo: why the whole container is injected?
         $this->container = $container;
@@ -331,8 +333,8 @@ class Grid implements GridInterface
         $this->router = $container->get('router');
         $this->request = $container->get('request_stack')->getCurrentRequest();
         $this->session = $this->request->getSession();
-        $this->securityContext = $container->get('security.authorization_checker');
-
+        $this->securityContext = $securityContext;
+        $this->twig = $twig;
         $this->id = $id;
 
         // even id is set, do create hash early
@@ -360,8 +362,6 @@ class Grid implements GridInterface
         }
 
         $config = $this->config;
-
-
 
         $this->setPersistence($config->isPersisted());
 
@@ -500,7 +500,7 @@ class Grid implements GridInterface
         return $this;
     }
 
-    public function getSource()
+    public function getSource(): ?Source
     {
         return $this->source;
     }
@@ -639,7 +639,7 @@ class Grid implements GridInterface
         if ($actionId > -1 && '' !== $actionId) {
             if (array_key_exists($actionId, $this->massActions)) {
                 $action = $this->massActions[$actionId];
-                $actionAllKeys = (boolean) $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
+                $actionAllKeys = (bool) $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
                 $actionKeys = $actionAllKeys === false ? array_keys((array) $this->getFromRequest(MassActionColumn::ID)) : [];
 
                 $this->processSessionData();
@@ -703,6 +703,7 @@ class Grid implements GridInterface
                 $export = $this->exports[$exportId];
                 if ($export instanceof ContainerAwareInterface) {
                     $export->setContainer($this->container);
+                    $export->setTwig($this->twig);
                 }
                 $export->computeData($this);
 
@@ -2162,7 +2163,7 @@ class Grid implements GridInterface
             if ($view === null) {
                 return $parameters;
             } else {
-                $content = $this->container->get('twig')->render($view, $parameters);
+                $content = $this->twig->render($view, $parameters);
 
                 if (null === $response) {
                     $response = new Response();
@@ -2305,7 +2306,7 @@ class Grid implements GridInterface
      * Get default order (e.g. my_column_id|asc).
      *
      * @return  string
-     */ 
+     */
     public function getDefaultOrder()
     {
         return $this->defaultOrder;
@@ -2315,7 +2316,7 @@ class Grid implements GridInterface
      * Get the value of maxResults
      *
      * @return  int
-     */ 
+     */
     public function getMaxResults()
     {
         return $this->maxResults;
@@ -2323,7 +2324,7 @@ class Grid implements GridInterface
 
     /**
      * Get the value of lazyAddColumn
-     */ 
+     */
     public function getLazyAddColumn()
     {
         return $this->lazyAddColumn;
@@ -2333,7 +2334,7 @@ class Grid implements GridInterface
      * Get default Tweak.
      *
      * @return  string
-     */ 
+     */
     public function getDefaultTweak()
     {
         return $this->defaultTweak;
@@ -2341,7 +2342,7 @@ class Grid implements GridInterface
 
     /**
      * Get the value of lazyVisibleColumns
-     */ 
+     */
     public function getLazyVisibleColumns()
     {
         return $this->lazyVisibleColumns;
@@ -2349,7 +2350,7 @@ class Grid implements GridInterface
 
     /**
      * Get the value of lazyHideShowColumns
-     */ 
+     */
     public function getLazyHideShowColumns()
     {
         return $this->lazyHideShowColumns;
@@ -2357,7 +2358,7 @@ class Grid implements GridInterface
 
     /**
      * Get the value of actionsColumnSize
-     */ 
+     */
     public function getActionsColumnSize()
     {
         return $this->actionsColumnSize;
@@ -2365,7 +2366,7 @@ class Grid implements GridInterface
 
     /**
      * Get the value of actionsColumnTitle
-     */ 
+     */
     public function getActionsColumnTitle()
     {
         return $this->actionsColumnTitle;
@@ -2375,7 +2376,7 @@ class Grid implements GridInterface
      * Get the value of showFilters
      *
      * @return  bool
-     */ 
+     */
     public function getShowFilters()
     {
         return $this->showFilters;
@@ -2385,7 +2386,7 @@ class Grid implements GridInterface
      * Get the value of showTitles
      *
      * @return  bool
-     */ 
+     */
     public function getShowTitles()
     {
         return $this->showTitles;
@@ -2393,7 +2394,7 @@ class Grid implements GridInterface
 
     /**
      * Get the value of lazyHiddenColumns
-     */ 
+     */
     public function getLazyHiddenColumns()
     {
         return $this->lazyHiddenColumns;
@@ -2403,7 +2404,7 @@ class Grid implements GridInterface
      * Get the value of newSession
      *
      * @return  bool
-     */ 
+     */
     public function getNewSession()
     {
         return $this->newSession;
@@ -2413,7 +2414,7 @@ class Grid implements GridInterface
      * Get default filters.
      *
      * @return  array
-     */ 
+     */
     public function getDefaultFilters()
     {
         return $this->defaultFilters;
@@ -2423,7 +2424,7 @@ class Grid implements GridInterface
      * Get permanent filters.
      *
      * @return  array
-     */ 
+     */
     public function getPermanentFilters()
     {
         return $this->permanentFilters;

@@ -22,6 +22,8 @@
 
         <service id="grid" class="%grid.class%" shared="false" public="true">
             <argument type="service" id="service_container" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="twig" />
             <call method="setLimits">
                 <argument>%apy_data_grid.limits%</argument>
             </call>
@@ -47,6 +49,7 @@
 
         <service id="grid.manager" class="%grid.manager.class%">
             <argument type="service" id="service_container" />
+            <argument type="service" id="twig" />
         </service>
 
         <service id="grid.metadata.driver.annotation" class="APY\DataGridBundle\Grid\Mapping\Driver\Annotation">
