@@ -69,13 +69,19 @@
                 {% set columnTitle = column.title %}
 
                 {% if column.usePrefixTitle == true %}
-                    {% set columnTitle = grid.prefixTitle ~ columnTitle ~ '__abbr' %}
-                    {% if columnTitle|trans({}, translation_domain) == columnTitle %}
-                        {% set columnTitle = grid.prefixTitle ~ column.title %}
+                    {% if translation_domain is same as(false) %}
+                        {%- set columnTitle = grid.prefixTitle ~ column.title -%}
+                    {% else %}
+                        {%- set columnTitle = grid.prefixTitle ~ columnTitle ~ '__abbr' -%}
+                        {% if columnTitle|trans({}, translation_domain) == columnTitle %}
+                            {%- set columnTitle = grid.prefixTitle ~ column.title -%}
+                        {% endif %}
                     {% endif %}
                 {% endif %}
 
-                {% set columnTitle = columnTitle|trans({}, translation_domain) %}
+                {% if translation_domain is not same as(false)  %}
+                    {%- set columnTitle = columnTitle|trans({}, translation_domain) -%}
+                {% endif %}
 
                 {% if (column.sortable) %}
                     <a class="order" href="{{ grid_url('order', grid, column) }}" title="{{ 'Order by'|trans }} {{ columnTitle }}">{{ columnTitle }}</a>
