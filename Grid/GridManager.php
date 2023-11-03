@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 
-
 class GridManager implements IteratorAggregate, Countable
 {
     protected $container;

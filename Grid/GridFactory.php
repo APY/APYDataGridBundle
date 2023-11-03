@@ -20,13 +20,13 @@ class GridFactory implements GridFactoryInterface
     /**
      * The service container.
      */
-    private \Symfony\Component\DependencyInjection\Container $container;
+    private Container $container;
 
     private AuthorizationCheckerInterface $securityContext;
 
     private Environment $twig;
 
-    private \APY\DataGridBundle\Grid\GridRegistryInterface $registry;
+    private GridRegistryInterface $registry;
 
     /**
      * Constructor.
