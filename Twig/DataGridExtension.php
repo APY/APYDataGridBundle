@@ -110,7 +110,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return array An array of functions
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('grid', [$this, 'getGrid'], [
