@@ -19,33 +19,33 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 abstract class Column
 {
-    const DEFAULT_VALUE = null;
+    public const DEFAULT_VALUE = null;
 
     /**
      * Filter.
      */
-    const DATA_CONJUNCTION = 0;
-    const DATA_DISJUNCTION = 1;
+    public const DATA_CONJUNCTION = 0;
+    public const DATA_DISJUNCTION = 1;
 
-    const OPERATOR_EQ = 'eq';
-    const OPERATOR_NEQ = 'neq';
-    const OPERATOR_LT = 'lt';
-    const OPERATOR_LTE = 'lte';
-    const OPERATOR_GT = 'gt';
-    const OPERATOR_GTE = 'gte';
-    const OPERATOR_BTW = 'btw';
-    const OPERATOR_BTWE = 'btwe';
-    const OPERATOR_LIKE = 'like';
-    const OPERATOR_NLIKE = 'nlike';
-    const OPERATOR_RLIKE = 'rlike';
-    const OPERATOR_LLIKE = 'llike';
-    const OPERATOR_SLIKE = 'slike'; //simple/strict LIKE
-    const OPERATOR_NSLIKE = 'nslike';
-    const OPERATOR_RSLIKE = 'rslike';
-    const OPERATOR_LSLIKE = 'lslike';
+    public const OPERATOR_EQ = 'eq';
+    public const OPERATOR_NEQ = 'neq';
+    public const OPERATOR_LT = 'lt';
+    public const OPERATOR_LTE = 'lte';
+    public const OPERATOR_GT = 'gt';
+    public const OPERATOR_GTE = 'gte';
+    public const OPERATOR_BTW = 'btw';
+    public const OPERATOR_BTWE = 'btwe';
+    public const OPERATOR_LIKE = 'like';
+    public const OPERATOR_NLIKE = 'nlike';
+    public const OPERATOR_RLIKE = 'rlike';
+    public const OPERATOR_LLIKE = 'llike';
+    public const OPERATOR_SLIKE = 'slike'; //simple/strict LIKE
+    public const OPERATOR_NSLIKE = 'nslike';
+    public const OPERATOR_RSLIKE = 'rslike';
+    public const OPERATOR_LSLIKE = 'lslike';
 
-    const OPERATOR_ISNULL = 'isNull';
-    const OPERATOR_ISNOTNULL = 'isNotNull';
+    public const OPERATOR_ISNULL = 'isNull';
+    public const OPERATOR_ISNOTNULL = 'isNotNull';
 
     protected static $availableOperators = [
         self::OPERATOR_EQ,
@@ -71,9 +71,9 @@ abstract class Column
     /**
      * Align.
      */
-    const ALIGN_LEFT = 'left';
-    const ALIGN_RIGHT = 'right';
-    const ALIGN_CENTER = 'center';
+    public const ALIGN_LEFT = 'left';
+    public const ALIGN_RIGHT = 'right';
+    public const ALIGN_CENTER = 'center';
 
     protected static $aligns = [
         self::ALIGN_LEFT,

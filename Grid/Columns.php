@@ -22,7 +22,7 @@ class Columns implements \IteratorAggregate, \Countable
     protected $columns = [];
     protected $extensions = [];
 
-    const MISSING_COLUMN_EX_MSG = 'Column with id "%s" doesn\'t exists';
+    public const MISSING_COLUMN_EX_MSG = 'Column with id "%s" doesn\'t exists';
 
     /**
      * @var AuthorizationCheckerInterface
