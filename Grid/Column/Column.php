@@ -370,7 +370,7 @@ abstract class Column
     /**
      * @return bool
      */
-    private function hasFromOperandFilter()
+    private function hasFromOperandFilter(): bool
     {
         if (!isset($this->data['from'])) {
             return false;
@@ -386,7 +386,7 @@ abstract class Column
     /**
      * @return bool
      */
-    private function hasToOperandFilter()
+    private function hasToOperandFilter(): bool
     {
         if (!isset($this->data['to'])) {
             return false;
@@ -402,7 +402,7 @@ abstract class Column
     /**
      * @return bool
      */
-    private function hasOperatorFilter()
+    private function hasOperatorFilter(): bool
     {
         if (!isset($this->data['operator'])) {
             return false;
