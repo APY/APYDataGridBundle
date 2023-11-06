@@ -7,6 +7,6 @@ namespace APY\DataGridBundle\Grid\Exception;
  *
  * @author  Quentin Ferrer
  */
-class InvalidArgumentException extends \InvalidArgumentException
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
 }

@@ -7,7 +7,7 @@ namespace APY\DataGridBundle\Grid\Exception;
  *
  * @author  Quentin Ferrer
  */
-class TypeAlreadyExistsException extends \InvalidArgumentException
+class TypeAlreadyExistsException extends \InvalidArgumentException implements ExceptionInterface
 {
     /**
      * Constructor.

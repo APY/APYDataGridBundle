@@ -7,7 +7,7 @@ namespace APY\DataGridBundle\Grid\Exception;
  *
  * @author  Quentin Ferrer
  */
-class TypeNotFoundException extends \InvalidArgumentException
+class TypeNotFoundException extends \InvalidArgumentException implements ExceptionInterface
 {
     /**
      * Constructor.
