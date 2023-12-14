@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 
-
 class GridManager implements IteratorAggregate, Countable
 {
     protected $container;
@@ -48,7 +47,7 @@ class GridManager implements IteratorAggregate, Countable
         $this->grids = new SplObjectStorage();
     }
 
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return $this->grids;
     }
@@ -212,7 +211,7 @@ class GridManager implements IteratorAggregate, Countable
 
             $response->setContent($content);
 
-            return $response;            
+            return $response;
         }
     }
 
