@@ -18,7 +18,7 @@ interface GridBuilderInterface
      * @param string|Column $type
      * @param array         $options
      *
-     * @return GridBuilderInterface
+     * @return static
      */
     public function add($name, $type, array $options = []);
 
@@ -36,7 +36,7 @@ interface GridBuilderInterface
      *
      * @param string $name The name of column
      *
-     * @return GridBuilderInterface
+     * @return static
      */
     public function remove($name);
 
