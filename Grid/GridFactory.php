@@ -121,7 +121,7 @@ class GridFactory implements GridFactoryInterface
      *
      * @return array
      */
-    private function resolveOptions(GridTypeInterface $type, Source $source = null, array $options = [])
+    private function resolveOptions(GridTypeInterface $type, Source $source = null, array $options = []): array
     {
         $resolver = new OptionsResolver();
 
