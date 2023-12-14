@@ -36,9 +36,9 @@ class GridManager implements IteratorAggregate, Countable
 
     protected $massActionGrid = null;
 
-    const NO_GRID_EX_MSG = 'No grid has been added to the manager.';
+    public const NO_GRID_EX_MSG = 'No grid has been added to the manager.';
 
-    const SAME_GRID_HASH_EX_MSG = 'Some grids seem similar. Please set an Indentifier for your grids.';
+    public const SAME_GRID_HASH_EX_MSG = 'Some grids seem similar. Please set an Indentifier for your grids.';
 
     public function __construct($container, Environment $twig)
     {

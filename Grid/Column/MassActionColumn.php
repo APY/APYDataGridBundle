@@ -14,7 +14,7 @@ namespace APY\DataGridBundle\Grid\Column;
 
 class MassActionColumn extends Column
 {
-    const ID = '__action';
+    public const ID = '__action';
 
     public function __construct()
     {
