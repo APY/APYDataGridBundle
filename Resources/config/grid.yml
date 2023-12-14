@@ -2,7 +2,7 @@ services:
     # Core
     apy_grid.factory:
         class: APY\DataGridBundle\Grid\GridFactory
-        arguments: ['@service_container', '@apy_grid.registry']
+        arguments: ['@service_container', '@security.authorization_checker', '@twig', '@apy_grid.registry']
     apy_grid.registry:
         class: APY\DataGridBundle\Grid\GridRegistry
     APY\DataGridBundle\Grid\GridFactoryInterface:
