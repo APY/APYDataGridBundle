@@ -65,7 +65,7 @@ class Grid implements GridInterface
     public const TWEAK_NOT_DEFINED_EX_MSG = 'Tweak %s is not defined.';
 
     /**
-     * @var \Symfony\Component\DependencyInjection\Container
+     * @var Container
      */
     protected $container;
 
@@ -80,10 +80,9 @@ class Grid implements GridInterface
     protected $session;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Request
+     * @var Request
      */
     protected $request;
-
 
     protected AuthorizationCheckerInterface $securityContext;
 
@@ -109,9 +108,6 @@ class Grid implements GridInterface
      */
     protected $routeParameters;
 
-    /**
-     * @var \APY\DataGridBundle\Grid\Source\Source
-     */
     protected ?Source $source = null;
 
     /**
@@ -140,22 +136,22 @@ class Grid implements GridInterface
     protected $limits = [];
 
     /**
-     * @var \APY\DataGridBundle\Grid\Columns|\APY\DataGridBundle\Grid\Column\Column[]
+     * @var Columns|Column[]
      */
     protected $columns;
 
     /**
-     * @var \APY\DataGridBundle\Grid\Rows
+     * @var Rows
      */
     protected $rows;
 
     /**
-     * @var \APY\DataGridBundle\Grid\Action\MassAction[]
+     * @var Action\MassAction[]
      */
     protected $massActions = [];
 
     /**
-     * @var \APY\DataGridBundle\Grid\Action\RowAction[]
+     * @var Action\RowAction[]
      */
     protected $rowActions = [];
 
@@ -205,7 +201,7 @@ class Grid implements GridInterface
     protected $noResultMessage;
 
     /**
-     * @var \APY\DataGridBundle\Grid\Export\Export[]
+     * @var Export[]
      */
     protected $exports = [];
 

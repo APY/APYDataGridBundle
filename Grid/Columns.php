@@ -22,7 +22,7 @@ class Columns implements \IteratorAggregate, \Countable
     protected $columns = [];
     protected $extensions = [];
 
-    const MISSING_COLUMN_EX_MSG = 'Column with id "%s" doesn\'t exists';
+    private const MISSING_COLUMN_EX_MSG = 'Column with id "%s" doesn\'t exists';
 
     /**
      * @var AuthorizationCheckerInterface
@@ -42,7 +42,7 @@ class Columns implements \IteratorAggregate, \Countable
      *
      * @return ColumnsIterator
      */
-    public function getIterator($showOnlySourceColumns = false):ColumnsIterator
+    public function getIterator($showOnlySourceColumns = false): ColumnsIterator
     {
         return new ColumnsIterator(new \ArrayIterator($this->columns), $showOnlySourceColumns);
     }
@@ -128,7 +128,7 @@ class Columns implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function count():int
+    public function count(): int
     {
         return count($this->columns);
     }

@@ -61,14 +61,13 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      *
      * @return \APY\DataGridBundle\Grid\Export\Export
      */
-    public function __construct( $title, $fileName = 'export', $params = [], $charset = 'UTF-8', $role = null)
+    public function __construct($title, $fileName = 'export', $params = [], $charset = 'UTF-8', $role = null)
     {
         $this->title = $title;
         $this->fileName = $fileName;
         $this->params = $params;
         $this->charset = $charset;
         $this->role = $role;
-        // $this->twig = $twig;
     }
 
     /**
@@ -82,14 +81,12 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     {
         $this->container = $container;
 
-        
-
         return $this;
     }
 
     public function setTwig(Environment $twig) 
     {
-        $this->twig=$twig;
+        $this->twig = $twig;
     }
     /**
      * gets the Container associated with this Controller.

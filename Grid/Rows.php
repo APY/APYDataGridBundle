@@ -58,7 +58,7 @@ class Rows implements \IteratorAggregate, \Countable
      *
      * @see Countable::count()
      */
-    public function count():int
+    public function count(): int
     {
         return $this->rows->count();
     }

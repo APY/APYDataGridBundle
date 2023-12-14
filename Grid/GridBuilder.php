@@ -19,15 +19,16 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * The container.
      */
-    private \Symfony\Component\DependencyInjection\Container $container;
+    private Container $container;
 
     private AuthorizationCheckerInterface $securityContext;
 
     private Environment $twig;
+
     /**
      * The factory.
      */
-    private \APY\DataGridBundle\Grid\GridFactoryInterface $factory;
+    private GridFactoryInterface $factory;
 
     /**
      * Columns of the grid builder.

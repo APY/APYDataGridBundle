@@ -28,7 +28,7 @@ class ColumnsIterator extends \FilterIterator
         $this->showOnlySourceColumns = $showOnlySourceColumns;
     }
 
-    public function accept():bool
+    public function accept(): bool
     {
         $current = $this->getInnerIterator()->current();
 
