@@ -7,7 +7,7 @@ namespace APY\DataGridBundle\Grid\Exception;
  *
  * @author  Quentin Ferrer
  */
-class UnexpectedTypeException extends \InvalidArgumentException
+class UnexpectedTypeException extends \InvalidArgumentException implements ExceptionInterface
 {
     /**
      * Constructor.
