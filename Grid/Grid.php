@@ -446,7 +446,11 @@ class Grid implements GridInterface
 
         $this->createHash();
 
-        $this->requestData = $request->get($this->hash);
+        if(!$this->request->get('_route')){
+            $this->requestData = (array) $this->request->attributes->get('request')->get($this->hash);
+        } else {
+            $this->requestData = (array) $this->request->get($this->hash);
+        }
 
         $this->processPersistence();
 
