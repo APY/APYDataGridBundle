@@ -1,29 +1,20 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
+use APY\DataGridBundle\Grid\Source\Source;
 
 class TextColumn extends Column
 {
-    public function isQueryValid($query)
+    public function isQueryValid(mixed $query): bool
     {
-        $result = array_filter((array) $query, 'is_string');
+        $result = \array_filter((array) $query, 'is_string');
 
         return !empty($result);
     }
 
-    public function getFilters($source)
+    public function getFilters(Source|string $source): array
     {
         $parentFilters = parent::getFilters($source);
 
@@ -47,7 +38,7 @@ class TextColumn extends Column
         return $filters;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'text';
     }

@@ -1,20 +1,13 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Column;
+
+use APY\DataGridBundle\Grid\Row;
+use Symfony\Component\Routing\RouterInterface;
 
 class BooleanColumn extends Column
 {
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         $params['filter'] = 'select';
         $params['selectFrom'] = 'values';
@@ -30,29 +23,29 @@ class BooleanColumn extends Column
         $this->setValues($this->getParam('values', [1 => 'true', 0 => 'false']));
     }
 
-    public function isQueryValid($query)
+    public function isQueryValid($query): bool
     {
         $query = (array) $query;
-        if ($query[0] === true || $query[0] === false || $query[0] == 0 || $query[0] == 1) {
+        if (true === $query[0] || false === $query[0] || 0 == $query[0] || 1 == $query[0]) {
             return true;
         }
 
         return false;
     }
 
-    public function renderCell($value, $row, $router)
+    public function renderCell(mixed $value, Row $row, RouterInterface $router): mixed
     {
         $value = parent::renderCell($value, $row, $router);
 
         return $value ?: 'false';
     }
 
-    public function getDisplayedValue($value)
+    public function getDisplayedValue($value): bool
     {
-        return is_bool($value) ? ($value ? 1 : 0) : $value;
+        return \is_bool($value) ? ($value ? 1 : 0) : $value;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'boolean';
     }

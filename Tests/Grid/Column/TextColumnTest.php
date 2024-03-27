@@ -12,19 +12,19 @@ class TextColumnTest extends TestCase
     /** @var TextColumn */
     private $column;
 
-    public function testGetType()
+    public function testGetType(): void
     {
         $this->assertEquals('text', $this->column->getType());
     }
 
-    public function testIsQueryValid()
+    public function testIsQueryValid(): void
     {
         $this->assertTrue($this->column->isQueryValid('foo'));
         $this->assertTrue($this->column->isQueryValid(['foo', 1, 'bar', null]));
         $this->assertFalse($this->column->isQueryValid(1));
     }
 
-    public function testNullOperatorFilters()
+    public function testNullOperatorFilters(): void
     {
         $this->column->setData(['operator' => Column::OPERATOR_ISNULL]);
         $this->assertEquals([
@@ -34,7 +34,7 @@ class TextColumnTest extends TestCase
         $this->assertEquals(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
-    public function testNotNullOperatorFilters()
+    public function testNotNullOperatorFilters(): void
     {
         $this->column->setData(['operator' => Column::OPERATOR_ISNOTNULL]);
         $this->assertEquals([
@@ -43,13 +43,12 @@ class TextColumnTest extends TestCase
         ], $this->column->getFilters('asource'));
     }
 
-    public function testOtherOperatorFilters()
+    public function testOtherOperatorFilters(): void
     {
-        $operators = array_flip(Column::getAvailableOperators());
-        unset($operators[Column::OPERATOR_ISNOTNULL]);
-        unset($operators[Column::OPERATOR_ISNULL]);
+        $operators = \array_flip(Column::getAvailableOperators());
+        unset($operators[Column::OPERATOR_ISNOTNULL], $operators[Column::OPERATOR_ISNULL]);
 
-        foreach (array_keys($operators) as $operator) {
+        foreach (\array_keys($operators) as $operator) {
             $this->column->setData(['operator' => $operator]);
             $this->assertEmpty($this->column->getFilters('asource'));
         }

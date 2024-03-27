@@ -29,7 +29,7 @@ class Source
     public function __construct(array $metadata = [], array $groups = ['default'], array $columns = [], bool $filterable = true, bool $sortable = true, array $groupBy = [])
     {
         if ($metadata['columns'] ?? []) {
-            $this->columns = \array_map('trim', \is_array($metadata['columns']) ? $metadata['columns'] : \explode(',', $metadata['columns'])) ;
+            $this->columns = \array_map('trim', \is_array($metadata['columns']) ? $metadata['columns'] : \explode(',', $metadata['columns']));
         } else {
             $this->columns = $columns;
         }

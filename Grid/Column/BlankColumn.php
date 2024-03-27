@@ -1,20 +1,10 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Column;
 
 class BlankColumn extends Column
 {
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         $params['filterable'] = false;
         $params['sortable'] = false;
@@ -23,7 +13,7 @@ class BlankColumn extends Column
         parent::__initialize($params);
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'blank';
     }

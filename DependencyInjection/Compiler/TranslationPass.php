@@ -13,9 +13,6 @@ use Symfony\Component\DependencyInjection\Definition;
  */
 class TranslationPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('jms_translation.extractor.file_extractor')) {

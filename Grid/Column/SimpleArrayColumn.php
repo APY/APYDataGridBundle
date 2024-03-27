@@ -1,22 +1,15 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
+use APY\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Grid\Source\Source;
+use Symfony\Component\Routing\RouterInterface;
 
 class SimpleArrayColumn extends Column
 {
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         parent::__initialize($params);
 
@@ -31,7 +24,7 @@ class SimpleArrayColumn extends Column
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
     }
 
-    public function getFilters($source)
+    public function getFilters(Source|string $source): array
     {
         $parentFilters = parent::getFilters($source);
 
@@ -65,17 +58,17 @@ class SimpleArrayColumn extends Column
         return $filters;
     }
 
-    public function renderCell($values, $row, $router)
+    public function renderCell(mixed $values, Row $row, RouterInterface $router): mixed
     {
-        if (is_callable($this->callback)) {
-            return call_user_func($this->callback, $values, $row, $router);
+        if (\is_callable($this->callback)) {
+            return \call_user_func($this->callback, $values, $row, $router);
         }
 
         // @todo: when it has an array as value?
         $return = [];
-        if (is_array($values) || $values instanceof \Traversable) {
+        if (\is_iterable($values) || $values instanceof \Traversable) {
             foreach ($values as $key => $value) {
-                if (!is_array($value) && isset($this->values[(string) $value])) {
+                if (!\is_array($value) && isset($this->values[(string) $value])) {
                     $value = $this->values[$value];
                 }
 
@@ -86,7 +79,7 @@ class SimpleArrayColumn extends Column
         return $return;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'simple_array';
     }

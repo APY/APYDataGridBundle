@@ -1,41 +1,24 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid;
 
 use Doctrine\ORM\EntityRepository;
 
 class Row
 {
-    /** @var array */
-    protected $fields;
+    protected array $fields;
 
-    /** @var string */
-    protected $class;
+    protected ?string $class = null;
 
-    /** @var string */
-    protected $color;
+    protected string $color;
 
-    /** @var string|null */
-    protected $legend;
+    protected ?string $legend = null;
 
-    /** @var mixed */
-    protected $primaryField;
+    protected mixed $primaryField = null;
 
-    /** @var mixed */
-    protected $entity;
+    protected mixed $entity = null;
 
-    /** @var EntityRepository */
-    protected $repository;
+    protected ?EntityRepository $repository = null;
 
     public function __construct()
     {
@@ -43,32 +26,23 @@ class Row
         $this->color = '';
     }
 
-    /**
-     * @param EntityRepository $repository
-     */
-    public function setRepository(EntityRepository $repository)
+    public function setRepository(EntityRepository $repository): void
     {
         $this->repository = $repository;
     }
 
-    /**
-     * @return null|object
-     */
-    public function getEntity()
+    public function getEntity(): ?object
     {
-        $primaryKeyValue = current($this->getPrimaryKeyValue());
+        $primaryKeyValue = \current($this->getPrimaryKeyValue());
 
         return $this->repository->find($primaryKeyValue);
     }
 
-    /**
-     * @return array
-     */
-    public function getPrimaryKeyValue()
+    public function getPrimaryKeyValue(): array
     {
         $primaryFieldValue = $this->getPrimaryFieldValue();
 
-        if (is_array($primaryFieldValue)) {
+        if (\is_array($primaryFieldValue)) {
             return $primaryFieldValue;
         }
 
@@ -78,17 +52,15 @@ class Row
 
     /**
      * @throws \InvalidArgumentException
-     *
-     * @return array|mixed
      */
-    public function getPrimaryFieldValue()
+    public function getPrimaryFieldValue(): mixed
     {
         if (null === $this->primaryField) {
             throw new \InvalidArgumentException('Primary column must be defined');
         }
 
-        if (is_array($this->primaryField)) {
-            return array_intersect_key($this->fields, array_flip($this->primaryField));
+        if (\is_array($this->primaryField)) {
+            return \array_intersect_key($this->fields, \array_flip($this->primaryField));
         }
 
         if (!isset($this->fields[$this->primaryField])) {
@@ -98,105 +70,62 @@ class Row
         return $this->fields[$this->primaryField];
     }
 
-    /**
-     * @param mixed $primaryField
-     *
-     * @return $this
-     */
-    public function setPrimaryField($primaryField)
+    public function setPrimaryField(mixed $primaryField): static
     {
         $this->primaryField = $primaryField;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPrimaryField()
+    public function getPrimaryField(): mixed
     {
         return $this->primaryField;
     }
 
-    /**
-     * @param mixed $columnId
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function setField($columnId, $value)
+    public function setField(mixed $columnId, mixed $value): static
     {
         $this->fields[$columnId] = $value;
 
         return $this;
     }
 
-    /**
-     * @param mixed $columnId
-     *
-     * @return mixed
-     */
-    public function getField($columnId)
+    public function getField(mixed $columnId): mixed
     {
         return $this->fields[$columnId] ?? '';
     }
 
-    /**
-     * @param string $class
-     *
-     * @return $this
-     */
-    public function setClass($class)
+    public function setClass(string $class): static
     {
         $this->class = $class;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getClass()
+    public function getClass(): ?string
     {
         return $this->class;
     }
 
-    /**
-     * @param string $color
-     *
-     * @return $this
-     */
-    public function setColor($color)
+    public function setColor(string $color): static
     {
         $this->color = $color;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getColor()
+    public function getColor(): string
     {
         return $this->color;
     }
 
-    /**
-     * @param string $legend
-     *
-     * @return $this
-     */
-    public function setLegend($legend)
+    public function setLegend(string $legend): static
     {
         $this->legend = $legend;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getLegend()
+    public function getLegend(): ?string
     {
         return $this->legend;
     }

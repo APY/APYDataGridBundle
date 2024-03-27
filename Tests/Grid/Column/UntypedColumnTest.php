@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class UntypedColumnTest extends TestCase
 {
-    public function testGetParams()
+    public function testGetParams(): void
     {
         $params = ['foo', 'bar'];
         $column = new UntypedColumn($params);
@@ -15,7 +15,7 @@ class UntypedColumnTest extends TestCase
         $this->assertEquals($params, $column->getParams());
     }
 
-    public function testSetType()
+    public function testSetType(): void
     {
         $type = 'text';
 

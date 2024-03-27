@@ -5,444 +5,231 @@ namespace APY\DataGridBundle\Grid;
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
 use APY\DataGridBundle\Grid\Source\Source;
 
-/**
- * A basic grid configuration.
- *
- * @author  Quentin Ferrer
- */
 class GridConfigBuilder implements GridConfigBuilderInterface
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
 
-    /**
-     * @var GridTypeInterface
-     */
-    protected $type;
+    protected ?GridTypeInterface $type = null;
 
-    /**
-     * @var Source
-     */
-    protected $source;
+    protected ?Source $source = null;
 
-    /**
-     * @var string
-     */
-    protected $route;
+    protected ?string $route = null;
 
-    /**
-     * @var array
-     */
-    protected $routeParameters = [];
+    protected array $routeParameters = [];
 
-    /**
-     * @var bool
-     */
-    protected $persistence;
+    protected bool $persistence = false;
 
-    /**
-     * @var int
-     */
-    protected $page = 0;
+    protected int $page = 0;
 
-    /**
-     * @var int
-     */
-    protected $limit;
+    protected ?int $limit = null;
 
-    /**
-     * @var int
-     */
-    protected $maxResults;
+    protected ?int $maxResults = null;
 
-    /**
-     * @var bool
-     */
-    protected $filterable = true;
+    protected bool $filterable = true;
 
-    /**
-     * @var bool
-     */
-    protected $sortable = true;
+    protected bool $sortable = true;
 
-    /**
-     * @var string
-     */
-    protected $sortBy;
+    protected ?string $sortBy = null;
 
-    /**
-     * @var string
-     */
-    protected $order = 'asc';
+    protected string $order = 'asc';
 
-    /**
-     * @var string|array
-     */
-    protected $groupBy;
+    protected string|array|null $groupBy = null;
 
-    /**
-     * @var array
-     */
-    protected $actions;
+    protected ?array $actions = null;
 
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    /**
-     * Constructor.
-     *
-     * @param string $name    The grid name
-     * @param array  $options The grid options
-     */
-    public function __construct($name, array $options = [])
+    public function __construct(string $name, array $options = [])
     {
         $this->name = $name;
         $this->options = $options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSource()
+    public function getSource(): ?Source
     {
         return $this->source;
     }
 
-    /**
-     * Set Source.
-     *
-     * @param Source $source
-     *
-     * @return $this
-     */
-    public function setSource(Source $source)
+    public function setSource(Source $source): static
     {
         $this->source = $source;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
+    public function getType(): ?GridTypeInterface
     {
         return $this->type;
     }
 
-    /**
-     * Set Type.
-     *
-     * @param GridTypeInterface $type
-     *
-     * @return $this
-     */
-    public function setType(GridTypeInterface $type)
+    public function setType(GridTypeInterface $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRoute()
+    public function getRoute(): ?string
     {
         return $this->route;
     }
 
-    /**
-     * Set Route.
-     *
-     * @param mixed $route
-     *
-     * @return $this
-     */
-    public function setRoute($route)
+    public function setRoute(mixed $route): static
     {
         $this->route = $route;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRouteParameters()
+    public function getRouteParameters(): array
     {
         return $this->routeParameters;
     }
 
-    /**
-     * Set RouteParameters.
-     *
-     * @param array $routeParameters
-     *
-     * @return $this
-     */
-    public function setRouteParameters(array $routeParameters)
+    public function setRouteParameters(array $routeParameters): static
     {
         $this->routeParameters = $routeParameters;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isPersisted()
+    public function isPersisted(): bool
     {
         return $this->persistence;
     }
 
-    /**
-     * Set Persistence.
-     *
-     * @param mixed $persistence
-     *
-     * @return $this
-     */
-    public function setPersistence($persistence)
+    public function setPersistence(mixed $persistence): static
     {
         $this->persistence = $persistence;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPage()
+    public function getPage(): int
     {
         return $this->page;
     }
 
-    /**
-     * Set Page.
-     *
-     * @param int $page
-     *
-     * @return $this
-     */
-    public function setPage($page)
+    public function setPage(int $page): static
     {
         $this->page = $page;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function hasOption($name)
+    public function hasOption(string $name): bool
     {
-        return array_key_exists($name, $this->options);
+        return \array_key_exists($name, $this->options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getOption($name, $default = null)
+    public function getOption(string $name, mixed $default = null): mixed
     {
-        return array_key_exists($name, $this->options) ? $this->options[$name] : $default;
+        return \array_key_exists($name, $this->options) ? $this->options[$name] : $default;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMaxPerPage()
+    public function getMaxPerPage(): ?int
     {
         return $this->limit;
     }
 
-    /**
-     * Set Limit.
-     *
-     * @param int $limit
-     *
-     * @return $this
-     */
-    public function setMaxPerPage($limit)
+    public function setMaxPerPage(int $limit): static
     {
         $this->limit = $limit;
 
         return $this;
     }
 
-    /**
-     * Get MaxResults.
-     *
-     * @return int
-     */
-    public function getMaxResults()
+    public function getMaxResults(): ?int
     {
         return $this->maxResults;
     }
 
-    /**
-     * Set MaxResults.
-     *
-     * @param int $maxResults
-     *
-     * @return $this
-     */
-    public function setMaxResults($maxResults)
+    public function setMaxResults(?int $maxResults): static
     {
         $this->maxResults = $maxResults;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isSortable()
+    public function isSortable(): bool
     {
         return $this->sortable;
     }
 
-    /**
-     * Set Sortable.
-     *
-     * @param bool $sortable
-     *
-     * @return $this
-     */
-    public function setSortable($sortable)
+    public function setSortable(bool $sortable): static
     {
         $this->sortable = $sortable;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isFilterable()
+    public function isFilterable(): bool
     {
         return $this->filterable;
     }
 
-    /**
-     * Set Filterable.
-     *
-     * @param bool $filterable
-     *
-     * @return $this
-     */
-    public function setFilterable($filterable)
+    public function setFilterable(bool $filterable): static
     {
         $this->filterable = $filterable;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrder()
+    public function getOrder(): string
     {
         return $this->order;
     }
 
-    /**
-     * Set Order.
-     *
-     * @param string $order
-     *
-     * @return $this
-     */
-    public function setOrder($order)
+    public function setOrder(string $order): static
     {
         $this->order = $order;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSortBy()
+    public function getSortBy(): ?string
     {
         return $this->sortBy;
     }
 
-    /**
-     * Set SortBy.
-     *
-     * @param string $sortBy
-     *
-     * @return $this
-     */
-    public function setSortBy($sortBy)
+    public function setSortBy(?string $sortBy): static
     {
         $this->sortBy = $sortBy;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getGroupBy()
+    public function getGroupBy(): array|string|null
     {
         return $this->groupBy;
     }
 
-    /**
-     * Set GroupBy.
-     *
-     * @param array|string $groupBy
-     *
-     * @return $this
-     */
-    public function setGroupBy($groupBy)
+    public function setGroupBy(array|string|null $groupBy): static
     {
         $this->groupBy = $groupBy;
 
         return $this;
     }
 
-    /**
-     * @param RowActionInterface $action
-     *
-     * @return $this
-     */
-    public function addAction(RowActionInterface $action)
+    public function addAction(RowActionInterface $action): static
     {
         $this->actions[$action->getColumn()][] = $action;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getGridConfig()
+    public function getGridConfig(): self|GridConfigInterface
     {
-        $config = clone $this;
-
-        return $config;
+        return clone $this;
     }
 }

@@ -1,369 +1,233 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- */
-
 namespace APY\DataGridBundle\Grid;
 
+use APY\DataGridBundle\Grid\Action\MassAction;
 use APY\DataGridBundle\Grid\Action\MassActionInterface;
+use APY\DataGridBundle\Grid\Action\RowAction;
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
 use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
+use APY\DataGridBundle\Grid\Export\Export;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
 use Doctrine\Persistence\ManagerRegistry;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernel;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Template;
 
 class Grid implements GridInterface
 {
-    const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
-    const REQUEST_QUERY_MASS_ACTION = '__action_id';
-    const REQUEST_QUERY_EXPORT = '__export_id';
-    const REQUEST_QUERY_TWEAK = '__tweak_id';
-    const REQUEST_QUERY_PAGE = '_page';
-    const REQUEST_QUERY_LIMIT = '_limit';
-    const REQUEST_QUERY_ORDER = '_order';
-    const REQUEST_QUERY_TEMPLATE = '_template';
-    const REQUEST_QUERY_RESET = '_reset';
+    public const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
+    public const REQUEST_QUERY_MASS_ACTION = '__action_id';
+    public const REQUEST_QUERY_EXPORT = '__export_id';
+    public const REQUEST_QUERY_TWEAK = '__tweak_id';
+    public const REQUEST_QUERY_PAGE = '_page';
+    public const REQUEST_QUERY_LIMIT = '_limit';
+    public const REQUEST_QUERY_ORDER = '_order';
+    public const REQUEST_QUERY_TEMPLATE = '_template';
+    public const REQUEST_QUERY_RESET = '_reset';
 
-    const SOURCE_ALREADY_SETTED_EX_MSG = 'The source of the grid is already set.';
-    const SOURCE_NOT_SETTED_EX_MSG = 'The source of the grid must be set.';
-    const TWEAK_MALFORMED_ID_EX_MSG = 'Tweak id "%s" is malformed. The id have to match this regex ^[0-9a-zA-Z_\+-]+';
-    const TWIG_TEMPLATE_LOAD_EX_MSG = 'Unable to load template';
-    const NOT_VALID_LIMIT_EX_MSG = 'Limit has to be array or integer';
-    const NOT_VALID_PAGE_NUMBER_EX_MSG = 'Page must be a positive number';
-    const NOT_VALID_MAX_RESULT_EX_MSG = 'Max results must be a positive number.';
-    const MASS_ACTION_NOT_DEFINED_EX_MSG = 'Action %s is not defined.';
-    const MASS_ACTION_CALLBACK_NOT_VALID_EX_MSG = 'Callback %s is not callable or Controller action';
-    const EXPORT_NOT_DEFINED_EX_MSG = 'Export %s is not defined.';
-    const PAGE_NOT_VALID_EX_MSG = 'Page must be a positive number';
-    const COLUMN_ORDER_NOT_VALID_EX_MSG = '%s is not a valid order.';
-    const DEFAULT_LIMIT_NOT_VALID_EX_MSG = 'Limit must be a positive number';
-    const LIMIT_NOT_DEFINED_EX_MSG = 'Limit %s is not defined in limits.';
-    const NO_ROWS_RETURNED_EX_MSG = 'Source have to return Rows object.';
-    const INVALID_TOTAL_COUNT_EX_MSG = 'Source function getTotalCount need to return integer result, returned: %s';
-    const NOT_VALID_TWEAK_ID_EX_MSG = 'Tweak with id "%s" doesn\'t exists';
-    const GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG = 'getFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
-    const HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG = 'hasFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
-    const TWEAK_NOT_DEFINED_EX_MSG = 'Tweak %s is not defined.';
+    public const SOURCE_ALREADY_SETTED_EX_MSG = 'The source of the grid is already set.';
+    public const SOURCE_NOT_SETTED_EX_MSG = 'The source of the grid must be set.';
+    public const TWEAK_MALFORMED_ID_EX_MSG = 'Tweak id "%s" is malformed. The id have to match this regex ^[0-9a-zA-Z_\+-]+';
+    public const TWIG_TEMPLATE_LOAD_EX_MSG = 'Unable to load template';
+    public const NOT_VALID_LIMIT_EX_MSG = 'Limit has to be array or integer';
+    public const NOT_VALID_PAGE_NUMBER_EX_MSG = 'Page must be a positive number';
+    public const NOT_VALID_MAX_RESULT_EX_MSG = 'Max results must be a positive number.';
+    public const MASS_ACTION_NOT_DEFINED_EX_MSG = 'Action %s is not defined.';
+    public const MASS_ACTION_CALLBACK_NOT_VALID_EX_MSG = 'Callback %s is not callable or Controller action';
+    public const EXPORT_NOT_DEFINED_EX_MSG = 'Export %s is not defined.';
+    public const PAGE_NOT_VALID_EX_MSG = 'Page must be a positive number';
+    public const COLUMN_ORDER_NOT_VALID_EX_MSG = '%s is not a valid order.';
+    public const DEFAULT_LIMIT_NOT_VALID_EX_MSG = 'Limit must be a positive number';
+    public const LIMIT_NOT_DEFINED_EX_MSG = 'Limit %s is not defined in limits.';
+    public const NO_ROWS_RETURNED_EX_MSG = 'Source have to return Rows object.';
+    public const NOT_VALID_TWEAK_ID_EX_MSG = 'Tweak with id "%s" doesn\'t exists';
+    public const GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG = 'getFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
+    public const HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG = 'hasFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
+    public const TWEAK_NOT_DEFINED_EX_MSG = 'Tweak %s is not defined.';
 
-    /**
-     * @var \Symfony\Component\DependencyInjection\Container
-     */
-    protected $container;
+    #[Deprecated]
+    protected ?Container $container;
 
-    /**
-     * @var \Symfony\Component\Routing\Router
-     */
-    protected $router;
+    protected ?SessionInterface $session = null;
 
-    /**
-     * @var \Symfony\Component\HttpFoundation\Session\Session;
-     */
-    protected $session;
+    protected ?Request $request = null;
 
-    /**
-     * @var \Symfony\Component\HttpFoundation\Request
-     */
-    protected $request;
+    protected ?string $id = null;
 
-    /**
-     * @var \Symfony\Component\Security\Core\Authorization\AuthorizationChecker
-     */
-    protected $securityContext;
+    protected ?string $hash = null;
 
-    /**
-     * @var string
-     */
-    protected $id;
+    protected ?string $routeUrl = null;
+
+    protected ?array $routeParameters = null;
+
+    protected ?Source $source = null;
+
+    protected bool $prepared = false;
+
+    protected ?int $totalCount = null;
+
+    protected int $page = 0;
+
+    protected ?int $limit = null;
+
+    protected array $limits = [];
 
     /**
-     * @var string
+     * @var Columns|Column[]
      */
-    protected $hash;
+    protected Columns|array $columns;
+
+    protected Rows|array|null $rows = null;
 
     /**
-     * @var string
+     * @var MassAction[]
      */
-    protected $routeUrl;
+    protected array $massActions = [];
 
     /**
-     * @var array
+     * @var RowAction[]
      */
-    protected $routeParameters;
+    protected array $rowActions = [];
+
+    protected bool $showFilters = true;
+
+    protected bool $showTitles = true;
+
+    protected mixed $requestData;
+
+    protected mixed $sessionData = [];
+
+    protected string $prefixTitle = '';
+
+    protected bool $persistence = false;
+
+    protected bool $newSession = false;
+
+    protected ?string $noDataMessage = null;
+
+    protected ?string $noResultMessage = null;
 
     /**
-     * @var \APY\DataGridBundle\Grid\Source\Source
+     * @var Export[]
      */
-    protected $source;
+    protected array $exports = [];
 
-    /**
-     * @var bool
-     */
-    protected $prepared = false;
+    protected ?bool $redirect = null;
 
-    /**
-     * @var int
-     */
-    protected $totalCount;
+    protected bool $isReadyForExport = false;
 
-    /**
-     * @var int
-     */
-    protected $page = 0;
+    protected ?Response $exportResponse = null;
 
-    /**
-     * @var int
-     */
-    protected $limit;
+    protected ?Response $massActionResponse = null;
 
-    /**
-     * @var array
-     */
-    protected $limits = [];
+    protected ?int $maxResults = null;
 
-    /**
-     * @var \APY\DataGridBundle\Grid\Columns|\APY\DataGridBundle\Grid\Column\Column[]
-     */
-    protected $columns;
-
-    /**
-     * @var \APY\DataGridBundle\Grid\Rows
-     */
-    protected $rows;
-
-    /**
-     * @var \APY\DataGridBundle\Grid\Action\MassAction[]
-     */
-    protected $massActions = [];
-
-    /**
-     * @var \APY\DataGridBundle\Grid\Action\RowAction[]
-     */
-    protected $rowActions = [];
-
-    /**
-     * @var bool
-     */
-    protected $showFilters = true;
-
-    /**
-     * @var bool
-     */
-    protected $showTitles = true;
-
-    /**
-     * @var array|object request
-     */
-    protected $requestData;
-
-    /**
-     * @var array|object session
-     */
-    protected $sessionData = [];
-
-    /**
-     * @var string
-     */
-    protected $prefixTitle = '';
-
-    /**
-     * @var bool
-     */
-    protected $persistence = false;
-
-    /**
-     * @var bool
-     */
-    protected $newSession = false;
-
-    /**
-     * @var string
-     */
-    protected $noDataMessage;
-
-    /**
-     * @var string
-     */
-    protected $noResultMessage;
-
-    /**
-     * @var \APY\DataGridBundle\Grid\Export\Export[]
-     */
-    protected $exports = [];
-
-    /**
-     * @var bool
-     */
-    protected $redirect = null;
-
-    /**
-     * @var bool
-     */
-    protected $isReadyForExport = false;
-
-    /**
-     * @var Response
-     */
-    protected $exportResponse;
-
-    /**
-     * @var Response
-     */
-    protected $massActionResponse;
-
-    /**
-     * @var int
-     */
-    protected $maxResults;
-
-    /**
-     * @var array
-     */
-    protected $items = [];
+    protected array $items = [];
 
     /**
      * Data junction of the grid.
-     *
-     * @var int
      */
-    protected $dataJunction = Column::DATA_CONJUNCTION;
+    protected int $dataJunction = Column::DATA_CONJUNCTION;
 
     /**
      * Permanent filters.
-     *
-     * @var array
      */
-    protected $permanentFilters = [];
+    protected array $permanentFilters = [];
 
     /**
      * Default filters.
-     *
-     * @var array
      */
-    protected $defaultFilters = [];
+    protected array $defaultFilters = [];
 
     /**
      * Default order (e.g. my_column_id|asc).
-     *
-     * @var string
      */
-    protected $defaultOrder;
+    protected ?string $defaultOrder = null;
 
     /**
      * Default limit.
-     *
-     * @var int
      */
-    protected $defaultLimit;
+    protected ?int $defaultLimit = null;
 
     /**
      * Default page.
-     *
-     * @var int
      */
-    protected $defaultPage;
+    protected ?int $defaultPage = null;
 
     /**
      * Tweaks.
-     *
-     * @var array
      */
-    protected $tweaks = [];
+    protected array $tweaks = [];
 
     /**
      * Default Tweak.
-     *
-     * @var string
      */
-    protected $defaultTweak;
+    protected ?string $defaultTweak = null;
 
     /**
      * Filters in session.
-     *
-     * @var array
      */
-    protected $sessionFilters;
+    protected ?array $sessionFilters = null;
 
     // Lazy parameters
-    protected $lazyAddColumn = [];
-    protected $lazyHiddenColumns = [];
-    protected $lazyVisibleColumns = [];
-    protected $lazyHideShowColumns = [];
+    protected array $lazyAddColumn = [];
+    protected array $lazyHiddenColumns = [];
+    protected array $lazyVisibleColumns = [];
+    protected array $lazyHideShowColumns = [];
 
     // Lazy parameters for the action column
-    protected $actionsColumnSize;
-    protected $actionsColumnTitle;
+    protected mixed $actionsColumnSize;
+    protected mixed $actionsColumnTitle;
+
+    protected ?TranslatorInterface $translator = null;
+    protected ?string $charset = null;
 
     /**
-     * The grid configuration.
-     *
-     * @var GridConfigInterface
-     */
-    private $config;
-
-    /**
-     * Constructor.
-     *
-     * @param Container                $container
-     * @param string                   $id        set if you are using more then one grid inside controller
-     * @param GridConfigInterface|null $config    The grid configuration.
+     * @param string                   $id     set if you are using more then one grid inside controller
+     * @param GridConfigInterface|null $config The grid configuration.
      */
     public function __construct(
-        $container,
-        AuthorizationCheckerInterface $checker,
+        protected RouterInterface $router,
+        protected AuthorizationCheckerInterface $securityContext,
         protected ManagerRegistry $doctrine,
         protected Manager $manager,
         protected HttpKernelInterface $kernel,
         protected Environment $twig,
+        RequestStack $requestStack,
         ?string $id = '',
-        GridConfigInterface $config = null
+        protected ?GridConfigInterface $config = null
     ) {
-        // @todo: why the whole container is injected?
-        $this->container = $container;
-        $this->config = $config;
-
-        $this->router = $container->get('router');
-        $this->request = $container->get('request_stack')->getCurrentRequest();
+        $this->request = $requestStack->getCurrentRequest();
         $this->session = $this->request->getSession();
-        $this->securityContext = $checker;
-
         $this->id = $id;
 
         $this->columns = new Columns($this->securityContext);
 
         $this->routeParameters = $this->request->attributes->all();
-        foreach (array_keys($this->routeParameters) as $key) {
+        foreach (\array_keys($this->routeParameters) as $key) {
             if (\str_starts_with($key, '_')) {
                 unset($this->routeParameters[$key]);
             }
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function initialize()
+    public function initialize(): static
     {
         $config = $this->config;
 
@@ -416,7 +280,7 @@ class Grid implements GridInterface
             if ($source instanceof Entity) {
                 $groupBy = $config->getGroupBy();
                 if (null !== $groupBy) {
-                    if (!is_array($groupBy)) {
+                    if (!\is_array($groupBy)) {
                         $groupBy = [$groupBy];
                     }
 
@@ -442,10 +306,7 @@ class Grid implements GridInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function handleRequest(Request $request)
+    public function handleRequest(Request $request): static
     {
         if (null === $this->source) {
             throw new \LogicException(self::SOURCE_NOT_SETTED_EX_MSG);
@@ -482,17 +343,11 @@ class Grid implements GridInterface
     }
 
     /**
-     * Sets Source to the Grid.
-     *
-     * @param $source
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return self
      */
-    public function setSource(Source $source)
+    public function setSource(Source $source): static
     {
-        if ($this->source !== null) {
+        if (null !== $this->source) {
             throw new \InvalidArgumentException(self::SOURCE_ALREADY_SETTED_EX_MSG);
         }
 
@@ -506,7 +361,7 @@ class Grid implements GridInterface
         return $this;
     }
 
-    public function getSource()
+    public function getSource(): ?Source
     {
         return $this->source;
     }
@@ -514,13 +369,13 @@ class Grid implements GridInterface
     /**
      * Handle the grid redirection, export, etc..
      */
-    public function isReadyForRedirect()
+    public function isReadyForRedirect(): bool
     {
-        if ($this->source === null) {
-            throw new \Exception(self::SOURCE_NOT_SETTED_EX_MSG);
+        if (null === $this->source) {
+            throw new \RuntimeException(self::SOURCE_NOT_SETTED_EX_MSG);
         }
 
-        if ($this->redirect !== null) {
+        if (null !== $this->redirect) {
             return $this->redirect;
         }
 
@@ -541,14 +396,14 @@ class Grid implements GridInterface
             $this->redirect = true;
         }
 
-        if ($this->redirect === null || ($this->request->isXmlHttpRequest() && !$this->isReadyForExport)) {
+        if (null === $this->redirect || ($this->request->isXmlHttpRequest() && !$this->isReadyForExport)) {
             if ($this->newSession) {
                 $this->setDefaultSessionData();
             }
 
             $this->processPermanentFilters();
 
-            //Configures the grid with the data read from the session.
+            // Configures the grid with the data read from the session.
             $this->processSessionData();
 
             $this->prepare();
@@ -559,27 +414,27 @@ class Grid implements GridInterface
         return $this->redirect;
     }
 
-    protected function getCurrentUri()
+    protected function getCurrentUri(): string
     {
-        return $this->request->getScheme() . '://' . $this->request->getHttpHost() . $this->request->getBaseUrl() . $this->request->getPathInfo();
+        return $this->request->getScheme().'://'.$this->request->getHttpHost().$this->request->getBaseUrl().$this->request->getPathInfo();
     }
 
-    protected function processPersistence()
+    protected function processPersistence(): void
     {
-        $referer = strtok($this->request->headers->get('referer') ?? '', '?');
+        $referer = \strtok($this->request->headers->get('referer') ?? '', '?');
 
         // Persistence or reset - kill previous session
-        if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $referer != $this->getCurrentUri())
-            || isset($this->requestData[self::REQUEST_QUERY_RESET])) {
+        if (isset($this->requestData[self::REQUEST_QUERY_RESET])
+            || (!$this->request->isXmlHttpRequest() && !$this->persistence && $referer !== $this->getCurrentUri())) {
             $this->session->remove($this->hash);
         }
 
-        if ($this->session->get($this->hash) === null) {
+        if (null === $this->session->get($this->hash)) {
             $this->newSession = true;
         }
     }
 
-    protected function processLazyParameters()
+    protected function processLazyParameters(): void
     {
         // Additional columns
         foreach ($this->lazyAddColumn as $column) {
@@ -598,7 +453,7 @@ class Grid implements GridInterface
                 $columnNames[] = $column->getId();
             }
 
-            foreach (array_diff($columnNames, $this->lazyVisibleColumns) as $columnId) {
+            foreach (\array_diff($columnNames, $this->lazyVisibleColumns) as $columnId) {
                 $this->columns->getColumnById($columnId)->setVisible(false);
             }
         }
@@ -612,7 +467,7 @@ class Grid implements GridInterface
     /**
      * Reads data from the request and write this data to the session.
      */
-    protected function processRequestData()
+    protected function processRequestData(): void
     {
         $this->processMassActions($this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION));
 
@@ -635,18 +490,16 @@ class Grid implements GridInterface
     /**
      * Process mass actions.
      *
-     * @param int $actionId
-     *
      * @throws \RuntimeException
      * @throws \OutOfBoundsException
      */
-    protected function processMassActions($actionId)
+    protected function processMassActions(?int $actionId): void
     {
-        if ($actionId > -1 && '' !== $actionId) {
-            if (array_key_exists($actionId, $this->massActions)) {
+        if ($actionId > -1) {
+            if (\array_key_exists($actionId, $this->massActions)) {
                 $action = $this->massActions[$actionId];
-                $actionAllKeys = (boolean) $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
-                $actionKeys = $actionAllKeys === false ? array_keys((array) $this->getFromRequest(MassActionColumn::ID)) : [];
+                $actionAllKeys = (bool) $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED);
+                $actionKeys = false === $actionAllKeys ? \array_keys((array) $this->getFromRequest(MassActionColumn::ID)) : [];
 
                 $this->processSessionData();
                 if ($actionAllKeys) {
@@ -656,32 +509,32 @@ class Grid implements GridInterface
 
                 $this->prepare();
 
-                if ($actionAllKeys === true) {
+                if (true === $actionAllKeys) {
                     foreach ($this->rows as $row) {
                         $actionKeys[] = $row->getPrimaryFieldValue();
                     }
                 }
 
-                if (is_callable($action->getCallback())) {
-                    $this->massActionResponse = call_user_func($action->getCallback(), $actionKeys, $actionAllKeys, $this->session, $action->getParameters());
+                if (\is_callable($action->getCallback())) {
+                    $this->massActionResponse = \call_user_func($action->getCallback(), $actionKeys, $actionAllKeys, $this->session, $action->getParameters());
                 } elseif (\str_contains($action->getCallback(), ':')) {
-                    $path = array_merge(
+                    $path = \array_merge(
                         [
-                            'primaryKeys'    => $actionKeys,
+                            'primaryKeys' => $actionKeys,
                             'allPrimaryKeys' => $actionAllKeys,
-                            '_controller'    => $action->getCallback(),
+                            '_controller' => $action->getCallback(),
                         ],
                         $action->getParameters()
                     );
 
                     $subRequest = $this->request->duplicate([], null, $path);
 
-                    $this->massActionResponse = $this->kernel->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
+                    $this->massActionResponse = $this->kernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
                 } else {
-                    throw new \RuntimeException(sprintf(self::MASS_ACTION_CALLBACK_NOT_VALID_EX_MSG, $action->getCallback()));
+                    throw new \RuntimeException(\sprintf(self::MASS_ACTION_CALLBACK_NOT_VALID_EX_MSG, $action->getCallback()));
                 }
             } else {
-                throw new \OutOfBoundsException(sprintf(self::MASS_ACTION_NOT_DEFINED_EX_MSG, $actionId));
+                throw new \OutOfBoundsException(\sprintf(self::MASS_ACTION_NOT_DEFINED_EX_MSG, $actionId));
             }
         }
     }
@@ -689,16 +542,12 @@ class Grid implements GridInterface
     /**
      * Process exports.
      *
-     * @param int $exportId
-     *
      * @throws \OutOfBoundsException
-     *
-     * @return bool
      */
-    protected function processExports($exportId)
+    protected function processExports(?int $exportId): bool
     {
-        if ($exportId > -1 && '' !== $exportId) {
-            if (array_key_exists($exportId, $this->exports)) {
+        if ($exportId > -1) {
+            if (\array_key_exists($exportId, $this->exports)) {
                 $this->isReadyForExport = true;
 
                 $this->processSessionData();
@@ -707,18 +556,16 @@ class Grid implements GridInterface
                 $this->prepare();
 
                 $export = $this->exports[$exportId];
-                if ($export instanceof ContainerAwareInterface) {
-                    $export->setContainer($this->container);
-                }
-                $export->setTwig($this->twig);
+                $export->setTwig($this->twig)
+                    ->setRouter($this->router)
+                    ->setTranslator($this->getTranslator());
                 $export->computeData($this);
 
                 $this->exportResponse = $export->getResponse();
 
                 return true;
-            } else {
-                throw new \OutOfBoundsException(sprintf(self::EXPORT_NOT_DEFINED_EX_MSG, $exportId));
             }
+            throw new \OutOfBoundsException(\sprintf(self::EXPORT_NOT_DEFINED_EX_MSG, $exportId));
         }
 
         return false;
@@ -727,16 +574,12 @@ class Grid implements GridInterface
     /**
      * Process tweaks.
      *
-     * @param int $tweakId
-     *
      * @throws \OutOfBoundsException
-     *
-     * @return bool
      */
-    protected function processTweaks($tweakId)
+    protected function processTweaks(?string $tweakId): bool
     {
-        if ($tweakId !== null) {
-            if (array_key_exists($tweakId, $this->tweaks)) {
+        if (null !== $tweakId) {
+            if (\array_key_exists($tweakId, $this->tweaks)) {
                 $tweak = $this->tweaks[$tweakId];
                 $saveAsActive = false;
 
@@ -797,10 +640,8 @@ class Grid implements GridInterface
                     $removeActiveTweaks = (array) $tweak['removeActiveTweaks'];
                     $activeTweaks = $this->getActiveTweaks();
                     foreach ($removeActiveTweaks as $id) {
-                        if (array_key_exists($id, $this->tweaks)) {
-                            if (isset($activeTweaks[$this->tweaks[$id]['group']])) {
-                                unset($activeTweaks[$this->tweaks[$id]['group']]);
-                            }
+                        if (\array_key_exists($id, $this->tweaks) && isset($activeTweaks[$this->tweaks[$id]['group']])) {
+                            unset($activeTweaks[$this->tweaks[$id]['group']]);
                         }
                     }
 
@@ -811,7 +652,7 @@ class Grid implements GridInterface
                     $addActiveTweaks = (array) $tweak['addActiveTweaks'];
                     $activeTweaks = $this->getActiveTweaks();
                     foreach ($addActiveTweaks as $id) {
-                        if (array_key_exists($id, $this->tweaks)) {
+                        if (\array_key_exists($id, $this->tweaks)) {
                             $activeTweaks[$this->tweaks[$id]['group']] = $id;
                         }
                     }
@@ -822,15 +663,14 @@ class Grid implements GridInterface
                 $this->saveSession();
 
                 return true;
-            } else {
-                throw new \OutOfBoundsException(sprintf(self::TWEAK_NOT_DEFINED_EX_MSG, $tweakId));
             }
+            throw new \OutOfBoundsException(\sprintf(self::TWEAK_NOT_DEFINED_EX_MSG, $tweakId));
         }
 
         return false;
     }
 
-    protected function processRequestFilters()
+    protected function processRequestFilters(): bool
     {
         $filtering = false;
         foreach ($this->columns as $column) {
@@ -840,14 +680,14 @@ class Grid implements GridInterface
                 // Get data from request
                 $data = $this->getFromRequest($ColumnId);
 
-                //if no item is selectd in multi select filter : simulate empty first choice
-                if ($column->getFilterType() == 'select'
-                    && $column->getSelectMulti() === true
-                    && $data === null
-                    && $this->getFromRequest(self::REQUEST_QUERY_PAGE) === null
-                    && $this->getFromRequest(self::REQUEST_QUERY_ORDER) === null
-                    && $this->getFromRequest(self::REQUEST_QUERY_LIMIT) === null
-                    && ($this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) === null || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) == '-1')) {
+                // if no item is selectd in multi select filter : simulate empty first choice
+                if (null === $data
+                    && 'select' === $column->getFilterType()
+                    && true === $column->getSelectMulti()
+                    && null === $this->getFromRequest(self::REQUEST_QUERY_PAGE)
+                    && null === $this->getFromRequest(self::REQUEST_QUERY_ORDER)
+                    && null === $this->getFromRequest(self::REQUEST_QUERY_LIMIT)
+                    && (null === $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) || '-1' === $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION))) {
                     $data = ['from' => ''];
                 }
 
@@ -855,7 +695,7 @@ class Grid implements GridInterface
                 $this->set($ColumnId, $data);
 
                 // Filtering ?
-                if (!$filtering && $data !== null) {
+                if (!$filtering && null !== $data) {
                     $filtering = true;
                 }
             }
@@ -864,45 +704,45 @@ class Grid implements GridInterface
         return $filtering;
     }
 
-    protected function processPage($page, $filtering = false)
+    protected function processPage(?int $page, bool $filtering = false): void
     {
         // Set to the first page if this is a request of order, limit, mass action or filtering
-        if ($this->getFromRequest(self::REQUEST_QUERY_ORDER) !== null
-            || $this->getFromRequest(self::REQUEST_QUERY_LIMIT) !== null
-            || $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION) !== null
-            || $filtering) {
+        if ($filtering
+            || null !== $this->getFromRequest(self::REQUEST_QUERY_ORDER)
+            || null !== $this->getFromRequest(self::REQUEST_QUERY_LIMIT)
+            || null !== $this->getFromRequest(self::REQUEST_QUERY_MASS_ACTION)) {
             $this->set(self::REQUEST_QUERY_PAGE, 0);
         } else {
             $this->set(self::REQUEST_QUERY_PAGE, $page);
         }
     }
 
-    protected function processOrder($order)
+    protected function processOrder($order): void
     {
-        if ($order !== null) {
-            [$columnId, $columnOrder] = explode('|', $order);
+        if (null !== $order) {
+            [$columnId, $columnOrder] = \explode('|', $order);
 
             $column = $this->columns->getColumnById($columnId);
-            if ($column->isSortable() && in_array(strtolower($columnOrder), ['asc', 'desc'])) {
+            if ($column->isSortable() && \in_array(\strtolower($columnOrder), ['asc', 'desc'])) {
                 $this->set(self::REQUEST_QUERY_ORDER, $order);
             }
         }
     }
 
-    protected function processLimit($limit)
+    protected function processLimit($limit): void
     {
         if (isset($this->limits[$limit])) {
             $this->set(self::REQUEST_QUERY_LIMIT, $limit);
         }
     }
 
-    protected function setDefaultSessionData()
+    protected function setDefaultSessionData(): void
     {
         // Default filters
         $this->processDefaultFilters();
 
         // Default page
-        if ($this->defaultPage !== null) {
+        if (null !== $this->defaultPage) {
             if ((int) $this->defaultPage >= 0) {
                 $this->set(self::REQUEST_QUERY_PAGE, $this->defaultPage);
             } else {
@@ -911,23 +751,23 @@ class Grid implements GridInterface
         }
 
         // Default order
-        if ($this->defaultOrder !== null) {
-            [$columnId, $columnOrder] = explode('|', $this->defaultOrder);
+        if (null !== $this->defaultOrder) {
+            [$columnId, $columnOrder] = \explode('|', $this->defaultOrder);
 
             $this->columns->getColumnById($columnId);
-            if (in_array(strtolower($columnOrder), ['asc', 'desc'])) {
+            if (\in_array(\strtolower($columnOrder), ['asc', 'desc'])) {
                 $this->set(self::REQUEST_QUERY_ORDER, $this->defaultOrder);
             } else {
-                throw new \InvalidArgumentException(sprintf(self::COLUMN_ORDER_NOT_VALID_EX_MSG, $columnOrder));
+                throw new \InvalidArgumentException(\sprintf(self::COLUMN_ORDER_NOT_VALID_EX_MSG, $columnOrder));
             }
         }
 
-        if ($this->defaultLimit !== null) {
+        if (null !== $this->defaultLimit) {
             if ((int) $this->defaultLimit >= 0) {
                 if (isset($this->limits[$this->defaultLimit])) {
                     $this->set(self::REQUEST_QUERY_LIMIT, $this->defaultLimit);
                 } else {
-                    throw new \InvalidArgumentException(sprintf(self::LIMIT_NOT_DEFINED_EX_MSG, $this->defaultLimit));
+                    throw new \InvalidArgumentException(\sprintf(self::LIMIT_NOT_DEFINED_EX_MSG, $this->defaultLimit));
                 }
             } else {
                 throw new \InvalidArgumentException(self::DEFAULT_LIMIT_NOT_VALID_EX_MSG);
@@ -935,7 +775,7 @@ class Grid implements GridInterface
         }
 
         // Default tweak
-        if ($this->defaultTweak !== null) {
+        if (null !== $this->defaultTweak) {
             $this->processTweaks($this->defaultTweak);
         }
         $this->saveSession();
@@ -944,10 +784,10 @@ class Grid implements GridInterface
     /**
      * Store permanent filters to the session and disable the filter capability for the column if there are permanent filters.
      */
-    protected function processFilters($permanent = true)
+    protected function processFilters(bool $permanent = true): void
     {
         foreach (($permanent ? $this->permanentFilters : $this->defaultFilters) as $columnId => $value) {
-            /* @var $column Column */
+            // @var $column Column
             $column = $this->columns->getColumnById($columnId);
 
             if ($permanent) {
@@ -956,22 +796,22 @@ class Grid implements GridInterface
             }
 
             // Convert simple value
-            if (!is_array($value) || !is_string(key($value))) {
+            if (!\is_array($value) || !\is_string(\key($value))) {
                 $value = ['from' => $value];
             }
 
             // Convert boolean value
-            if (isset($value['from']) && is_bool($value['from'])) {
+            if (isset($value['from']) && \is_bool($value['from'])) {
                 $value['from'] = $value['from'] ? '1' : '0';
             }
 
             // Convert simple value with select filter
-            if ($column->getFilterType() === 'select') {
-                if (isset($value['from']) && !is_array($value['from'])) {
+            if ('select' === $column->getFilterType()) {
+                if (isset($value['from']) && !\is_array($value['from'])) {
                     $value['from'] = [$value['from']];
                 }
 
-                if (isset($value['to']) && !is_array($value['to'])) {
+                if (isset($value['to']) && !\is_array($value['to'])) {
                     $value['to'] = [$value['to']];
                 }
             }
@@ -981,13 +821,13 @@ class Grid implements GridInterface
         }
     }
 
-    protected function processPermanentFilters()
+    protected function processPermanentFilters(): void
     {
         $this->processFilters();
         $this->saveSession();
     }
 
-    protected function processDefaultFilters()
+    protected function processDefaultFilters(): void
     {
         $this->processFilters(false);
     }
@@ -995,7 +835,7 @@ class Grid implements GridInterface
     /**
      * Configures the grid with the data read from the session.
      */
-    protected function processSessionData()
+    protected function processSessionData(): void
     {
         // Filters
         foreach ($this->columns as $column) {
@@ -1013,7 +853,7 @@ class Grid implements GridInterface
 
         // Order
         if (($order = $this->get(self::REQUEST_QUERY_ORDER)) !== null) {
-            [$columnId, $columnOrder] = explode('|', $order);
+            [$columnId, $columnOrder] = \explode('|', $order);
 
             $this->columns->getColumnById($columnId)->setOrder($columnOrder);
         }
@@ -1022,18 +862,16 @@ class Grid implements GridInterface
         if (($limit = $this->get(self::REQUEST_QUERY_LIMIT)) !== null) {
             $this->limit = $limit;
         } else {
-            $this->limit = key($this->limits);
+            $this->limit = \key($this->limits);
         }
     }
 
     /**
      * Prepare Grid for Drawing.
      *
-     * @throws \Exception
-     *
-     * @return self
+     * @throws \RuntimeException
      */
-    protected function prepare()
+    protected function prepare(): static
     {
         if ($this->prepared) {
             return $this;
@@ -1046,20 +884,20 @@ class Grid implements GridInterface
         }
 
         if (!$this->rows instanceof Rows) {
-            throw new \Exception(self::NO_ROWS_RETURNED_EX_MSG);
+            throw new \RuntimeException(self::NO_ROWS_RETURNED_EX_MSG);
         }
 
-        if (count($this->rows) == 0 && $this->page > 0) {
+        if ($this->page > 0 && 0 === \count($this->rows)) {
             $this->page = 0;
             $this->prepare();
 
             return $this;
         }
 
-        //add row actions column
-        if (count($this->rowActions) > 0) {
+        // add row actions column
+        if (\count($this->rowActions) > 0) {
             foreach ($this->rowActions as $column => $rowActions) {
-                if (($actionColumn = $this->columns->hasColumnById($column, true))) {
+                if ($actionColumn = $this->columns->hasColumnById($column, true)) {
                     $actionColumn->setRowActions($rowActions);
                 } else {
                     $actionColumn = new ActionsColumn($column, $this->actionsColumnTitle, $rowActions);
@@ -1072,8 +910,8 @@ class Grid implements GridInterface
             }
         }
 
-        //add mass actions column
-        if (count($this->massActions) > 0) {
+        // add mass actions column
+        if (\count($this->massActions) > 0) {
             $this->columns->addColumn(new MassActionColumn(), 1);
         }
 
@@ -1083,17 +921,13 @@ class Grid implements GridInterface
             $row->setPrimaryField($primaryColumnId);
         }
 
-        //get size
+        // get size
         if ($this->source->isDataLoaded()) {
             $this->source->populateSelectFiltersFromData($this->columns);
             $this->totalCount = $this->source->getTotalCountFromData($this->maxResults);
         } else {
             $this->source->populateSelectFilters($this->columns);
             $this->totalCount = $this->source->getTotalCount($this->maxResults);
-        }
-
-        if (!is_int($this->totalCount)) {
-            throw new \Exception(sprintf(self::INVALID_TOTAL_COUNT_EX_MSG, gettype($this->totalCount)));
         }
 
         $this->prepared = true;
@@ -1108,11 +942,9 @@ class Grid implements GridInterface
      *
      * @return mixed Data associated with the key or null if the key is not found
      */
-    protected function getFromRequest($key)
+    protected function getFromRequest(string $key): mixed
     {
-        if (isset($this->requestData[$key])) {
-            return $this->requestData[$key];
-        }
+        return $this->requestData[$key] ?? null;
     }
 
     /**
@@ -1122,11 +954,9 @@ class Grid implements GridInterface
      *
      * @return mixed Data associated with the key or null if the key is not found
      */
-    protected function get($key)
+    protected function get(?string $key): mixed
     {
-        if (isset($this->sessionData[$key])) {
-            return $this->sessionData[$key];
-        }
+        return $this->sessionData[$key] ?? null;
     }
 
     /**
@@ -1135,46 +965,41 @@ class Grid implements GridInterface
      * @param string $key  A unique key identifying the data
      * @param mixed  $data Data associated with the key
      */
-    protected function set($key, $data)
+    protected function set(string $key, mixed $data): void
     {
         // Only the filters values are removed from the session
-        $fromIsEmpty = isset($data['from']) && ((is_string($data['from']) && $data['from'] === '') || (is_array($data['from']) && $data['from'][0] === ''));
-        $toIsSet = isset($data['to']) && (is_string($data['to']) && $data['to'] !== '');
+        $fromIsEmpty = isset($data['from']) && ('' === $data['from'] || (\is_array($data['from']) && '' === $data['from'][0]));
+        $toIsSet = isset($data['to']) && (\is_string($data['to']) && '' !== $data['to']);
         if ($fromIsEmpty && !$toIsSet) {
-            if (array_key_exists($key, $this->sessionData)) {
+            if (\array_key_exists($key, $this->sessionData)) {
                 unset($this->sessionData[$key]);
             }
-        } elseif ($data !== null) {
+        } elseif (null !== $data) {
             $this->sessionData[$key] = $data;
         }
     }
 
-    protected function saveSession()
+    protected function saveSession(): void
     {
         if (!empty($this->sessionData)) {
             $this->session->set($this->hash ?? '', $this->sessionData);
         }
     }
 
-    protected function createHash()
+    protected function createHash(): void
     {
-        $this->hash = 'grid_' . (empty($this->id) ? md5($this->request->get('_controller') . $this->columns->getHash() . $this->source->getHash()) : $this->getId());
+        $this->hash = 'grid_'.(empty($this->id) ? \md5($this->request->get('_controller').$this->columns->getHash().$this->source->getHash()) : $this->getId());
     }
 
-    public function getHash()
+    public function getHash(): ?string
     {
         return $this->hash;
     }
 
     /**
      * Adds custom column to the grid.
-     *
-     * @param $column
-     * @param int $position
-     *
-     * @return self
      */
-    public function addColumn($column, $position = 0)
+    public function addColumn(Column $column, int $position = 0): static
     {
         $this->lazyAddColumn[] = ['column' => $column, 'position' => $position];
 
@@ -1183,15 +1008,11 @@ class Grid implements GridInterface
 
     /**
      * Get a column by its identifier.
-     *
-     * @param $columnId
-     *
-     * @return Column
      */
-    public function getColumn($columnId)
+    public function getColumn(string $columnId): Column
     {
         foreach ($this->lazyAddColumn as $column) {
-            if ($column['column']->getId() == $columnId) {
+            if ($column['column']->getId() === $columnId) {
                 return $column['column'];
             }
         }
@@ -1204,22 +1025,18 @@ class Grid implements GridInterface
      *
      * @return Column[]|Columns
      */
-    public function getColumns()
+    public function getColumns(): array|Columns
     {
         return $this->columns;
     }
 
     /**
      * Returns true if column exists in columns and lazyAddColumn properties.
-     *
-     * @param $columnId
-     *
-     * @return bool
      */
-    public function hasColumn($columnId)
+    public function hasColumn(string $columnId): bool
     {
         foreach ($this->lazyAddColumn as $column) {
-            if ($column['column']->getId() == $columnId) {
+            if ($column['column']->getId() === $columnId) {
                 return true;
             }
         }
@@ -1229,12 +1046,8 @@ class Grid implements GridInterface
 
     /**
      * Sets Array of Columns to the grid.
-     *
-     * @param $columns
-     *
-     * @return self
      */
-    public function setColumns(Columns $columns)
+    public function setColumns(Columns $columns): static
     {
         $this->columns = $columns;
 
@@ -1245,29 +1058,17 @@ class Grid implements GridInterface
      * Sets order of Columns passing an array of column ids
      * If the list of ids is uncomplete, the remaining columns will be
      * placed after.
-     *
-     * @param array $columnIds
-     * @param bool  $keepOtherColumns
-     *
-     * @return self
      */
-    public function setColumnsOrder(array $columnIds, $keepOtherColumns = true)
+    public function setColumnsOrder(array $columnIds, bool $keepOtherColumns = true): static
     {
         $this->columns->setColumnsOrder($columnIds, $keepOtherColumns);
 
         return $this;
     }
 
-    /**
-     * Adds Mass Action.
-     *
-     * @param Action\MassActionInterface $action
-     *
-     * @return self
-     */
-    public function addMassAction(MassActionInterface $action)
+    public function addMassAction(MassActionInterface $action): static
     {
-        if ($action->getRole() === null || $this->securityContext->isGranted($action->getRole())) {
+        if (null === $action->getRole() || $this->securityContext->isGranted($action->getRole())) {
             $this->massActions[] = $action;
         }
 
@@ -1279,7 +1080,7 @@ class Grid implements GridInterface
      *
      * @return Action\MassAction[]
      */
-    public function getMassActions()
+    public function getMassActions(): Response|array
     {
         return $this->massActions;
     }
@@ -1289,18 +1090,16 @@ class Grid implements GridInterface
      *
      * @param string $title title of the tweak
      * @param array  $tweak array('filters' => array, 'order' => 'colomunId|order', 'page' => integer, 'limit' => integer, 'export' => integer, 'massAction' => integer)
-     * @param string $id    id of the tweak matching the regex ^[0-9a-zA-Z_\+-]+
+     * @param string $id    id of the tweak matching the regex ^[0-9a-zA-Z_+-]+
      * @param string $group group of the tweak
-     *
-     * @return self
      */
-    public function addTweak($title, array $tweak, $id = null, $group = null)
+    public function addTweak(string $title, array $tweak, string $id = null, string $group = null): static
     {
-        if ($id !== null && !preg_match('/^[0-9a-zA-Z_\+-]+$/', $id)) {
-            throw new \InvalidArgumentException(sprintf(self::TWEAK_MALFORMED_ID_EX_MSG, $id));
+        if (null !== $id && !\preg_match('/^[0-9a-zA-Z_+-]+$/', $id)) {
+            throw new \InvalidArgumentException(\sprintf(self::TWEAK_MALFORMED_ID_EX_MSG, $id));
         }
 
-        $tweak = array_merge(['id' => $id, 'title' => $title, 'group' => $group], $tweak);
+        $tweak = \array_merge(['id' => $id, 'title' => $title, 'group' => $group], $tweak);
         if (isset($id)) {
             $this->tweaks[$id] = $tweak;
         } else {
@@ -1313,52 +1112,46 @@ class Grid implements GridInterface
     /**
      * Returns tweaks
      * Add the url of the tweak.
-     *
-     * @return array
      */
-    public function getTweaks()
+    public function getTweaks(): array
     {
-        $separator = strpos($this->getRouteUrl(), '?') ? '&' : '?';
-        $url = $this->getRouteUrl() . $separator . $this->getHash() . '[' . self::REQUEST_QUERY_TWEAK . ']=';
+        $separator = \strpos($this->getRouteUrl(), '?') ? '&' : '?';
+        $url = $this->getRouteUrl().$separator.$this->getHash().'['.self::REQUEST_QUERY_TWEAK.']=';
 
         foreach ($this->tweaks as $id => $tweak) {
-            $this->tweaks[$id] = array_merge($tweak, ['url' => $url . $id]);
+            $this->tweaks[$id] = \array_merge($tweak, ['url' => $url.$id]);
         }
 
         return $this->tweaks;
     }
 
-    public function getActiveTweaks()
+    public function getActiveTweaks(): array
     {
         return (array) $this->get('tweaks');
     }
 
     /**
      * Returns a tweak.
-     *
-     * @return array
      */
-    public function getTweak($id)
+    public function getTweak(string $id): array
     {
         $tweaks = $this->getTweaks();
         if (isset($tweaks[$id])) {
             return $tweaks[$id];
         }
 
-        throw new \InvalidArgumentException(sprintf(self::NOT_VALID_TWEAK_ID_EX_MSG, $id));
+        throw new \InvalidArgumentException(\sprintf(self::NOT_VALID_TWEAK_ID_EX_MSG, $id));
     }
 
     /**
      * Returns tweaks with a specific group.
-     *
-     * @return array
      */
-    public function getTweaksGroup($group)
+    public function getTweaksGroup($group): array
     {
         $tweaksGroup = $this->getTweaks();
 
         foreach ($tweaksGroup as $id => $tweak) {
-            if ($tweak['group'] != $group) {
+            if ($tweak['group'] !== $group) {
                 unset($tweaksGroup[$id]);
             }
         }
@@ -1366,7 +1159,7 @@ class Grid implements GridInterface
         return $tweaksGroup;
     }
 
-    public function getActiveTweakGroup($group)
+    public function getActiveTweakGroup(string $group): int|string
     {
         $tweaks = $this->getActiveTweaks();
 
@@ -1375,14 +1168,10 @@ class Grid implements GridInterface
 
     /**
      * Adds Row Action.
-     *
-     * @param Action\RowActionInterface $action
-     *
-     * @return self
      */
-    public function addRowAction(RowActionInterface $action)
+    public function addRowAction(RowActionInterface $action): static
     {
-        if ($action->getRole() === null || $this->securityContext->isGranted($action->getRole())) {
+        if (null === $action->getRole() || $this->securityContext->isGranted($action->getRole())) {
             $this->rowActions[$action->getColumn()][] = $action;
         }
 
@@ -1394,7 +1183,7 @@ class Grid implements GridInterface
      *
      * @return Action\RowAction[]
      */
-    public function getRowActions()
+    public function getRowActions(): array
     {
         return $this->rowActions;
     }
@@ -1402,19 +1191,13 @@ class Grid implements GridInterface
     /**
      * Sets template for export.
      *
-     * @param Template|string $template
-     *
-     * @throws \Exception
-     *
-     * @return self
+     * @throws \RuntimeException
      */
-    public function setTemplate($template)
+    public function setTemplate(Template|string|null $template): static
     {
-        if ($template !== null) {
+        if (null !== $template) {
             if ($template instanceof Template) {
-                $template = '__SELF__' . $template->getTemplateName();
-            } elseif (!is_string($template)) {
-                throw new \Exception(self::TWIG_TEMPLATE_LOAD_EX_MSG);
+                $template = '__SELF__'.$template->getTemplateName();
             }
 
             $this->set(self::REQUEST_QUERY_TEMPLATE, $template);
@@ -1426,24 +1209,18 @@ class Grid implements GridInterface
 
     /**
      * Returns template.
-     *
-     * @return Template|string
      */
-    public function getTemplate()
+    public function getTemplate(): Template|string
     {
         return $this->get(self::REQUEST_QUERY_TEMPLATE);
     }
 
     /**
      * Adds Export.
-     *
-     * @param ExportInterface $export
-     *
-     * @return self
      */
-    public function addExport(ExportInterface $export)
+    public function addExport(ExportInterface $export): static
     {
-        if ($export->getRole() === null || $this->securityContext->isGranted($export->getRole())) {
+        if (null === $export->getRole() || $this->securityContext->isGranted($export->getRole())) {
             $this->exports[] = $export;
         }
 
@@ -1455,7 +1232,7 @@ class Grid implements GridInterface
      *
      * @return ExportInterface[]
      */
-    public function getExports()
+    public function getExports(): array
     {
         return $this->exports;
     }
@@ -1465,7 +1242,7 @@ class Grid implements GridInterface
      *
      * @return Export[]
      */
-    public function getExportResponse()
+    public function getExportResponse(): Response|array|null
     {
         return $this->exportResponse;
     }
@@ -1475,20 +1252,15 @@ class Grid implements GridInterface
      *
      * @return Export[]
      */
-    public function getMassActionResponse()
+    public function getMassActionResponse(): Response|array|null
     {
         return $this->massActionResponse;
     }
 
     /**
      * Sets Route Parameters.
-     *
-     * @param string $parameter
-     * @param mixed  $value
-     *
-     * @return self
      */
-    public function setRouteParameter($parameter, $value)
+    public function setRouteParameter(string $parameter, mixed $value): static
     {
         $this->routeParameters[$parameter] = $value;
 
@@ -1497,48 +1269,34 @@ class Grid implements GridInterface
 
     /**
      * Returns Route Parameters.
-     *
-     * @return array
      */
-    public function getRouteParameters()
+    public function getRouteParameters(): array
     {
         return $this->routeParameters;
     }
 
-    /**
-     * Sets Route URL.
-     *
-     * @param string $routeUrl
-     *
-     * @return self
-     */
-    public function setRouteUrl($routeUrl)
+    public function setRouteUrl(string $routeUrl): static
     {
         $this->routeUrl = $routeUrl;
 
         return $this;
     }
 
-    /**
-     * Returns Route URL.
-     *
-     * @return string
-     */
-    public function getRouteUrl()
+    public function getRouteUrl(): ?string
     {
-        if ($this->routeUrl === null) {
+        if (null === $this->routeUrl) {
             $this->routeUrl = $this->router->generate($this->request->get('_route') ?? '', $this->getRouteParameters());
         }
 
         return $this->routeUrl;
     }
 
-    public function isReadyForExport()
+    public function isReadyForExport(): bool
     {
         return $this->isReadyForExport;
     }
 
-    public function isMassActionRedirect()
+    public function isMassActionRedirect(): bool
     {
         return $this->massActionResponse instanceof Response;
     }
@@ -1548,10 +1306,8 @@ class Grid implements GridInterface
      *
      * @param array $filters   Hash of columnName => initValue
      * @param bool  $permanent filters ?
-     *
-     * @return self
      */
-    protected function setFilters(array $filters, $permanent = true)
+    protected function setFilters(array $filters, bool $permanent = true): static
     {
         foreach ($filters as $columnId => $value) {
             if ($permanent) {
@@ -1568,10 +1324,8 @@ class Grid implements GridInterface
      * Set permanent value for filters.
      *
      * @param array $filters Hash of columnName => initValue
-     *
-     * @return self
      */
-    public function setPermanentFilters(array $filters)
+    public function setPermanentFilters(array $filters): static
     {
         return $this->setFilters($filters);
     }
@@ -1580,24 +1334,18 @@ class Grid implements GridInterface
      * Set default value for filters.
      *
      * @param array $filters Hash of columnName => initValue
-     *
-     * @return self
      */
-    public function setDefaultFilters(array $filters)
+    public function setDefaultFilters(array $filters): static
     {
         return $this->setFilters($filters, false);
     }
 
     /**
      * Set the default grid order.
-     *
-     * @param $columnId
-     *
-     * @return self
      */
-    public function setDefaultOrder($columnId, $order)
+    public function setDefaultOrder(string $columnId, ?string $order): static
     {
-        $order = strtolower($order ?? '');
+        $order = \strtolower($order ?? '');
         $this->defaultOrder = "$columnId|$order";
 
         return $this;
@@ -1605,12 +1353,8 @@ class Grid implements GridInterface
 
     /**
      * Sets unique filter identification.
-     *
-     * @param $id
-     *
-     * @return self
      */
-    public function setId($id)
+    public function setId(string $id): static
     {
         $this->id = $id;
 
@@ -1619,44 +1363,30 @@ class Grid implements GridInterface
 
     /**
      * Returns unique filter identifier.
-     *
-     * @return string
      */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * Sets persistence.
-     *
-     * @param $persistence
-     *
-     * @return self
-     */
-    public function setPersistence($persistence)
+    public function setPersistence(bool $persistence): static
     {
         $this->persistence = $persistence;
 
         return $this;
     }
 
-    /**
-     * Returns persistence.
-     *
-     * @return bool
-     */
-    public function getPersistence()
+    public function getPersistence(): bool
     {
         return $this->persistence;
     }
 
-    public function getDataJunction()
+    public function getDataJunction(): int
     {
         return $this->dataJunction;
     }
 
-    public function setDataJunction($dataJunction)
+    public function setDataJunction(int $dataJunction): static
     {
         $this->dataJunction = $dataJunction;
 
@@ -1669,18 +1399,16 @@ class Grid implements GridInterface
      * @param mixed $limits e.g. 10, array(10, 1000) or array(10 => '10', 1000 => '1000')
      *
      * @throws \InvalidArgumentException
-     *
-     * @return self
      */
-    public function setLimits($limits)
+    public function setLimits(mixed $limits): static
     {
-        if (is_array($limits)) {
-            if ((int) key($limits) === 0) {
-                $this->limits = array_combine($limits, $limits);
+        if (\is_array($limits)) {
+            if (0 === (int) \key($limits)) {
+                $this->limits = \array_combine($limits, $limits);
             } else {
                 $this->limits = $limits;
             }
-        } elseif (is_int($limits)) {
+        } elseif (\is_int($limits)) {
             $this->limits = [$limits => (string) $limits];
         } else {
             throw new \InvalidArgumentException(self::NOT_VALID_LIMIT_EX_MSG);
@@ -1691,60 +1419,44 @@ class Grid implements GridInterface
 
     /**
      * Returns limits.
-     *
-     * @return array
      */
-    public function getLimits()
+    public function getLimits(): array
     {
         return $this->limits;
     }
 
     /**
      * Returns selected Limit (Rows Per Page).
-     *
-     * @return mixed
      */
-    public function getLimit()
+    public function getLimit(): ?int
     {
         return $this->limit;
     }
 
     /**
      * Sets default Limit.
-     *
-     * @param $limit
-     *
-     * @return self
      */
-    public function setDefaultLimit($limit)
+    public function setDefaultLimit(int $limit): static
     {
-        $this->defaultLimit = (int) $limit;
+        $this->defaultLimit = $limit;
 
         return $this;
     }
 
     /**
      * Sets default Page.
-     *
-     * @param $page
-     *
-     * @return self
      */
-    public function setDefaultPage($page)
+    public function setDefaultPage(int $page): static
     {
-        $this->defaultPage = (int) $page - 1;
+        $this->defaultPage = $page - 1;
 
         return $this;
     }
 
     /**
      * Sets default Tweak.
-     *
-     * @param $tweakId
-     *
-     * @return self
      */
-    public function setDefaultTweak($tweakId)
+    public function setDefaultTweak(string $tweakId): static
     {
         $this->defaultTweak = $tweakId;
 
@@ -1754,16 +1466,12 @@ class Grid implements GridInterface
     /**
      * Sets current Page (internal).
      *
-     * @param $page
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return self
      */
-    public function setPage($page)
+    public function setPage(int $page): static
     {
-        if ((int) $page >= 0) {
-            $this->page = (int) $page;
+        if ($page >= 0) {
+            $this->page = $page;
         } else {
             throw new \InvalidArgumentException(self::PAGE_NOT_VALID_EX_MSG);
         }
@@ -1773,46 +1481,37 @@ class Grid implements GridInterface
 
     /**
      * Returns current page.
-     *
-     * @return int
      */
-    public function getPage()
+    public function getPage(): int
     {
         return $this->page;
     }
 
     /**
      * Returnd grid display data as rows - internal helper for templates.
-     *
-     * @return mixed
      */
-    public function getRows()
+    public function getRows(): ?Rows
     {
         return $this->rows;
     }
 
     /**
      * Return count of available pages.
-     *
-     * @return float
      */
-    public function getPageCount()
+    public function getPageCount(): int
     {
         $pageCount = 1;
         if ($this->getLimit() > 0) {
-            $pageCount = ceil($this->getTotalCount() / $this->getLimit());
+            $pageCount = (int) \ceil($this->getTotalCount() / $this->getLimit());
         }
 
-        // @todo why this should be a float?
         return $pageCount;
     }
 
     /**
      * Returns count of filtred rows(items) from source.
-     *
-     * @return mixed
      */
-    public function getTotalCount()
+    public function getTotalCount(): ?int
     {
         return $this->totalCount;
     }
@@ -1821,12 +1520,10 @@ class Grid implements GridInterface
      * Sets the max results of the grid.
      *
      * @throws \InvalidArgumentException
-     *
-     * @return self
      */
-    public function setMaxResults(int $maxResults = null)
+    public function setMaxResults(int $maxResults = null): static
     {
-        if ($maxResults < 0 && $maxResults !== null) {
+        if ($maxResults < 0 && null !== $maxResults) {
             throw new \InvalidArgumentException(self::NOT_VALID_MAX_RESULT_EX_MSG);
         }
 
@@ -1837,10 +1534,8 @@ class Grid implements GridInterface
 
     /**
      * Return true if the grid is filtered.
-     *
-     * @return bool
      */
-    public function isFiltered()
+    public function isFiltered(): bool
     {
         foreach ($this->columns as $column) {
             if ($column->isFiltered()) {
@@ -1853,14 +1548,12 @@ class Grid implements GridInterface
 
     /**
      * Return true if if title panel is visible in template - internal helper.
-     *
-     * @return bool
      */
-    public function isTitleSectionVisible()
+    public function isTitleSectionVisible(): bool
     {
-        if ($this->showTitles === true) {
+        if (true === $this->showTitles) {
             foreach ($this->columns as $column) {
-                if ($column->getTitle() != '') {
+                if ($column->getTitle()) {
                     return true;
                 }
             }
@@ -1871,14 +1564,12 @@ class Grid implements GridInterface
 
     /**
      * Return true if filter panel is visible in template - internal helper.
-     *
-     * @return bool
      */
-    public function isFilterSectionVisible()
+    public function isFilterSectionVisible(): bool
     {
-        if ($this->showFilters === true) {
+        if (true === $this->showFilters) {
             foreach ($this->columns as $column) {
-                if ($column->isFilterable() && $column->getType() != 'massaction' && $column->getType() != 'actions') {
+                if ($column->isFilterable() && 'massaction' !== $column->getType() && 'actions' !== $column->getType()) {
                     return true;
                 }
             }
@@ -1892,7 +1583,7 @@ class Grid implements GridInterface
      *
      * @return bool return true if pager is visible
      */
-    public function isPagerSectionVisible()
+    public function isPagerSectionVisible(): bool
     {
         $limits = $this->getLimits();
 
@@ -1901,15 +1592,13 @@ class Grid implements GridInterface
         }
 
         // true when totalCount rows exceed the minimum pager limit
-        return min(array_keys($limits)) < $this->totalCount;
+        return \min(\array_keys($limits)) < $this->totalCount;
     }
 
     /**
      * Hides Filters Panel.
-     *
-     * @return self
      */
-    public function hideFilters()
+    public function hideFilters(): static
     {
         $this->showFilters = false;
 
@@ -1918,10 +1607,8 @@ class Grid implements GridInterface
 
     /**
      * Hides Titles panel.
-     *
-     * @return self
      */
-    public function hideTitles()
+    public function hideTitles(): static
     {
         $this->showTitles = false;
 
@@ -1930,12 +1617,8 @@ class Grid implements GridInterface
 
     /**
      * Adds Column Extension - internal helper.
-     *
-     * @param Column $extension
-     *
-     * @return self
      */
-    public function addColumnExtension($extension)
+    public function addColumnExtension(Column $extension): static
     {
         $this->columns->addExtension($extension);
 
@@ -1944,12 +1627,8 @@ class Grid implements GridInterface
 
     /**
      * Set a prefix title.
-     *
-     * @param $prefixTitle string
-     *
-     * @return self
      */
-    public function setPrefixTitle($prefixTitle)
+    public function setPrefixTitle(string $prefixTitle): static
     {
         $this->prefixTitle = $prefixTitle;
 
@@ -1958,22 +1637,16 @@ class Grid implements GridInterface
 
     /**
      * Get the prefix title.
-     *
-     * @return string
      */
-    public function getPrefixTitle()
+    public function getPrefixTitle(): string
     {
         return $this->prefixTitle;
     }
 
     /**
      * Set the no data message.
-     *
-     * @param $noDataMessage string
-     *
-     * @return self
      */
-    public function setNoDataMessage($noDataMessage)
+    public function setNoDataMessage(string $noDataMessage): static
     {
         $this->noDataMessage = $noDataMessage;
 
@@ -1982,22 +1655,16 @@ class Grid implements GridInterface
 
     /**
      * Get the no data message.
-     *
-     * @return string
      */
-    public function getNoDataMessage()
+    public function getNoDataMessage(): ?string
     {
         return $this->noDataMessage;
     }
 
     /**
      * Set the no result message.
-     *
-     * @param $noResultMessage string
-     *
-     * @return self
      */
-    public function setNoResultMessage($noResultMessage)
+    public function setNoResultMessage(string $noResultMessage): static
     {
         $this->noResultMessage = $noResultMessage;
 
@@ -2006,24 +1673,18 @@ class Grid implements GridInterface
 
     /**
      * Get the no result message.
-     *
-     * @return string
      */
-    public function getNoResultMessage()
+    public function getNoResultMessage(): ?string
     {
         return $this->noResultMessage;
     }
 
     /**
      * Sets a list of columns to hide when the grid is output.
-     *
-     * @param array $columnIds
-     *
-     * @return self
      */
-    public function setHiddenColumns($columnIds)
+    public function setHiddenColumns(array|int $columnIds): static
     {
-        $this->lazyHiddenColumns = (array) $columnIds;
+        $this->lazyHiddenColumns = \is_int($columnIds) ? [$columnIds] : $columnIds;
 
         return $this;
     }
@@ -2031,26 +1692,18 @@ class Grid implements GridInterface
     /**
      * Sets a list of columns to show when the grid is output
      * It acts as a mask; Other columns will be set as hidden.
-     *
-     * @param array $columnIds
-     *
-     * @return self
      */
-    public function setVisibleColumns($columnIds)
+    public function setVisibleColumns(array|int $columnIds): static
     {
-        $this->lazyVisibleColumns = (array) $columnIds;
+        $this->lazyVisibleColumns = \is_int($columnIds) ? [$columnIds] : $columnIds;
 
         return $this;
     }
 
     /**
      * Sets on the visibility of columns.
-     *
-     * @param string|array $columnIds
-     *
-     * @return self
      */
-    public function showColumns($columnIds)
+    public function showColumns(string|array $columnIds): static
     {
         foreach ((array) $columnIds as $columnId) {
             $this->lazyHideShowColumns[$columnId] = true;
@@ -2061,12 +1714,8 @@ class Grid implements GridInterface
 
     /**
      * Sets off the visiblilty of columns.
-     *
-     * @param string|array $columnIds
-     *
-     * @return self
      */
-    public function hideColumns($columnIds)
+    public function hideColumns(string|array $columnIds): static
     {
         foreach ((array) $columnIds as $columnId) {
             $this->lazyHideShowColumns[$columnId] = false;
@@ -2077,12 +1726,8 @@ class Grid implements GridInterface
 
     /**
      * Sets the size of the default action column.
-     *
-     * @param int $size
-     *
-     * @return self
      */
-    public function setActionsColumnSize($size)
+    public function setActionsColumnSize(int $size): static
     {
         $this->actionsColumnSize = $size;
 
@@ -2091,24 +1736,18 @@ class Grid implements GridInterface
 
     /**
      * Sets the title of the default action column.
-     *
-     * @param string $title
-     *
-     * @return self
      */
-    public function setActionsColumnTitle($title)
+    public function setActionsColumnTitle(string $title): static
     {
-        $this->actionsColumnTitle = (string) $title;
+        $this->actionsColumnTitle = $title;
 
         return $this;
     }
 
     /**
      * Default delete action.
-     *
-     * @param array $ids
      */
-    public function deleteAction(array $ids)
+    public function deleteAction(array $ids): void
     {
         $this->source->delete($ids);
     }
@@ -2122,18 +1761,15 @@ class Grid implements GridInterface
         $this->columns = clone $this->columns;
     }
 
-    /****** HELPER ******/
+    // HELPER
 
     /**
      * Redirects or Renders a view - helper function.
      *
-     * @param string|array $param1   The view name or an array of parameters to pass to the view
-     * @param string|array $param2   The view name or an array of parameters to pass to the view
-     * @param Response     $response A response instance
-     *
-     * @return Response A Response instance
+     * @param string|array|null $param1 The view name or an array of parameters to pass to the view
+     * @param string|array|null $param2 The view name or an array of parameters to pass to the view
      */
-    public function getGridResponse($param1 = null, $param2 = null, Response $response = null)
+    public function getGridResponse(string|array $param1 = null, string|array $param2 = null): Response|array
     {
         $isReadyForRedirect = $this->isReadyForRedirect();
 
@@ -2147,25 +1783,25 @@ class Grid implements GridInterface
 
         if ($isReadyForRedirect) {
             return new RedirectResponse($this->getRouteUrl());
-        } else {
-            if (is_array($param1) || $param1 === null) {
-                $parameters = (array) $param1;
-                $view = $param2;
-            } else {
-                $parameters = (array) $param2;
-                $view = $param1;
-            }
-
-            $parameters = array_merge(['grid' => $this], $parameters);
-
-            if ($view === null) {
-                return $parameters;
-            } else {
-                $content = $this->twig->render($view, $parameters);
-
-                return new Response($content);
-            }
         }
+
+        if (\is_array($param1) || null === $param1) {
+            $parameters = (array) $param1;
+            $view = $param2;
+        } else {
+            $parameters = (array) $param2;
+            $view = $param1;
+        }
+
+        $parameters = \array_merge(['grid' => $this], $parameters);
+
+        if (null === $view) {
+            return $parameters;
+        }
+
+        $content = $this->twig->render($view, $parameters);
+
+        return new Response($content);
     }
 
     /**
@@ -2176,9 +1812,9 @@ class Grid implements GridInterface
      *
      * @return array Raw data of columns
      */
-    public function getRawData($columnNames = null, $namedIndexes = true)
+    public function getRawData(string|array $columnNames = null, bool $namedIndexes = true): array
     {
-        if ($columnNames === null) {
+        if (null === $columnNames) {
             foreach ($this->getColumns() as $column) {
                 $columnNames[] = $column->getId();
             }
@@ -2205,17 +1841,17 @@ class Grid implements GridInterface
     /**
      * Returns an array of the active filters of the grid stored in session.
      *
-     * @throws \Exception
+     * @throws \RuntimeException
      *
      * @return Filter[]
      */
-    public function getFilters()
+    public function getFilters(): array
     {
-        if ($this->hash === null) {
-            throw new \Exception(self::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
+        if (null === $this->hash) {
+            throw new \RuntimeException(self::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
         }
 
-        if ($this->sessionFilters === null) {
+        if (null === $this->sessionFilters) {
             $this->sessionFilters = [];
             $session = $this->sessionData;
 
@@ -2257,17 +1893,14 @@ class Grid implements GridInterface
     /**
      * Returns the filter of a column stored in session.
      *
-     * @param string $columnId
-     *                         Id of the column
+     * @param string $columnId Id of the column
      *
-     * @throws \Exception
-     *
-     * @return Filter
+     * @throws \RuntimeException
      */
-    public function getFilter($columnId)
+    public function getFilter(string $columnId): ?Filter
     {
-        if ($this->hash === null) {
-            throw new \Exception(self::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
+        if (null === $this->hash) {
+            throw new \RuntimeException(self::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
         }
 
         $sessionFilters = $this->getFilters();
@@ -2278,20 +1911,17 @@ class Grid implements GridInterface
     /**
      * A filter of the column is stored in session ?
      *
-     * @param string $columnId
-     *                         Id of the column
+     * @param string $columnId Id of the column
      *
-     * @throws \Exception
-     *
-     * @return bool
+     * @throws \RuntimeException
      */
-    public function hasFilter($columnId)
+    public function hasFilter(string $columnId): bool
     {
-        if ($this->hash === null) {
-            throw new \Exception(self::HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG);
+        if (null === $this->hash) {
+            throw new \RuntimeException(self::HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG);
         }
 
-        return $this->getFilter($columnId) !== null;
+        return null !== $this->getFilter($columnId);
     }
 
     public function getDefaultOrder(): ?string
@@ -2362,5 +1992,29 @@ class Grid implements GridInterface
     public function isNewSession(): ?bool
     {
         return $this->newSession;
+    }
+
+    public function getTranslator(): ?TranslatorInterface
+    {
+        return $this->translator;
+    }
+
+    public function setTranslator(?TranslatorInterface $translator): self
+    {
+        $this->translator = $translator;
+
+        return $this;
+    }
+
+    public function getCharset(): ?string
+    {
+        return $this->charset;
+    }
+
+    public function setCharset(?string $charset): self
+    {
+        $this->charset = $charset;
+
+        return $this;
     }
 }

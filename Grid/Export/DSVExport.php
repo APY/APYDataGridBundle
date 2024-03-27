@@ -1,103 +1,70 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Export;
+
+use APY\DataGridBundle\Grid\GridInterface;
 
 /**
  * Delimiter-Separated Values.
  */
 class DSVExport extends Export
 {
-    protected $fileExtension = null;
+    protected ?string $fileExtension = null;
 
-    protected $mimeType = 'application/octet-stream';
+    protected string $delimiter = '';
 
-    protected $delimiter = '';
+    protected bool $withBOM = true;
 
-    protected $withBOM = true;
-
-    public function __construct($title, $fileName = 'export', $params = [], $charset = 'UTF-8')
+    public function __construct(string $title, string $fileName = 'export', array $params = [], string $charset = 'UTF-8')
     {
-        $this->delimiter = isset($params['delimiter']) ? $params['delimiter'] : $this->delimiter;
-        $this->withBOM = isset($params['withBOM']) ? $params['withBOM'] : $this->withBOM;
+        $this->setDelimiter($params['delimiter'] ?? $this->delimiter)
+            ->setWithBOM($params['withBOM'] ?? $this->withBOM);
 
         parent::__construct($title, $fileName, $params, $charset);
     }
 
-    public function computeData($grid)
+    public function computeData(GridInterface $grid): void
     {
         $data = $this->getFlatGridData($grid);
 
         // Array to dsv
-        $outstream = fopen('php://temp', 'r+');
+        $outstream = \fopen('php://temp', 'r+b');
 
         foreach ($data as $line) {
-            fputcsv($outstream, $line, $this->delimiter, '"');
+            \fputcsv($outstream, $line, $this->getDelimiter(), '"');
         }
 
-        rewind($outstream);
+        \rewind($outstream);
 
-        $content = $this->withBOM ? "\xEF\xBB\xBF" : '';
+        $content = $this->getWithBOM() ? "\xEF\xBB\xBF" : '';
 
-        while (($buffer = fgets($outstream)) !== false) {
+        while (($buffer = \fgets($outstream)) !== false) {
             $content .= $buffer;
         }
 
-        fclose($outstream);
+        \fclose($outstream);
 
         $this->content = $content;
     }
 
-    /**
-     * get delimiter.
-     *
-     * @return string
-     */
-    public function getDelimiter()
+    public function getDelimiter(): string
     {
         return $this->delimiter;
     }
 
-    /**
-     * set delimiter.
-     *
-     * @param string $delimiter
-     *
-     * @return self
-     */
-    public function setDelimiter($delimiter)
+    public function setDelimiter(string $delimiter): static
     {
         $this->delimiter = $delimiter;
 
         return $this;
     }
 
-    /**
-     * get BOM setting.
-     *
-     * @return string
-     */
-    public function getWithBOM()
+    public function getWithBOM(): bool
     {
         return $this->withBOM;
     }
 
-    /*** set BOM setting.
-     *
-     * @param string $withBOM
-     *
-     * @return self
-     */
-    public function setWithBOM($withBOM)
+    public function setWithBOM(bool $withBOM): static
     {
         $this->withBOM = $withBOM;
 

@@ -17,7 +17,7 @@ class ActionsColumnTest extends TestCase
     /** @var ActionsColumn */
     private $column;
 
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $columnId = 'columnId';
         $columnTitle = 'columnTitle';
@@ -34,17 +34,17 @@ class ActionsColumnTest extends TestCase
         $this->assertTrue($column->isFilterable());
     }
 
-    public function testGetType()
+    public function testGetType(): void
     {
         $this->assertEquals('actions', $this->column->getType());
     }
 
-    public function testGetFilterType()
+    public function testGetFilterType(): void
     {
         $this->assertEquals('actions', $this->column->getFilterType());
     }
 
-    public function testGetActionsToRender()
+    public function testGetActionsToRender(): void
     {
         $row = $this->createMock(Row::class);
 
@@ -61,7 +61,7 @@ class ActionsColumnTest extends TestCase
         $this->assertEquals([1 => $rowAction2], $column->getActionsToRender($row));
     }
 
-    public function testGetRowActions()
+    public function testGetRowActions(): void
     {
         $rowAction1 = $this->createMock(RowAction::class);
         $rowAction2 = $this->createMock(RowAction::class);
@@ -73,7 +73,7 @@ class ActionsColumnTest extends TestCase
         $this->assertEquals([$rowAction1, $rowAction2], $column->getRowActions());
     }
 
-    public function testSetRowActions()
+    public function testSetRowActions(): void
     {
         $rowAction1 = $this->createMock(RowAction::class);
         $rowAction2 = $this->createMock(RowAction::class);
@@ -83,24 +83,24 @@ class ActionsColumnTest extends TestCase
         $this->assertEquals([$rowAction1, $rowAction2], $column->getRowActions());
     }
 
-    public function testIsNotVisibleIfExported()
+    public function testIsNotVisibleIfExported(): void
     {
         $isExported = true;
         $this->assertFalse($this->column->isVisible($isExported));
     }
 
-    public function testIsVisibleIfNotExportedAndNoAuthChecker()
+    public function testIsVisibleIfNotExportedAndNoAuthChecker(): void
     {
         $this->assertTrue($this->column->isVisible());
     }
 
-    public function testIsVisibleIfNotExportedNoAuthCheckerAndNotRole()
+    public function testIsVisibleIfNotExportedNoAuthCheckerAndNotRole(): void
     {
         $this->column->setAuthorizationChecker($this->createMock(AuthorizationCheckerInterface::class));
         $this->assertTrue($this->column->isVisible());
     }
 
-    public function testIsVisibleIfAuthCheckerIsGranted()
+    public function testIsVisibleIfAuthCheckerIsGranted(): void
     {
         $role = $this->createMock(Role::class);
         $this->column->setRole($role);
@@ -112,7 +112,7 @@ class ActionsColumnTest extends TestCase
         $this->assertTrue($this->column->isVisible());
     }
 
-    public function testIsNotVisibleIfAuthCheckerIsNotGranted()
+    public function testIsNotVisibleIfAuthCheckerIsNotGranted(): void
     {
         $role = $this->createMock(Role::class);
         $this->column->setRole($role);
@@ -124,7 +124,7 @@ class ActionsColumnTest extends TestCase
         $this->assertFalse($this->column->isVisible());
     }
 
-    public function testGetPrimaryFieldAsRouteParametersIfRouteParametersNotSetted()
+    public function testGetPrimaryFieldAsRouteParametersIfRouteParametersNotSetted(): void
     {
         $row = $this->createMock(Row::class);
         $row->method('getPrimaryField')->willReturn('id');
@@ -136,7 +136,7 @@ class ActionsColumnTest extends TestCase
         $this->assertEquals(['id' => 1], $this->column->getRouteParameters($row, $rowAction));
     }
 
-    public function testGetRouteParameters()
+    public function testGetRouteParameters(): void
     {
         $row = $this->createMock(Row::class);
         $row
@@ -151,17 +151,17 @@ class ActionsColumnTest extends TestCase
             ->willReturnOnConsecutiveCalls(null, 'aName');
 
         $rowAction->method('getRouteParameters')->willReturn([
-            'foo'            => 1,
+            'foo' => 1,
             'foo.bar.foobar' => 2,
-            1                => 'foo.bar',
-            '2'              => 'barFoo',
+            1 => 'foo.bar',
+            '2' => 'barFoo',
         ]);
 
         $this->assertEquals([
-            'foo'          => 1,
+            'foo' => 1,
             'fooBarFoobar' => 2,
-            'fooBar'       => 'testValue',
-            'aName'        => 'aValue',
+            'fooBar' => 'testValue',
+            'aName' => 'aValue',
         ], $this->column->getRouteParameters($row, $rowAction));
     }
 

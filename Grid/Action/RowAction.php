@@ -1,73 +1,49 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Action;
 
 use APY\DataGridBundle\Grid\Row;
 
 class RowAction implements RowActionInterface
 {
-    /** @var string */
-    protected $title;
+    protected string $title;
 
-    /** @var string */
-    protected $route;
+    protected string $route;
 
-    /** @var bool */
-    protected $confirm;
+    protected bool $confirm;
 
-    /** @var string */
-    protected $confirmMessage;
+    protected string $confirmMessage;
 
-    /** @var string */
-    protected $target;
+    protected string $target;
 
-    /** @var string */
-    protected $column = '__actions';
+    protected string $column = '__actions';
 
-    /** @var array */
-    protected $routeParameters = [];
+    protected array $routeParameters = [];
 
-    /** @var array */
-    protected $routeParametersMapping = [];
+    protected array $routeParametersMapping = [];
 
-    /** @var array */
-    protected $attributes = [];
+    protected array $attributes = [];
 
-    /** @var string|null */
-    protected $role;
+    protected ?string $role;
 
-    /** @var array */
-    protected $callbacks = [];
+    protected array $callbacks = [];
 
-    /** @var bool */
-    protected $enabled = true;
+    protected bool $enabled = true;
 
     /**
-     * Default RowAction constructor.
-     *
-     * @param string $title      Title of the row action
-     * @param string $route      Route to the row action
-     * @param bool   $confirm    Show confirm message if true
-     * @param string $target     Set the target of this action (_self,_blank,_parent,_top)
-     * @param array  $attributes Attributes of the anchor tag
-     * @param string $role       Security role
+     * @param string      $title      Title of the row action
+     * @param string      $route      Route to the row action
+     * @param bool        $confirm    Show confirm message if true
+     * @param string      $target     Set the target of this action (_self,_blank,_parent,_top)
+     * @param array       $attributes Attributes of the anchor tag
+     * @param string|null $role       Security role
      */
-    public function __construct($title, $route, $confirm = false, $target = '_self', $attributes = [], $role = null)
+    public function __construct(string $title, string $route, bool $confirm = false, string $target = '_self', array $attributes = [], string $role = null)
     {
         $this->title = $title;
         $this->route = $route;
         $this->confirm = $confirm;
-        $this->confirmMessage = 'Do you want to ' . strtolower($title) . ' this row?';
+        $this->confirmMessage = 'Do you want to '.\strtolower($title).' this row?';
         $this->target = $target;
         $this->attributes = $attributes;
         $this->role = $role;
@@ -77,21 +53,16 @@ class RowAction implements RowActionInterface
     /**
      * Set action title.
      *
-     * @param string $title
-     *
      * @return self
      */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -100,21 +71,16 @@ class RowAction implements RowActionInterface
     /**
      * Set action route.
      *
-     * @param string $route
-     *
      * @return self
      */
-    public function setRoute($route)
+    public function setRoute(string $route): static
     {
         $this->route = $route;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRoute()
+    public function getRoute(): string
     {
         return $this->route;
     }
@@ -124,21 +90,16 @@ class RowAction implements RowActionInterface
     /**
      * Set action confirm.
      *
-     * @param bool $confirm
-     *
      * @return self
      */
-    public function setConfirm($confirm)
+    public function setConfirm(bool $confirm): static
     {
         $this->confirm = $confirm;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfirm()
+    public function getConfirm(): bool
     {
         return $this->confirm;
     }
@@ -146,21 +107,16 @@ class RowAction implements RowActionInterface
     /**
      * Set action confirmMessage.
      *
-     * @param string $confirmMessage
-     *
      * @return self
      */
-    public function setConfirmMessage($confirmMessage)
+    public function setConfirmMessage(string $confirmMessage): static
     {
         $this->confirmMessage = $confirmMessage;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfirmMessage()
+    public function getConfirmMessage(): string
     {
         return $this->confirmMessage;
     }
@@ -168,21 +124,16 @@ class RowAction implements RowActionInterface
     /**
      * Set action target.
      *
-     * @param string $target
-     *
      * @return self
      */
-    public function setTarget($target)
+    public function setTarget(string $target): static
     {
         $this->target = $target;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTarget()
+    public function getTarget(): string
     {
         return $this->target;
     }
@@ -194,17 +145,14 @@ class RowAction implements RowActionInterface
      *
      * @return self
      */
-    public function setColumn($column)
+    public function setColumn(string $column): static
     {
         $this->column = $column;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getColumn()
+    public function getColumn(): ?string
     {
         return $this->column;
     }
@@ -212,16 +160,14 @@ class RowAction implements RowActionInterface
     /**
      * Add route parameter.
      *
-     * @param array|string $routeParameters
-     *
      * @return self
      */
-    public function addRouteParameters($routeParameters)
+    public function addRouteParameters(array|string $routeParameters): static
     {
         $routeParameters = (array) $routeParameters;
 
         foreach ($routeParameters as $key => $routeParameter) {
-            if (is_int($key)) {
+            if (\is_int($key)) {
                 $this->routeParameters[] = $routeParameter;
             } else {
                 $this->routeParameters[$key] = $routeParameter;
@@ -234,21 +180,16 @@ class RowAction implements RowActionInterface
     /**
      * Set route parameters.
      *
-     * @param array|string $routeParameters
-     *
      * @return self
      */
-    public function setRouteParameters($routeParameters)
+    public function setRouteParameters(array|string $routeParameters): static
     {
         $this->routeParameters = (array) $routeParameters;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRouteParameters()
+    public function getRouteParameters(): array
     {
         return $this->routeParameters;
     }
@@ -257,11 +198,9 @@ class RowAction implements RowActionInterface
     /**
      * Set route parameters mapping.
      *
-     * @param array|string $routeParametersMapping
-     *
      * @return self
      */
-    public function setRouteParametersMapping($routeParametersMapping)
+    public function setRouteParametersMapping(array|string $routeParametersMapping): static
     {
         $this->routeParametersMapping = (array) $routeParametersMapping;
 
@@ -273,9 +212,8 @@ class RowAction implements RowActionInterface
      *
      * @param string $name parameter
      *
-     * @return null|string
      */
-    public function getRouteParametersMapping($name)
+    public function getRouteParametersMapping(string $name): ?string
     {
         return $this->routeParametersMapping[$name] ?? null;
     }
@@ -283,11 +221,9 @@ class RowAction implements RowActionInterface
     /**
      * Set attributes.
      *
-     * @param array $attributes
-     *
      * @return self
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): static
     {
         $this->attributes = $attributes;
 
@@ -297,22 +233,16 @@ class RowAction implements RowActionInterface
     /**
      * Add attribute.
      *
-     * @param string $name
-     * @param string $value
-     *
      * @return self
      */
-    public function addAttribute($name, $value)
+    public function addAttribute(string $name, string $value): static
     {
         $this->attributes[$name] = $value;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -320,49 +250,26 @@ class RowAction implements RowActionInterface
     /**
      * set role.
      *
-     * @param string $role
-     *
      * @return self
      */
-    public function setRole($role)
+    public function setRole(string $role): static
     {
         $this->role = $role;
 
         return $this;
     }
 
-    /**
-     * Get role.
-     *
-     * @return string
-     */
-    public function getRole()
+    public function getRole(): ?string
     {
         return $this->role;
     }
 
-    /**
-     * Set render callback.
-     *
-     * @deprecated This is deprecated and will be removed in 3.0; use addManipulateRender instead.
-     *
-     * @param \Closure $callback
-     *
-     * @return self
-     */
-    public function manipulateRender(\Closure $callback)
+    public function manipulateRender(\Closure $callback): static
     {
         return $this->addManipulateRender($callback);
     }
 
-    /**
-     * Add a callback to render callback stack.
-     *
-     * @param \Closure $callback
-     *
-     * @return self
-     */
-    public function addManipulateRender($callback)
+    public function addManipulateRender(\Closure $callback): static
     {
         $this->callbacks[] = $callback;
 
@@ -371,18 +278,12 @@ class RowAction implements RowActionInterface
 
     /**
      * Render action for row.
-     *
-     * @param Row $row
-     *
-     * @return RowAction|null
      */
-    public function render($row)
+    public function render(Row $row): ?static
     {
         foreach ($this->callbacks as $callback) {
-            if (is_callable($callback)) {
-                if (null === call_user_func($callback, $this, $row)) {
-                    return null;
-                }
+            if (\is_callable($callback) && null === $callback($this, $row)) {
+                return null;
             }
         }
 
@@ -390,10 +291,7 @@ class RowAction implements RowActionInterface
     }
 
     // @todo: should not this be "isEnabled"?
-    /**
-     * {@inheritdoc}
-     */
-    public function getEnabled()
+    public function getEnabled(): bool
     {
         return $this->enabled;
     }
@@ -401,12 +299,8 @@ class RowAction implements RowActionInterface
     // @todo: should not this be "enable" as default value is false?
     /**
      * Set the enabled state of this action.
-     *
-     * @param bool $enabled
-     *
-     * @return self
      */
-    public function setEnabled($enabled)
+    public function setEnabled(bool $enabled): static
     {
         $this->enabled = $enabled;
 

@@ -1,32 +1,23 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
+use APY\DataGridBundle\Grid\Source\Source;
 
 class DateColumn extends DateTimeColumn
 {
-    protected $timeFormat = \IntlDateFormatter::NONE;
+    protected int $timeFormat = \IntlDateFormatter::NONE;
 
-    protected $fallbackFormat = 'Y-m-d';
+    protected string $fallbackFormat = 'Y-m-d';
 
-    public function getFilters($source)
+    public function getFilters(Source|string $source): array
     {
         $parentFilters = parent::getFilters($source);
 
         $filters = [];
         foreach ($parentFilters as $filter) {
-            if ($filter->getValue() !== null) {
+            if (null !== $filter->getValue()) {
                 $dateFrom = $filter->getValue();
                 $dateFrom->setTime(0, 0, 0);
 
@@ -62,7 +53,7 @@ class DateColumn extends DateTimeColumn
         return $filters;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'date';
     }

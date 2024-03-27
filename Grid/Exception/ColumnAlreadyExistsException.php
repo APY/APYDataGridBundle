@@ -14,8 +14,8 @@ class ColumnAlreadyExistsException extends \InvalidArgumentException
      *
      * @param string $name The column name
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
-        parent::__construct(sprintf('The type of column "%s" already exists.', $name));
+        parent::__construct(\sprintf('The type of column "%s" already exists.', $name));
     }
 }

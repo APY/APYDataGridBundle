@@ -7,10 +7,6 @@ use PHPUnit\Framework\Constraint\Constraint;
 
 trait PhpunitTrait
 {
-    /**
-     *
-     * @return iterable<callback<mixed>>
-     */
     public static function withConsecutive(array $firstCallArguments, array ...$consecutiveCallsArguments): iterable
     {
         foreach ($consecutiveCallsArguments as $consecutiveCallArguments) {

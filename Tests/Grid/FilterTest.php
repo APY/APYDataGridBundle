@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class FilterTest extends TestCase
 {
-    public function testCreateFilters()
+    public function testCreateFilters(): void
     {
         $filter1 = new Filter('like', 'foo', 'column1');
 
@@ -16,7 +16,7 @@ class FilterTest extends TestCase
         $this->assertEquals('column1', $filter1->getColumnName());
     }
 
-    public function testSetOperator()
+    public function testSetOperator(): void
     {
         $filter = new Filter('like');
         $filter->setOperator('nlike');
@@ -24,14 +24,14 @@ class FilterTest extends TestCase
         $this->assertEquals('nlike', $filter->getOperator());
     }
 
-    public function testGetOperator()
+    public function testGetOperator(): void
     {
         $filter = new Filter('like');
 
         $this->assertEquals('like', $filter->getOperator());
     }
 
-    public function testSetValue()
+    public function testSetValue(): void
     {
         $filter = new Filter('like');
         $filter->setValue('foo');
@@ -39,14 +39,14 @@ class FilterTest extends TestCase
         $this->assertEquals('foo', $filter->getValue());
     }
 
-    public function testGetValue()
+    public function testGetValue(): void
     {
         $filter = new Filter('like', 'foo');
 
         $this->assertEquals('foo', $filter->getValue());
     }
 
-    public function testSetColumnName()
+    public function testSetColumnName(): void
     {
         $filter = new Filter('like');
         $filter->setColumnName('col1');
@@ -54,14 +54,14 @@ class FilterTest extends TestCase
         $this->assertEquals('col1', $filter->getColumnName());
     }
 
-    public function testGetColumnName()
+    public function testGetColumnName(): void
     {
         $filter = new Filter('like', null, 'col1');
 
         $this->assertEquals('col1', $filter->getColumnName());
     }
 
-    public function testHasColumnName()
+    public function testHasColumnName(): void
     {
         $filter1 = new Filter('like', 'foo', 'col1');
         $filter2 = new Filter('like');

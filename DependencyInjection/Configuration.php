@@ -12,21 +12,18 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('apy_data_grid');
-        $rootNode    = $treeBuilder->getRootNode();
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
                 ->arrayNode('limits')
                     ->performNoDeepMerging()
                     ->beforeNormalization()
-                        ->ifTrue(function ($v) { return !is_array($v); })
-                        ->then(function ($v) { return [$v]; })
+                        ->ifTrue(static function($v) { return !\is_array($v); })
+                        ->then(static function($v) { return [$v]; })
                     ->end()
                     ->defaultValue([20 => '20', 50 => '50', 100 => '100'])
                     ->prototype('scalar')->end()

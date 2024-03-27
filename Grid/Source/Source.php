@@ -1,18 +1,9 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Columns;
 use APY\DataGridBundle\Grid\Exception\PropertyAccessDeniedException;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
@@ -23,49 +14,36 @@ use Doctrine\Persistence\ManagerRegistry;
 
 abstract class Source implements DriverInterface
 {
-    protected $prepareQueryCallback = null;
-    protected $prepareRowCallback = null;
-    protected $data = null;
-    protected $items = [];
-    protected $count;
+    protected mixed $prepareQueryCallback = null;
+    protected mixed $prepareRowCallback = null;
+    protected array|object|null $data = null;
+    protected array $items = [];
+    protected ?int $count = null;
 
-    public function prepareQuery($queryBuilder)
+    public function prepareQuery($queryBuilder): void
     {
-        if (is_callable($this->prepareQueryCallback)) {
-            call_user_func($this->prepareQueryCallback, $queryBuilder);
+        if (\is_callable($this->prepareQueryCallback)) {
+            \call_user_func($this->prepareQueryCallback, $queryBuilder);
         }
     }
 
-    /**
-     * @param \APY\DataGridBundle\Grid\Row $row
-     *
-     * @return \APY\DataGridBundle\Grid\Row|null
-     */
-    public function prepareRow($row)
+    public function prepareRow(Row $row): ?Row
     {
-        if (is_callable($this->prepareRowCallback)) {
-            return call_user_func($this->prepareRowCallback, $row);
+        if (\is_callable($this->prepareRowCallback)) {
+            return \call_user_func($this->prepareRowCallback, $row);
         }
 
         return $row;
     }
 
-    /**
-     * @param callable $callback
-     *
-     * @return $this
-     */
-    public function manipulateQuery($callback = null)
+    public function manipulateQuery(callable $callback = null): static
     {
         $this->prepareQueryCallback = $callback;
 
         return $this;
     }
 
-    /**
-     * @param \Closure $callback
-     */
-    public function manipulateRow(\Closure $callback = null)
+    public function manipulateRow(\Closure $callback = null): static
     {
         $this->prepareRowCallback = $callback;
 
@@ -75,85 +53,63 @@ abstract class Source implements DriverInterface
     /**
      * Find data for current page.
      *
-     * @abstract
-     *
-     * @param ColumnsIterator $columns
-     * @param int                                      $page             Page Number
-     * @param int                                      $limit            Rows Per Page
-     * @param int                                      $gridDataJunction Grid data junction
-     *
-     * @return \APY\DataGridBundle\Grid\Rows
+     * @param int $page             Page Number
+     * @param int $limit            Rows Per Page
+     * @param int $gridDataJunction Grid data junction
      */
-    // @todo: typehint?
-    abstract public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION);
+    abstract public function execute(ColumnsIterator $columns, int $page = 0, ?int $limit = 0, int $maxResults = null, int $gridDataJunction = Column::DATA_CONJUNCTION): Rows|array;
 
     /**
      * Get Total count of data items.
-     *
-     * @param int $maxResults
-     *
-     * @return int
      */
-    abstract public function getTotalCount($maxResults = null);
+    abstract public function getTotalCount(int $maxResults = null): ?int;
 
     /**
      * Set container.
      *
-     * @abstract
      */
     abstract public function initialise(ManagerRegistry $doctrine, Manager $manager);
 
-    /**
-     * @abstract
-     *
-     * @param $columns
-     */
-    abstract public function getColumns($columns);
+    abstract public function getColumns(Columns $columns): void;
 
     public function supports(string $class): bool
     {
         return true;
     }
 
-    public function getClassColumns($class, $group = 'default'): array
+    public function getClassColumns(string $class, string $group = 'default'): array
     {
         return [];
     }
 
-    public function getFieldsMetadata($class, $group = 'default'): array
+    public function getFieldsMetadata(string $class, string $group = 'default'): array
     {
         return [];
     }
 
-    public function getGroupBy($class, $group = 'default'): array
+    public function getGroupBy(string $class, string $group = 'default'): array
     {
         return [];
     }
 
-    abstract public function populateSelectFilters($columns, $loop = false);
+    abstract public function populateSelectFilters(Columns|ColumnsIterator $columns, bool $loop = false): void;
 
     /**
      * Return source hash string.
      *
-     * @abstract
      */
-    abstract public function getHash();
+    abstract public function getHash(): ?string;
 
     /**
      * Delete one or more objects.
      *
-     * @abstract
-     *
-     * @param array $ids
      */
     abstract public function delete(array $ids);
 
     /**
      * Use data instead of fetching the source.
-     *
-     * @param array|object $data
      */
-    public function setData($data)
+    public function setData(object|array $data): static
     {
         $this->data = $data;
 
@@ -162,30 +118,24 @@ abstract class Source implements DriverInterface
 
     /**
      * Get the loaded data.
-     *
-     * @return array|object
      */
-    public function getData()
+    public function getData(): object|array|null
     {
         return $this->data;
     }
 
     /**
      * Check if data is loaded.
-     *
-     * @return bool
      */
-    public function isDataLoaded()
+    public function isDataLoaded(): bool
     {
-        return $this->data !== null;
+        return null !== $this->data;
     }
 
     /**
      * Gets an array of data items for rows from the set data.
-     *
-     * @return array
      */
-    protected function getItemsFromData($columns)
+    protected function getItemsFromData($columns): array
     {
         $items = [];
 
@@ -197,16 +147,16 @@ abstract class Source implements DriverInterface
                 if ($this instanceof Entity) {
                     // Mapped field
                     $itemEntity = $item;
-                    if (strpos($fieldName, '.') === false) {
-                        $functionName = ucfirst($fieldName);
+                    if (!\str_contains($fieldName, '.')) {
+                        $functionName = \ucfirst($fieldName);
                     } else {
                         // loop through all elements until we find the final entity and the name of the value for which we are looking
-                        $elements = explode('.', $fieldName);
-                        while ($element = array_shift($elements)) {
-                            if (count($elements) > 0) {
-                                $itemEntity = call_user_func([$itemEntity, 'get' . $element]);
+                        $elements = \explode('.', $fieldName);
+                        while ($element = \array_shift($elements)) {
+                            if (\count($elements) > 0) {
+                                $itemEntity = $itemEntity->{'get'.$element}();
                             } else {
-                                $functionName = ucfirst($element);
+                                $functionName = \ucfirst($element);
                             }
                         }
                     }
@@ -214,12 +164,12 @@ abstract class Source implements DriverInterface
                     // Get value of the column
                     if (isset($itemEntity->$fieldName)) {
                         $fieldValue = $itemEntity->$fieldName;
-                    } elseif (is_callable([$itemEntity, $fullFunctionName = 'get' . $functionName])
-                           || is_callable([$itemEntity, $fullFunctionName = 'has' . $functionName])
-                           || is_callable([$itemEntity, $fullFunctionName = 'is' . $functionName])) {
-                        $fieldValue = call_user_func([$itemEntity, $fullFunctionName]);
+                    } elseif (\is_callable([$itemEntity, $fullFunctionName = 'get'.$functionName])
+                        || \is_callable([$itemEntity, $fullFunctionName = 'has'.$functionName])
+                        || \is_callable([$itemEntity, $fullFunctionName = 'is'.$functionName])) {
+                        $fieldValue = $itemEntity->$fullFunctionName();
                     } else {
-                        throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
+                        throw new PropertyAccessDeniedException(\sprintf('Property "%s" is not public or has no accessor.', $fieldName));
                     }
                 } elseif (isset($item[$fieldName])) {
                     $fieldValue = $item[$fieldName];
@@ -234,28 +184,20 @@ abstract class Source implements DriverInterface
 
     /**
      * Find data from array|object.
-     *
-     * @param Column[] $columns
-     * @param int      $page
-     * @param int      $limit
-     * @param int      $maxResults
-     *
-     * @return Rows
      */
-    public function executeFromData($columns, $page = 0, $limit = 0, $maxResults = null)
+    public function executeFromData(array|Columns|ColumnsIterator $columns, int $page = 0, ?int $limit = 0, int $maxResults = null): Rows|array
     {
         // Populate from data
         $items = $this->getItemsFromData($columns);
         $serializeColumns = [];
 
         foreach ($this->data as $key => $item) {
-
             foreach ($columns as $column) {
                 $fieldName = $column->getField();
                 $fieldValue = $items[$key][$fieldName];
-                $dataIsNumeric = ($column->getType() == 'number' || $column->getType() == 'boolean');
+                $dataIsNumeric = ('number' === $column->getType() || 'boolean' === $column->getType());
 
-                if ($column->getType() === 'array') {
+                if ('array' === $column->getType()) {
                     $serializeColumns[] = $column->getId();
                 }
 
@@ -264,7 +206,7 @@ abstract class Source implements DriverInterface
                     // Some attributes of the column can be changed in this function
                     $filters = $column->getFilters('vector');
 
-                    if ($column->getDataJunction() === Column::DATA_DISJUNCTION) {
+                    if (Column::DATA_DISJUNCTION === $column->getDataJunction()) {
                         $disjunction = true;
                         $keep = false;
                     } else {
@@ -282,34 +224,34 @@ abstract class Source implements DriverInterface
                             $value = $this->prepareStringForLikeCompare($value);
                             switch ($operator) {
                                 case Column::OPERATOR_EQ:
-                                    $value = '/^' . preg_quote($value, '/') . '$/i';
+                                    $value = '/^'.\preg_quote($value, '/').'$/i';
                                     break;
                                 case Column::OPERATOR_NEQ:
-                                    $value = '/^(?!' . preg_quote($value, '/') . '$).*$/i';
+                                    $value = '/^(?!'.\preg_quote($value, '/').'$).*$/i';
                                     break;
                                 case Column::OPERATOR_LIKE:
-                                    $value = '/' . preg_quote($value, '/') . '/i';
+                                    $value = '/'.\preg_quote($value, '/').'/i';
                                     break;
                                 case Column::OPERATOR_NLIKE:
-                                    $value = '/^((?!' . preg_quote($value, '/') . ').)*$/i';
+                                    $value = '/^((?!'.\preg_quote($value, '/').').)*$/i';
                                     break;
                                 case Column::OPERATOR_LLIKE:
-                                    $value = '/' . preg_quote($value, '/') . '$/i';
+                                    $value = '/'.\preg_quote($value, '/').'$/i';
                                     break;
                                 case Column::OPERATOR_RLIKE:
-                                    $value = '/^' . preg_quote($value, '/') . '/i';
+                                    $value = '/^'.\preg_quote($value, '/').'/i';
                                     break;
                                 case Column::OPERATOR_SLIKE:
-                                    $value = '/' . preg_quote($value, '/') . '/';
+                                    $value = '/'.\preg_quote($value, '/').'/';
                                     break;
                                 case Column::OPERATOR_NSLIKE:
-                                    $value = '/^((?!' . preg_quote($value, '/') . ').)*$/';
+                                    $value = '/^((?!'.\preg_quote($value, '/').').)*$/';
                                     break;
                                 case Column::OPERATOR_LSLIKE:
-                                    $value = '/' . preg_quote($value, '/') . '$/';
+                                    $value = '/'.\preg_quote($value, '/').'$/';
                                     break;
                                 case Column::OPERATOR_RSLIKE:
-                                    $value = '/^' . preg_quote($value, '/') . '/';
+                                    $value = '/^'.\preg_quote($value, '/').'/';
                                     break;
                             }
                         }
@@ -318,14 +260,16 @@ abstract class Source implements DriverInterface
                         switch ($operator) {
                             case Column::OPERATOR_EQ:
                                 if ($dataIsNumeric) {
-                                    $found = abs($fieldValue - $value) < 0.00001;
+                                    $found = \abs($fieldValue - $value) < 0.00001;
                                     break;
                                 }
+                                // no break
                             case Column::OPERATOR_NEQ:
                                 if ($dataIsNumeric) {
-                                    $found = abs($fieldValue - $value) > 0.00001;
+                                    $found = \abs($fieldValue - $value) > 0.00001;
                                     break;
                                 }
+                                // no break
                             case Column::OPERATOR_LIKE:
                             case Column::OPERATOR_NLIKE:
                             case Column::OPERATOR_LLIKE:
@@ -336,7 +280,7 @@ abstract class Source implements DriverInterface
                             case Column::OPERATOR_RSLIKE:
                                 $fieldValue = $this->prepareStringForLikeCompare($fieldValue, $column->getType());
 
-                                $found = preg_match($value, $fieldValue);
+                                $found = \preg_match($value, $fieldValue);
                                 break;
                             case Column::OPERATOR_GT:
                                 $found = $fieldValue > $value;
@@ -351,10 +295,10 @@ abstract class Source implements DriverInterface
                                 $found = $fieldValue <= $value;
                                 break;
                             case Column::OPERATOR_ISNULL:
-                                $found = $fieldValue === null;
+                                $found = null === $fieldValue;
                                 break;
                             case Column::OPERATOR_ISNOTNULL:
-                                $found = $fieldValue !== null;
+                                $found = null !== $fieldValue;
                                 break;
                         }
 
@@ -382,7 +326,7 @@ abstract class Source implements DriverInterface
         // Order
         foreach ($columns as $column) {
             if ($column->isSorted()) {
-                $sortType = SORT_REGULAR;
+                $sortType = \SORT_REGULAR;
                 $sortedItems = [];
                 foreach ($items as $key => $item) {
                     $value = $item[$column->getField()];
@@ -390,8 +334,8 @@ abstract class Source implements DriverInterface
                     // Format values for sorting and define the type of sort
                     switch ($column->getType()) {
                         case 'text':
-                            $sortedItems[$key] = strtolower($value);
-                            $sortType = SORT_STRING;
+                            $sortedItems[$key] = \strtolower($value);
+                            $sortType = \SORT_STRING;
                             break;
                         case 'datetime':
                         case 'date':
@@ -399,45 +343,45 @@ abstract class Source implements DriverInterface
                             if ($value instanceof \DateTime) {
                                 $sortedItems[$key] = $value->getTimestamp();
                             } else {
-                                $sortedItems[$key] = strtotime($value);
+                                $sortedItems[$key] = \strtotime($value);
                             }
-                            $sortType = SORT_NUMERIC;
+                            $sortType = \SORT_NUMERIC;
                             break;
                         case 'boolean':
                             $sortedItems[$key] = $value ? 1 : 0;
-                            $sortType = SORT_NUMERIC;
+                            $sortType = \SORT_NUMERIC;
                             break;
                         case 'array':
-                            $sortedItems[$key] = json_encode($value);
-                            $sortType = SORT_STRING;
+                            $sortedItems[$key] = \json_encode($value);
+                            $sortType = \SORT_STRING;
                             break;
                         case 'number':
                             $sortedItems[$key] = $value;
-                            $sortType = SORT_NUMERIC;
+                            $sortType = \SORT_NUMERIC;
                             break;
                         default:
                             $sortedItems[$key] = $value;
-                            $sortType = SORT_REGULAR;
+                            $sortType = \SORT_REGULAR;
                     }
                 }
 
                 if (!empty($sortedItems)) {
-                    array_multisort($sortedItems, ($column->getOrder() == 'asc') ? SORT_ASC : SORT_DESC, $sortType, $items);
+                    \array_multisort($sortedItems, ('asc' === $column->getOrder()) ? \SORT_ASC : \SORT_DESC, $sortType, $items);
                 }
 
                 break;
             }
         }
 
-        $this->count = count($items);
+        $this->count = \count($items);
 
         // Pagination
         if ($limit > 0) {
-            $maxResults = ($maxResults !== null && ($maxResults - $page * $limit < $limit)) ? $maxResults - $page * $limit : $limit;
+            $maxResults = (null !== $maxResults && ($maxResults - $page * $limit < $limit)) ? $maxResults - $page * $limit : $limit;
 
-            $items = array_slice($items, $page * $limit, $maxResults);
-        } elseif ($maxResults !== null) {
-            $items = array_slice($items, 0, $maxResults);
+            $items = \array_slice($items, $page * $limit, $maxResults);
+        } elseif (null !== $maxResults) {
+            $items = \array_slice($items, 0, $maxResults);
         }
 
         $rows = new Rows();
@@ -449,19 +393,15 @@ abstract class Source implements DriverInterface
             }
 
             foreach ($item as $fieldName => $fieldValue) {
-                if ($this instanceof Entity) {
-                    if (in_array($fieldName, $serializeColumns)) {
-                        if (is_string($fieldValue)) {
-                            $fieldValue = unserialize($fieldValue);
-                        }
-                    }
+                if (($this instanceof Entity) && \is_string($fieldValue) && \in_array($fieldName, $serializeColumns, true)) {
+                    $fieldValue = \unserialize($fieldValue);
                 }
 
                 $row->setField($fieldName, $fieldValue);
             }
 
-            //call overridden prepareRow or associated closure
-            if (($modifiedRow = $this->prepareRow($row)) != null) {
+            // call overridden prepareRow or associated closure
+            if (($modifiedRow = $this->prepareRow($row)) !== null) {
                 $rows->addRow($modifiedRow);
             }
         }
@@ -471,18 +411,17 @@ abstract class Source implements DriverInterface
         return $rows;
     }
 
-    public function populateSelectFiltersFromData($columns, $loop = false)
+    public function populateSelectFiltersFromData($columns, $loop = false): void
     {
-        /* @var $column Column */
+        // @var $column Column
         foreach ($columns as $column) {
             $selectFrom = $column->getSelectFrom();
 
-            if ($column->getFilterType() === 'select' && ($selectFrom === 'source' || $selectFrom === 'query')) {
-
+            if (('source' === $selectFrom || 'query' === $selectFrom) && 'select' === $column->getFilterType()) {
                 // For negative operators, show all values
-                if ($selectFrom === 'query') {
+                if ('query' === $selectFrom) {
                     foreach ($column->getFilters('vector') as $filter) {
-                        if (in_array($filter->getOperator(), [Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE, Column::OPERATOR_NSLIKE])) {
+                        if (\in_array($filter->getOperator(), [Column::OPERATOR_NEQ, Column::OPERATOR_NLIKE, Column::OPERATOR_NSLIKE], true)) {
                             $selectFrom = 'source';
                             break;
                         }
@@ -490,7 +429,7 @@ abstract class Source implements DriverInterface
                 }
 
                 // Dynamic from query or not ?
-                $item = ($selectFrom === 'source') ? $this->data : $this->items;
+                $item = ('source' === $selectFrom) ? $this->data : $this->items;
 
                 $values = [];
                 foreach ($item as $row) {
@@ -509,7 +448,7 @@ abstract class Source implements DriverInterface
                             }
 
                             // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
-                            if (is_array($value) && array_keys($value) == ['t', 'i']) {
+                            if (\is_array($value) && \array_keys($value) === ['t', 'i']) {
                                 $value = $value['i'];
                             }
 
@@ -517,8 +456,8 @@ abstract class Source implements DriverInterface
                             $values[$displayedValue] = $displayedValue;
                             break;
                         case 'array':
-                            if (is_string($value)) {
-                                $value = unserialize($value);
+                            if (\is_string($value)) {
+                                $value = \unserialize($value);
                             }
 
                             foreach ($value as $val) {
@@ -531,16 +470,16 @@ abstract class Source implements DriverInterface
                 }
 
                 // It avoids to have no result when the other columns are filtered
-                if ($selectFrom === 'query' && empty($values) && $loop === false) {
+                if ('query' === $selectFrom && empty($values) && false === $loop) {
                     $column->setSelectFrom('source');
                     $this->populateSelectFiltersFromData($columns, true);
                 } else {
-                    if ($column->getType() == 'array') {
-                        natcasesort($values);
+                    if ('array' === $column->getType()) {
+                        \natcasesort($values);
                     }
 
                     $values = $this->prepareColumnValues($column, $values);
-                    $column->setValues(array_unique($values));
+                    $column->setValues(\array_unique($values));
                 }
             }
         }
@@ -548,27 +487,24 @@ abstract class Source implements DriverInterface
 
     /**
      * Get Total count of data items.
-     *
-     * @return int
      */
-    public function getTotalCountFromData($maxResults = null)
+    public function getTotalCountFromData(int $maxResults = null): ?int
     {
-        return $maxResults === null ? $this->count : min($this->count, $maxResults);
+        return null === $maxResults ? $this->count : \min($this->count, $maxResults);
     }
 
     /**
      * Prepares string to have almost the same behaviour as with a database,
      * removing accents and latin special chars.
      *
-     * @param mixed  $inputString
-     * @param string $type        for array type, will serialize datas
+     * @param string|null $type for array type, will serialize datas
      *
      * @return string the input, serialized for arrays or without accents for strings
      */
-    protected function prepareStringForLikeCompare($input, $type = null)
+    protected function prepareStringForLikeCompare(mixed $input, string $type = null): array|string|null
     {
-        if ($type === 'array') {
-            $outputString = str_replace(':{i:0;', ':{', serialize($input));
+        if ('array' === $type) {
+            $outputString = \str_replace(':{i:0;', ':{', \serialize($input));
         } else {
             $outputString = $this->removeAccents($input);
         }
@@ -576,20 +512,20 @@ abstract class Source implements DriverInterface
         return $outputString;
     }
 
-    private function removeAccents($str)
+    private function removeAccents(string $str): array|string|null
     {
-        $entStr = htmlentities($str, ENT_NOQUOTES, 'UTF-8');
-        $noaccentStr = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $entStr);
+        $entStr = \htmlentities($str, \ENT_NOQUOTES, 'UTF-8');
+        $noaccentStr = \preg_replace('#&([A-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $entStr);
 
-        return preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $noaccentStr);
+        return \preg_replace('#&([A-z]{2})(?:lig);#', '\1', $noaccentStr);
     }
 
-    protected function prepareColumnValues(Column $column, $values)
+    protected function prepareColumnValues(Column $column, array $values): array
     {
         $existingValues = $column->getValues();
         if (!empty($existingValues)) {
-            $intersect = array_intersect_key($existingValues, $values);
-            $values = array_replace($values, $intersect);
+            $intersect = \array_intersect_key($existingValues, $values);
+            $values = \array_replace($values, $intersect);
         }
 
         return $values;

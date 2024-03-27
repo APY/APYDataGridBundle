@@ -14,23 +14,23 @@ class RowsTest extends TestCase
     /** @var array */
     private $rows;
 
-    public function testAddRowsOnConstruct()
+    public function testAddRowsOnConstruct(): void
     {
         $this->assertEquals(3, $this->rowsSUT->count());
     }
 
-    public function testGetIterator()
+    public function testGetIterator(): void
     {
         $this->assertInstanceOf(\SplObjectStorage::class, $this->rowsSUT->getIterator());
     }
 
-    public function testAddRow()
+    public function testAddRow(): void
     {
         $this->rowsSUT->addRow($this->createMock(Row::class));
         $this->assertEquals(4, $this->rowsSUT->count());
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $this->assertEquals($this->rows, $this->rowsSUT->toArray());
     }

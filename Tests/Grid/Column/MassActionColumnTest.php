@@ -11,33 +11,33 @@ class MassActionColumnTest extends TestCase
     /** @var MassActionColumn */
     private $column;
 
-    public function testGetType()
+    public function testGetType(): void
     {
         $this->assertEquals('massaction', $this->column->getType());
     }
 
-    public function testGetFilterType()
+    public function testGetFilterType(): void
     {
         $this->assertEquals('massaction', $this->column->getFilterType());
     }
 
-    public function testIsVisible()
+    public function testIsVisible(): void
     {
         $this->assertFalse($this->column->isVisible(true));
         $this->assertTrue($this->column->isVisible(false));
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         self::markTestSkipped();
         $this->assertAttributeEquals([
-            'id'         => MassActionColumn::ID,
-            'title'      => '',
-            'size'       => 15,
+            'id' => MassActionColumn::ID,
+            'title' => '',
+            'size' => 15,
             'filterable' => true,
-            'sortable'   => false,
-            'source'     => false,
-            'align'      => Column::ALIGN_CENTER,
+            'sortable' => false,
+            'source' => false,
+            'align' => Column::ALIGN_CENTER,
         ], 'params', $this->column);
     }
 

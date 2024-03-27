@@ -1,39 +1,30 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class GridManager implements \IteratorAggregate, \Countable
 {
-    protected $container;
+    protected \SplObjectStorage $grids;
 
-    protected $grids;
+    protected mixed $routeUrl = null;
 
-    protected $routeUrl = null;
+    protected mixed $exportGrid = null;
 
-    protected $exportGrid = null;
+    protected mixed $massActionGrid = null;
 
-    protected $massActionGrid = null;
+    public const NO_GRID_EX_MSG = 'No grid has been added to the manager.';
 
-    const NO_GRID_EX_MSG = 'No grid has been added to the manager.';
+    public const SAME_GRID_HASH_EX_MSG = 'Some grids seem similar. Please set an Indentifier for your grids.';
 
-    const SAME_GRID_HASH_EX_MSG = 'Some grids seem similar. Please set an Indentifier for your grids.';
-
-    public function __construct($container)
+    public function __construct(private readonly Environment $twig)
     {
-        $this->container = $container;
         $this->grids = new \SplObjectStorage();
     }
 
@@ -47,16 +38,9 @@ class GridManager implements \IteratorAggregate, \Countable
         return $this->grids->count();
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return Grid
-     */
-    public function createGrid($id = null)
+    public function createGrid(GridInterface $grid, mixed $id = null): Grid
     {
-        $grid = $this->container->get('grid');
-
-        if ($id !== null) {
+        if (null !== $id) {
             $grid->setId($id);
         }
 
@@ -65,9 +49,9 @@ class GridManager implements \IteratorAggregate, \Countable
         return $grid;
     }
 
-    public function isReadyForRedirect()
+    public function isReadyForRedirect(): bool
     {
-        if ($this->grids->count() == 0) {
+        if (0 === $this->grids->count()) {
             throw new \RuntimeException(self::NO_GRID_EX_MSG);
         }
 
@@ -77,7 +61,7 @@ class GridManager implements \IteratorAggregate, \Countable
         $this->grids->rewind();
 
         // Route url is the same for all grids
-        if ($this->routeUrl === null) {
+        if (null === $this->routeUrl) {
             $grid = $this->grids->current();
             $this->routeUrl = $grid->getRouteUrl();
         }
@@ -89,7 +73,7 @@ class GridManager implements \IteratorAggregate, \Countable
                 $isReadyForRedirect = true;
             }
 
-            if (in_array($grid->getHash(), $checkHash)) {
+            if (\in_array($grid->getHash(), $checkHash, true)) {
                 throw new \RuntimeException(self::SAME_GRID_HASH_EX_MSG);
             }
 
@@ -101,9 +85,9 @@ class GridManager implements \IteratorAggregate, \Countable
         return $isReadyForRedirect;
     }
 
-    public function isReadyForExport()
+    public function isReadyForExport(): bool
     {
-        if ($this->grids->count() == 0) {
+        if (0 === $this->grids->count()) {
             throw new \RuntimeException(self::NO_GRID_EX_MSG);
         }
 
@@ -113,7 +97,7 @@ class GridManager implements \IteratorAggregate, \Countable
         while ($this->grids->valid()) {
             $grid = $this->grids->current();
 
-            if (in_array($grid->getHash(), $checkHash)) {
+            if (\in_array($grid->getHash(), $checkHash, true)) {
                 throw new \RuntimeException(self::SAME_GRID_HASH_EX_MSG);
             }
 
@@ -131,7 +115,7 @@ class GridManager implements \IteratorAggregate, \Countable
         return false;
     }
 
-    public function isMassActionRedirect()
+    public function isMassActionRedirect(): bool
     {
         $this->grids->rewind();
         while ($this->grids->valid()) {
@@ -152,13 +136,14 @@ class GridManager implements \IteratorAggregate, \Countable
     /**
      * Renders a view.
      *
-     * @param string|array $param1   The view name or an array of parameters to pass to the view
-     * @param string|array $param2   The view name or an array of parameters to pass to the view
-     * @param Response     $response A response instance
+     * @param array|string|null $param1 The view name or an array of parameters to pass to the view
+     * @param array|string|null $param2 The view name or an array of parameters to pass to the view
      *
-     * @return Response A Response instance
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function getGridManagerResponse($param1 = null, $param2 = null)
+    public function getGridManagerResponse(array|string $param1 = null, array|string $param2 = null): Response|array
     {
         $isReadyForRedirect = $this->isReadyForRedirect();
 
@@ -172,31 +157,31 @@ class GridManager implements \IteratorAggregate, \Countable
 
         if ($isReadyForRedirect) {
             return new RedirectResponse($this->getRouteUrl());
-        } else {
-            if (is_array($param1) || $param1 === null) {
-                $parameters = (array) $param1;
-                $view = $param2;
-            } else {
-                $parameters = (array) $param2;
-                $view = $param1;
-            }
-
-            $i = 1;
-            $this->grids->rewind();
-            while ($this->grids->valid()) {
-                $parameters = array_merge(['grid' . $i => $this->grids->current()], $parameters);
-                $this->grids->next();
-                ++$i;
-            }
-
-            if ($view === null) {
-                return $parameters;
-            }
-
-            $content = $this->container->get('templating')->render($view, $parameters);
-
-            return new Response($content);
         }
+
+        if (\is_array($param1) || null === $param1) {
+            $parameters = (array) $param1;
+            $view = $param2;
+        } else {
+            $parameters = (array) $param2;
+            $view = $param1;
+        }
+
+        $i = 1;
+        $this->grids->rewind();
+        while ($this->grids->valid()) {
+            $parameters = \array_merge(['grid'.$i => $this->grids->current()], $parameters);
+            $this->grids->next();
+            ++$i;
+        }
+
+        if (null === $view) {
+            return $parameters;
+        }
+
+        $content = $this->twig->render($view, $parameters);
+
+        return new Response($content);
     }
 
     public function getRouteUrl()
@@ -204,7 +189,7 @@ class GridManager implements \IteratorAggregate, \Countable
         return $this->routeUrl;
     }
 
-    public function setRouteUrl($routeUrl)
+    public function setRouteUrl($routeUrl): void
     {
         $this->routeUrl = $routeUrl;
     }

@@ -20,63 +20,54 @@ interface RowActionInterface
     /**
      * get action title.
      *
-     * @return string
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
      * get action route.
      *
-     * @return string
      */
-    public function getRoute();
+    public function getRoute(): string;
 
     /**
      * get action confirm.
      *
-     * @return bool
      */
-    public function getConfirm();
+    public function getConfirm(): bool;
 
     /**
      * get action confirmMessage.
      *
-     * @return string
      */
-    public function getConfirmMessage();
+    public function getConfirmMessage(): string;
 
     /**
      * get action target.
      *
-     * @return string
      */
-    public function getTarget();
+    public function getTarget(): string;
 
     /**
      * get the action column id.
      *
-     * @return string
      */
-    public function getColumn();
+    public function getColumn(): ?string;
 
     /**
      * get route parameters.
      *
-     * @return array
      */
-    public function getRouteParameters();
+    public function getRouteParameters(): array;
 
     /**
      * get attributes of the link.
      *
-     * @return array
      */
-    public function getAttributes();
+    public function getAttributes(): array;
 
     /**
      * get action enabled.
      *
-     * @return bool
      */
-    public function getEnabled();
+    public function getEnabled(): bool;
 }

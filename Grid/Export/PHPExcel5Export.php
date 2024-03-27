@@ -1,16 +1,8 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Export;
+
+use APY\DataGridBundle\Grid\GridInterface;
 
 /**
  * PHPExcel 5 Export (97-2003) (.xls)
@@ -18,20 +10,20 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class PHPExcel5Export extends Export
 {
-    protected $fileExtension = 'xls';
+    protected ?string $fileExtension = 'xls';
 
-    protected $mimeType = 'application/vnd.ms-excel';
+    protected string $mimeType = 'application/vnd.ms-excel';
 
-    public $objPHPExcel;
+    public \PHPExcel $objPHPExcel;
 
-    public function __construct($tilte, $fileName = 'export', $params = [], $charset = 'UTF-8')
+    public function __construct(string $title, string $fileName = 'export', array $params = [], string $charset = 'UTF-8')
     {
         $this->objPHPExcel = new \PHPExcel();
 
-        parent::__construct($tilte, $fileName, $params, $charset);
+        parent::__construct($title, $fileName, $params, $charset);
     }
 
-    public function computeData($grid)
+    public function computeData(GridInterface $grid): void
     {
         $data = $this->getFlatGridData($grid);
 
@@ -39,7 +31,7 @@ class PHPExcel5Export extends Export
         foreach ($data as $line) {
             $column = 'A';
             foreach ($line as $cell) {
-                $this->objPHPExcel->getActiveSheet()->SetCellValue($column . $row, $cell);
+                $this->objPHPExcel->getActiveSheet()->SetCellValue($column.$row, $cell);
 
                 ++$column;
             }
@@ -48,16 +40,14 @@ class PHPExcel5Export extends Export
 
         $objWriter = $this->getWriter();
 
-        ob_start();
+        \ob_start();
 
         $objWriter->save('php://output');
 
-        $this->content = ob_get_contents();
-
-        ob_end_clean();
+        $this->content = \ob_get_clean();
     }
 
-    protected function getWriter()
+    protected function getWriter(): \PHPExcel_Writer_Excel5
     {
         return new \PHPExcel_Writer_Excel5($this->objPHPExcel);
     }

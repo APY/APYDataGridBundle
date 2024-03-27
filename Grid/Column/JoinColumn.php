@@ -1,24 +1,16 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Column;
+
+use APY\DataGridBundle\Grid\Source\Source;
 
 class JoinColumn extends TextColumn
 {
-    protected $joinColumns = [];
+    protected array $joinColumns = [];
 
-    protected $dataJunction = self::DATA_DISJUNCTION;
+    protected int $dataJunction = self::DATA_DISJUNCTION;
 
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         parent::__initialize($params);
 
@@ -29,17 +21,19 @@ class JoinColumn extends TextColumn
         $this->setIsManualField(true);
     }
 
-    public function setJoinColumns(array $columns)
+    public function setJoinColumns(array $columns): static
     {
         $this->joinColumns = $columns;
+
+        return $this;
     }
 
-    public function getJoinColumns()
+    public function getJoinColumns(): array
     {
         return $this->joinColumns;
     }
 
-    public function getFilters($source)
+    public function getFilters(Source|string $source): array
     {
         $filters = [];
 
@@ -51,13 +45,13 @@ class JoinColumn extends TextColumn
                 $filter->setColumnName($columnName);
             }
 
-            $filters = array_merge($filters, $tempFilters);
+            $filters = \array_merge($filters, $tempFilters);
         }
 
         return $filters;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'join';
     }

@@ -10,12 +10,14 @@ use PHPUnit\Framework\TestCase;
 
 class ManagerTest extends TestCase
 {
+    private Manager $manager;
+
     protected function setUp(): void
     {
         $this->manager = new Manager();
     }
 
-    public function testAddDriver()
+    public function testAddDriver(): void
     {
         $driverInterfaceMock = $this->createMock(DriverInterface::class);
         $priority = 1;
@@ -28,7 +30,7 @@ class ManagerTest extends TestCase
         $this->assertEquals($driverHeap, $this->manager->getDrivers());
     }
 
-    public function testGetDrivers()
+    public function testGetDrivers(): void
     {
         $driverInterfaceMock = $this->createMock(DriverInterface::class);
 
@@ -42,7 +44,7 @@ class ManagerTest extends TestCase
         $this->assertEquals($driverHeap, $drivers);
     }
 
-    public function testGetDriversReturnDifferentClone()
+    public function testGetDriversReturnDifferentClone(): void
     {
         $driverFirstTime = $this->manager->getDrivers();
         $driverSecondTime = $this->manager->getDrivers();
@@ -50,7 +52,7 @@ class ManagerTest extends TestCase
         $this->assertNotSame($driverFirstTime, $driverSecondTime);
     }
 
-    public function testGetMetadataWithoutDrivers()
+    public function testGetMetadataWithoutDrivers(): void
     {
         $cols = [];
         $mappings = [];
@@ -66,7 +68,7 @@ class ManagerTest extends TestCase
         $this->assertEquals($metadataExpected, $metadata);
     }
 
-    public function testGetMetadata()
+    public function testGetMetadata(): void
     {
         $fields = ['0' => 'bar'];
         $groupBy = ['foo' => 'bar'];

@@ -107,11 +107,11 @@ class Attribute implements DriverInterface
         if (Column::class === $attribute->getName()) {
             $metadata = $attribute->getArguments() ?? [];
 
-            if (isset($metadata['id']) && $name !== null) {
+            if (isset($metadata['id']) && null !== $name) {
                 throw new \RuntimeException(\sprintf('Parameter `id` can\'t be used in annotations for property `%s`, please remove it from class %s', $name, $className));
             }
 
-            if ($name === null) { // Class Column annotation
+            if (null === $name) { // Class Column annotation
                 if (isset($metadata['id'])) {
                     $metadata['source'] = false;
                     $this->fields[$className][$group][$metadata['id']] = [];
@@ -133,7 +133,7 @@ class Attribute implements DriverInterface
             }
 
             // Check the group of the annotation and don't override if an annotation with the group have already been defined
-            if (isset($metadata['groups']) && !\in_array($group, (array) $metadata['groups'])
+            if (isset($metadata['groups']) && !\in_array($group, (array) $metadata['groups'], true)
                 || isset($this->fields[$className][$group][$metadata['id']]['groups'])) {
                 return;
             }

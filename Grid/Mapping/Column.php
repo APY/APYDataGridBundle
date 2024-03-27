@@ -20,7 +20,7 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class Column
 {
-    protected $metadata;
+    protected array $metadata;
     protected array $groups;
 
     public function __construct(
@@ -71,8 +71,7 @@ class Column
         string $export = null,
         string $class = null,
         string $translation_domain = null,
-    )
-    {
+    ) {
         if ($id) {
             $metadata['id'] = $id;
         }
@@ -213,7 +212,7 @@ class Column
         $this->groups = isset($metadata['groups']) ? (array) $metadata['groups'] : $groups;
     }
 
-    public function getMetadata()
+    public function getMetadata(): array
     {
         return $this->metadata;
     }

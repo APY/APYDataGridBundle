@@ -1,76 +1,68 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Mapping\Metadata;
+
+use APY\DataGridBundle\Grid\Columns;
 
 class Metadata
 {
-    protected $name;
-    protected $fields;
-    protected $fieldsMappings;
-    protected $groupBy;
+    protected ?string $name = null;
+    protected ?array $fields = null;
+    protected ?array $fieldsMappings = null;
+    protected ?array $groupBy = null;
 
-    public function setFields($fields)
+    public function setFields(array $fields): void
     {
         $this->fields = $fields;
     }
 
-    public function getFields()
+    public function getFields(): ?array
     {
         return $this->fields;
     }
 
-    public function setFieldsMappings($fieldsMappings)
+    public function setFieldsMappings(array $fieldsMappings): static
     {
         $this->fieldsMappings = $fieldsMappings;
 
         return $this;
     }
 
-    public function hasFieldMapping($field)
+    public function hasFieldMapping(string $field): bool
     {
         return isset($this->fieldsMappings[$field]);
     }
 
-    public function getFieldMapping($field)
+    public function getFieldMapping(string $field): mixed
     {
         return $this->fieldsMappings[$field];
     }
 
-    public function getFieldMappingType($field)
+    public function getFieldMappingType(string $field): string
     {
-        return (isset($this->fieldsMappings[$field]['type'])) ? $this->fieldsMappings[$field]['type'] : 'text';
+        return $this->fieldsMappings[$field]['type'] ?? 'text';
     }
 
-    public function setGroupBy($groupBy)
+    public function setGroupBy(array $groupBy): static
     {
         $this->groupBy = $groupBy;
 
         return $this;
     }
 
-    public function getGroupBy()
+    public function getGroupBy(): ?array
     {
         return $this->groupBy;
     }
 
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -78,13 +70,9 @@ class Metadata
     /**
      * @todo move to another place
      *
-     * @param $columnExtensions
-     *
-     * @throws \Exception
-     *
-     * @return \SplObjectStorage
+     * @throws \RuntimeException
      */
-    public function getColumnsFromMapping($columnExtensions)
+    public function getColumnsFromMapping(Columns $columnExtensions): \SplObjectStorage
     {
         $columns = new \SplObjectStorage();
 
@@ -92,13 +80,13 @@ class Metadata
             $params = $this->getFieldMapping($value);
             $type = $this->getFieldMappingType($value);
 
-            /* todo move available extensions from columns */
+            // todo move available extensions from columns
             if ($columnExtensions->hasExtensionForColumnType($type)) {
                 $column = clone $columnExtensions->getExtensionForColumnType($type);
                 $column->__initialize($params);
                 $columns->attach($column);
             } else {
-                throw new \Exception(sprintf('No suitable Column Extension found for column type: %s', $type));
+                throw new \RuntimeException(\sprintf('No suitable Column Extension found for column type: %s', $type));
             }
         }
 

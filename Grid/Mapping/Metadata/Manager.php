@@ -14,19 +14,21 @@
 
 namespace APY\DataGridBundle\Grid\Mapping\Metadata;
 
+use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
+
 class Manager
 {
     /**
-     * @var \APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface[]
+     * @var DriverInterface[]
      */
-    protected $drivers;
+    protected DriverHeap|array $drivers;
 
     public function __construct()
     {
         $this->drivers = new DriverHeap();
     }
 
-    public function addDriver($driver, $priority)
+    public function addDriver($driver, $priority): void
     {
         $this->drivers->insert($driver, $priority);
     }
@@ -34,14 +36,14 @@ class Manager
     /**
      * @todo remove this hack
      *
-     * @return \APY\DataGridBundle\Grid\Mapping\Metadata\DriverHeap
+     * @return DriverHeap
      */
-    public function getDrivers()
+    public function getDrivers(): array|DriverHeap
     {
         return clone $this->drivers;
     }
 
-    public function getMetadata($className, $group = 'default')
+    public function getMetadata($className, $group = 'default'): Metadata
     {
         $metadata = new Metadata();
 

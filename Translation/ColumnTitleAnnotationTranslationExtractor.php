@@ -41,13 +41,14 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
             }
         } elseif ($node instanceof \PHPParser_Node_Stmt_Class) {
             // Append class name to base namespace
-            $this->parsedClassName .= '\\' . $node->name;
+            $this->parsedClassName .= '\\'.$node->name;
         }
     }
 
     public function leaveNode(\PHPParser_Node $node)
     {
     }
+
     public function afterTraverse(array $nodes)
     {
     }
@@ -88,9 +89,6 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;

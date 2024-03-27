@@ -12,3 +12,4 @@ catalog.xml
 .idea
 .phpunit.result.cache
 build/logs/
+/.php-cs-fixer.cache

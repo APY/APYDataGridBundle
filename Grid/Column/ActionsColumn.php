@@ -12,31 +12,34 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use APY\DataGridBundle\Grid\Action\RowAction;
+use APY\DataGridBundle\Grid\Row;
+
 class ActionsColumn extends Column
 {
-    protected $rowActions;
+    protected array $rowActions;
 
-     /**
+    /**
      * ActionsColumn constructor.
      *
      * @param string $column     Identifier of the column
      * @param string $title      Title of the column
      * @param array  $rowActions Array of rowAction
      */
-    public function __construct($column, $title, array $rowActions = [])
+    public function __construct(string $column, string $title, array $rowActions = [])
     {
         $this->rowActions = $rowActions;
 
         parent::__construct([
-            'id'         => $column,
-            'title'      => $title,
-            'sortable'   => false,
-            'source'     => false,
+            'id' => $column,
+            'title' => $title,
+            'sortable' => false,
+            'source' => false,
             'filterable' => true, // Show a reset link instead of a filter
         ]);
     }
 
-    public function getRouteParameters($row, $action)
+    public function getRouteParameters(Row $row, RowAction $action): array
     {
         $actionParameters = $action->getRouteParameters();
 
@@ -44,7 +47,7 @@ class ActionsColumn extends Column
             $routeParameters = [];
 
             foreach ($actionParameters as $name => $parameter) {
-                if (is_int($name)) {
+                if (\is_int($name)) {
                     if (($name = $action->getRouteParametersMapping($parameter)) === null) {
                         $name = $this->getValidRouteParameters($parameter);
                     }
@@ -60,29 +63,29 @@ class ActionsColumn extends Column
         return [$row->getPrimaryField() => $row->getPrimaryFieldValue()];
     }
 
-    protected function getValidRouteParameters($name)
+    protected function getValidRouteParameters(string $name): string
     {
         $pos = 0;
-        while (($pos = strpos($name, '.', ++$pos)) !== false) {
-            $name = substr($name, 0, $pos) . strtoupper(substr($name, $pos + 1, 1)) . substr($name, $pos + 2);
+        while (($pos = \strpos($name, '.', ++$pos)) !== false) {
+            $name = \substr($name, 0, $pos).\strtoupper(\substr($name, $pos + 1, 1)).\substr($name, $pos + 2);
         }
 
         return $name;
     }
 
-    public function getRowActions()
+    public function getRowActions(): array
     {
         return $this->rowActions;
     }
 
-    public function setRowActions(array $rowActions)
+    public function setRowActions(array $rowActions): static
     {
         $this->rowActions = $rowActions;
 
         return $this;
     }
 
-    public function isVisible($isExported = false)
+    public function isVisible(bool $isExported = false): bool
     {
         if ($isExported) {
             return false;
@@ -91,19 +94,15 @@ class ActionsColumn extends Column
         return parent::isVisible();
     }
 
-    public function getFilterType()
+    public function getFilterType(): string
     {
         return $this->getType();
     }
 
     /**
      * Get the list of actions to render.
-     *
-     * @param $row
-     *
-     * @return array
      */
-    public function getActionsToRender($row)
+    public function getActionsToRender(Row $row): array
     {
         $list = $this->rowActions;
         foreach ($list as $i => $a) {
@@ -117,7 +116,7 @@ class ActionsColumn extends Column
         return $list;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'actions';
     }

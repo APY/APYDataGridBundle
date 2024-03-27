@@ -4,19 +4,12 @@ namespace APY\DataGridBundle\Grid\Type;
 
 use APY\DataGridBundle\Grid\AbstractType;
 use APY\DataGridBundle\Grid\GridBuilder;
+use APY\DataGridBundle\Grid\Source\Source;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class for all grids type.
- *
- * @author  Quentin Ferrer
- */
 class GridType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildGrid(GridBuilder $builder, array $options = [])
+    public function buildGrid(GridBuilder $builder, array $options = []): void
     {
         $builder
             ->setRoute($options['route'])
@@ -36,56 +29,44 @@ class GridType extends AbstractType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'source'           => null,
-            'group_by'         => null,
-            'sort_by'          => null,
-            'order'            => 'asc',
-            'page'             => 1,
-            'route'            => '',
+            'source' => null,
+            'group_by' => null,
+            'sort_by' => null,
+            'order' => 'asc',
+            'page' => 1,
+            'route' => '',
             'route_parameters' => [],
-            'persistence'      => false,
-            'max_per_page'     => 10,
-            'max_results'      => null,
-            'filterable'       => true,
-            'sortable'         => true,
+            'persistence' => false,
+            'max_per_page' => 10,
+            'max_results' => null,
+            'filterable' => true,
+            'sortable' => true,
         ]);
 
         $allowedTypes = [
-            'source'           => ['null', 'APY\DataGridBundle\Grid\Source\Source'],
-            'group_by'         => ['null', 'string', 'array'],
+            'source' => ['null', Source::class],
+            'group_by' => ['null', 'string', 'array'],
             'route_parameters' => 'array',
-            'persistence'      => 'bool',
-            'filterable'       => 'bool',
-            'sortable'         => 'bool',
+            'persistence' => 'bool',
+            'filterable' => 'bool',
+            'sortable' => 'bool',
         ];
         $allowedValues = [
             'order' => ['asc', 'desc'],
         ];
-        if (method_exists($resolver, 'setDefault')) {
-            // Symfony 2.6.0 and up
-            foreach ($allowedTypes as $option => $types) {
-                $resolver->setAllowedTypes($option, $types);
-            }
+        foreach ($allowedTypes as $option => $types) {
+            $resolver->setAllowedTypes($option, $types);
+        }
 
-            foreach ($allowedValues as $option => $values) {
-                $resolver->setAllowedValues($option, $values);
-            }
-        } else {
-            $resolver->setAllowedTypes($allowedTypes);
-            $resolver->setAllowedValues($allowedValues);
+        foreach ($allowedValues as $option => $values) {
+            $resolver->setAllowedValues($option, $values);
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'grid';
     }

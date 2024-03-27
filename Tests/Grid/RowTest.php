@@ -8,10 +8,9 @@ use PHPUnit\Framework\TestCase;
 
 class RowTest extends TestCase
 {
-    /** @var Row */
-    private $row;
+    private Row $row;
 
-    public function testSetRepository()
+    public function testSetRepository(): void
     {
         self::markTestSkipped();
         $repo = $this->createMock(EntityRepository::class);
@@ -20,7 +19,7 @@ class RowTest extends TestCase
         $this->assertAttributeSame($repo, 'repository', $this->row);
     }
 
-    public function testGetPrimaryField()
+    public function testGetPrimaryField(): void
     {
         $pf = 'id';
         $this->row->setPrimaryField($pf);
@@ -28,7 +27,7 @@ class RowTest extends TestCase
         $this->assertEquals($pf, $this->row->getPrimaryField());
     }
 
-    public function testGetField()
+    public function testGetField(): void
     {
         $field = 'col1';
         $val = 'col1_val';
@@ -39,14 +38,14 @@ class RowTest extends TestCase
         $this->assertEmpty($this->row->getField('col2'));
     }
 
-    public function testGetPrimaryFieldValueWithoutDefiningIt()
+    public function testGetPrimaryFieldValueWithoutDefiningIt(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         $this->row->getPrimaryFieldValue();
     }
 
-    public function testGetPrimaryFieldValueWithoutAddingItToFields()
+    public function testGetPrimaryFieldValueWithoutAddingItToFields(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -60,7 +59,7 @@ class RowTest extends TestCase
         $this->row->getPrimaryFieldValue();
     }
 
-    public function testGetSinglePrimaryFieldValue()
+    public function testGetSinglePrimaryFieldValue(): void
     {
         $field = 'id';
         $value = 1;
@@ -72,7 +71,7 @@ class RowTest extends TestCase
         $this->assertEquals($value, $this->row->getPrimaryFieldValue());
     }
 
-    public function testGetArrayPrimaryFieldsValue()
+    public function testGetArrayPrimaryFieldsValue(): void
     {
         $field1 = 'id';
         $value1 = 1;
@@ -87,7 +86,7 @@ class RowTest extends TestCase
         $this->assertEquals([$field1 => $value1, $field2 => $value2], $this->row->getPrimaryFieldValue());
     }
 
-    public function testGetSinglePrimaryKeyValue()
+    public function testGetSinglePrimaryKeyValue(): void
     {
         $field = 'foo';
         $value = 1;
@@ -99,7 +98,7 @@ class RowTest extends TestCase
         $this->assertEquals(['id' => $value], $this->row->getPrimaryKeyValue());
     }
 
-    public function testGetCompositePrimaryKeyValue()
+    public function testGetCompositePrimaryKeyValue(): void
     {
         $field1 = 'foo';
         $value1 = 1;
@@ -114,7 +113,7 @@ class RowTest extends TestCase
         $this->assertEquals([$field1 => $value1, $field2 => $value2], $this->row->getPrimaryKeyValue());
     }
 
-    public function testGetEntity()
+    public function testGetEntity(): void
     {
         $field = 'foo';
         $value = 1;
@@ -134,7 +133,7 @@ class RowTest extends TestCase
         $this->assertSame($entityDummy, $this->row->getEntity());
     }
 
-    public function testGetClass()
+    public function testGetClass(): void
     {
         $class = 'Vendor/Bundle/Foo';
         $this->row->setClass($class);
@@ -142,7 +141,7 @@ class RowTest extends TestCase
         $this->assertEquals($class, $this->row->getClass());
     }
 
-    public function testGetColor()
+    public function testGetColor(): void
     {
         $color = 'blue';
         $this->row->setColor($color);
@@ -150,7 +149,7 @@ class RowTest extends TestCase
         $this->assertEquals($color, $this->row->getColor());
     }
 
-    public function testGetLegend()
+    public function testGetLegend(): void
     {
         $legend = 'bar';
         $this->row->setLegend($legend);

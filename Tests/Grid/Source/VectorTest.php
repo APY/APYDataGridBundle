@@ -5,17 +5,15 @@ namespace APY\DataGridBundle\Tests\Grid\Source;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\UntypedColumn;
 use APY\DataGridBundle\Grid\Columns;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Source\Vector;
+use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
 
 class VectorTest extends TestCase
 {
-    /**
-     * @var Vector
-     */
-    private $vector;
+    private Vector $vector;
 
     public function testCreateVectorWithEmptyData(): void
     {
@@ -51,7 +49,7 @@ class VectorTest extends TestCase
     public function testInitialiseWithoutData(): void
     {
         self::markTestSkipped();
-        $this->vector->initialise($this->createMock(Container::class));
+        $this->vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertAttributeEmpty('columns', $this->vector);
     }
@@ -74,28 +72,28 @@ class VectorTest extends TestCase
         $vector = new Vector([['c3Id' => 'c3', 'c4Id' => 'c4']], [$column, $column2]);
 
         $uc1 = new UntypedColumn([
-            'id'         => 'c3Id',
-            'title'      => 'c3Id',
-            'source'     => true,
+            'id' => 'c3Id',
+            'title' => 'c3Id',
+            'source' => true,
             'filterable' => true,
-            'sortable'   => true,
-            'visible'    => true,
-            'field'      => 'c3Id',
+            'sortable' => true,
+            'visible' => true,
+            'field' => 'c3Id',
         ]);
         $uc1->setType('text');
 
         $uc2 = new UntypedColumn([
-            'id'         => 'c4Id',
-            'title'      => 'c4Id',
-            'source'     => true,
+            'id' => 'c4Id',
+            'title' => 'c4Id',
+            'source' => true,
             'filterable' => true,
-            'sortable'   => true,
-            'visible'    => true,
-            'field'      => 'c4Id',
+            'sortable' => true,
+            'visible' => true,
+            'field' => 'c4Id',
         ]);
         $uc2->setType('text');
 
-        $vector->initialise($this->createMock(Container::class));
+        $vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertAttributeEquals([$column, $column2, $uc1, $uc2], 'columns', $vector);
     }
@@ -117,7 +115,7 @@ class VectorTest extends TestCase
 
         $vector = new Vector([[$columnId => 'c1', $column2Id => 'c2']], [$column, $column2]);
 
-        $vector->initialise($this->createMock(Container::class));
+        $vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertAttributeEquals([$column, $column2], 'columns', $vector);
     }
@@ -131,7 +129,7 @@ class VectorTest extends TestCase
         $untypedColumn->setType($columnType);
 
         $vector = new Vector($vectorValue);
-        $vector->initialise($this->createMock(Container::class));
+        $vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertAttributeEquals([$untypedColumn], 'columns', $vector);
     }
@@ -192,7 +190,7 @@ class VectorTest extends TestCase
 
         $vector = new Vector([], [$column1, $column2]);
 
-        $this->assertEquals('APY\DataGridBundle\Grid\Source\Vector' . md5($idCol1.$idCol2), $vector->getHash());
+        $this->assertEquals('APY\DataGridBundle\Grid\Source\Vector'.\md5($idCol1.$idCol2), $vector->getHash());
     }
 
     public function testGetId(): void
@@ -206,13 +204,13 @@ class VectorTest extends TestCase
     public static function guessedColumnProvider(): array
     {
         $uc = new UntypedColumn([
-            'id'         => 'c1Id',
-            'title'      => 'c1Id',
-            'source'     => true,
+            'id' => 'c1Id',
+            'title' => 'c1Id',
+            'source' => true,
             'filterable' => true,
-            'sortable'   => true,
-            'visible'    => true,
-            'field'      => 'c1Id',
+            'sortable' => true,
+            'visible' => true,
+            'field' => 'c1Id',
         ]);
 
         $date = new \DateTime();
@@ -237,11 +235,11 @@ class VectorTest extends TestCase
             'Boolean and not number' => [[['c1Id' => true], ['c1Id' => '2017-07-22']], $uc, 'text'],
             'Boolean and number' => [[['c1Id' => true], ['c1Id' => 20]], $uc, 'number'],
             'Date and not date time' => [[['c1Id' => '2017-07-22'], ['c1Id' => 20]], $uc, 'text'],
-            'Date and time' => [[['c1Id' => '2017-07-22'], ['c1Id' => '2017-07-22 11:00:00']], $uc, 'datetime']
+            'Date and time' => [[['c1Id' => '2017-07-22'], ['c1Id' => '2017-07-22 11:00:00']], $uc, 'datetime'],
         ];
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->vector = new Vector([], []);
     }

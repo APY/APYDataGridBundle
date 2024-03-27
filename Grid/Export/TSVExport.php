@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Export;
 
 /**
@@ -17,9 +7,9 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class TSVExport extends DSVExport
 {
-    protected $fileExtension = 'tsv';
+    protected ?string $fileExtension = 'tsv';
 
-    protected $mimeType = 'text/tab-separated-values';
+    protected string $mimeType = 'text/tab-separated-values';
 
-    protected $delimiter = "\t";
+    protected string $delimiter = "\t";
 }

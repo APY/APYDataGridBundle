@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class TimeColumnTest extends TestCase
 {
-    public function testGetType()
+    public function testGetType(): void
     {
         $column = new TimeColumn();
 

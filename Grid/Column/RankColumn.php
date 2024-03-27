@@ -1,22 +1,15 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Column;
+
+use APY\DataGridBundle\Grid\Row;
+use Symfony\Component\Routing\RouterInterface;
 
 class RankColumn extends BlankColumn
 {
-    protected $rank = 1;
+    protected int $rank = 1;
 
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         parent::__initialize($params);
 
@@ -26,12 +19,12 @@ class RankColumn extends BlankColumn
         $this->setAlign($this->getParam('align', 'center'));
     }
 
-    public function renderCell($value, $row, $router)
+    public function renderCell(mixed $value, Row $row, RouterInterface $router): int
     {
         return $this->rank++;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'rank';
     }

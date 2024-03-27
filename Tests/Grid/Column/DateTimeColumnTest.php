@@ -59,7 +59,7 @@ class DateTimeColumnTest extends TestCase
     {
         $column = new DateTimeColumn();
         $column->setFormat('Y-m-d H:i:s');
-        $column->manipulateRenderCell(function ($value, $row, $router) {
+        $column->manipulateRenderCell(static function($value, $row, $router) {
             return '01:00:00';
         });
 
@@ -113,7 +113,7 @@ class DateTimeColumnTest extends TestCase
     {
         $column = new DateTimeColumn();
 
-        $this->assertEquals(null, $column->getFormat());
+        $this->assertNull($column->getFormat());
         $this->assertEquals([
             Column::OPERATOR_EQ,
             Column::OPERATOR_NEQ,
@@ -127,7 +127,7 @@ class DateTimeColumnTest extends TestCase
             Column::OPERATOR_ISNOTNULL,
         ], $column->getOperators());
         $this->assertEquals(Column::OPERATOR_EQ, $column->getDefaultOperator());
-        $this->assertEquals(date_default_timezone_get(), $column->getTimezone());
+        $this->assertEquals(\date_default_timezone_get(), $column->getTimezone());
     }
 
     public function testInitialize(): void
@@ -136,10 +136,10 @@ class DateTimeColumnTest extends TestCase
         $timezone = 'UTC';
 
         $params = [
-            'format'          => $format,
-            'operators'       => [Column::OPERATOR_LT, Column::OPERATOR_LTE],
+            'format' => $format,
+            'operators' => [Column::OPERATOR_LT, Column::OPERATOR_LTE],
             'defaultOperator' => Column::OPERATOR_LT,
-            'timezone'        => $timezone,
+            'timezone' => $timezone,
         ];
 
         $column = new DateTimeColumn($params);
@@ -160,7 +160,7 @@ class DateTimeColumnTest extends TestCase
         $column = new DateTimeColumn();
         $column->setFormat('Y-m-d H:i:s');
 
-        if ($timeZone !== null) {
+        if (null !== $timeZone) {
             $column->setTimezone($timeZone);
         }
 
@@ -169,10 +169,6 @@ class DateTimeColumnTest extends TestCase
 
     public function testDisplayValueForDateTimeImmutable(): void
     {
-        if (PHP_VERSION_ID < 50500) {
-            $this->markTestSkipped('\\DateTimeImmutable was introduced in PHP 5.5');
-        }
-
         $now = new \DateTimeImmutable();
 
         $column = new DateTimeColumn();
@@ -191,33 +187,33 @@ class DateTimeColumnTest extends TestCase
         $this->assertEquals('2000-01-01 00:00:00', $column->getDisplayedValue($now));
     }
 
-//    public function testDisplayValueWithDefaultFormats()
-//    {
-//        $column = new DateTimeColumn();
-//        $now = new \DateTime('2017-03-22 22:52:00');
-//
-//        $this->assertEquals('Mar 22, 2017, 10:52:00 PM', $column->getDisplayedValue($now));
-//    }
-//
-//    public function testDisplayValueWithoutFormatButTimeZone()
-//    {
-//        $column = new DateTimeColumn();
-//        $column->setTimezone('UTC');
-//
-//        $now = new \DateTime('2017-03-22 22:52:00', new \DateTimeZone('Europe/Amsterdam'));
-//
-//        $this->assertEquals('Mar 22, 2017, 9:52:00 PM', $column->getDisplayedValue($now));
-//    }
-//
-//    public function testDisplayValueWithFallbackFormat()
-//    {
-//        $column = new DateTimeColumn();
-//        $column->setTimezone(\IntlDateFormatter::NONE);
-//
-//        $now = new \DateTime('2017/03/22 22:52:00');
-//
-//        $this->assertEquals('2017-03-22 20:52:00', $column->getDisplayedValue($now));
-//    }
+    //    public function testDisplayValueWithDefaultFormats(): void
+    //    {
+    //        $column = new DateTimeColumn();
+    //        $now = new \DateTime('2017-03-22 22:52:00');
+    //
+    //        $this->assertEquals('Mar 22, 2017, 10:52:00 PM', $column->getDisplayedValue($now));
+    //    }
+    //
+    //    public function testDisplayValueWithoutFormatButTimeZone(): void
+    //    {
+    //        $column = new DateTimeColumn();
+    //        $column->setTimezone('UTC');
+    //
+    //        $now = new \DateTime('2017-03-22 22:52:00', new \DateTimeZone('Europe/Amsterdam'));
+    //
+    //        $this->assertEquals('Mar 22, 2017, 9:52:00 PM', $column->getDisplayedValue($now));
+    //    }
+    //
+    //    public function testDisplayValueWithFallbackFormat(): void
+    //    {
+    //        $column = new DateTimeColumn();
+    //        $column->setTimezone(\IntlDateFormatter::NONE);
+    //
+    //        $now = new \DateTime('2017/03/22 22:52:00');
+    //
+    //        $this->assertEquals('2017-03-22 20:52:00', $column->getDisplayedValue($now));
+    //    }
 
     public static function provideDisplayInput(): array
     {

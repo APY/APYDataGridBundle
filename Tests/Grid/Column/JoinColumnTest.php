@@ -12,41 +12,41 @@ class JoinColumnTest extends TestCase
     /** @var JoinColumn */
     private $column;
 
-    public function testGetType()
+    public function testGetType(): void
     {
         $this->assertEquals('join', $this->column->getType());
     }
 
-    public function testInitializeDefaultParams()
+    public function testInitializeDefaultParams(): void
     {
         $params = [];
         $column = new JoinColumn($params);
 
-//        $this->assertAttributeEquals([], 'params', $column);
+        //        $this->assertAttributeEquals([], 'params', $column);
         $this->assertEquals([], $column->getJoinColumns());
         $this->assertEquals('&nbsp;', $column->getSeparator());
-        $this->assertEquals(true, $column->isVisibleForSource());
-        $this->assertEquals(true, $column->getIsManualField());
+        $this->assertTrue($column->isVisibleForSource());
+        $this->assertTrue($column->getIsManualField());
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $col1 = 'col1';
         $col2 = 'col2';
         $separator = '/';
 
         $params = [
-            'columns'   => [$col1, $col2],
+            'columns' => [$col1, $col2],
             'separator' => $separator,
         ];
         $column = new JoinColumn($params);
 
-//        $this->assertAttributeEquals($params, 'params', $column);
+        //        $this->assertAttributeEquals($params, 'params', $column);
         $this->assertEquals([$col1, $col2], $column->getJoinColumns());
         $this->assertEquals($separator, $column->getSeparator());
     }
 
-    public function testSetJoinColumns()
+    public function testSetJoinColumns(): void
     {
         $col1 = 'col1';
         $col2 = 'col2';
@@ -56,7 +56,7 @@ class JoinColumnTest extends TestCase
         $this->assertEquals([$col1, $col2], $this->column->getJoinColumns());
     }
 
-    public function testGetjoinColumns()
+    public function testGetjoinColumns(): void
     {
         $col1 = 'col1';
         $col2 = 'col2';
@@ -66,14 +66,14 @@ class JoinColumnTest extends TestCase
         $this->assertEquals([$col1, $col2], $this->column->getJoinColumns());
     }
 
-    public function testSetColumnNameOnFilters()
+    public function testSetColumnNameOnFilters(): void
     {
         $col1 = 'col1';
         $col2 = 'col2';
         $separator = '/';
 
         $params = [
-            'columns'   => [$col1, $col2],
+            'columns' => [$col1, $col2],
             'separator' => $separator,
         ];
 

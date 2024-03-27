@@ -1,27 +1,19 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Export;
+
+use APY\DataGridBundle\Grid\GridInterface;
 
 /**
  * Excel (This export produces a warning with new Office Excel).
  */
 class ExcelExport extends Export
 {
-    protected $fileExtension = 'xls';
+    protected ?string $fileExtension = 'xls';
 
-    protected $mimeType = 'application/vnd.ms-excel';
+    protected string $mimeType = 'application/vnd.ms-excel';
 
-    public function computeData($grid)
+    public function computeData(GridInterface $grid): void
     {
         $data = $this->getGridData($grid);
 
@@ -29,7 +21,7 @@ class ExcelExport extends Export
         if (isset($data['titles'])) {
             $this->content .= '<tr>';
             foreach ($data['titles'] as $title) {
-                $this->content .= sprintf('<th>%s</th>', htmlentities($title, ENT_QUOTES));
+                $this->content .= \sprintf('<th>%s</th>', \htmlentities($title, \ENT_QUOTES));
             }
             $this->content .= '</tr>';
         }
@@ -37,7 +29,7 @@ class ExcelExport extends Export
         foreach ($data['rows'] as $row) {
             $this->content .= '<tr>';
             foreach ($row as $cell) {
-                $this->content .= sprintf('<td>%s</td>', htmlentities($cell, ENT_QUOTES));
+                $this->content .= \sprintf('<td>%s</td>', \htmlentities($cell, \ENT_QUOTES));
             }
             $this->content .= '</tr>';
         }

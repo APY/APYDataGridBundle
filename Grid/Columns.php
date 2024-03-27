@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\ActionsColumn;
@@ -19,10 +9,10 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class Columns implements \IteratorAggregate, \Countable
 {
-    protected $columns = [];
-    protected $extensions = [];
+    protected array $columns = [];
+    protected array $extensions = [];
 
-    const MISSING_COLUMN_EX_MSG = 'Column with id "%s" doesn\'t exists';
+    public const MISSING_COLUMN_EX_MSG = 'Column with id "%s" doesn\'t exists';
 
     protected AuthorizationCheckerInterface $authorizationChecker;
 
@@ -31,71 +21,48 @@ class Columns implements \IteratorAggregate, \Countable
         $this->authorizationChecker = $authorizationChecker;
     }
 
-    /**
-     * @param bool $showOnlySourceColumns
-     *
-     * @return ColumnsIterator
-     */
-    public function getIterator($showOnlySourceColumns = false): \Traversable
+    public function getIterator(bool $showOnlySourceColumns = false): \Traversable
     {
         return new ColumnsIterator(new \ArrayIterator($this->columns), $showOnlySourceColumns);
     }
 
-    /**
-     * Add column.
-     *
-     * @param Column $column
-     * @param int    $position
-     *
-     * @return Columns
-     */
-    public function addColumn(Column $column, $position = 0)
+    public function addColumn(Column $column, int $position = 0): static
     {
         $column->setAuthorizationChecker($this->authorizationChecker);
 
-        if ($position == 0) {
+        if (0 === $position) {
             $this->columns[] = $column;
         } else {
             if ($position > 0) {
                 --$position;
             } else {
-                $position = max(0, count($this->columns) + $position);
+                $position = \max(0, \count($this->columns) + $position);
             }
 
-            $head = array_slice($this->columns, 0, $position);
-            $tail = array_slice($this->columns, $position);
-            $this->columns = array_merge($head, [$column], $tail);
+            $head = \array_slice($this->columns, 0, $position);
+            $tail = \array_slice($this->columns, $position);
+            $this->columns = \array_merge($head, [$column], $tail);
         }
 
         return $this;
     }
 
     /**
-     * @param $columnId
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return Column
      */
-    public function getColumnById($columnId)
+    public function getColumnById(string $columnId): Column|ActionsColumn|bool
     {
         if (($column = $this->hasColumnById($columnId, true)) === false) {
-            throw new \InvalidArgumentException(sprintf(self::MISSING_COLUMN_EX_MSG, $columnId));
+            throw new \InvalidArgumentException(\sprintf(self::MISSING_COLUMN_EX_MSG, $columnId));
         }
 
         return $column;
     }
 
-    /**
-     * @param $columnId
-     * @param bool $returnColumn
-     *
-     * @return bool|Column|ActionsColumn
-     */
-    public function hasColumnById($columnId, $returnColumn = false)
+    public function hasColumnById($columnId, bool $returnColumn = false): Column|ActionsColumn|bool
     {
         foreach ($this->columns as $column) {
-            if ($column->getId() == $columnId) {
+            if ($column->getId() === $columnId) {
                 return $returnColumn ? $column : true;
             }
         }
@@ -105,11 +72,10 @@ class Columns implements \IteratorAggregate, \Countable
 
     /**
      * @throws \InvalidArgumentException
-     *
-     * @return Column
      */
-    public function getPrimaryColumn()
+    public function getPrimaryColumn(): Column
     {
+        /** @var Column $column */
         foreach ($this->columns as $column) {
             if ($column->isPrimary()) {
                 return $column;
@@ -121,46 +87,28 @@ class Columns implements \IteratorAggregate, \Countable
 
     public function count(): int
     {
-        return count($this->columns);
+        return \count($this->columns);
     }
 
-    /**
-     * @param $extension
-     *
-     * @return Columns
-     */
-    public function addExtension($extension)
+    public function addExtension(Column $extension): static
     {
-        $this->extensions[strtolower($extension->getType())] = $extension;
+        $this->extensions[\strtolower($extension->getType())] = $extension;
 
         return $this;
     }
 
-    /**
-     * @param $type
-     *
-     * @return bool
-     */
-    public function hasExtensionForColumnType($type)
+    public function hasExtensionForColumnType(string $type): bool
     {
         return isset($this->extensions[$type]);
     }
 
-    /**
-     * @param $type
-     *
-     * @return mixed
-     */
-    public function getExtensionForColumnType($type)
+    public function getExtensionForColumnType(string $type): mixed
     {
         // @todo: should not index be checked?
         return $this->extensions[$type];
     }
 
-    /**
-     * @return string
-     */
-    public function getHash()
+    public function getHash(): string
     {
         $hash = '';
         foreach ($this->columns as $column) {
@@ -174,13 +122,8 @@ class Columns implements \IteratorAggregate, \Countable
      * Sets order of Columns passing an array of column ids
      * If the list of ids is uncomplete, the remaining columns will be
      * placed after if keepOtherColumns is true.
-     *
-     * @param array $columnIds
-     * @param bool  $keepOtherColumns
-     *
-     * @return Columns
      */
-    public function setColumnsOrder(array $columnIds, $keepOtherColumns = true)
+    public function setColumnsOrder(array $columnIds, bool $keepOtherColumns = true): static
     {
         $reorderedColumns = [];
         $columnsIndexedByIds = [];
@@ -197,7 +140,7 @@ class Columns implements \IteratorAggregate, \Countable
         }
 
         if ($keepOtherColumns) {
-            $this->columns = array_merge($reorderedColumns, array_values($columnsIndexedByIds));
+            $this->columns = \array_merge($reorderedColumns, \array_values($columnsIndexedByIds));
         } else {
             $this->columns = $reorderedColumns;
         }

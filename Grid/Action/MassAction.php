@@ -1,115 +1,66 @@
 <?php
 
-/*
- * This file is part of the DataGridBundle.
- *
- * (c) Abhoryo <abhoryo@free.fr>
- * (c) Stanislav Turza
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace APY\DataGridBundle\Grid\Action;
 
 class MassAction implements MassActionInterface
 {
-    /** @var string */
-    protected $title;
+    protected string $title;
 
-    /** @var string|null */
-    protected $callback;
+    protected \Closure|string|null $callback;
 
-    /** @var bool */
-    protected $confirm;
+    protected bool $confirm;
 
-    /** @var string */
-    protected $confirmMessage;
+    protected string $confirmMessage;
 
-    /** @var array  */
-    protected $parameters = [];
+    protected array $parameters = [];
 
-    /** @var string|null  */
-    protected $role;
+    protected ?string $role;
 
     /**
-     * Default MassAction constructor.
-     *
-     * @param string $title      Title of the mass action
-     * @param string $callback   Callback of the mass action
-     * @param bool   $confirm    Show confirm message if true
-     * @param array  $parameters Additional parameters
-     * @param string $role       Security role
+     * @param string      $title      Title of the mass action
+     * @param string|null $callback   Callback of the mass action
+     * @param bool        $confirm    Show confirm message if true
+     * @param array       $parameters Additional parameters
+     * @param string|null $role       Security role
      */
-    public function __construct($title, $callback = null, $confirm = false, $parameters = [], $role = null)
+    public function __construct(string $title, callable|string|null $callback = null, bool $confirm = false, array $parameters = [], string $role = null)
     {
         $this->title = $title;
         $this->callback = $callback;
         $this->confirm = $confirm;
-        $this->confirmMessage = 'Do you want to ' . strtolower($title) . ' the selected rows?';
+        $this->confirmMessage = 'Do you want to '.\strtolower($title).' the selected rows?';
         $this->parameters = $parameters;
         $this->role = $role;
     }
 
     // @todo: has this setter sense? we passed the title from constructor
-    /**
-     * Set action title.
-     *
-     * @param string $title
-     *
-     * @return self
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * get action title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Set action callback.
-     *
-     * @param string $callback
-     *
-     * @return self
-     */
-    public function setCallback($callback)
+    public function setCallback(callable|string|null $callback): static
     {
         $this->callback = $callback;
 
         return $this;
     }
 
-    /**
-     * get action callback.
-     *
-     * @return string
-     */
-    public function getCallback()
+    public function getCallback(): callable|string|null
     {
         return $this->callback;
     }
 
     // @todo: we should change this to something like "enableConfirm" as "false" is the default value and has pretty much
     // nosense to use setConfirm with false parameter.
-    /**
-     * Set action confirm.
-     *
-     * @param bool $confirm
-     *
-     * @return self
-     */
-    public function setConfirm($confirm)
+    public function setConfirm(bool $confirm): static
     {
         $this->confirm = $confirm;
 
@@ -117,84 +68,43 @@ class MassAction implements MassActionInterface
     }
 
     // @todo: could we change this to neddConfirm?
-    /**
-     * Get action confirm.
-     *
-     * @return bool
-     */
-    public function getConfirm()
+    public function getConfirm(): bool
     {
         return $this->confirm;
     }
 
-    /**
-     * Set action confirmMessage.
-     *
-     * @param string $confirmMessage
-     *
-     * @return self
-     */
-    public function setConfirmMessage($confirmMessage)
+    public function setConfirmMessage(string $confirmMessage): static
     {
         $this->confirmMessage = $confirmMessage;
 
         return $this;
     }
 
-    /**
-     * get action confirmMessage.
-     *
-     * @return string
-     */
-    public function getConfirmMessage()
+    public function getConfirmMessage(): string
     {
         return $this->confirmMessage;
     }
 
-    /**
-     * Set action/controller parameters.
-     *
-     * @param array $parameters
-     *
-     * @return $this
-     */
-    public function setParameters(array $parameters)
+    public function setParameters(array $parameters): static
     {
         $this->parameters = $parameters;
 
         return $this;
     }
 
-    /**
-     * Get action/controller parameters.
-     *
-     * @return array
-     */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    /**
-     * set role.
-     *
-     * @param string $role
-     *
-     * @return self
-     */
-    public function setRole($role)
+    public function setRole(string $role): static
     {
         $this->role = $role;
 
         return $this;
     }
 
-    /**
-     * Get role.
-     *
-     * @return string
-     */
-    public function getRole()
+    public function getRole(): ?string
     {
         return $this->role;
     }

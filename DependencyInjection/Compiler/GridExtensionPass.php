@@ -37,6 +37,6 @@ class GridExtensionPass implements CompilerPassInterface
             $definition->addMethodCall('addColumnExtension', [new Reference($id)]);
         }
 
-        $definition->setMethodCalls(array_merge($definition->getMethodCalls(), $calls));
+        $definition->setMethodCalls(\array_merge($definition->getMethodCalls(), $calls));
     }
 }

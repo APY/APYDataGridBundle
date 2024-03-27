@@ -3,7 +3,6 @@
 namespace APY\DataGridBundle\Tests\Grid;
 
 use APY\DataGridBundle\Grid\Column\TextColumn;
-use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridBuilder;
 use APY\DataGridBundle\Grid\GridBuilderInterface;
@@ -15,45 +14,24 @@ use APY\DataGridBundle\Grid\Type\GridType;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
-/**
- * Class GridFactoryTest.
- */
 class GridFactoryTest extends TestCase
 {
-    /**
-     * @var MockObject
-     */
-    private $container;
+    private RouterInterface|MockObject $router;
+    private RequestStack|MockObject $requestStack;
+    private Request|MockObject $request;
+    private GridRegistryInterface|MockObject $registry;
+    private GridFactory $factory;
 
-    /**
-     * @var MockObject
-     */
-    private $registry;
-
-    /**
-     * @var GridFactory
-     */
-    private $factory;
-
-    public function testCreateWithUnexpectedType()
-    {
-        $this->expectException(UnexpectedTypeException::class);
-        $this->factory->create(1234);
-        $this->factory->create(['foo']);
-        $this->factory->create(new \stdClass());
-    }
-
-    public function testCreateWithTypeString()
+    public function testCreateWithTypeString(): void
     {
         $this->registry->expects($this->once())
                        ->method('getType')
@@ -63,14 +41,14 @@ class GridFactoryTest extends TestCase
         $this->assertInstanceOf(Grid::class, $this->factory->create('foo'));
     }
 
-    public function testCreateWithTypeObject()
+    public function testCreateWithTypeObject(): void
     {
         $this->registry->expects($this->never())->method('getType');
 
         $this->assertInstanceOf(Grid::class, $this->factory->create(new GridType()));
     }
 
-    public function testCreateBuilderWithDefaultType()
+    public function testCreateBuilderWithDefaultType(): void
     {
         $defaultType = new GridType();
 
@@ -84,7 +62,7 @@ class GridFactoryTest extends TestCase
         $this->assertSame($defaultType, $builder->getType());
     }
 
-    public function testCreateBuilder()
+    public function testCreateBuilder(): void
     {
         $givenOptions = ['a' => 1, 'b' => 2];
         $resolvedOptions = ['a' => 1, 'b' => 2, 'c' => 3];
@@ -97,7 +75,7 @@ class GridFactoryTest extends TestCase
 
         $type->expects($this->once())
              ->method('configureOptions')
-             ->with($this->callback(function ($resolver) use ($resolvedOptions) {
+             ->with($this->callback(static function($resolver) use ($resolvedOptions) {
                  if (!$resolver instanceof OptionsResolver) {
                      return false;
                  }
@@ -109,8 +87,8 @@ class GridFactoryTest extends TestCase
 
         $type->expects($this->once())
              ->method('buildGrid')
-             ->with($this->callback(function ($builder) {
-                 return $builder instanceof GridBuilder && $builder->getName() == 'TYPE';
+             ->with($this->callback(static function($builder) {
+                 return $builder instanceof GridBuilder && 'TYPE' === $builder->getName();
              }), $resolvedOptions);
 
         $builder = $this->factory->createBuilder($type, null, $givenOptions);
@@ -122,13 +100,7 @@ class GridFactoryTest extends TestCase
         $this->assertNull($builder->getSource());
     }
 
-    public function testCreateColumnWithUnexpectedType()
-    {
-        $this->expectException(UnexpectedTypeException::class);
-        $this->factory->createColumn('foo', 1234);
-    }
-
-    public function testCreateColumnWithTypeString()
+    public function testCreateColumnWithTypeString(): void
     {
         $expectedColumn = new TextColumn();
 
@@ -147,7 +119,7 @@ class GridFactoryTest extends TestCase
         $this->assertTrue($column->isVisibleForSource());
     }
 
-    public function testCreateColumnWithObject()
+    public function testCreateColumnWithObject(): void
     {
         $column = $this->factory->createColumn('foo', new TextColumn(), ['title' => 'bar']);
 
@@ -161,36 +133,17 @@ class GridFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $self = $this;
-
-        $this->container = $this->createMock(Container::class);
-        $this->container->expects($this->any())
-            ->method('get')
-            ->will($this->returnCallback(function ($param) use ($self) {
-                switch ($param) {
-                    case 'router':
-                        return $self->createMock(RouterInterface::class);
-                        break;
-                    case 'request_stack':
-                        $request = new Request([], [], ['key' => 'value']);
-                        $request->setSession(new Session());
-                        $requestStack = new RequestStack();
-                        $requestStack->push($request);
-
-                        return $requestStack;
-                        break;
-                    case 'security.authorization_checker':
-                        return $self->createMock(AuthorizationCheckerInterface::class);
-                        break;
-                }
-            }));
-
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $registry = $this->createMock(ManagerRegistry::class);
         $manager = $this->createMock(Manager::class);
         $kernel = $this->createMock(KernelInterface::class);
         $twig = $this->createMock(Environment::class);
+        $this->request = $this->createMock(Request::class);
+        $this->request->attributes = $this->createMock(ParameterBag::class);
+        $this->requestStack = $this->createMock(RequestStack::class);
+        $this->requestStack->method('getCurrentRequest')->willReturn($this->request);
+        $this->router = $this->createMock(RouterInterface::class);
         $this->registry = $this->createMock(GridRegistryInterface::class);
-        $this->factory = new GridFactory($this->container, $authChecker, $registry, $manager, $kernel, $twig, $this->registry);
+        $this->factory = new GridFactory($this->router, $authChecker, $registry, $manager, $kernel, $twig, $this->requestStack, $this->registry);
     }
 }
