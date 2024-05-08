@@ -5,7 +5,7 @@ namespace APY\DataGridBundle\Grid\Export;
 
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 
-class PHPExcelMDFExport extends PHPExcelPDFExport
+class PHPExcelMPDFExport extends PHPExcelPDFExport
 {
     protected function getWriter(): Mpdf
     {
