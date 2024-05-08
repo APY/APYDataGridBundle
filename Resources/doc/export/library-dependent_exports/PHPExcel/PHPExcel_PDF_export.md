@@ -10,11 +10,11 @@ Mime type = `application/pdf`
 ```php
 <?php
 ...
-use APY\DataGridBundle\Grid\Export\PHPExcelPDFExport;
+use APY\DataGridBundle\Grid\Export\PHPExcelMPDFExport;
 ...
 $grid->setSource($source);
 
-$grid->addExport(new PHPExcelPDFExport($title, $fileName, $params, $charset, $role));
+$grid->addExport(new PHPExcelMPDFExport($title, $fileName, $params, $charset, $role));
 ...
 ```
 

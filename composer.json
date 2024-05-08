@@ -47,14 +47,15 @@
         "doctrine/mongodb-odm": "^2.2",
         "rector/rector": "^0.12.13",
         "dg/bypass-finals": "^1.3",
-        "symfony/security-bundle": "^3.0 || ^4.0 || ^5.0",
         "symfony/twig-bundle": "^3.0 || ^4.0 || ^5.0",
-        "doctrine/doctrine-bundle": "^2.5"
+        "doctrine/doctrine-bundle": "^2.5",
+        "phpoffice/phpspreadsheet": "^1.22",
+        "mpdf/mpdf": "^8.0"
     },
     "suggest": {
         "ext-intl": "Translate the grid",
         "ext-mbstring": "Convert your data with the right charset",
-        "PHPExcel": "Export the grid (Excel, HTML or PDF)",
+        "phpoffice/phpspreadsheet": "Export the grid (Excel, HTML or PDF)",
         "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm",
         "doctrine/mongodb-odm": "If you want to use Document as source, please require doctrine/mongodb-odm",
         "jms/translation-bundle": "If you want to use translations"
