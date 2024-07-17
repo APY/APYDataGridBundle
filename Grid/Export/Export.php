@@ -443,7 +443,9 @@ abstract class Export implements ExportInterface
 
     public function getBaseName(): string
     {
-        return $this->fileName.($ext = $this->getFileExtension()) ? ".$ext" : '';
+        $ext = $this->getFileExtension();
+
+        return $this->fileName.($ext ? ".$ext" : '');
     }
 
     public function setMimeType(string $mimeType): static
