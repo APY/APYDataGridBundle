@@ -576,6 +576,9 @@ abstract class Source implements DriverInterface
 
     private function removeAccents($str)
     {
+        if (!is_string($str)) {
+            return $str; // Retourne l'entrée telle quelle si ce n'est pas une chaîne
+        }        
         $entStr = htmlentities($str, ENT_NOQUOTES, 'UTF-8');
         $noaccentStr = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $entStr);
 
