@@ -526,7 +526,11 @@ abstract class Column
     public function getData()
     {
         $result = [];
-
+        // PHP 7.4 Notices
+        if (is_null($this->data)) {
+            return $result;
+        }
+        
         $hasValue = false;
         if (isset($this->data['from']) && $this->data['from'] != $this::DEFAULT_VALUE) {
             $result['from'] = $this->data['from'];
