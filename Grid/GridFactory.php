@@ -27,12 +27,12 @@ readonly class GridFactory implements GridFactoryInterface
     ) {
     }
 
-    public function create(GridTypeInterface|string $type = null, Source $source = null, array $options = []): Grid
+    public function create(GridTypeInterface|string|null $type = null, ?Source $source = null, array $options = []): Grid
     {
         return $this->createBuilder($type, $source, $options)->getGrid();
     }
 
-    public function createBuilder(GridTypeInterface|string|null $type = 'grid', Source $source = null, array $options = []): GridBuilder
+    public function createBuilder(GridTypeInterface|string|null $type = 'grid', ?Source $source = null, array $options = []): GridBuilder
     {
         $type = $this->resolveType($type);
         $options = $this->resolveOptions($type, $source, $options);
@@ -73,7 +73,7 @@ readonly class GridFactory implements GridFactoryInterface
         return $type;
     }
 
-    private function resolveOptions(GridTypeInterface $type, Source $source = null, array $options = []): array
+    private function resolveOptions(GridTypeInterface $type, ?Source $source = null, array $options = []): array
     {
         $resolver = new OptionsResolver();
 

@@ -36,14 +36,14 @@ abstract class Source implements DriverInterface
         return $row;
     }
 
-    public function manipulateQuery(callable $callback = null): static
+    public function manipulateQuery(?callable $callback = null): static
     {
         $this->prepareQueryCallback = $callback;
 
         return $this;
     }
 
-    public function manipulateRow(\Closure $callback = null): static
+    public function manipulateRow(?\Closure $callback = null): static
     {
         $this->prepareRowCallback = $callback;
 
@@ -57,12 +57,12 @@ abstract class Source implements DriverInterface
      * @param int $limit            Rows Per Page
      * @param int $gridDataJunction Grid data junction
      */
-    abstract public function execute(ColumnsIterator $columns, int $page = 0, ?int $limit = 0, int $maxResults = null, int $gridDataJunction = Column::DATA_CONJUNCTION): Rows|array;
+    abstract public function execute(ColumnsIterator $columns, int $page = 0, ?int $limit = 0, ?int $maxResults = null, int $gridDataJunction = Column::DATA_CONJUNCTION): Rows|array;
 
     /**
      * Get Total count of data items.
      */
-    abstract public function getTotalCount(int $maxResults = null): ?int;
+    abstract public function getTotalCount(?int $maxResults = null): ?int;
 
     /**
      * Set container.
@@ -185,7 +185,7 @@ abstract class Source implements DriverInterface
     /**
      * Find data from array|object.
      */
-    public function executeFromData(array|Columns|ColumnsIterator $columns, int $page = 0, ?int $limit = 0, int $maxResults = null): Rows|array
+    public function executeFromData(array|Columns|ColumnsIterator $columns, int $page = 0, ?int $limit = 0, ?int $maxResults = null): Rows|array
     {
         // Populate from data
         $items = $this->getItemsFromData($columns);
@@ -488,7 +488,7 @@ abstract class Source implements DriverInterface
     /**
      * Get Total count of data items.
      */
-    public function getTotalCountFromData(int $maxResults = null): ?int
+    public function getTotalCountFromData(?int $maxResults = null): ?int
     {
         return null === $maxResults ? $this->count : \min($this->count, $maxResults);
     }
@@ -501,7 +501,7 @@ abstract class Source implements DriverInterface
      *
      * @return string the input, serialized for arrays or without accents for strings
      */
-    protected function prepareStringForLikeCompare(mixed $input, string $type = null): array|string|null
+    protected function prepareStringForLikeCompare(mixed $input, ?string $type = null): array|string|null
     {
         if ('array' === $type) {
             $outputString = \str_replace(':{i:0;', ':{', \serialize($input));

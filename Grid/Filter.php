@@ -8,7 +8,7 @@ class Filter
     protected string $operator;
     protected ?string $columnName;
 
-    public function __construct(string $operator, mixed $value = null, string $columnName = null)
+    public function __construct(string $operator, mixed $value = null, ?string $columnName = null)
     {
         $this->value = $value;
         $this->operator = $operator;

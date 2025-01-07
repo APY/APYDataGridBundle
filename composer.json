@@ -32,7 +32,7 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "doctrine/orm": "^2.5",
+        "doctrine/orm": "^2.5|^3.0",
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpunit/phpunit": "^10.0",
         "roave/security-advisories": "dev-latest",

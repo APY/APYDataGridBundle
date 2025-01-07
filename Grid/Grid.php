@@ -211,7 +211,7 @@ class Grid implements GridInterface
         protected Environment $twig,
         RequestStack $requestStack,
         ?string $id = '',
-        protected ?GridConfigInterface $config = null
+        protected ?GridConfigInterface $config = null,
     ) {
         $this->request = $requestStack->getCurrentRequest();
         $this->session = $this->request->getSession();
@@ -1078,7 +1078,7 @@ class Grid implements GridInterface
     /**
      * Returns Mass Actions.
      *
-     * @return Action\MassAction[]
+     * @return MassAction[]
      */
     public function getMassActions(): Response|array
     {
@@ -1093,7 +1093,7 @@ class Grid implements GridInterface
      * @param string $id    id of the tweak matching the regex ^[0-9a-zA-Z_+-]+
      * @param string $group group of the tweak
      */
-    public function addTweak(string $title, array $tweak, string $id = null, string $group = null): static
+    public function addTweak(string $title, array $tweak, ?string $id = null, ?string $group = null): static
     {
         if (null !== $id && !\preg_match('/^[0-9a-zA-Z_+-]+$/', $id)) {
             throw new \InvalidArgumentException(\sprintf(self::TWEAK_MALFORMED_ID_EX_MSG, $id));
@@ -1181,7 +1181,7 @@ class Grid implements GridInterface
     /**
      * Returns Row Actions.
      *
-     * @return Action\RowAction[]
+     * @return RowAction[]
      */
     public function getRowActions(): array
     {
@@ -1521,7 +1521,7 @@ class Grid implements GridInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function setMaxResults(int $maxResults = null): static
+    public function setMaxResults(?int $maxResults = null): static
     {
         if ($maxResults < 0 && null !== $maxResults) {
             throw new \InvalidArgumentException(self::NOT_VALID_MAX_RESULT_EX_MSG);
@@ -1769,7 +1769,7 @@ class Grid implements GridInterface
      * @param string|array|null $param1 The view name or an array of parameters to pass to the view
      * @param string|array|null $param2 The view name or an array of parameters to pass to the view
      */
-    public function getGridResponse(string|array $param1 = null, string|array $param2 = null): Response|array
+    public function getGridResponse(string|array|null $param1 = null, string|array|null $param2 = null): Response|array
     {
         $isReadyForRedirect = $this->isReadyForRedirect();
 
@@ -1812,7 +1812,7 @@ class Grid implements GridInterface
      *
      * @return array Raw data of columns
      */
-    public function getRawData(string|array $columnNames = null, bool $namedIndexes = true): array
+    public function getRawData(string|array|null $columnNames = null, bool $namedIndexes = true): array
     {
         if (null === $columnNames) {
             foreach ($this->getColumns() as $column) {

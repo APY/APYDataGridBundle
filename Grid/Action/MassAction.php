@@ -23,7 +23,7 @@ class MassAction implements MassActionInterface
      * @param array       $parameters Additional parameters
      * @param string|null $role       Security role
      */
-    public function __construct(string $title, callable|string|null $callback = null, bool $confirm = false, array $parameters = [], string $role = null)
+    public function __construct(string $title, callable|string|null $callback = null, bool $confirm = false, array $parameters = [], ?string $role = null)
     {
         $this->title = $title;
         $this->callback = $callback;

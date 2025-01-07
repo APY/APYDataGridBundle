@@ -31,7 +31,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
         private readonly RequestStack $requestStack,
         GridFactoryInterface $factory,
         string $name,
-        array $options = []
+        array $options = [],
     ) {
         parent::__construct($name, $options);
 

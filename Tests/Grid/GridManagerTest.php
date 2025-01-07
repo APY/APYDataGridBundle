@@ -427,7 +427,7 @@ class GridManagerTest extends TestCase
         $grid1ReadyForRedirect,
         $grid2Hash,
         $route2Url,
-        $grid2ReadyForRedirect
+        $grid2ReadyForRedirect,
     ) {
         [$grid, $grid2] = $this->stubTwoGrids($grid1Hash, $grid2Hash);
 

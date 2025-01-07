@@ -27,7 +27,7 @@ return (new PhpCsFixer\Config())->setRules(
         'single_line_comment_style' => true,
         'ternary_to_null_coalescing' => true,
         'echo_tag_syntax' => ['format' => 'long'],
-        'nullable_type_declaration_for_default_null_value' => false,
+        'nullable_type_declaration_for_default_null_value' => true,
         'static_lambda' => true,
         'global_namespace_import' => false,
         'multiline_whitespace_before_semicolons' => true,

@@ -162,7 +162,7 @@ class Vector extends Source
         }
     }
 
-    public function execute(Columns|ColumnsIterator $columns, int $page = 0, ?int $limit = 0, int $maxResults = null, int $gridDataJunction = Column::DATA_CONJUNCTION): Rows|array
+    public function execute(Columns|ColumnsIterator $columns, int $page = 0, ?int $limit = 0, ?int $maxResults = null, int $gridDataJunction = Column::DATA_CONJUNCTION): Rows|array
     {
         return $this->executeFromData($columns, $page, $limit, $maxResults);
     }
@@ -172,7 +172,7 @@ class Vector extends Source
         $this->populateSelectFiltersFromData($columns, $loop);
     }
 
-    public function getTotalCount(int $maxResults = null): int
+    public function getTotalCount(?int $maxResults = null): int
     {
         return $this->getTotalCountFromData($maxResults);
     }

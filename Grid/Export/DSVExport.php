@@ -31,7 +31,7 @@ class DSVExport extends Export
         $outstream = \fopen('php://temp', 'r+b');
 
         foreach ($data as $line) {
-            \fputcsv($outstream, $line, $this->getDelimiter(), '"');
+            \fputcsv($outstream, $line, $this->getDelimiter(), '"', escape: "\\");
         }
 
         \rewind($outstream);

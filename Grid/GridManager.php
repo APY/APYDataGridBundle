@@ -143,7 +143,7 @@ class GridManager implements \IteratorAggregate, \Countable
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function getGridManagerResponse(array|string $param1 = null, array|string $param2 = null): Response|array
+    public function getGridManagerResponse(array|string|null $param1 = null, array|string|null $param2 = null): Response|array
     {
         $isReadyForRedirect = $this->isReadyForRedirect();
 

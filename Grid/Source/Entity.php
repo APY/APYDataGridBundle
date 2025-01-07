@@ -94,7 +94,7 @@ class Entity extends Source
      * @param string $entityName  e.g Cms:Page
      * @param string $managerName e.g. mydatabase
      */
-    public function __construct(string $entityName, string $group = 'default', string $managerName = null)
+    public function __construct(string $entityName, string $group = 'default', ?string $managerName = null)
     {
         $this->entityName = $entityName;
         $this->managerName = $managerName;
@@ -490,7 +490,7 @@ class Entity extends Source
         return \str_replace([self::DOT_DQL_ALIAS_PH, self::COLON_DQL_ALIAS_PH], ['.', ':'], $alias);
     }
 
-    public function getTotalCount(int $maxResults = null): int
+    public function getTotalCount(?int $maxResults = null): int
     {
         // Doctrine Bug Workaround: http://www.doctrine-project.org/jira/browse/DDC-1927
         $countQueryBuilder = clone $this->query;
@@ -690,7 +690,7 @@ class Entity extends Source
         }
     }
 
-    public function manipulateCountQuery(callable $callback = null): static
+    public function manipulateCountQuery(?callable $callback = null): static
     {
         $this->prepareCountQueryCallback = $callback;
 

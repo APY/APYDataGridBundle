@@ -114,7 +114,7 @@ abstract class Column
 
     protected int $dataJunction = self::DATA_CONJUNCTION;
 
-    public function __construct(array $params = null)
+    public function __construct(?array $params = null)
     {
         $this->__initialize((array) $params);
     }

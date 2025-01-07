@@ -38,7 +38,7 @@ class RowAction implements RowActionInterface
      * @param array       $attributes Attributes of the anchor tag
      * @param string|null $role       Security role
      */
-    public function __construct(string $title, string $route, bool $confirm = false, string $target = '_self', array $attributes = [], string $role = null)
+    public function __construct(string $title, string $route, bool $confirm = false, string $target = '_self', array $attributes = [], ?string $role = null)
     {
         $this->title = $title;
         $this->route = $route;
