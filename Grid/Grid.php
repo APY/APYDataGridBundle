@@ -556,7 +556,7 @@ class Grid implements GridInterface
 
     protected function processPersistence()
     {
-        $referer = strtok($this->request->headers->get('referer'), '?');
+        $referer = strtok((string) $this->request->headers->get('referer'), '?');
 
         // Persistence or reset - kill previous session
         if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $referer != $this->getCurrentUri())
