@@ -28,15 +28,19 @@ class XMLExport extends Export
 
     public function computeData(Grid $grid)
     {
-        $xmlEncoder = new XmlEncoder();
-        $xmlEncoder->setRootNodeName('grid');
-        $serializer = new Serializer([new GetSetMethodNormalizer()], ['xml' => $xmlEncoder]);
+        if (defined(XmlEncoder::class.'::ROOT_NODE_NAME')) {
+            $xmlEncoder = new XmlEncoder([XmlEncoder::ROOT_NODE_NAME => 'grid']);
+        } else {
+            $xmlEncoder = new XmlEncoder();
+            $xmlEncoder->setRootNodeName('grid');
+        }
+        $serializer = new Serializer([new GetSetMethodNormalizer()], [XmlEncoder::FORMAT => $xmlEncoder]);
 
         $data = $this->getGridData($grid);
 
         $convertData['titles'] = $data['titles'];
         $convertData['rows']['row'] = $data['rows'];
 
-        $this->content = $serializer->serialize($convertData, 'xml');
+        $this->content = $serializer->serialize($convertData, XmlEncoder::FORMAT);
     }
 }
