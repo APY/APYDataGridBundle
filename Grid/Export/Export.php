@@ -14,7 +14,6 @@ namespace APY\DataGridBundle\Grid\Export;
 
 use APY\DataGridBundle\Grid\Column\ArrayColumn;
 use APY\DataGridBundle\Grid\Grid;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\TemplateWrapper;
