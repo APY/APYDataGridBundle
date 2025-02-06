@@ -11,27 +11,29 @@ concurrency:
 jobs:
   build-test:
     runs-on: ubuntu-latest
-    name: 'PHPUnit (PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} + ${{ matrix.dependencies }} deps, ES ${{ matrix.elasticsearch }})'
-    env:
-      SYMFONY_REQUIRE: "${{ matrix.symfony }}"    
+    name: 'PHPUnit (PHP ${{ matrix.php-version }}, Symfony ${{ matrix.symfony-version }} + ${{ matrix.dependencies }} deps)'
     strategy:
+      fail-fast: false
       matrix:
-        php:
-          - '7.4'
-          - '8.0'
+        php-version:
           - '8.1'
-          - '8.2'
-        symfony:
-          - '5.4.*'       
-          - '6.3.*'          
+          - '8.4'
+        symfony-version:
+          - '^5.4'
+          - '^6.4'
+          - '^7.2'
         dependencies:
           - 'highest'
-        include:
-          - php: '7.4'
-            dependencies: 'lowest'
         exclude:
-          - php: '7.4'
-            dependencies: 'highest'               
+          - php-version: '8.1'
+            symfony-version: '^7.2'
+        include:
+          - php-version: '7.4'
+            symfony-version: '^4.4'
+            dependencies: 'highest'
+          - php-version: '7.4'
+            symfony-version: '^5.0'
+            dependencies: 'lowest'
     steps:
     - name: 'Checkout'
       uses: actions/checkout@v3
@@ -39,21 +41,20 @@ jobs:
     - name: 'Setup PHP'
       uses: 'shivammathur/setup-php@v2'
       with:
-        php-version: '${{ matrix.php }}'
+        php-version: '${{ matrix.php-version }}'
         coverage: 'none'
-        extensions: 'curl, json, intl, mbstring, mongodb, openssl'    
+        tools: 'composer:v2, flex'
+        extensions: 'curl, json, intl, mbstring, mongodb, openssl'
 
     - name: 'Install Composer dependencies' 
       uses : 'ramsey/composer-install@v2'
       with:
         dependency-versions: "${{ matrix.dependencies }}"
-        composer-options: "--no-interaction" 
+        composer-options: "--no-interaction"
+      env:
+        COMPOSER_FUND: '0'
+        SYMFONY_REQUIRE: '${{ matrix.symfony-version }}'
 
-    # - uses: php-actions/phpunit@v3
-    #   with:
-    #     version
     - name: 'Run unit tests'
       run: |
         vendor/bin/phpunit
- 
-    # ... then your own project steps ...
