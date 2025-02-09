@@ -74,6 +74,16 @@ class Document extends Source
     protected $referencedMappings = [];
 
     /**
+     * @var array
+     */
+    protected $embedColumns = [];
+
+    /**
+     * @var array
+     */
+    protected $embedMappings = [];
+
+    /**
      * @param string $documentName e.g. "Cms:Page"
      */
     public function __construct($documentName, $group = 'default')
@@ -197,8 +207,12 @@ class Document extends Source
 
             //checks if exists '.' notation on referenced columns and build query if it's filtered
             $subColumn = explode('.', $column->getId());
-            if (count($subColumn) > 1 && isset($this->referencedMappings[$subColumn[0]])) {
-                $this->addReferencedColumnn($subColumn, $column);
+            if (count($subColumn) > 1) {
+                if (isset($this->referencedMappings[$subColumn[0]])) {
+                    $this->addReferencedColumn($subColumn, $column);
+                } elseif (isset($this->embedMappings[$subColumn[0]])) {
+                    $this->addEmbedColumn($subColumn, $column);
+                }
 
                 continue;
             }
@@ -254,7 +268,6 @@ class Document extends Source
         // I really don't know if Cursor is the right type returned (I mean, every single type).
         // As I didn't find out this information, I'm gonna test it with Cursor returned only.
         $cursor = $this->query->getQuery()->execute();
-
         $this->count = $cursor->count();
 
         foreach ($cursor as $resource) {
@@ -268,6 +281,7 @@ class Document extends Source
             }
 
             $this->addReferencedFields($row, $resource);
+            $this->addEmbedFields($row, $resource);
 
             //call overridden prepareRow or associated closure
             if (($modifiedRow = $this->prepareRow($row)) !== null) {
@@ -278,11 +292,7 @@ class Document extends Source
         return $result;
     }
 
-    /**
-     * @param array $subColumn
-     * @param Column \APY\DataGridBundle\Grid\Column\Column
-     */
-    protected function addReferencedColumnn(array $subColumn, Column $column)
+    protected function addReferencedColumn(array $subColumn, Column $column)
     {
         $this->referencedColumns[$subColumn[0]][] = $subColumn[1];
 
@@ -304,7 +314,7 @@ class Document extends Source
                         $this->query->select($subColumn[0]);
                     }
 
-                    if ($cursor->count() == 1) {
+                    if ($cursor->count() === 1) {
                         $this->query->field($subColumn[0])->references($resource);
                     } else {
                         $this->query->addOr($this->query->expr()->field($subColumn[0])->references($resource));
@@ -314,33 +324,63 @@ class Document extends Source
         }
     }
 
-    /**
-     * @param \APY\DataGridBundle\Grid\Row $row
-     * @param Document                     $resource
-     *
-     * @throws \Exception if getter for field does not exists
-     *
-     * @return \APY\DataGridBundle\Grid\Row $row with referenced fields
-     */
-    protected function addReferencedFields(Row $row, $resource)
+    protected function addEmbedColumn(array $subColumn, Column $column)
     {
-        foreach ($this->referencedColumns as $parent => $subColumns) {
-            $node = $this->getClassProperties($resource);
-            if (isset($node[strtolower($parent)])) {
-                $node = $node[strtolower($parent)];
+        $this->embedColumns[$subColumn[0]][] = $subColumn[1];
 
-                foreach ($subColumns as $field) {
-                    $getter = 'get' . ucfirst($field);
-                    if (method_exists($node, $getter)) {
-                        $row->setField($parent . '.' . $field, $node->$getter());
-                    } else {
-                        throw new \Exception(sprintf('Method %s for Document %s not exists', $getter, $this->referencedMappings[$parent]));
-                    }
+        if ($column->isFiltered()) {
+            $filters = $column->getFilters('document');
+            foreach ($filters as $filter) {
+                $operator = $this->normalizeOperator($filter->getOperator());
+                $value = $this->normalizeValue($operator, $filter->getValue());
+                if ($column->getDataJunction() === Column::DATA_DISJUNCTION) {
+                    $this->query->addOr($this->query->expr()->field($column->getField())->$operator($value));
+                } else {
+                    $this->query->field($column->getField())->$operator($value);
                 }
             }
         }
 
-        return $row;
+        if ($column->isSorted()) {
+            $this->query->sort($column->getField(), $column->getOrder());
+        }
+    }
+
+    /**
+     * @param Row      $row
+     * @param Document $resource
+     *
+     * @throws \Exception if getter for field does not exists
+     */
+    protected function addReferencedFields(Row $row, $resource)
+    {
+        foreach ($this->referencedColumns as $parent => $subColumns) {
+            $this->addSubfield($row, $resource, $parent, $subColumns);
+        }
+    }
+
+    protected function addEmbedFields(Row $row, $resource)
+    {
+        foreach ($this->embedColumns as $parent => $subColumns) {
+            $this->addSubfield($row, $resource, $parent, $subColumns);
+        }
+    }
+
+    protected function addSubfield(Row $row, $resource, $parent, array $subColumns)
+    {
+        $node = $this->getClassProperties($resource);
+        if (isset($node[strtolower($parent)])) {
+            $node = $node[strtolower($parent)];
+
+            foreach ($subColumns as $field) {
+                $getter = 'get' . ucfirst($field);
+                if (method_exists($node, $getter)) {
+                    $row->setField($parent . '.' . $field, $node->$getter());
+                } else {
+                    throw new \Exception(sprintf('Method %s for Document %s not exists', $getter, $this->referencedMappings[$parent]));
+                }
+            }
+        }
     }
 
     public function getTotalCount($maxResults = null)
@@ -416,16 +456,16 @@ class Document extends Source
                     $values['type'] = 'date';
                     break;
                 case 'collection':
+                case 'many':
                     $values['type'] = 'array';
                     break;
                 case 'one':
                     $values['type'] = 'array';
-                    if (isset($mapping['reference']) && $mapping['reference'] === true) {
+                    if (isset($mapping['reference']) && true === $mapping['reference']) {
                         $this->referencedMappings[$name] = $mapping['targetDocument'];
+                    } elseif (isset($mapping['embedded']) && true === $mapping['embedded']) {
+                        $this->embedMappings[$name] = $mapping['targetDocument'];
                     }
-                    break;
-                case 'many':
-                    $values['type'] = 'array';
                     break;
                 default:
                     $values['type'] = 'text';
