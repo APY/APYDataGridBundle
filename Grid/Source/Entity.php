@@ -248,6 +248,10 @@ class Entity extends Source
 
                 return "$functionWithParameters as $alias";
             }
+            // To handle query from filter with necessary HAVING clause which does not accept alias
+            if (!$withAlias && $hasHaving) {
+                return $functionWithParameters;
+            }
 
             return $alias;
         }
@@ -440,7 +444,7 @@ class Entity extends Source
 
                     $columnForFilter = (!$column instanceof JoinColumn) ? $column : $columnsById[$filter->getColumnName()];
 
-                    $fieldName = $this->getFieldName($columnForFilter, false);
+                    $fieldName = $this->getFieldName($columnForFilter, false, $hasHavingClause);
                     $bindIndexPlaceholder = "?$bindIndex";
 
                     if( in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))){
