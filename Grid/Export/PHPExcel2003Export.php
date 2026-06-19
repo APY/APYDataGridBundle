@@ -12,12 +12,14 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 /**
  * PHPExcel_Excel 2003 Export (.xlsx).
  */
 class PHPExcel2003Export extends PHPExcel2007Export
 {
-    protected function getWriter()
+    protected function getWriter(): Xlsx
     {
         $writer = parent::getWriter();
         $writer->setOffice2003Compatibility(true);

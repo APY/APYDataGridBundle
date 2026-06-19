@@ -12,20 +12,19 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 /**
  * PHPExcel 2007 Export.
  */
-class PHPExcel2007Export extends PHPExcel5Export
+class PHPExcel2007Export extends PHPExcelExport
 {
     protected $fileExtension = 'xlsx';
 
     protected $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
-    protected function getWriter()
+    protected function getWriter(): Xlsx
     {
-        $writer = new \PHPExcel_Writer_Excel2007($this->objPHPExcel);
-        $writer->setPreCalculateFormulas(false);
-
-        return $writer;
+        return new Xlsx($this->objPHPExcel);
     }
 }
